@@ -6,8 +6,8 @@
     cp linux@executorch/third-party/flatbuffers/include flatbuffers
 
 3. Rename some header file
-    rename _prebuilt/kernels/portable/NativeFunctions.h to PortableOpsNativeFunctions.h
-    rename _prebuilt/kernels/quantized/NativeFunctions.h to QuantizedOpsNativeFunctions.h
+    copy _prebuilt/kernels/portable/NativeFunctions.h to PortableOpsNativeFunctions.h
+    copy _prebuilt/kernels/quantized/NativeFunctions.h to QuantizedOpsNativeFunctions.h
 
 4. Modify some source code
     a. kernels\portable\cpu\op_expand_copy.cpp
