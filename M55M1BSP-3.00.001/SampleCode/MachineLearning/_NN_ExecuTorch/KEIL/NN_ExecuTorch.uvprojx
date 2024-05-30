@@ -444,9 +444,24 @@
           <GroupName>Lib</GroupName>
           <Files>
             <File>
-              <FileName>executorch_runtime.lib</FileName>
+              <FileName>libexecutorch.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\..\ThirdParty\executorch\Lib\executorch_runtime.lib</FilePath>
+              <FilePath>..\..\..\..\ThirdParty\executorch\Lib\libexecutorch.lib</FilePath>
+            </File>
+            <File>
+              <FileName>libexecutorch_delegate_ethos_u.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\..\..\ThirdParty\executorch\Lib\libexecutorch_delegate_ethos_u.lib</FilePath>
+            </File>
+            <File>
+              <FileName>libportable_kernels.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\..\..\ThirdParty\executorch\Lib\libportable_kernels.lib</FilePath>
+            </File>
+            <File>
+              <FileName>libquantized_kernels.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\..\..\ThirdParty\executorch\Lib\libquantized_kernels.lib</FilePath>
             </File>
           </Files>
         </Group>
