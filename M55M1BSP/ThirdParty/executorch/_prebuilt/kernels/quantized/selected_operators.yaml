@@ -1,0 +1,119 @@
+build_features: []
+custom_classes: []
+et_kernel_metadata:
+  quantized_decomposed::add.out:
+  - default
+  quantized_decomposed::choose_qparams.Tensor_out:
+  - default
+  quantized_decomposed::dequantize_per_channel.out:
+  - default
+  quantized_decomposed::dequantize_per_tensor.Tensor_out:
+  - default
+  quantized_decomposed::dequantize_per_tensor.out:
+  - default
+  quantized_decomposed::embedding_4bit.dtype_out:
+  - default
+  quantized_decomposed::embedding_4bit.out:
+  - default
+  quantized_decomposed::embedding_byte.dtype_out:
+  - default
+  quantized_decomposed::embedding_byte.out:
+  - default
+  quantized_decomposed::mixed_linear.out:
+  - default
+  quantized_decomposed::mixed_mm.out:
+  - default
+  quantized_decomposed::quantize_per_channel.out:
+  - default
+  quantized_decomposed::quantize_per_tensor.Tensor_out:
+  - default
+  quantized_decomposed::quantize_per_tensor.out:
+  - default
+include_all_non_op_selectives: false
+include_all_operators: false
+kernel_metadata: {}
+operators:
+  quantized_decomposed::add.out:
+    debug_info:
+    - quantized.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  quantized_decomposed::choose_qparams.Tensor_out:
+    debug_info:
+    - quantized.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  quantized_decomposed::dequantize_per_channel.out:
+    debug_info:
+    - quantized.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  quantized_decomposed::dequantize_per_tensor.Tensor_out:
+    debug_info:
+    - quantized.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  quantized_decomposed::dequantize_per_tensor.out:
+    debug_info:
+    - quantized.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  quantized_decomposed::embedding_4bit.dtype_out:
+    debug_info:
+    - quantized.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  quantized_decomposed::embedding_4bit.out:
+    debug_info:
+    - quantized.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  quantized_decomposed::embedding_byte.dtype_out:
+    debug_info:
+    - quantized.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  quantized_decomposed::embedding_byte.out:
+    debug_info:
+    - quantized.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  quantized_decomposed::mixed_linear.out:
+    debug_info:
+    - quantized.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  quantized_decomposed::mixed_mm.out:
+    debug_info:
+    - quantized.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  quantized_decomposed::quantize_per_channel.out:
+    debug_info:
+    - quantized.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  quantized_decomposed::quantize_per_tensor.Tensor_out:
+    debug_info:
+    - quantized.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  quantized_decomposed::quantize_per_tensor.out:
+    debug_info:
+    - quantized.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
