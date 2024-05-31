@@ -5,7 +5,7 @@ M55M1 machine learning application project
 2. Keil uVision5
 ## Install
 - Manual  
-    1. Download M55M1BSP form [BSP release](https://github.com/OpenNuvoton/M55M1BSP/releases)
+    1. Download M55M1BSP frorm [BSP release](https://github.com/OpenNuvoton/M55M1BSP/releases)
     2. Unzip BSP zip file
 - Folder structure
 ```
