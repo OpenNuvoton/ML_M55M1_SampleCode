@@ -330,7 +330,7 @@ int main()
 
     //Setup image senosr
     ImageSensor_Init();
-    ImageSensor_Config(eIMAGE_FMT_RGB565, frameBuffer.w, frameBuffer.h);
+    ImageSensor_Config(eIMAGE_FMT_RGB565, frameBuffer.w, frameBuffer.h, true);
 
 #if defined (__USE_DISPLAY__)
     char szDisplayText[100];

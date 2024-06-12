@@ -186,32 +186,43 @@ int ImageSensor_Init(void)
     return 0;
 }
 
-int ImageSensor_Config(E_IMAGE_FMT eImgFmt, uint32_t u32ImgWidth, uint32_t u32ImgHeight)
+int ImageSensor_Config(E_IMAGE_FMT eImgFmt, uint32_t u32ImgWidth, uint32_t u32ImgHeight, bool bKeepRatio)
 {
-    /* Set Cropping Window Vertical/Horizontal Starting Address and Cropping Window Size */
-    //CCAP_SetCroppingWindow(0, 0, s_psSensorInfo->m_u16Height, s_psSensorInfo->m_u16Width);
-	float f32MinFactor;
-	float f32WFactor;
-	float f32HFactor;
-	uint32_t u32CropWidth;
-	uint32_t u32CropHieght;
-	
-	
-	f32WFactor = (float)s_psSensorInfo->m_u16Width / u32ImgWidth;
-	f32HFactor = (float)s_psSensorInfo->m_u16Height / u32ImgHeight;
-	
-	if(f32WFactor > f32HFactor)
-		f32MinFactor = f32HFactor;
-	else
-		f32MinFactor = f32WFactor;
-	
-	u32CropWidth = (uint32_t)(f32MinFactor * u32ImgWidth);
-	u32CropHieght = (uint32_t)(f32MinFactor * u32ImgHeight);
+	uint32_t u32CropWinWidth;
+	uint32_t u32CropWinHeight;	
+	uint32_t u32CropWinX = 0;
+	uint32_t u32CropWinY = 0;
 
-    CCAP_SetCroppingWindow(	(s_psSensorInfo->m_u16Height - u32CropHieght) / 2,
-							(s_psSensorInfo->m_u16Width - u32CropWidth) / 2,
-							u32CropHieght,
-							u32CropWidth);
+	if(bKeepRatio)
+	{
+		float fCorpFactoryW;
+		float fCorpFactoryH;
+		float fCorpFactory;
+		fCorpFactoryW = s_psSensorInfo->m_u16Width / u32ImgWidth;
+		fCorpFactoryH = s_psSensorInfo->m_u16Height / u32ImgHeight;
+		
+		if(fCorpFactoryW > fCorpFactoryH)
+			fCorpFactory = fCorpFactoryH;
+		else
+			fCorpFactory = fCorpFactoryW;
+	
+		u32CropWinWidth = u32ImgWidth * fCorpFactory;
+		u32CropWinHeight = u32ImgHeight * fCorpFactory;
+
+		//centre
+		u32CropWinX = (s_psSensorInfo->m_u16Width - u32ImgWidth) / 2;
+		u32CropWinY = (s_psSensorInfo->m_u16Height - u32ImgHeight) / 2;
+
+	}
+	else
+	{
+		u32CropWinWidth = s_psSensorInfo->m_u16Width;
+		u32CropWinHeight = s_psSensorInfo->m_u16Height;		
+	}
+
+	
+    /* Set Cropping Window Vertical/Horizontal Starting Address and Cropping Window Size */
+    CCAP_SetCroppingWindow(u32CropWinY, u32CropWinX, u32CropWinHeight, u32CropWinWidth);
 
     /* Set Vsync polarity, Hsync polarity, pixel clock polarity, Sensor and CCAP format and Order */
     CCAP_Open(
@@ -221,13 +232,10 @@ int ImageSensor_Config(E_IMAGE_FMT eImgFmt, uint32_t u32ImgWidth, uint32_t u32Im
     );
 
     /* Set Packet Scaling Vertical/Horizontal Factor Register */
-    //CCAP_SetPacketScaling(u32ImgHeight, s_psSensorInfo->m_u16Height, u32ImgWidth, s_psSensorInfo->m_u16Width);
-    CCAP_SetPacketScaling(u32ImgHeight, u32CropHieght, u32ImgWidth, u32CropWidth);
+    CCAP_SetPacketScaling(u32ImgHeight, u32CropWinHeight, u32ImgWidth, u32CropWinWidth);
     printf("sensor input width %d \n", s_psSensorInfo->m_u16Width);
     printf("sensor input height %d \n", s_psSensorInfo->m_u16Height);
-    printf("crop image width %u \n", u32CropWidth);
-    printf("crop image height %u \n", u32CropHieght);
-	printf("scaled image width %u \n", u32ImgWidth);
+    printf("scaled image width %u \n", u32ImgWidth);
     printf("scaled image height %u \n", u32ImgHeight);
 
     /* Set Packet Frame Output Pixel Stride Width */
