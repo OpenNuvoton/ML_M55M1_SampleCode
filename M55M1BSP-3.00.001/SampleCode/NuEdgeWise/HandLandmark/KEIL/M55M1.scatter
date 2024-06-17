@@ -146,12 +146,12 @@ APP_IMAGE FLASH_START FLASH_SIZE
         .ANY1 (.bss.NoInit.activation_buf_sram)
     }
 
-    HYPERRAM SPIM1_START UNINIT SPIM1_SIZE
+	HYPERRAM SPIM1_START UNINIT SPIM1_SIZE
     {
         ; Place tensor arena in SRAM if we do not have a fast memory area
         .ANY (.bss.NoInit.activation_buf_sram)
     }
 
-    ARM_LIB_STACK __STACK_TOP EMPTY - STACK_SIZE {}     ; Reserve empty region for stack
+	ARM_LIB_STACK __STACK_TOP EMPTY - STACK_SIZE {}     ; Reserve empty region for stack
 }
 	

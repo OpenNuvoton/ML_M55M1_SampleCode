@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     main.cpp
  * @version  V1.00
- * @brief    VWW network sample. Demonstrate person detect.
+ * @brief    Hand landmark network sample. Demonstrate hand landmark detect.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
@@ -16,11 +16,13 @@
 
 #include "imlib.h"          /* Image processing */
 #include "framebuffer.h"
+#include "ModelFileReader.h"
+#include "ff.h"
 
 #undef PI /* PI macro conflict with CMSIS/DSP */
 #include "NuMicro.h"
 
-#define __PROFILE__
+//#define __PROFILE__
 #define __USE_DISPLAY__
 
 #include "Profiler.hpp"
@@ -32,6 +34,13 @@
 #endif
 
 #define NUM_FRAMEBUF 2  //1 or 2
+
+#define MODEL_AT_HYPERRAM_ADDR (0x82400000)
+
+#define HAND_LANDMARK_SCREEN_TENSOR_INDEX    3
+#define HAND_PRESENCE_TENSOR_INDEX           2
+#define HANDEDNESS_TENSOR_INDEX              0
+#define HAND_LANDMARK_WORLD_TENSOR_INDEX     1
 
 typedef enum
 {
@@ -57,12 +66,6 @@ namespace app
 /* Tensor arena buffer */
 static uint8_t tensorArena[ACTIVATION_BUF_SZ] ACTIVATION_BUF_ATTRIBUTE;
 
-/* Optional getter function for the model pointer and its size. */
-namespace hand_landmark
-{
-extern uint8_t *GetModelPointer();
-extern size_t GetModelLen();
-} /* namespace hand_landmark */
 } /* namespace app */
 } /* namespace arm */
 
@@ -108,11 +111,14 @@ static S_FRAMEBUF *get_inf_framebuf()
 
 /* Image processing initiate function */
 //Used by omv library
-#define GLCD_WIDTH 256
-#define GLCD_HEIGHT 256
+#define GLCD_WIDTH	320
+#define GLCD_HEIGHT	240
 
 #undef OMV_FB_SIZE
 #define OMV_FB_SIZE ((GLCD_WIDTH * GLCD_HEIGHT * 2) + 1024)
+
+#undef OMV_FB_ALLOC_SIZE
+#define OMV_FB_ALLOC_SIZE	(1*1024)
 
 __attribute__((section(".bss.sram.data"), aligned(16))) static char fb_array[OMV_FB_SIZE + OMV_FB_ALLOC_SIZE];
 __attribute__((section(".bss.sram.data"), aligned(16))) static char jpeg_array[OMV_JPEG_BUF_SIZE];
@@ -214,18 +220,92 @@ static void DrawHandLandmark(
 	}
 }
 
+static int32_t PrepareModelToHyperRAM(void)
+{
+#define MODEL_FILE "0:\\hand_landmark.tflite"
+#define EACH_READ_SIZE 512
+	
+    TCHAR sd_path[] = { '0', ':', 0 };    /* SD drive started from 0 */	
+    f_chdrive(sd_path);          /* set default path */
+
+	int32_t i32FileSize;
+	int32_t i32FileReadIndex = 0;
+	int32_t i32Read;
+	
+	if(!ModelFileReader_Initialize(MODEL_FILE))
+	{
+        printf_err("Unable open model %s\n", MODEL_FILE);		
+		return -1;
+	}
+	
+	i32FileSize = ModelFileReader_FileSize();
+    info("Model file size %i \n", i32FileSize);
+
+	while(i32FileReadIndex < i32FileSize)
+	{
+		i32Read = ModelFileReader_ReadData((BYTE *)(MODEL_AT_HYPERRAM_ADDR + i32FileReadIndex), EACH_READ_SIZE);
+		if(i32Read < 0)
+			break;
+		i32FileReadIndex += i32Read;
+	}
+	
+	if(i32FileReadIndex < i32FileSize)
+	{
+        printf_err("Read Model file size is not enough\n");		
+		return -2;
+	}
+	
+#if 0
+	/* verify */
+	i32FileReadIndex = 0;
+	ModelFileReader_Rewind();
+	BYTE au8TempBuf[EACH_READ_SIZE];
+	
+	while(i32FileReadIndex < i32FileSize)
+	{
+		i32Read = ModelFileReader_ReadData((BYTE *)au8TempBuf, EACH_READ_SIZE);
+		if(i32Read < 0)
+			break;
+		
+		if(std::memcmp(au8TempBuf, (void *)(MODEL_AT_HYPERRAM_ADDR + i32FileReadIndex), i32Read)!= 0)
+		{
+			printf_err("verify the model file content is incorrect at %i \n", i32FileReadIndex);		
+			return -3;
+		}
+		i32FileReadIndex += i32Read;
+	}
+	
+#endif	
+	ModelFileReader_Finish();
+	
+	return i32FileSize;
+}	
+
+
 int main()
 {
     /* Initialise the UART module to allow printf related functions (if using retarget) */
     BoardInit();
+
+	/* Copy model file from SD to HyperRAM*/
+	int32_t i32ModelSize;
+	
+	
+	i32ModelSize = PrepareModelToHyperRAM();
+	
+	if(i32ModelSize <= 0 )
+	{
+        printf_err("Failed to prepare model\n");
+        return 1;
+	}
 
     /* Model object creation and initialisation. */
     arm::app::HandLandmarkModel model;
 
     if (!model.Init(arm::app::tensorArena,
                     sizeof(arm::app::tensorArena),
-                    arm::app::hand_landmark::GetModelPointer(),
-                    arm::app::hand_landmark::GetModelLen()))
+                    (unsigned char *)MODEL_AT_HYPERRAM_ADDR,
+                    i32ModelSize))
     {
         printf_err("Failed to initialise model\n");
         return 1;
@@ -391,8 +471,9 @@ int main()
 
 			for (size_t i = 0; i < inputTensor->bytes; i++)
 			{
-				auto i_data_int8 = static_cast<int8_t>(((static_cast<float>(req_data[i]) / 255.0f) / inQuantParams.scale) + inQuantParams.offset);
-				signed_req_data[i] = std::min<int8_t>(INT8_MAX, std::max<int8_t>(i_data_int8, INT8_MIN));
+//				auto i_data_int8 = static_cast<int8_t>(((static_cast<float>(req_data[i]) / 255.0f) / inQuantParams.scale) + inQuantParams.offset);
+//				signed_req_data[i] = std::min<int8_t>(INT8_MAX, std::max<int8_t>(i_data_int8, INT8_MIN));
+				signed_req_data[i] = static_cast<int8_t>(req_data[i]) - 128;
 			}
 
 #if defined(__PROFILE__)
@@ -419,8 +500,8 @@ int main()
         if (infFramebuf)
         {
 			//post process
-			TfLiteTensor *modelOutput0 = model.GetOutputTensor(0);
-			TfLiteTensor *modelOutput1 = model.GetOutputTensor(1);
+			TfLiteTensor *modelOutput0 = model.GetOutputTensor(HAND_LANDMARK_SCREEN_TENSOR_INDEX);
+			TfLiteTensor *modelOutput1 = model.GetOutputTensor(HAND_PRESENCE_TENSOR_INDEX);
 
 #if defined(__PROFILE__)
 			u64StartCycle = pmu_get_systick_Count();
@@ -443,7 +524,14 @@ int main()
             /* Draw boxes. */
 			if(infFramebuf->results.size())
 			{
+#if defined(__PROFILE__)
+				u64StartCycle = pmu_get_systick_Count();
+#endif
 				DrawHandLandmark(infFramebuf->results, &infFramebuf->frameImage);
+#if defined(__PROFILE__)
+				u64EndCycle = pmu_get_systick_Count();
+				info("draw hand landmark cycles %llu \n", (u64EndCycle - u64StartCycle));
+#endif
 			}
 
             //display result image
@@ -477,16 +565,16 @@ int main()
                 //info("Running %s sec \n", szDisplayText);
 
                 sDispRect.u32TopLeftX = 0;
-                sDispRect.u32TopLeftY = frameBuffer.h + FONT_HTIGHT;
+                sDispRect.u32TopLeftY = frameBuffer.h;
                 sDispRect.u32BottonRightX = (frameBuffer.w);
-                sDispRect.u32BottonRightY = (frameBuffer.h + (2 * FONT_HTIGHT) - 1);
+                sDispRect.u32BottonRightY = (frameBuffer.h + (FONT_HTIGHT) - 1);
 
                 Display_ClearRect(C_WHITE, &sDispRect);
                 Display_PutText(
                     szDisplayText,
                     strlen(szDisplayText),
                     0,
-                    frameBuffer.h + FONT_HTIGHT,
+                    frameBuffer.h,
                     C_BLUE,
                     C_WHITE,
                     false

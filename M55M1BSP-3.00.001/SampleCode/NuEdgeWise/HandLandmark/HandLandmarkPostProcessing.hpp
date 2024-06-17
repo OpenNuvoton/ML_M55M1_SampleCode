@@ -27,21 +27,21 @@ public:
     explicit HandLandmarkPostProcessing(float threshold = 0.5f);
 
     /**
-     * @brief       Post processing part of YOLO object detection CNN.
+     * @brief       Post processing part of hand landmark NN model.
      * @param[in]   imgNetRows      Number of rows in the network input image.
      * @param[in]   imgNetCols      Number of columns in the network input image.
      * @param[in]   imgSrcRows      Number of rows in the orignal input image.
      * @param[in]   imgSrcCols      Number of columns in the oringal input image.
-     * @param[in]   modelOutput0  Output tensors after CNN invoked.
-     * @param[in]   modelOutput1  Output tensors after CNN invoked.
+     * @param[in]   screenLandmarkTensor  Screen landmark tensors after NN invoked.
+     * @param[in]   presentTensor  Present tensor after NN invoked.
      * @param[out]  resultsOut   Vector of detected results.
      **/
     void RunPostProcessing(uint32_t imgNetRows,
                            uint32_t imgNetCols,
                            uint32_t imgSrcRows,
                            uint32_t imgSrcCols,
-                           TfLiteTensor *modelOutput0,
-                           TfLiteTensor *modelOutput1,
+                           TfLiteTensor *screenLandmarkTensor,
+                           TfLiteTensor *presentTensor,
                            std::vector<KeypointResult> &resultsOut);
 
 private:

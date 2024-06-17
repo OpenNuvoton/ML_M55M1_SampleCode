@@ -177,7 +177,8 @@ int ImageSensor_Init(void)
 
     /* Init sensor */
     //s_psSensorInfo = &g_sSensorRGB565_640x480;    //rgb565 vga sensor
-    s_psSensorInfo = &g_sSensorHM1055_VGA_YUV422;
+    //s_psSensorInfo = &g_sSensorHM1055_VGA_YUV422;
+    s_psSensorInfo = &g_sSensorHM1055_QVGA_YUV422;
     //i32RetCode = s_psSensorInfo->m_pfnInitFunc(8);
 
     /* Initialize sensor and set sensor output format as YUV422 */
@@ -198,8 +199,8 @@ int ImageSensor_Config(E_IMAGE_FMT eImgFmt, uint32_t u32ImgWidth, uint32_t u32Im
 		float fCorpFactoryW;
 		float fCorpFactoryH;
 		float fCorpFactory;
-		fCorpFactoryW = s_psSensorInfo->m_u16Width / u32ImgWidth;
-		fCorpFactoryH = s_psSensorInfo->m_u16Height / u32ImgHeight;
+		fCorpFactoryW = (float)s_psSensorInfo->m_u16Width / u32ImgWidth;
+		fCorpFactoryH = (float)s_psSensorInfo->m_u16Height / u32ImgHeight;
 		
 		if(fCorpFactoryW > fCorpFactoryH)
 			fCorpFactory = fCorpFactoryH;
@@ -210,8 +211,8 @@ int ImageSensor_Config(E_IMAGE_FMT eImgFmt, uint32_t u32ImgWidth, uint32_t u32Im
 		u32CropWinHeight = u32ImgHeight * fCorpFactory;
 
 		//centre
-		u32CropWinX = (s_psSensorInfo->m_u16Width - u32ImgWidth) / 2;
-		u32CropWinY = (s_psSensorInfo->m_u16Height - u32ImgHeight) / 2;
+		u32CropWinX = (s_psSensorInfo->m_u16Width - u32CropWinWidth) / 2;
+		u32CropWinY = (s_psSensorInfo->m_u16Height - u32CropWinHeight) / 2;
 
 	}
 	else

@@ -79,26 +79,24 @@ void HandLandmarkPostProcessing::RunPostProcessing(
     uint32_t imgNetRows,
     uint32_t imgSrcCols,
     uint32_t imgSrcRows,
-    TfLiteTensor *modelOutput0,
-    TfLiteTensor *modelOutput1,
+	TfLiteTensor *screenLandmarkTensor,
+    TfLiteTensor *presentTensor,
     std::vector<KeypointResult> &resultsOut    /* init postprocessing */
 )
 {
-	//modelOutput0 for hand presence
-	//modelOutput1 for hand landmark keypoints
     float fXScale = (float)imgSrcCols / (float)imgNetCols; 
     float fYScale = (float)imgSrcRows / (float)imgNetRows;
     float fZScale = 1; //TODO: If have z-axis size
 
 	//model tensor output 1 is for hand presence
-	float fHandPresence = GetHandPresence(modelOutput1);
+	float fHandPresence = GetHandPresence(presentTensor);
 
 	resultsOut.clear();
 
 	// If detect hand presence, start get hand landmark
 	if(fHandPresence >= m_threshold)
 	{
-		GetHandLandmark(fXScale, fYScale, fZScale, modelOutput0, resultsOut);
+		GetHandLandmark(fXScale, fYScale, fZScale, screenLandmarkTensor, resultsOut);
 	}
 }
 

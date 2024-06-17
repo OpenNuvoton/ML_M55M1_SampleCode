@@ -7,6 +7,7 @@ M55M1 machine learning application project
 - Manual  
     1. Download M55M1BSP from [BSP release](https://github.com/OpenNuvoton/M55M1BSP/releases)
     2. Unzip BSP zip file
+    3. Copy patch files to BSP
 - Auto
 ```
 python install.py
