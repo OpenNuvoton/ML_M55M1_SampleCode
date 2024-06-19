@@ -17,6 +17,18 @@
 #define DESIGN_NAME "M55M1"
 #define HYPERRAM_SPIM_PORT SPIM1        //For NuMaker-M55M1 board
 
+static void SDCard_PinConfig(void)
+{
+	/* Set multi-function pin for SDH */
+    SET_SD0_nCD_PD13();
+    SET_SD0_CLK_PE6();
+    SET_SD0_CMD_PE7();
+    SET_SD0_DAT0_PE2();
+    SET_SD0_DAT1_PE3();
+    SET_SD0_DAT2_PE4();
+    SET_SD0_DAT3_PE5();
+}
+
 static void SYS_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
@@ -37,6 +49,9 @@ static void SYS_Init(void)
 
     /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
     CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
+
+    /* Enable APLL1 clock */
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ, CLK_APLL1_SELECT);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -60,6 +75,10 @@ static void SYS_Init(void)
     /* Enable NPU module clock */
     CLK_EnableModuleClock(NPU0_MODULE);
 
+    /* Enable SDH0 module clock source as HCLK and SDH0 module clock divider as 4 */
+    CLK_SetModuleClock(SDH0_MODULE, CLK_SDHSEL_SDH0SEL_APLL1_DIV2, CLK_SDHDIV_SDH0DIV(5));
+    CLK_EnableModuleClock(SDH0_MODULE);
+
     /* Select UART6 module clock source as HIRC and UART6 module clock divider as 1 */
     SetDebugUartCLK();
 
@@ -71,6 +90,7 @@ static void SYS_Init(void)
     SetDebugUartMFP();
 
     HyperRAM_PinConfig(HYPERRAM_SPIM_PORT);
+    SDCard_PinConfig();
 }
 
 /**
@@ -95,6 +115,8 @@ int BoardInit(void)
     HyperRAM_Init(HYPERRAM_SPIM_PORT);
     /* Enter direct-mapped mode to run new applications */
     SPIM_HYPER_EnterDirectMapMode(HYPERRAM_SPIM_PORT);
+	/* SDH open SD card*/
+    SDH_Open_Disk(SDH0, CardDetect_From_GPIO);
 
     info("%s: complete\n", __FUNCTION__);
 

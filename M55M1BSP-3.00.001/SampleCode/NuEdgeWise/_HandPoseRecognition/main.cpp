@@ -21,6 +21,8 @@
 
 #include "imlib.h"          /* Image processing */
 #include "framebuffer.h"
+#include "ModelFileReader.h"
+#include "ff.h"
 
 #undef PI /* PI macro conflict with CMSIS/DSP */
 #include "NuMicro.h"
@@ -39,6 +41,13 @@
 #define NUM_FRAMEBUF 2  //1 or 2
 #define ACTIVATION_HL_BUF_SZ ACTIVATION_BUF_SZ
 #define HAND_POSE_KEYPOINT 8 //INDEX_FINGER_TIP
+
+#define MODEL_AT_HYPERRAM_ADDR (0x82400000)
+
+#define HAND_LANDMARK_SCREEN_TENSOR_INDEX    3
+#define HAND_PRESENCE_TENSOR_INDEX           2
+#define HANDEDNESS_TENSOR_INDEX              0
+#define HAND_LANDMARK_WORLD_TENSOR_INDEX     1
 
 typedef enum
 {
@@ -70,12 +79,6 @@ static uint8_t tensorArenaHandLandmark[ACTIVATION_HL_BUF_SZ] ACTIVATION_BUF_ATTR
 static uint8_t tensorArenaPointHistory[ACTIVATION_PH_BUF_SZ] ACTIVATION_BUF_ATTRIBUTE;
 
 /* Optional getter function for the model pointer and its size. */
-namespace hand_landmark
-{
-extern uint8_t *GetModelPointer();
-extern size_t GetModelLen();
-} /* namespace hand_landmark */
-
 namespace point_history
 {
 extern uint8_t *GetModelPointer();
@@ -128,11 +131,14 @@ static S_FRAMEBUF *get_inf_framebuf()
 
 /* Image processing initiate function */
 //Used by omv library
-#define GLCD_WIDTH 256
-#define GLCD_HEIGHT 256
+#define GLCD_WIDTH 320
+#define GLCD_HEIGHT 240
 
 #undef OMV_FB_SIZE
 #define OMV_FB_SIZE ((GLCD_WIDTH * GLCD_HEIGHT * 2) + 1024)
+
+#undef OMV_FB_ALLOC_SIZE
+#define OMV_FB_ALLOC_SIZE	(1*1024)
 
 __attribute__((section(".bss.sram.data"), aligned(16))) static char fb_array[OMV_FB_SIZE + OMV_FB_ALLOC_SIZE];
 __attribute__((section(".bss.sram.data"), aligned(16))) static char jpeg_array[OMV_JPEG_BUF_SIZE];
@@ -234,10 +240,104 @@ static void DrawHandLandmark(
 	}
 }
 
+static int32_t PrepareModelToHyperRAM(void)
+{
+#define MODEL_FILE "0:\\hand_landmark.tflite"
+#define EACH_READ_SIZE 512
+	
+    TCHAR sd_path[] = { '0', ':', 0 };    /* SD drive started from 0 */	
+    f_chdrive(sd_path);          /* set default path */
+
+	int32_t i32FileSize;
+	int32_t i32FileReadIndex = 0;
+	int32_t i32Read;
+	
+	if(!ModelFileReader_Initialize(MODEL_FILE))
+	{
+        printf_err("Unable open model %s\n", MODEL_FILE);		
+		return -1;
+	}
+	
+	i32FileSize = ModelFileReader_FileSize();
+    info("Model file size %i \n", i32FileSize);
+
+	while(i32FileReadIndex < i32FileSize)
+	{
+		i32Read = ModelFileReader_ReadData((BYTE *)(MODEL_AT_HYPERRAM_ADDR + i32FileReadIndex), EACH_READ_SIZE);
+		if(i32Read < 0)
+			break;
+		i32FileReadIndex += i32Read;
+	}
+	
+	if(i32FileReadIndex < i32FileSize)
+	{
+        printf_err("Read Model file size is not enough\n");		
+		return -2;
+	}
+	
+#if 0
+	/* verify */
+	i32FileReadIndex = 0;
+	ModelFileReader_Rewind();
+	BYTE au8TempBuf[EACH_READ_SIZE];
+	
+	while(i32FileReadIndex < i32FileSize)
+	{
+		i32Read = ModelFileReader_ReadData((BYTE *)au8TempBuf, EACH_READ_SIZE);
+		if(i32Read < 0)
+			break;
+		
+		if(std::memcmp(au8TempBuf, (void *)(MODEL_AT_HYPERRAM_ADDR + i32FileReadIndex), i32Read)!= 0)
+		{
+			printf_err("verify the model file content is incorrect at %i \n", i32FileReadIndex);		
+			return -3;
+		}
+		i32FileReadIndex += i32Read;
+	}
+	
+#endif	
+	ModelFileReader_Finish();
+	
+	return i32FileSize;
+}	
+
+static int32_t s_i32PrevLabelIndex = -1;
+
+bool JudgePoseDetect(arm::app::ClassificationResult &result)
+{
+	
+	if((s_i32PrevLabelIndex == -1) || (s_i32PrevLabelIndex == 0)) //if previous pose is unknown or stop
+	{
+		s_i32PrevLabelIndex = (int32_t)result.m_labelIdx;
+		return true;
+	}
+
+	if(s_i32PrevLabelIndex != result.m_labelIdx)
+	{
+		s_i32PrevLabelIndex = -1;
+		return false;
+	}
+	
+	s_i32PrevLabelIndex = (int32_t)result.m_labelIdx;
+	return true;
+}
+
 int main()
 {
     /* Initialise the UART module to allow printf related functions (if using retarget) */
     BoardInit();
+
+	/* Copy model file from SD to HyperRAM*/
+	int32_t i32ModelSize;
+	
+	
+	i32ModelSize = PrepareModelToHyperRAM();
+	
+	if(i32ModelSize <= 0 )
+	{
+        printf_err("Failed to prepare model\n");
+        return 1;
+	}
 
     /* Model object creation and initialisation. */
     arm::app::HandLandmarkModel handLandmarkModel;
@@ -245,8 +345,8 @@ int main()
 
     if (!handLandmarkModel.Init(arm::app::tensorArenaHandLandmark,
                     sizeof(arm::app::tensorArenaHandLandmark),
-                    arm::app::hand_landmark::GetModelPointer(),
-                    arm::app::hand_landmark::GetModelLen()))
+                    (unsigned char *)MODEL_AT_HYPERRAM_ADDR,
+                    i32ModelSize))
     {
         printf_err("Failed to initialise model\n");
         return 1;
@@ -386,12 +486,13 @@ int main()
     ImageSensor_Config(eIMAGE_FMT_RGB565, frameBuffer.w, frameBuffer.h, true);
 
 #if defined (__USE_DISPLAY__)
-    char szDisplayText[100];
-    S_DISP_RECT sDispRect;
+	S_DISP_RECT sDispRect;
 
     Display_Init();
     Display_ClearLCD(C_WHITE);
 #endif
+    char szPoseText[100];
+    char szFrameRateText[50];
 	bool bCollectPointDone;
 
     while (1)
@@ -444,8 +545,9 @@ int main()
 
 			for (size_t i = 0; i < inputTensorHandLandmark->bytes; i++)
 			{
-				auto i_data_int8 = static_cast<int8_t>(((static_cast<float>(req_data[i]) / 255.0f) / inQuantParams.scale) + inQuantParams.offset);
-				signed_req_data[i] = std::min<int8_t>(INT8_MAX, std::max<int8_t>(i_data_int8, INT8_MIN));
+//				auto i_data_int8 = static_cast<int8_t>(((static_cast<float>(req_data[i]) / 255.0f) / inQuantParams.scale) + inQuantParams.offset);
+//				signed_req_data[i] = std::min<int8_t>(INT8_MAX, std::max<int8_t>(i_data_int8, INT8_MIN));
+				signed_req_data[i] = static_cast<int8_t>(req_data[i]) - 128;
 			}
 
 #if defined(__PROFILE__)
@@ -472,8 +574,8 @@ int main()
         if (infFramebuf)
         {
 			//post process
-			TfLiteTensor *modelOutput0 = handLandmarkModel.GetOutputTensor(0);
-			TfLiteTensor *modelOutput1 = handLandmarkModel.GetOutputTensor(1);
+			TfLiteTensor *modelOutput0 = handLandmarkModel.GetOutputTensor(HAND_LANDMARK_SCREEN_TENSOR_INDEX);
+			TfLiteTensor *modelOutput1 = handLandmarkModel.GetOutputTensor(HAND_PRESENCE_TENSOR_INDEX);
 
 #if defined(__PROFILE__)
 			u64StartCycle = pmu_get_systick_Count();
@@ -508,6 +610,7 @@ int main()
 			{
 				bCollectPointDone = false;
 				preProcessPointHistory.ResetPointHistory();
+				s_i32PrevLabelIndex = -1;
 			}
 
 			
@@ -541,60 +644,50 @@ int main()
 #endif
 
             u64PerfFrames ++;
+
+			bool bPoseDetect = false;
+
+			if(bCollectPointDone)
+			{
+				bPoseDetect = JudgePoseDetect(results[0]);
+				if(bPoseDetect == false)
+				{
+					preProcessPointHistory.ResetPointHistory();
+				}
+			}
+			
 			if ((uint64_t) pmu_get_systick_Count() > u64PerfCycle)
             {
-				if(bCollectPointDone)
-				{
-					info("Pose: %s(%f), frame rate: %llu \n", results[0].m_label.c_str(), results[0].m_normalisedVal, u64PerfFrames / EACH_PERF_SEC);
-				}
-				else
-				{
-					info("Frame rate: %llu\n", u64PerfFrames / EACH_PERF_SEC);
-				}
 
-#if defined (__USE_DISPLAY__)
-				if(bCollectPointDone)
-					sprintf(szDisplayText, "Pose: %s(%f), frame rate: %llu", results[0].m_label.c_str(), results[0].m_normalisedVal, u64PerfFrames / EACH_PERF_SEC);
-				else
-					sprintf(szDisplayText, "Frame rate: %llu", u64PerfFrames / EACH_PERF_SEC);
-                //sprintf(szDisplayText,"Time %llu",(uint64_t) pmu_get_systick_Count() / (uint64_t)SystemCoreClock);
-                //info("Running %s sec \n", szDisplayText);
-#endif
+				sprintf(szFrameRateText, "frame rate: %llu", u64PerfFrames / EACH_PERF_SEC);
+				info("%s\n", szFrameRateText);
 
                 u64PerfCycle = (uint64_t)pmu_get_systick_Count() + (uint64_t)(SystemCoreClock * EACH_PERF_SEC);
                 u64PerfFrames = 0;
 			}
+
+			if(bPoseDetect)
+			{
+				sprintf(szPoseText, "Pose: %s(%f)", results[0].m_label.c_str(), results[0].m_normalisedVal);
+				info("%s\n", szPoseText);
+			}
 			else
 			{
-				if(bCollectPointDone)
-				{
-					info("Pose: %s(%f)\n", results[0].m_label.c_str(), results[0].m_normalisedVal);
-					info("Pose 1: %s(%f)\n", results[1].m_label.c_str(), results[1].m_normalisedVal);
-					info("Pose 2: %s(%f)\n", results[2].m_label.c_str(), results[2].m_normalisedVal);
-				}
-
-#if defined (__USE_DISPLAY__)
-				if(bCollectPointDone)
-					sprintf(szDisplayText, "Pose: %s(%f)", results[0].m_label.c_str(), results[0].m_normalisedVal);
-				else
-					sprintf(szDisplayText, " ");
-                //sprintf(szDisplayText,"Time %llu",(uint64_t) pmu_get_systick_Count() / (uint64_t)SystemCoreClock);
-                //info("Running %s sec \n", szDisplayText);
-#endif
-
+				sprintf(szPoseText, " ");
 			}
-
+				
+			
 #if defined (__USE_DISPLAY__)
 
 			sDispRect.u32TopLeftX = 0;
 			sDispRect.u32TopLeftY = frameBuffer.h;
 			sDispRect.u32BottonRightX = Disaplay_GetLCDWidth();
-			sDispRect.u32BottonRightY = (frameBuffer.h + (FONT_HTIGHT) - 1);
+			sDispRect.u32BottonRightY = (frameBuffer.h + (FONT_HTIGHT * 2) - 1);
 			
 			Display_ClearRect(C_WHITE, &sDispRect);
 			Display_PutText(
-				szDisplayText,
-				strlen(szDisplayText),
+				szPoseText,
+				strlen(szPoseText),
 				0,
 				frameBuffer.h,
 				C_BLUE,
@@ -602,6 +695,17 @@ int main()
 				false
 			);
 
+			Display_PutText(
+				szFrameRateText,
+				strlen(szFrameRateText),
+				0,
+				frameBuffer.h + FONT_HTIGHT,
+				C_BLUE,
+				C_WHITE,
+				false
+			);
+
+				
 #endif
 
             infFramebuf->eState = eFRAMEBUF_EMPTY;
