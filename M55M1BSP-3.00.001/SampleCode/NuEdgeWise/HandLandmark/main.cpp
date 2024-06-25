@@ -371,7 +371,7 @@ int main()
     const int inputImgRows = inputShape->data[arm::app::HandLandmarkModel::ms_inputRowsIdx];
     const uint32_t nChannels = inputShape->data[arm::app::HandLandmarkModel::ms_inputChannelsIdx];
 
-    /* VWW model preprocessing is image conversion from uint8 to [0,1] float values,
+    /* Hand landmark model preprocessing is image conversion from uint8 to [0,1] float values,
      * then quantize them with input quantization info. */
     arm::app::QuantParams inQuantParams = arm::app::GetTensorQuantParams(inputTensor);
 

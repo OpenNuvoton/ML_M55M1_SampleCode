@@ -11,5 +11,5 @@ python Model_Labels_Packer.py -m model_vela.tflite -l label.txt
 2. Burn model binary file into flash bank1 by ICP tool
 ![ICP setting](https://github.com/OpenNuvoton/ML_M55M1_SampleCode/blob/master/M55M1BSP-3.00.001/SampleCode/NuEdgeWise/NN_ModelEasyDeploy/Picture/ICP_setting_1.PNG)
 ![ICP_setting](https://github.com/OpenNuvoton/ML_M55M1_SampleCode/blob/master/M55M1BSP-3.00.001/SampleCode/NuEdgeWise/NN_ModelEasyDeploy/Picture/ICP_setting_2.PNG)
-[^1]: Model must compile by vela
+[^1]: Model must be compilied by vela
 
