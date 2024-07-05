@@ -1,16 +1,7 @@
 ./objects/spim_hyper.o: ..\..\..\..\Library\StdDriver\src\spim_hyper.c \
-  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h \
-  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h \
   ..\..\..\..\Library\Device\Nuvoton\M55M1\Include\NuMicro.h \
   ..\..\..\..\Library\Device\Nuvoton\M55M1\Include\M55M1.h \
   ..\..\..\..\Library\CMSIS\Core\Include\core_cm55.h \
-  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdint.h \
-  ..\..\..\..\Library\CMSIS\Core\Include\cmsis_version.h \
-  ..\..\..\..\Library\CMSIS\Core\Include\cmsis_compiler.h \
-  ..\..\..\..\Library\CMSIS\Core\Include\cmsis_armclang.h \
-  ..\..\..\..\Library\CMSIS\Core\Include\mpu_armv8.h \
-  ..\..\..\..\Library\CMSIS\Core\Include\pmu_armv8.h \
-  ..\..\..\..\Library\CMSIS\Core\Include\cachel1_armv7.h \
   ..\..\..\..\Library\Device\Nuvoton\M55M1\Include\system_M55M1.h \
   ..\..\..\..\Library\StdDriver\inc\partition_M55M1_template.h \
   ..\mpu_config_M55M1.h \
@@ -90,9 +81,8 @@
   ..\..\..\..\Library\StdDriver\inc\gdma\dma350_lib.h \
   ..\..\..\..\Library\StdDriver\inc\gdma\dma350_ch_drv.h \
   ..\..\..\..\Library\StdDriver\inc\gdma\dma350_regdef.h \
-  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdbool.h \
+  ..\..\..\..\Library\CMSIS\Core\Include\cmsis_compiler.h \
   ..\..\..\..\Library\StdDriver\inc\gdma\dma350_drv.h \
-  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stddef.h \
   ..\..\..\..\Library\StdDriver\inc\gpio.h \
   ..\..\..\..\Library\StdDriver\inc\hsotg.h \
   ..\..\..\..\Library\StdDriver\inc\hsusbd.h \

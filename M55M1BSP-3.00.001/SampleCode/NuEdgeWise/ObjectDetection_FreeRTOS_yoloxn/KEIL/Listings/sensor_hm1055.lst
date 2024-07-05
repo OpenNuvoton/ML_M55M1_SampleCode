@@ -7,6 +7,7 @@
 	.eabi_attribute	8, 0	@ Tag_ARM_ISA_use
 	.eabi_attribute	9, 3	@ Tag_THUMB_ISA_use
 	.fpu	fpv5-d16
+	.arch_extension	mve.fp
 	.eabi_attribute	36, 1	@ Tag_FP_HP_extension
 	.eabi_attribute	48, 2	@ Tag_MVE_arch
 	.eabi_attribute	46, 1	@ Tag_DSP_extension
@@ -23,13 +24,13 @@
 	.eabi_attribute	26, 1	@ Tag_ABI_enum_size
 	.eabi_attribute	14, 0	@ Tag_ABI_PCS_R9_use
 	.file	"Sensor_HM1055.c"
-	.file	1 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../Device/ImageSensor/Sensor/../Sensor.h"
-	.file	2 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include" "stdint.h"
-	.file	3 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../Device/ImageSensor/Sensor/Sensor_HM1055.c"
-	.file	4 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../Device/ImageSensor/Sensor/SWI2C.h"
-	.file	5 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include/sys_reg.h"
-	.file	6 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include/gpio_reg.h"
-	.file	7 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include/ccap_reg.h"
+	.file	1 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../Device/ImageSensor/Sensor\\../Sensor.h"
+	.file	2 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include" "stdint.h"
+	.file	3 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../Device/ImageSensor/Sensor/Sensor_HM1055.c"
+	.file	4 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../Device/ImageSensor/Sensor\\SWI2C.h"
+	.file	5 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include\\sys_reg.h"
+	.file	6 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include\\gpio_reg.h"
+	.file	7 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include\\ccap_reg.h"
 	.section	.text.InitHM1055_VGA_YUV422,"ax",%progbits
 	.hidden	InitHM1055_VGA_YUV422           @ -- Begin function InitHM1055_VGA_YUV422
 	.globl	InitHM1055_VGA_YUV422
@@ -44,7 +45,6 @@ InitHM1055_VGA_YUV422:
 	.cfi_sections .debug_frame
 	.cfi_startproc
 @ %bb.0:
-	@DEBUG_VALUE: InitHM1055_VGA_YUV422:u32Param <- undef
 	.save	{r4, r5, r6, lr}
 	push	{r4, r5, r6, lr}
 	.cfi_def_cfa_offset 16
@@ -224,12 +224,13 @@ InitHM1055_VGA_YUV422:
 	@DEBUG_VALUE: InitHM1055_VGA_YUV422:u8DeviceID <- 72
 	.loc	3 249 1 is_stmt 1               @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:249:1
 	mov	r0, r4
+	.loc	3 249 1 epilogue_begin is_stmt 0 @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:249:1
 	add	sp, #8
 	pop	{r4, r5, r6, pc}
 .Ltmp22:
 	.p2align	2
 @ %bb.5:
-	.loc	3 0 1 is_stmt 0                 @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:0:1
+	.loc	3 0 1                           @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:0:1
 .LCPI0_0:
 .Lstr:
 	.asciz	"HM1055 init failed!!\000\000\000"
@@ -246,282 +247,347 @@ InitHM1055_VGA_YUV422:
 	.thumb_func
 Delay:
 .Lfunc_begin1:
-	.loc	3 184 0 is_stmt 1               @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:184:0
 	.fnstart
 	.cfi_startproc
 @ %bb.0:
 	@DEBUG_VALUE: Delay:nCount <- $r0
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
+	.loc	3 187 5 prologue_end is_stmt 1  @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:187:5
+	cmp	r0, #0
+.Ltmp23:
+	.loc	3 189 1                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:189:1
+	it	eq
+	bxeq	lr
+.Ltmp24:
+.LBB1_1:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
+	@DEBUG_VALUE: Delay:nCount <- $r0
 	.pad	#4
 	sub	sp, #4
 	.cfi_def_cfa_offset 4
-.Ltmp23:
-	.loc	3 187 5 prologue_end            @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:187:5
-	cmp	r0, #0
-	beq	.LBB1_17
-.Ltmp24:
-@ %bb.1:
-	@DEBUG_VALUE: Delay:nCount <- $r0
-	ands	r3, r0, #3
-	sub.w	r2, r0, #1
-	beq	.LBB1_15
 .Ltmp25:
+	.loc	3 187 5                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:187:5
+	ands	r2, r0, #3
+	mov	r1, r0
+	beq	.LBB1_16
+.Ltmp26:
 @ %bb.2:
 	@DEBUG_VALUE: Delay:nCount <- $r0
 	.loc	3 0 5 is_stmt 0                 @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:0:5
 	movs	r1, #0
-.Ltmp26:
+.Ltmp27:
 	.loc	3 188 16 is_stmt 1              @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:16
 	str	r1, [sp]
-.Ltmp27:
+.Ltmp28:
+	@DEBUG_VALUE: Delay:i <- 0
 	.loc	3 188 21 is_stmt 0              @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r1, [sp]
-.Ltmp28:
+.Ltmp29:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r1, #99
-.Ltmp29:
+.Ltmp30:
 	@DEBUG_VALUE: Delay:nCount <- undef
 	bhi	.LBB1_7
-.Ltmp30:
+.Ltmp31:
 	.p2align	2
 .LBB1_3:                                @ =>This Inner Loop Header: Depth=1
 	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
 	ldr	r1, [sp]
 	adds	r1, #1
-	str	r1, [sp]
-	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
-	ldr	r1, [sp]
-.Ltmp31:
-	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
-	cmp	r1, #99
-	bhi	.LBB1_7
-@ %bb.4:                                @   in Loop: Header=BB1_3 Depth=1
 .Ltmp32:
-	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
-	ldr	r1, [sp]
-	adds	r1, #1
+	@DEBUG_VALUE: Delay:i <- $r1
 	str	r1, [sp]
-	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
-	ldr	r1, [sp]
 .Ltmp33:
-	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
-	cmp	r1, #99
-	bhi	.LBB1_7
-@ %bb.5:                                @   in Loop: Header=BB1_3 Depth=1
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
+	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
+	ldr	r1, [sp]
 .Ltmp34:
-	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
-	ldr	r1, [sp]
-	adds	r1, #1
-	str	r1, [sp]
-	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
-	ldr	r1, [sp]
-.Ltmp35:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r1, #99
 	bhi	.LBB1_7
-@ %bb.6:                                @   in Loop: Header=BB1_3 Depth=1
-.Ltmp36:
+.Ltmp35:
+@ %bb.4:                                @   in Loop: Header=BB1_3 Depth=1
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
 	ldr	r1, [sp]
 	adds	r1, #1
+.Ltmp36:
+	@DEBUG_VALUE: Delay:i <- $r1
 	str	r1, [sp]
+.Ltmp37:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r1, [sp]
-.Ltmp37:
-	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
-	cmp	r1, #100
-	blo	.LBB1_3
 .Ltmp38:
-.LBB1_7:
-	@DEBUG_VALUE: Delay:nCount <- $r2
-	.loc	3 187 5 is_stmt 1               @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:187:5
-	cmp	r3, #1
-	mov	r1, r2
-	beq	.LBB1_16
+	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
+	cmp	r1, #99
+	bhi	.LBB1_7
 .Ltmp39:
-@ %bb.8:
-	@DEBUG_VALUE: Delay:nCount <- $r2
-	@DEBUG_VALUE: Delay:nCount <- undef
-	.loc	3 0 5 is_stmt 0                 @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:0:5
-	movs	r1, #0
+@ %bb.5:                                @   in Loop: Header=BB1_3 Depth=1
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
+	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
+	ldr	r1, [sp]
+	adds	r1, #1
 .Ltmp40:
-	.loc	3 188 16 is_stmt 1              @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:16
+	@DEBUG_VALUE: Delay:i <- $r1
 	str	r1, [sp]
 .Ltmp41:
-	.loc	3 188 21 is_stmt 0              @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
+	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r1, [sp]
 .Ltmp42:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r1, #99
-	bhi	.LBB1_13
+	bhi	.LBB1_7
 .Ltmp43:
-	.p2align	2
-.LBB1_9:                                @ =>This Inner Loop Header: Depth=1
+@ %bb.6:                                @   in Loop: Header=BB1_3 Depth=1
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
 	ldr	r1, [sp]
 	adds	r1, #1
-	str	r1, [sp]
-	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
-	ldr	r1, [sp]
 .Ltmp44:
-	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
-	cmp	r1, #99
-	bhi	.LBB1_13
-@ %bb.10:                               @   in Loop: Header=BB1_9 Depth=1
-.Ltmp45:
-	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
-	ldr	r1, [sp]
-	adds	r1, #1
+	@DEBUG_VALUE: Delay:i <- $r1
 	str	r1, [sp]
+.Ltmp45:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r1, [sp]
 .Ltmp46:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
-	cmp	r1, #99
-	bhi	.LBB1_13
-@ %bb.11:                               @   in Loop: Header=BB1_9 Depth=1
-.Ltmp47:
-	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
-	ldr	r1, [sp]
-	adds	r1, #1
-	str	r1, [sp]
-	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
-	ldr	r1, [sp]
-.Ltmp48:
-	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
-	cmp	r1, #99
-	bhi	.LBB1_13
-@ %bb.12:                               @   in Loop: Header=BB1_9 Depth=1
-.Ltmp49:
-	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
-	ldr	r1, [sp]
-	adds	r1, #1
-	str	r1, [sp]
-	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
-	ldr	r1, [sp]
-.Ltmp50:
-	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r1, #100
-	blo	.LBB1_9
-.Ltmp51:
-.LBB1_13:
+	blo	.LBB1_3
+.Ltmp47:
+.LBB1_7:
 	@DEBUG_VALUE: Delay:nCount <- undef
 	.loc	3 187 5 is_stmt 1               @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:187:5
-	cmp	r3, #2
-	bne	.LBB1_18
-.Ltmp52:
-@ %bb.14:
+	cmp	r2, #1
+	bne	.LBB1_9
+.Ltmp48:
+@ %bb.8:
 	.loc	3 0 5 is_stmt 0                 @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:0:5
-	subs	r1, r0, #2
-.Ltmp53:
+	subs	r1, r0, #1
+.Ltmp49:
 	@DEBUG_VALUE: Delay:nCount <- $r1
 	.loc	3 187 5                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:187:5
-	cmp	r2, #3
+	cmp	r0, #4
 	blo	.LBB1_17
 	b	.LBB1_24
-.Ltmp54:
-.LBB1_15:
-	@DEBUG_VALUE: Delay:nCount <- $r0
+.Ltmp50:
+.LBB1_9:
+	@DEBUG_VALUE: Delay:nCount <- undef
 	.loc	3 0 5                           @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:0:5
-	mov	r1, r0
+	movs	r1, #0
+.Ltmp51:
+	.loc	3 188 16 is_stmt 1              @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:16
+	str	r1, [sp]
+.Ltmp52:
+	@DEBUG_VALUE: Delay:i <- 0
+	.loc	3 188 21 is_stmt 0              @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
+	ldr	r1, [sp]
+.Ltmp53:
+	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
+	cmp	r1, #99
+	bhi	.LBB1_14
+.Ltmp54:
+	.p2align	2
+.LBB1_10:                               @ =>This Inner Loop Header: Depth=1
+	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
+	ldr	r1, [sp]
+	adds	r1, #1
 .Ltmp55:
+	@DEBUG_VALUE: Delay:i <- $r1
+	str	r1, [sp]
+.Ltmp56:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
+	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
+	ldr	r1, [sp]
+.Ltmp57:
+	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
+	cmp	r1, #99
+	bhi	.LBB1_14
+.Ltmp58:
+@ %bb.11:                               @   in Loop: Header=BB1_10 Depth=1
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
+	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
+	ldr	r1, [sp]
+	adds	r1, #1
+.Ltmp59:
+	@DEBUG_VALUE: Delay:i <- $r1
+	str	r1, [sp]
+.Ltmp60:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
+	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
+	ldr	r1, [sp]
+.Ltmp61:
+	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
+	cmp	r1, #99
+	bhi	.LBB1_14
+.Ltmp62:
+@ %bb.12:                               @   in Loop: Header=BB1_10 Depth=1
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
+	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
+	ldr	r1, [sp]
+	adds	r1, #1
+.Ltmp63:
+	@DEBUG_VALUE: Delay:i <- $r1
+	str	r1, [sp]
+.Ltmp64:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
+	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
+	ldr	r1, [sp]
+.Ltmp65:
+	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
+	cmp	r1, #99
+	bhi	.LBB1_14
+.Ltmp66:
+@ %bb.13:                               @   in Loop: Header=BB1_10 Depth=1
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
+	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
+	ldr	r1, [sp]
+	adds	r1, #1
+.Ltmp67:
+	@DEBUG_VALUE: Delay:i <- $r1
+	str	r1, [sp]
+.Ltmp68:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
+	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
+	ldr	r1, [sp]
+.Ltmp69:
+	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
+	cmp	r1, #100
+	blo	.LBB1_10
+.Ltmp70:
+.LBB1_14:
+	@DEBUG_VALUE: Delay:nCount <- undef
+	.loc	3 187 5 is_stmt 1               @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:187:5
+	cmp	r2, #2
+	bne	.LBB1_18
+.Ltmp71:
+@ %bb.15:
+	.loc	3 0 5 is_stmt 0                 @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:0:5
+	subs	r1, r0, #2
+.Ltmp72:
+	@DEBUG_VALUE: Delay:nCount <- $r1
 .LBB1_16:
 	.loc	3 187 5                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:187:5
-	cmp	r2, #3
+	cmp	r0, #4
 	bhs	.LBB1_24
-.Ltmp56:
+.Ltmp73:
 .LBB1_17:
-	.loc	3 189 1 is_stmt 1               @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:189:1
+	.loc	3 0 5                           @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:0:5
 	add	sp, #4
+	.loc	3 189 1 is_stmt 1               @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:189:1
 	bx	lr
 .LBB1_18:
-.Ltmp57:
+.Ltmp74:
 	@DEBUG_VALUE: Delay:nCount <- undef
 	.loc	3 0 1 is_stmt 0                 @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:0:1
 	movs	r1, #0
-.Ltmp58:
+.Ltmp75:
 	.loc	3 188 16 is_stmt 1              @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:16
 	str	r1, [sp]
-.Ltmp59:
+.Ltmp76:
+	@DEBUG_VALUE: Delay:i <- 0
 	.loc	3 188 21 is_stmt 0              @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r1, [sp]
-.Ltmp60:
+.Ltmp77:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r1, #99
 	bhi	.LBB1_23
-.Ltmp61:
+.Ltmp78:
 	.p2align	2
 .LBB1_19:                               @ =>This Inner Loop Header: Depth=1
 	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
 	ldr	r1, [sp]
 	adds	r1, #1
+.Ltmp79:
+	@DEBUG_VALUE: Delay:i <- $r1
 	str	r1, [sp]
+.Ltmp80:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r1, [sp]
-.Ltmp62:
+.Ltmp81:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r1, #99
 	bhi	.LBB1_23
+.Ltmp82:
 @ %bb.20:                               @   in Loop: Header=BB1_19 Depth=1
-.Ltmp63:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
 	ldr	r1, [sp]
 	adds	r1, #1
+.Ltmp83:
+	@DEBUG_VALUE: Delay:i <- $r1
 	str	r1, [sp]
+.Ltmp84:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r1, [sp]
-.Ltmp64:
+.Ltmp85:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r1, #99
 	bhi	.LBB1_23
+.Ltmp86:
 @ %bb.21:                               @   in Loop: Header=BB1_19 Depth=1
-.Ltmp65:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
 	ldr	r1, [sp]
 	adds	r1, #1
+.Ltmp87:
+	@DEBUG_VALUE: Delay:i <- $r1
 	str	r1, [sp]
+.Ltmp88:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r1, [sp]
-.Ltmp66:
+.Ltmp89:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r1, #99
 	bhi	.LBB1_23
+.Ltmp90:
 @ %bb.22:                               @   in Loop: Header=BB1_19 Depth=1
-.Ltmp67:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
 	ldr	r1, [sp]
 	adds	r1, #1
+.Ltmp91:
+	@DEBUG_VALUE: Delay:i <- $r1
 	str	r1, [sp]
+.Ltmp92:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r1, [sp]
-.Ltmp68:
+.Ltmp93:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r1, #100
 	blo	.LBB1_19
-.Ltmp69:
+.Ltmp94:
 .LBB1_23:
 	.loc	3 187 31 is_stmt 1              @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:187:31
 	subs	r1, r0, #3
-.Ltmp70:
+.Ltmp95:
 	@DEBUG_VALUE: Delay:nCount <- $r1
 	.loc	3 187 5 is_stmt 0               @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:187:5
-	cmp	r2, #3
+	cmp	r0, #4
 	blo	.LBB1_17
-.Ltmp71:
+.Ltmp96:
 .LBB1_24:
 	.loc	3 0 5                           @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:0:5
 	movs	r0, #0
 	b	.LBB1_26
 	.p2align	2
 .LBB1_25:                               @   in Loop: Header=BB1_26 Depth=1
-.Ltmp72:
+.Ltmp97:
 	@DEBUG_VALUE: Delay:nCount <- [DW_OP_constu 3, DW_OP_minus, DW_OP_stack_value] $r1
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 187 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:187:31
 	subs	r1, #4
-.Ltmp73:
+.Ltmp98:
 	@DEBUG_VALUE: Delay:nCount <- $r1
 	.loc	3 187 5                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:187:5
 	beq	.LBB1_17
-.Ltmp74:
+.Ltmp99:
 .LBB1_26:                               @ =>This Loop Header: Depth=1
                                         @     Child Loop BB1_27 Depth 2
                                         @     Child Loop BB1_32 Depth 2
@@ -530,14 +596,15 @@ Delay:
 	@DEBUG_VALUE: Delay:nCount <- $r1
 	.loc	3 188 16 is_stmt 1              @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:16
 	str	r0, [sp]
-.Ltmp75:
+.Ltmp100:
+	@DEBUG_VALUE: Delay:i <- 0
 	.loc	3 188 21 is_stmt 0              @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r2, [sp]
-.Ltmp76:
+.Ltmp101:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r2, #99
 	bhi	.LBB1_31
-.Ltmp77:
+.Ltmp102:
 	.p2align	2
 .LBB1_27:                               @   Parent Loop BB1_26 Depth=1
                                         @ =>  This Inner Loop Header: Depth=2
@@ -545,67 +612,87 @@ Delay:
 	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
 	ldr	r2, [sp]
 	adds	r2, #1
+.Ltmp103:
+	@DEBUG_VALUE: Delay:i <- $r2
 	str	r2, [sp]
+.Ltmp104:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r2, [sp]
-.Ltmp78:
+.Ltmp105:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r2, #99
 	bhi	.LBB1_31
-.Ltmp79:
+.Ltmp106:
 @ %bb.28:                               @   in Loop: Header=BB1_27 Depth=2
 	@DEBUG_VALUE: Delay:nCount <- $r1
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
 	ldr	r2, [sp]
 	adds	r2, #1
+.Ltmp107:
+	@DEBUG_VALUE: Delay:i <- $r2
 	str	r2, [sp]
+.Ltmp108:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r2, [sp]
-.Ltmp80:
+.Ltmp109:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r2, #99
 	bhi	.LBB1_31
-.Ltmp81:
+.Ltmp110:
 @ %bb.29:                               @   in Loop: Header=BB1_27 Depth=2
 	@DEBUG_VALUE: Delay:nCount <- $r1
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
 	ldr	r2, [sp]
 	adds	r2, #1
+.Ltmp111:
+	@DEBUG_VALUE: Delay:i <- $r2
 	str	r2, [sp]
+.Ltmp112:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r2, [sp]
-.Ltmp82:
+.Ltmp113:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r2, #99
 	bhi	.LBB1_31
-.Ltmp83:
+.Ltmp114:
 @ %bb.30:                               @   in Loop: Header=BB1_27 Depth=2
 	@DEBUG_VALUE: Delay:nCount <- $r1
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
 	ldr	r2, [sp]
 	adds	r2, #1
+.Ltmp115:
+	@DEBUG_VALUE: Delay:i <- $r2
 	str	r2, [sp]
+.Ltmp116:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r2, [sp]
-.Ltmp84:
+.Ltmp117:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r2, #100
 	blo	.LBB1_27
-.Ltmp85:
+.Ltmp118:
 	.p2align	2
 .LBB1_31:                               @   in Loop: Header=BB1_26 Depth=1
 	@DEBUG_VALUE: Delay:nCount <- $r1
 	@DEBUG_VALUE: Delay:nCount <- [DW_OP_constu 1, DW_OP_minus, DW_OP_stack_value] $r1
 	.loc	3 188 16                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:16
 	str	r0, [sp]
-.Ltmp86:
+.Ltmp119:
+	@DEBUG_VALUE: Delay:i <- 0
 	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r2, [sp]
-.Ltmp87:
+.Ltmp120:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r2, #99
 	bhi	.LBB1_36
-.Ltmp88:
+.Ltmp121:
 	.p2align	2
 .LBB1_32:                               @   Parent Loop BB1_26 Depth=1
                                         @ =>  This Inner Loop Header: Depth=2
@@ -613,67 +700,87 @@ Delay:
 	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
 	ldr	r2, [sp]
 	adds	r2, #1
+.Ltmp122:
+	@DEBUG_VALUE: Delay:i <- $r2
 	str	r2, [sp]
+.Ltmp123:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r2, [sp]
-.Ltmp89:
+.Ltmp124:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r2, #99
 	bhi	.LBB1_36
-.Ltmp90:
+.Ltmp125:
 @ %bb.33:                               @   in Loop: Header=BB1_32 Depth=2
 	@DEBUG_VALUE: Delay:nCount <- [DW_OP_constu 1, DW_OP_minus, DW_OP_stack_value] $r1
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
 	ldr	r2, [sp]
 	adds	r2, #1
+.Ltmp126:
+	@DEBUG_VALUE: Delay:i <- $r2
 	str	r2, [sp]
+.Ltmp127:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r2, [sp]
-.Ltmp91:
+.Ltmp128:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r2, #99
 	bhi	.LBB1_36
-.Ltmp92:
+.Ltmp129:
 @ %bb.34:                               @   in Loop: Header=BB1_32 Depth=2
 	@DEBUG_VALUE: Delay:nCount <- [DW_OP_constu 1, DW_OP_minus, DW_OP_stack_value] $r1
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
 	ldr	r2, [sp]
 	adds	r2, #1
+.Ltmp130:
+	@DEBUG_VALUE: Delay:i <- $r2
 	str	r2, [sp]
+.Ltmp131:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r2, [sp]
-.Ltmp93:
+.Ltmp132:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r2, #99
 	bhi	.LBB1_36
-.Ltmp94:
+.Ltmp133:
 @ %bb.35:                               @   in Loop: Header=BB1_32 Depth=2
 	@DEBUG_VALUE: Delay:nCount <- [DW_OP_constu 1, DW_OP_minus, DW_OP_stack_value] $r1
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
 	ldr	r2, [sp]
 	adds	r2, #1
+.Ltmp134:
+	@DEBUG_VALUE: Delay:i <- $r2
 	str	r2, [sp]
+.Ltmp135:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r2, [sp]
-.Ltmp95:
+.Ltmp136:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r2, #100
 	blo	.LBB1_32
-.Ltmp96:
+.Ltmp137:
 	.p2align	2
 .LBB1_36:                               @   in Loop: Header=BB1_26 Depth=1
 	@DEBUG_VALUE: Delay:nCount <- [DW_OP_constu 1, DW_OP_minus, DW_OP_stack_value] $r1
 	@DEBUG_VALUE: Delay:nCount <- [DW_OP_constu 2, DW_OP_minus, DW_OP_stack_value] $r1
 	.loc	3 188 16                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:16
 	str	r0, [sp]
-.Ltmp97:
+.Ltmp138:
+	@DEBUG_VALUE: Delay:i <- 0
 	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r2, [sp]
-.Ltmp98:
+.Ltmp139:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r2, #99
 	bhi	.LBB1_41
-.Ltmp99:
+.Ltmp140:
 	.p2align	2
 .LBB1_37:                               @   Parent Loop BB1_26 Depth=1
                                         @ =>  This Inner Loop Header: Depth=2
@@ -681,122 +788,162 @@ Delay:
 	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
 	ldr	r2, [sp]
 	adds	r2, #1
+.Ltmp141:
+	@DEBUG_VALUE: Delay:i <- $r2
 	str	r2, [sp]
+.Ltmp142:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r2, [sp]
-.Ltmp100:
+.Ltmp143:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r2, #99
 	bhi	.LBB1_41
-.Ltmp101:
+.Ltmp144:
 @ %bb.38:                               @   in Loop: Header=BB1_37 Depth=2
 	@DEBUG_VALUE: Delay:nCount <- [DW_OP_constu 2, DW_OP_minus, DW_OP_stack_value] $r1
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
 	ldr	r2, [sp]
 	adds	r2, #1
+.Ltmp145:
+	@DEBUG_VALUE: Delay:i <- $r2
 	str	r2, [sp]
+.Ltmp146:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r2, [sp]
-.Ltmp102:
+.Ltmp147:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r2, #99
 	bhi	.LBB1_41
-.Ltmp103:
+.Ltmp148:
 @ %bb.39:                               @   in Loop: Header=BB1_37 Depth=2
 	@DEBUG_VALUE: Delay:nCount <- [DW_OP_constu 2, DW_OP_minus, DW_OP_stack_value] $r1
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
 	ldr	r2, [sp]
 	adds	r2, #1
+.Ltmp149:
+	@DEBUG_VALUE: Delay:i <- $r2
 	str	r2, [sp]
+.Ltmp150:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r2, [sp]
-.Ltmp104:
+.Ltmp151:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r2, #99
 	bhi	.LBB1_41
-.Ltmp105:
+.Ltmp152:
 @ %bb.40:                               @   in Loop: Header=BB1_37 Depth=2
 	@DEBUG_VALUE: Delay:nCount <- [DW_OP_constu 2, DW_OP_minus, DW_OP_stack_value] $r1
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
 	ldr	r2, [sp]
 	adds	r2, #1
+.Ltmp153:
+	@DEBUG_VALUE: Delay:i <- $r2
 	str	r2, [sp]
+.Ltmp154:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r2, [sp]
-.Ltmp106:
+.Ltmp155:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r2, #100
 	blo	.LBB1_37
-.Ltmp107:
+.Ltmp156:
 	.p2align	2
 .LBB1_41:                               @   in Loop: Header=BB1_26 Depth=1
 	@DEBUG_VALUE: Delay:nCount <- [DW_OP_constu 2, DW_OP_minus, DW_OP_stack_value] $r1
 	@DEBUG_VALUE: Delay:nCount <- [DW_OP_constu 3, DW_OP_minus, DW_OP_stack_value] $r1
 	.loc	3 188 16                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:16
 	str	r0, [sp]
-.Ltmp108:
+.Ltmp157:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r2, [sp]
-.Ltmp109:
+.Ltmp158:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r2, #99
 	bhi	.LBB1_25
-.Ltmp110:
+.Ltmp159:
 	.p2align	2
 .LBB1_42:                               @   Parent Loop BB1_26 Depth=1
                                         @ =>  This Inner Loop Header: Depth=2
 	@DEBUG_VALUE: Delay:nCount <- [DW_OP_constu 3, DW_OP_minus, DW_OP_stack_value] $r1
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
 	ldr	r2, [sp]
 	adds	r2, #1
+.Ltmp160:
+	@DEBUG_VALUE: Delay:i <- $r2
 	str	r2, [sp]
+.Ltmp161:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r2, [sp]
-.Ltmp111:
+.Ltmp162:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r2, #99
 	bhi	.LBB1_25
-.Ltmp112:
+.Ltmp163:
 @ %bb.43:                               @   in Loop: Header=BB1_42 Depth=2
 	@DEBUG_VALUE: Delay:nCount <- [DW_OP_constu 3, DW_OP_minus, DW_OP_stack_value] $r1
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
 	ldr	r2, [sp]
 	adds	r2, #1
+.Ltmp164:
+	@DEBUG_VALUE: Delay:i <- $r2
 	str	r2, [sp]
+.Ltmp165:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r2, [sp]
-.Ltmp113:
+.Ltmp166:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r2, #99
 	bhi.w	.LBB1_25
-.Ltmp114:
+.Ltmp167:
 @ %bb.44:                               @   in Loop: Header=BB1_42 Depth=2
 	@DEBUG_VALUE: Delay:nCount <- [DW_OP_constu 3, DW_OP_minus, DW_OP_stack_value] $r1
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
 	ldr	r2, [sp]
 	adds	r2, #1
+.Ltmp168:
+	@DEBUG_VALUE: Delay:i <- $r2
 	str	r2, [sp]
+.Ltmp169:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r2, [sp]
-.Ltmp115:
+.Ltmp170:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r2, #99
 	bhi.w	.LBB1_25
-.Ltmp116:
+.Ltmp171:
 @ %bb.45:                               @   in Loop: Header=BB1_42 Depth=2
 	@DEBUG_VALUE: Delay:nCount <- [DW_OP_constu 3, DW_OP_minus, DW_OP_stack_value] $r1
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 31                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:31
 	ldr	r2, [sp]
 	adds	r2, #1
+.Ltmp172:
+	@DEBUG_VALUE: Delay:i <- $r2
 	str	r2, [sp]
+.Ltmp173:
+	@DEBUG_VALUE: Delay:i <- [DW_OP_deref] $sp
 	.loc	3 188 21                        @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:21
 	ldr	r2, [sp]
-.Ltmp117:
+.Ltmp174:
 	.loc	3 188 9                         @ ../Device/ImageSensor/Sensor/Sensor_HM1055.c:188:9
 	cmp	r2, #100
 	blo	.LBB1_42
 	b	.LBB1_25
-.Ltmp118:
+.Ltmp175:
 .Lfunc_end1:
 	.size	Delay, .Lfunc_end1-Delay
 	.cfi_endproc
@@ -2483,53 +2630,347 @@ s_shm1055_setting_YUV_VGA:
 	.long	-1
 	.long	.Lfunc_begin1                   @   base address
 	.long	.Lfunc_begin1-.Lfunc_begin1
-	.long	.Ltmp29-.Lfunc_begin1
+	.long	.Ltmp30-.Lfunc_begin1
 	.short	1                               @ Loc expr size
 	.byte	80                              @ DW_OP_reg0
-	.long	.Ltmp38-.Lfunc_begin1
-	.long	.Ltmp39-.Lfunc_begin1
-	.short	1                               @ Loc expr size
-	.byte	82                              @ DW_OP_reg2
-	.long	.Ltmp53-.Lfunc_begin1
-	.long	.Ltmp54-.Lfunc_begin1
+	.long	.Ltmp49-.Lfunc_begin1
+	.long	.Ltmp50-.Lfunc_begin1
 	.short	1                               @ Loc expr size
 	.byte	81                              @ DW_OP_reg1
-	.long	.Ltmp54-.Lfunc_begin1
-	.long	.Ltmp55-.Lfunc_begin1
-	.short	1                               @ Loc expr size
-	.byte	80                              @ DW_OP_reg0
-	.long	.Ltmp70-.Lfunc_begin1
-	.long	.Ltmp71-.Lfunc_begin1
+	.long	.Ltmp95-.Lfunc_begin1
+	.long	.Ltmp96-.Lfunc_begin1
 	.short	1                               @ Loc expr size
 	.byte	81                              @ DW_OP_reg1
-	.long	.Ltmp72-.Lfunc_begin1
-	.long	.Ltmp73-.Lfunc_begin1
+	.long	.Ltmp97-.Lfunc_begin1
+	.long	.Ltmp98-.Lfunc_begin1
 	.short	3                               @ Loc expr size
 	.byte	113                             @ DW_OP_breg1
 	.byte	125                             @ -3
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp73-.Lfunc_begin1
-	.long	.Ltmp85-.Lfunc_begin1
+	.long	.Ltmp98-.Lfunc_begin1
+	.long	.Ltmp118-.Lfunc_begin1
 	.short	1                               @ Loc expr size
 	.byte	81                              @ DW_OP_reg1
-	.long	.Ltmp85-.Lfunc_begin1
-	.long	.Ltmp96-.Lfunc_begin1
+	.long	.Ltmp118-.Lfunc_begin1
+	.long	.Ltmp137-.Lfunc_begin1
 	.short	3                               @ Loc expr size
 	.byte	113                             @ DW_OP_breg1
 	.byte	127                             @ -1
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp96-.Lfunc_begin1
-	.long	.Ltmp107-.Lfunc_begin1
+	.long	.Ltmp137-.Lfunc_begin1
+	.long	.Ltmp156-.Lfunc_begin1
 	.short	3                               @ Loc expr size
 	.byte	113                             @ DW_OP_breg1
 	.byte	126                             @ -2
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp107-.Lfunc_begin1
+	.long	.Ltmp156-.Lfunc_begin1
 	.long	.Lfunc_end1-.Lfunc_begin1
 	.short	3                               @ Loc expr size
 	.byte	113                             @ DW_OP_breg1
 	.byte	125                             @ -3
 	.byte	159                             @ DW_OP_stack_value
+	.long	0
+	.long	0
+.Ldebug_loc3:
+	.long	-1
+	.long	.Lfunc_begin1                   @   base address
+	.long	.Lfunc_begin1-.Lfunc_begin1
+	.long	.Ltmp26-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp28-.Lfunc_begin1
+	.long	.Ltmp31-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	48                              @ DW_OP_lit0
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp32-.Lfunc_begin1
+	.long	.Ltmp33-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	81                              @ DW_OP_reg1
+	.long	.Ltmp33-.Lfunc_begin1
+	.long	.Ltmp36-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp36-.Lfunc_begin1
+	.long	.Ltmp37-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	81                              @ DW_OP_reg1
+	.long	.Ltmp37-.Lfunc_begin1
+	.long	.Ltmp40-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp40-.Lfunc_begin1
+	.long	.Ltmp41-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	81                              @ DW_OP_reg1
+	.long	.Ltmp41-.Lfunc_begin1
+	.long	.Ltmp44-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp44-.Lfunc_begin1
+	.long	.Ltmp45-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	81                              @ DW_OP_reg1
+	.long	.Ltmp45-.Lfunc_begin1
+	.long	.Ltmp47-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp52-.Lfunc_begin1
+	.long	.Ltmp54-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	48                              @ DW_OP_lit0
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp55-.Lfunc_begin1
+	.long	.Ltmp56-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	81                              @ DW_OP_reg1
+	.long	.Ltmp56-.Lfunc_begin1
+	.long	.Ltmp59-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp59-.Lfunc_begin1
+	.long	.Ltmp60-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	81                              @ DW_OP_reg1
+	.long	.Ltmp60-.Lfunc_begin1
+	.long	.Ltmp63-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp63-.Lfunc_begin1
+	.long	.Ltmp64-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	81                              @ DW_OP_reg1
+	.long	.Ltmp64-.Lfunc_begin1
+	.long	.Ltmp67-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp67-.Lfunc_begin1
+	.long	.Ltmp68-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	81                              @ DW_OP_reg1
+	.long	.Ltmp68-.Lfunc_begin1
+	.long	.Ltmp70-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp76-.Lfunc_begin1
+	.long	.Ltmp78-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	48                              @ DW_OP_lit0
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp79-.Lfunc_begin1
+	.long	.Ltmp80-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	81                              @ DW_OP_reg1
+	.long	.Ltmp80-.Lfunc_begin1
+	.long	.Ltmp83-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp83-.Lfunc_begin1
+	.long	.Ltmp84-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	81                              @ DW_OP_reg1
+	.long	.Ltmp84-.Lfunc_begin1
+	.long	.Ltmp87-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp87-.Lfunc_begin1
+	.long	.Ltmp88-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	81                              @ DW_OP_reg1
+	.long	.Ltmp88-.Lfunc_begin1
+	.long	.Ltmp91-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp91-.Lfunc_begin1
+	.long	.Ltmp92-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	81                              @ DW_OP_reg1
+	.long	.Ltmp92-.Lfunc_begin1
+	.long	.Ltmp94-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp97-.Lfunc_begin1
+	.long	.Ltmp99-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp100-.Lfunc_begin1
+	.long	.Ltmp102-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	48                              @ DW_OP_lit0
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp103-.Lfunc_begin1
+	.long	.Ltmp104-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	82                              @ DW_OP_reg2
+	.long	.Ltmp104-.Lfunc_begin1
+	.long	.Ltmp107-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp107-.Lfunc_begin1
+	.long	.Ltmp108-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	82                              @ DW_OP_reg2
+	.long	.Ltmp108-.Lfunc_begin1
+	.long	.Ltmp111-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp111-.Lfunc_begin1
+	.long	.Ltmp112-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	82                              @ DW_OP_reg2
+	.long	.Ltmp112-.Lfunc_begin1
+	.long	.Ltmp115-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp115-.Lfunc_begin1
+	.long	.Ltmp116-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	82                              @ DW_OP_reg2
+	.long	.Ltmp116-.Lfunc_begin1
+	.long	.Ltmp118-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp119-.Lfunc_begin1
+	.long	.Ltmp121-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	48                              @ DW_OP_lit0
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp122-.Lfunc_begin1
+	.long	.Ltmp123-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	82                              @ DW_OP_reg2
+	.long	.Ltmp123-.Lfunc_begin1
+	.long	.Ltmp126-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp126-.Lfunc_begin1
+	.long	.Ltmp127-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	82                              @ DW_OP_reg2
+	.long	.Ltmp127-.Lfunc_begin1
+	.long	.Ltmp130-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp130-.Lfunc_begin1
+	.long	.Ltmp131-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	82                              @ DW_OP_reg2
+	.long	.Ltmp131-.Lfunc_begin1
+	.long	.Ltmp134-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp134-.Lfunc_begin1
+	.long	.Ltmp135-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	82                              @ DW_OP_reg2
+	.long	.Ltmp135-.Lfunc_begin1
+	.long	.Ltmp137-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp138-.Lfunc_begin1
+	.long	.Ltmp140-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	48                              @ DW_OP_lit0
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp141-.Lfunc_begin1
+	.long	.Ltmp142-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	82                              @ DW_OP_reg2
+	.long	.Ltmp142-.Lfunc_begin1
+	.long	.Ltmp145-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp145-.Lfunc_begin1
+	.long	.Ltmp146-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	82                              @ DW_OP_reg2
+	.long	.Ltmp146-.Lfunc_begin1
+	.long	.Ltmp149-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp149-.Lfunc_begin1
+	.long	.Ltmp150-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	82                              @ DW_OP_reg2
+	.long	.Ltmp150-.Lfunc_begin1
+	.long	.Ltmp153-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp153-.Lfunc_begin1
+	.long	.Ltmp154-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	82                              @ DW_OP_reg2
+	.long	.Ltmp154-.Lfunc_begin1
+	.long	.Ltmp156-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp157-.Lfunc_begin1
+	.long	.Ltmp160-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp160-.Lfunc_begin1
+	.long	.Ltmp161-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	82                              @ DW_OP_reg2
+	.long	.Ltmp161-.Lfunc_begin1
+	.long	.Ltmp164-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp164-.Lfunc_begin1
+	.long	.Ltmp165-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	82                              @ DW_OP_reg2
+	.long	.Ltmp165-.Lfunc_begin1
+	.long	.Ltmp168-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp168-.Lfunc_begin1
+	.long	.Ltmp169-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	82                              @ DW_OP_reg2
+	.long	.Ltmp169-.Lfunc_begin1
+	.long	.Ltmp172-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
+	.long	.Ltmp172-.Lfunc_begin1
+	.long	.Ltmp173-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	82                              @ DW_OP_reg2
+	.long	.Ltmp173-.Lfunc_begin1
+	.long	.Lfunc_end1-.Lfunc_begin1
+	.short	2                               @ Loc expr size
+	.byte	125                             @ DW_OP_breg13
+	.byte	0                               @ 0
 	.long	0
 	.long	0
 	.section	.debug_abbrev,"",%progbits
@@ -2946,21 +3387,6 @@ s_shm1055_setting_YUV_VGA:
 	.byte	19                              @ DW_FORM_ref4
 	.byte	0                               @ EOM(1)
 	.byte	0                               @ EOM(2)
-	.byte	34                              @ Abbreviation Code
-	.byte	52                              @ DW_TAG_variable
-	.byte	0                               @ DW_CHILDREN_no
-	.byte	2                               @ DW_AT_location
-	.byte	24                              @ DW_FORM_exprloc
-	.byte	3                               @ DW_AT_name
-	.byte	14                              @ DW_FORM_strp
-	.byte	58                              @ DW_AT_decl_file
-	.byte	11                              @ DW_FORM_data1
-	.byte	59                              @ DW_AT_decl_line
-	.byte	11                              @ DW_FORM_data1
-	.byte	73                              @ DW_AT_type
-	.byte	19                              @ DW_FORM_ref4
-	.byte	0                               @ EOM(1)
-	.byte	0                               @ EOM(2)
 	.byte	0                               @ EOM(3)
 	.section	.debug_info,"",%progbits
 .Lcu_begin0:
@@ -2969,9 +3395,9 @@ s_shm1055_setting_YUV_VGA:
 	.short	4                               @ DWARF version number
 	.long	.debug_abbrev                   @ Offset Into Abbrev. Section
 	.byte	4                               @ Address Size (in bytes)
-	.byte	1                               @ Abbrev [1] 0xb:0xd8a DW_TAG_compile_unit
+	.byte	1                               @ Abbrev [1] 0xb:0xd8b DW_TAG_compile_unit
 	.long	.Linfo_string0                  @ DW_AT_producer
-	.short	12                              @ DW_AT_language
+	.short	29                              @ DW_AT_language
 	.long	.Linfo_string1                  @ DW_AT_name
 	.long	.Lline_table_start0             @ DW_AT_stmt_list
 	.long	.Linfo_string2                  @ DW_AT_comp_dir
@@ -4481,7 +4907,7 @@ s_shm1055_setting_YUV_VGA:
 	.long	.Linfo_string230                @ DW_AT_name
 	.byte	3                               @ DW_AT_decl_file
 	.byte	195                             @ DW_AT_decl_line
-	.long	3464                            @ DW_AT_type
+	.long	3465                            @ DW_AT_type
 	.byte	29                              @ Abbrev [29] 0xd1f:0xf DW_TAG_variable
 	.long	.Ldebug_loc1                    @ DW_AT_location
 	.long	.Linfo_string231                @ DW_AT_name
@@ -4507,7 +4933,7 @@ s_shm1055_setting_YUV_VGA:
 	.long	184                             @ DW_AT_type
 	.byte	0                               @ End Of Children Mark
 	.byte	0                               @ End Of Children Mark
-	.byte	32                              @ Abbrev [32] 0xd59:0x2f DW_TAG_subprogram
+	.byte	32                              @ Abbrev [32] 0xd59:0x30 DW_TAG_subprogram
 	.long	.Lfunc_begin1                   @ DW_AT_low_pc
 	.long	.Lfunc_end1-.Lfunc_begin1       @ DW_AT_high_pc
 	.byte	1                               @ DW_AT_frame_base
@@ -4523,18 +4949,16 @@ s_shm1055_setting_YUV_VGA:
 	.byte	3                               @ DW_AT_decl_file
 	.byte	183                             @ DW_AT_decl_line
 	.long	173                             @ DW_AT_type
-	.byte	34                              @ Abbrev [34] 0xd79:0xe DW_TAG_variable
-	.byte	2                               @ DW_AT_location
-	.byte	145
-	.byte	0
+	.byte	29                              @ Abbrev [29] 0xd79:0xf DW_TAG_variable
+	.long	.Ldebug_loc3                    @ DW_AT_location
 	.long	.Linfo_string231                @ DW_AT_name
 	.byte	3                               @ DW_AT_decl_file
 	.byte	185                             @ DW_AT_decl_line
 	.long	2467                            @ DW_AT_type
 	.byte	0                               @ End Of Children Mark
-	.byte	6                               @ Abbrev [6] 0xd88:0xc DW_TAG_array_type
+	.byte	6                               @ Abbrev [6] 0xd89:0xc DW_TAG_array_type
 	.long	361                             @ DW_AT_type
-	.byte	7                               @ Abbrev [7] 0xd8d:0x6 DW_TAG_subrange_type
+	.byte	7                               @ Abbrev [7] 0xd8e:0x6 DW_TAG_subrange_type
 	.long	166                             @ DW_AT_type
 	.byte	2                               @ DW_AT_count
 	.byte	0                               @ End Of Children Mark
@@ -4550,476 +4974,476 @@ s_shm1055_setting_YUV_VGA:
 	.long	0
 	.section	.debug_str,"MS",%progbits,1
 .Linfo_string0:
-	.asciz	"Component: Arm Compiler for Embedded 6.19 Tool: armclang [5e73cb00]" @ string offset=0
+	.asciz	"Component: Arm Compiler for Embedded 6.22 Tool: armclang [5ee92100]" @ string offset=0
 .Linfo_string1:
 	.asciz	"../Device/ImageSensor/Sensor\\Sensor_HM1055.c" @ string offset=68
 .Linfo_string2:
-	.asciz	"C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" @ string offset=113
+	.asciz	"D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" @ string offset=113
 .Linfo_string3:
-	.asciz	"g_sSensorHM1055_VGA_YUV422"    @ string offset=212
+	.asciz	"g_sSensorHM1055_VGA_YUV422"    @ string offset=230
 .Linfo_string4:
-	.asciz	"m_strName"                     @ string offset=239
+	.asciz	"m_strName"                     @ string offset=257
 .Linfo_string5:
-	.asciz	"char"                          @ string offset=249
+	.asciz	"char"                          @ string offset=267
 .Linfo_string6:
-	.asciz	"__ARRAY_SIZE_TYPE__"           @ string offset=254
+	.asciz	"__ARRAY_SIZE_TYPE__"           @ string offset=272
 .Linfo_string7:
-	.asciz	"m_u32Polarity"                 @ string offset=274
+	.asciz	"m_u32Polarity"                 @ string offset=292
 .Linfo_string8:
-	.asciz	"unsigned int"                  @ string offset=288
+	.asciz	"unsigned int"                  @ string offset=306
 .Linfo_string9:
-	.asciz	"uint32_t"                      @ string offset=301
+	.asciz	"uint32_t"                      @ string offset=319
 .Linfo_string10:
-	.asciz	"m_u32InputFormat"              @ string offset=310
+	.asciz	"m_u32InputFormat"              @ string offset=328
 .Linfo_string11:
-	.asciz	"m_u16Width"                    @ string offset=327
+	.asciz	"m_u16Width"                    @ string offset=345
 .Linfo_string12:
-	.asciz	"unsigned short"                @ string offset=338
+	.asciz	"unsigned short"                @ string offset=356
 .Linfo_string13:
-	.asciz	"uint16_t"                      @ string offset=353
+	.asciz	"uint16_t"                      @ string offset=371
 .Linfo_string14:
-	.asciz	"m_u16Height"                   @ string offset=362
+	.asciz	"m_u16Height"                   @ string offset=380
 .Linfo_string15:
-	.asciz	"pfnInitSensor"                 @ string offset=374
+	.asciz	"pfnInitSensor"                 @ string offset=392
 .Linfo_string16:
-	.asciz	"int"                           @ string offset=388
+	.asciz	"int"                           @ string offset=406
 .Linfo_string17:
-	.asciz	"int32_t"                       @ string offset=392
+	.asciz	"int32_t"                       @ string offset=410
 .Linfo_string18:
-	.asciz	"PFN_INIT_SENSOR_FUNC"          @ string offset=400
+	.asciz	"PFN_INIT_SENSOR_FUNC"          @ string offset=418
 .Linfo_string19:
-	.asciz	"s_sensor_info"                 @ string offset=421
+	.asciz	"s_sensor_info"                 @ string offset=439
 .Linfo_string20:
-	.asciz	"S_SENSOR_INFO"                 @ string offset=435
+	.asciz	"S_SENSOR_INFO"                 @ string offset=453
 .Linfo_string21:
-	.asciz	"s_shm1055_setting_YUV_VGA"     @ string offset=449
+	.asciz	"s_shm1055_setting_YUV_VGA"     @ string offset=467
 .Linfo_string22:
-	.asciz	"u16RegAddr"                    @ string offset=475
+	.asciz	"u16RegAddr"                    @ string offset=493
 .Linfo_string23:
-	.asciz	"u8Value"                       @ string offset=486
+	.asciz	"u8Value"                       @ string offset=504
 .Linfo_string24:
-	.asciz	"unsigned char"                 @ string offset=494
+	.asciz	"unsigned char"                 @ string offset=512
 .Linfo_string25:
-	.asciz	"uint8_t"                       @ string offset=508
+	.asciz	"uint8_t"                       @ string offset=526
 .Linfo_string26:
-	.asciz	"NT_RegValue"                   @ string offset=516
+	.asciz	"NT_RegValue"                   @ string offset=534
 .Linfo_string27:
-	.asciz	"eDRVGPIO_GPIOA"                @ string offset=528
+	.asciz	"eDRVGPIO_GPIOA"                @ string offset=546
 .Linfo_string28:
-	.asciz	"eDRVGPIO_GPIOB"                @ string offset=543
+	.asciz	"eDRVGPIO_GPIOB"                @ string offset=561
 .Linfo_string29:
-	.asciz	"eDRVGPIO_GPIOC"                @ string offset=558
+	.asciz	"eDRVGPIO_GPIOC"                @ string offset=576
 .Linfo_string30:
-	.asciz	"eDRVGPIO_GPIOD"                @ string offset=573
+	.asciz	"eDRVGPIO_GPIOD"                @ string offset=591
 .Linfo_string31:
-	.asciz	"eDRVGPIO_GPIOE"                @ string offset=588
+	.asciz	"eDRVGPIO_GPIOE"                @ string offset=606
 .Linfo_string32:
-	.asciz	"eDRVGPIO_GPIOF"                @ string offset=603
+	.asciz	"eDRVGPIO_GPIOF"                @ string offset=621
 .Linfo_string33:
-	.asciz	"eDRVGPIO_GPIOG"                @ string offset=618
+	.asciz	"eDRVGPIO_GPIOG"                @ string offset=636
 .Linfo_string34:
-	.asciz	"eDRVGPIO_GPIOH"                @ string offset=633
+	.asciz	"eDRVGPIO_GPIOH"                @ string offset=651
 .Linfo_string35:
-	.asciz	"eDRVGPIO_GPIOI"                @ string offset=648
+	.asciz	"eDRVGPIO_GPIOI"                @ string offset=666
 .Linfo_string36:
-	.asciz	"eDRVGPIO_GPIOJ"                @ string offset=663
+	.asciz	"eDRVGPIO_GPIOJ"                @ string offset=681
 .Linfo_string37:
-	.asciz	"eDRVGPIO_PIN0"                 @ string offset=678
+	.asciz	"eDRVGPIO_PIN0"                 @ string offset=696
 .Linfo_string38:
-	.asciz	"eDRVGPIO_PIN1"                 @ string offset=692
+	.asciz	"eDRVGPIO_PIN1"                 @ string offset=710
 .Linfo_string39:
-	.asciz	"eDRVGPIO_PIN2"                 @ string offset=706
+	.asciz	"eDRVGPIO_PIN2"                 @ string offset=724
 .Linfo_string40:
-	.asciz	"eDRVGPIO_PIN3"                 @ string offset=720
+	.asciz	"eDRVGPIO_PIN3"                 @ string offset=738
 .Linfo_string41:
-	.asciz	"eDRVGPIO_PIN4"                 @ string offset=734
+	.asciz	"eDRVGPIO_PIN4"                 @ string offset=752
 .Linfo_string42:
-	.asciz	"eDRVGPIO_PIN5"                 @ string offset=748
+	.asciz	"eDRVGPIO_PIN5"                 @ string offset=766
 .Linfo_string43:
-	.asciz	"eDRVGPIO_PIN6"                 @ string offset=762
+	.asciz	"eDRVGPIO_PIN6"                 @ string offset=780
 .Linfo_string44:
-	.asciz	"eDRVGPIO_PIN7"                 @ string offset=776
+	.asciz	"eDRVGPIO_PIN7"                 @ string offset=794
 .Linfo_string45:
-	.asciz	"eDRVGPIO_PIN8"                 @ string offset=790
+	.asciz	"eDRVGPIO_PIN8"                 @ string offset=808
 .Linfo_string46:
-	.asciz	"eDRVGPIO_PIN9"                 @ string offset=804
+	.asciz	"eDRVGPIO_PIN9"                 @ string offset=822
 .Linfo_string47:
-	.asciz	"eDRVGPIO_PIN10"                @ string offset=818
+	.asciz	"eDRVGPIO_PIN10"                @ string offset=836
 .Linfo_string48:
-	.asciz	"eDRVGPIO_PIN11"                @ string offset=833
+	.asciz	"eDRVGPIO_PIN11"                @ string offset=851
 .Linfo_string49:
-	.asciz	"eDRVGPIO_PIN12"                @ string offset=848
+	.asciz	"eDRVGPIO_PIN12"                @ string offset=866
 .Linfo_string50:
-	.asciz	"eDRVGPIO_PIN13"                @ string offset=863
+	.asciz	"eDRVGPIO_PIN13"                @ string offset=881
 .Linfo_string51:
-	.asciz	"eDRVGPIO_PIN14"                @ string offset=878
+	.asciz	"eDRVGPIO_PIN14"                @ string offset=896
 .Linfo_string52:
-	.asciz	"eDRVGPIO_PIN15"                @ string offset=893
+	.asciz	"eDRVGPIO_PIN15"                @ string offset=911
 .Linfo_string53:
-	.asciz	"PDID"                          @ string offset=908
+	.asciz	"PDID"                          @ string offset=926
 .Linfo_string54:
-	.asciz	"RSTCTL"                        @ string offset=913
+	.asciz	"RSTCTL"                        @ string offset=931
 .Linfo_string55:
-	.asciz	"RSTSTS"                        @ string offset=920
+	.asciz	"RSTSTS"                        @ string offset=938
 .Linfo_string56:
-	.asciz	"VTORSET"                       @ string offset=927
+	.asciz	"VTORSET"                       @ string offset=945
 .Linfo_string57:
-	.asciz	"RESERVE0"                      @ string offset=935
+	.asciz	"RESERVE0"                      @ string offset=953
 .Linfo_string58:
-	.asciz	"BODCTL"                        @ string offset=944
+	.asciz	"BODCTL"                        @ string offset=962
 .Linfo_string59:
-	.asciz	"PORCTL"                        @ string offset=951
+	.asciz	"PORCTL"                        @ string offset=969
 .Linfo_string60:
-	.asciz	"VREFCTL"                       @ string offset=958
+	.asciz	"VREFCTL"                       @ string offset=976
 .Linfo_string61:
-	.asciz	"IVSCTL"                        @ string offset=966
+	.asciz	"IVSCTL"                        @ string offset=984
 .Linfo_string62:
-	.asciz	"USBPHY"                        @ string offset=973
+	.asciz	"USBPHY"                        @ string offset=991
 .Linfo_string63:
-	.asciz	"UTCPDCTL"                      @ string offset=980
+	.asciz	"UTCPDCTL"                      @ string offset=998
 .Linfo_string64:
-	.asciz	"RESERVE1"                      @ string offset=989
+	.asciz	"RESERVE1"                      @ string offset=1007
 .Linfo_string65:
-	.asciz	"GPA_MFOS"                      @ string offset=998
+	.asciz	"GPA_MFOS"                      @ string offset=1016
 .Linfo_string66:
-	.asciz	"GPB_MFOS"                      @ string offset=1007
+	.asciz	"GPB_MFOS"                      @ string offset=1025
 .Linfo_string67:
-	.asciz	"GPC_MFOS"                      @ string offset=1016
+	.asciz	"GPC_MFOS"                      @ string offset=1034
 .Linfo_string68:
-	.asciz	"GPD_MFOS"                      @ string offset=1025
+	.asciz	"GPD_MFOS"                      @ string offset=1043
 .Linfo_string69:
-	.asciz	"GPE_MFOS"                      @ string offset=1034
+	.asciz	"GPE_MFOS"                      @ string offset=1052
 .Linfo_string70:
-	.asciz	"GPF_MFOS"                      @ string offset=1043
+	.asciz	"GPF_MFOS"                      @ string offset=1061
 .Linfo_string71:
-	.asciz	"GPG_MFOS"                      @ string offset=1052
+	.asciz	"GPG_MFOS"                      @ string offset=1070
 .Linfo_string72:
-	.asciz	"GPH_MFOS"                      @ string offset=1061
+	.asciz	"GPH_MFOS"                      @ string offset=1079
 .Linfo_string73:
-	.asciz	"GPI_MFOS"                      @ string offset=1070
+	.asciz	"GPI_MFOS"                      @ string offset=1088
 .Linfo_string74:
-	.asciz	"GPJ_MFOS"                      @ string offset=1079
+	.asciz	"GPJ_MFOS"                      @ string offset=1097
 .Linfo_string75:
-	.asciz	"RESERVE2"                      @ string offset=1088
+	.asciz	"RESERVE2"                      @ string offset=1106
 .Linfo_string76:
-	.asciz	"REGLCTL"                       @ string offset=1097
+	.asciz	"REGLCTL"                       @ string offset=1115
 .Linfo_string77:
-	.asciz	"RESERVE3"                      @ string offset=1105
+	.asciz	"RESERVE3"                      @ string offset=1123
 .Linfo_string78:
-	.asciz	"TCTL48M"                       @ string offset=1114
+	.asciz	"TCTL48M"                       @ string offset=1132
 .Linfo_string79:
-	.asciz	"TIEN48M"                       @ string offset=1122
+	.asciz	"TIEN48M"                       @ string offset=1140
 .Linfo_string80:
-	.asciz	"TISTS48M"                      @ string offset=1130
+	.asciz	"TISTS48M"                      @ string offset=1148
 .Linfo_string81:
-	.asciz	"RESERVE4"                      @ string offset=1139
+	.asciz	"RESERVE4"                      @ string offset=1157
 .Linfo_string82:
-	.asciz	"TCTL12M"                       @ string offset=1148
+	.asciz	"TCTL12M"                       @ string offset=1166
 .Linfo_string83:
-	.asciz	"TIEN12M"                       @ string offset=1156
+	.asciz	"TIEN12M"                       @ string offset=1174
 .Linfo_string84:
-	.asciz	"TISTS12M"                      @ string offset=1164
+	.asciz	"TISTS12M"                      @ string offset=1182
 .Linfo_string85:
-	.asciz	"RESERVE5"                      @ string offset=1173
+	.asciz	"RESERVE5"                      @ string offset=1191
 .Linfo_string86:
-	.asciz	"TCTLMIRC"                      @ string offset=1182
+	.asciz	"TCTLMIRC"                      @ string offset=1200
 .Linfo_string87:
-	.asciz	"TIENMIRC"                      @ string offset=1191
+	.asciz	"TIENMIRC"                      @ string offset=1209
 .Linfo_string88:
-	.asciz	"TISTSMIRC"                     @ string offset=1200
+	.asciz	"TISTSMIRC"                     @ string offset=1218
 .Linfo_string89:
-	.asciz	"RESERVE6"                      @ string offset=1210
+	.asciz	"RESERVE6"                      @ string offset=1228
 .Linfo_string90:
-	.asciz	"ACMPRST"                       @ string offset=1219
+	.asciz	"ACMPRST"                       @ string offset=1237
 .Linfo_string91:
-	.asciz	"AWFRST"                        @ string offset=1227
+	.asciz	"AWFRST"                        @ string offset=1245
 .Linfo_string92:
-	.asciz	"BPWMRST"                       @ string offset=1234
+	.asciz	"BPWMRST"                       @ string offset=1252
 .Linfo_string93:
-	.asciz	"CANFDRST"                      @ string offset=1242
+	.asciz	"CANFDRST"                      @ string offset=1260
 .Linfo_string94:
-	.asciz	"CCAPRST"                       @ string offset=1251
+	.asciz	"CCAPRST"                       @ string offset=1269
 .Linfo_string95:
-	.asciz	"CRCRST"                        @ string offset=1259
+	.asciz	"CRCRST"                        @ string offset=1277
 .Linfo_string96:
-	.asciz	"CRYPTORST"                     @ string offset=1266
+	.asciz	"CRYPTORST"                     @ string offset=1284
 .Linfo_string97:
-	.asciz	"DACRST"                        @ string offset=1276
+	.asciz	"DACRST"                        @ string offset=1294
 .Linfo_string98:
-	.asciz	"DMICRST"                       @ string offset=1283
+	.asciz	"DMICRST"                       @ string offset=1301
 .Linfo_string99:
-	.asciz	"EADCRST"                       @ string offset=1291
+	.asciz	"EADCRST"                       @ string offset=1309
 .Linfo_string100:
-	.asciz	"EBIRST"                        @ string offset=1299
+	.asciz	"EBIRST"                        @ string offset=1317
 .Linfo_string101:
-	.asciz	"ECAPRST"                       @ string offset=1306
+	.asciz	"ECAPRST"                       @ string offset=1324
 .Linfo_string102:
-	.asciz	"EMACRST"                       @ string offset=1314
+	.asciz	"EMACRST"                       @ string offset=1332
 .Linfo_string103:
-	.asciz	"EPWMRST"                       @ string offset=1322
+	.asciz	"EPWMRST"                       @ string offset=1340
 .Linfo_string104:
-	.asciz	"EQEIRST"                       @ string offset=1330
+	.asciz	"EQEIRST"                       @ string offset=1348
 .Linfo_string105:
-	.asciz	"FMCRST"                        @ string offset=1338
+	.asciz	"FMCRST"                        @ string offset=1356
 .Linfo_string106:
-	.asciz	"GDMARST"                       @ string offset=1345
+	.asciz	"GDMARST"                       @ string offset=1363
 .Linfo_string107:
-	.asciz	"GPIORST"                       @ string offset=1353
+	.asciz	"GPIORST"                       @ string offset=1371
 .Linfo_string108:
-	.asciz	"HSOTGRST"                      @ string offset=1361
+	.asciz	"HSOTGRST"                      @ string offset=1379
 .Linfo_string109:
-	.asciz	"HSUSBDRST"                     @ string offset=1370
+	.asciz	"HSUSBDRST"                     @ string offset=1388
 .Linfo_string110:
-	.asciz	"HSUSBHRST"                     @ string offset=1380
+	.asciz	"HSUSBHRST"                     @ string offset=1398
 .Linfo_string111:
-	.asciz	"I2CRST"                        @ string offset=1390
+	.asciz	"I2CRST"                        @ string offset=1408
 .Linfo_string112:
-	.asciz	"I2SRST"                        @ string offset=1397
+	.asciz	"I2SRST"                        @ string offset=1415
 .Linfo_string113:
-	.asciz	"I3CRST"                        @ string offset=1404
+	.asciz	"I3CRST"                        @ string offset=1422
 .Linfo_string114:
-	.asciz	"KDFRST"                        @ string offset=1411
+	.asciz	"KDFRST"                        @ string offset=1429
 .Linfo_string115:
-	.asciz	"KPIRST"                        @ string offset=1418
+	.asciz	"KPIRST"                        @ string offset=1436
 .Linfo_string116:
-	.asciz	"KSRST"                         @ string offset=1425
+	.asciz	"KSRST"                         @ string offset=1443
 .Linfo_string117:
-	.asciz	"LPADCRST"                      @ string offset=1431
+	.asciz	"LPADCRST"                      @ string offset=1449
 .Linfo_string118:
-	.asciz	"LPPDMARST"                     @ string offset=1440
+	.asciz	"LPPDMARST"                     @ string offset=1458
 .Linfo_string119:
-	.asciz	"LPGPIORST"                     @ string offset=1450
+	.asciz	"LPGPIORST"                     @ string offset=1468
 .Linfo_string120:
-	.asciz	"LPI2CRST"                      @ string offset=1460
+	.asciz	"LPI2CRST"                      @ string offset=1478
 .Linfo_string121:
-	.asciz	"LPSPIRST"                      @ string offset=1469
+	.asciz	"LPSPIRST"                      @ string offset=1487
 .Linfo_string122:
-	.asciz	"LPTMRRST"                      @ string offset=1478
+	.asciz	"LPTMRRST"                      @ string offset=1496
 .Linfo_string123:
-	.asciz	"LPUARTRST"                     @ string offset=1487
+	.asciz	"LPUARTRST"                     @ string offset=1505
 .Linfo_string124:
-	.asciz	"OTFCRST"                       @ string offset=1497
+	.asciz	"OTFCRST"                       @ string offset=1515
 .Linfo_string125:
-	.asciz	"OTGRST"                        @ string offset=1505
+	.asciz	"OTGRST"                        @ string offset=1523
 .Linfo_string126:
-	.asciz	"PDMARST"                       @ string offset=1512
+	.asciz	"PDMARST"                       @ string offset=1530
 .Linfo_string127:
-	.asciz	"PSIORST"                       @ string offset=1520
+	.asciz	"PSIORST"                       @ string offset=1538
 .Linfo_string128:
-	.asciz	"QSPIRST"                       @ string offset=1528
+	.asciz	"QSPIRST"                       @ string offset=1546
 .Linfo_string129:
-	.asciz	"RTCRST"                        @ string offset=1536
+	.asciz	"RTCRST"                        @ string offset=1554
 .Linfo_string130:
-	.asciz	"SCRST"                         @ string offset=1543
+	.asciz	"SCRST"                         @ string offset=1561
 .Linfo_string131:
-	.asciz	"SCURST"                        @ string offset=1549
+	.asciz	"SCURST"                        @ string offset=1567
 .Linfo_string132:
-	.asciz	"SDHRST"                        @ string offset=1556
+	.asciz	"SDHRST"                        @ string offset=1574
 .Linfo_string133:
-	.asciz	"SPIRST"                        @ string offset=1563
+	.asciz	"SPIRST"                        @ string offset=1581
 .Linfo_string134:
-	.asciz	"SPIMRST"                       @ string offset=1570
+	.asciz	"SPIMRST"                       @ string offset=1588
 .Linfo_string135:
-	.asciz	"RESERVE7"                      @ string offset=1578
+	.asciz	"RESERVE7"                      @ string offset=1596
 .Linfo_string136:
-	.asciz	"TMRRST"                        @ string offset=1587
+	.asciz	"TMRRST"                        @ string offset=1605
 .Linfo_string137:
-	.asciz	"TRNGRST"                       @ string offset=1594
+	.asciz	"TRNGRST"                       @ string offset=1612
 .Linfo_string138:
-	.asciz	"TTMRRST"                       @ string offset=1602
+	.asciz	"TTMRRST"                       @ string offset=1620
 .Linfo_string139:
-	.asciz	"UARTRST"                       @ string offset=1610
+	.asciz	"UARTRST"                       @ string offset=1628
 .Linfo_string140:
-	.asciz	"USBDRST"                       @ string offset=1618
+	.asciz	"USBDRST"                       @ string offset=1636
 .Linfo_string141:
-	.asciz	"USBHRST"                       @ string offset=1626
+	.asciz	"USBHRST"                       @ string offset=1644
 .Linfo_string142:
-	.asciz	"USCIRST"                       @ string offset=1634
+	.asciz	"USCIRST"                       @ string offset=1652
 .Linfo_string143:
-	.asciz	"UTCPDRST"                      @ string offset=1642
+	.asciz	"UTCPDRST"                      @ string offset=1660
 .Linfo_string144:
-	.asciz	"RESERVE8"                      @ string offset=1651
+	.asciz	"RESERVE8"                      @ string offset=1669
 .Linfo_string145:
-	.asciz	"GPA_MFP0"                      @ string offset=1660
+	.asciz	"GPA_MFP0"                      @ string offset=1678
 .Linfo_string146:
-	.asciz	"GPA_MFP1"                      @ string offset=1669
+	.asciz	"GPA_MFP1"                      @ string offset=1687
 .Linfo_string147:
-	.asciz	"GPA_MFP2"                      @ string offset=1678
+	.asciz	"GPA_MFP2"                      @ string offset=1696
 .Linfo_string148:
-	.asciz	"GPA_MFP3"                      @ string offset=1687
+	.asciz	"GPA_MFP3"                      @ string offset=1705
 .Linfo_string149:
-	.asciz	"GPB_MFP0"                      @ string offset=1696
+	.asciz	"GPB_MFP0"                      @ string offset=1714
 .Linfo_string150:
-	.asciz	"GPB_MFP1"                      @ string offset=1705
+	.asciz	"GPB_MFP1"                      @ string offset=1723
 .Linfo_string151:
-	.asciz	"GPB_MFP2"                      @ string offset=1714
+	.asciz	"GPB_MFP2"                      @ string offset=1732
 .Linfo_string152:
-	.asciz	"GPB_MFP3"                      @ string offset=1723
+	.asciz	"GPB_MFP3"                      @ string offset=1741
 .Linfo_string153:
-	.asciz	"GPC_MFP0"                      @ string offset=1732
+	.asciz	"GPC_MFP0"                      @ string offset=1750
 .Linfo_string154:
-	.asciz	"GPC_MFP1"                      @ string offset=1741
+	.asciz	"GPC_MFP1"                      @ string offset=1759
 .Linfo_string155:
-	.asciz	"GPC_MFP2"                      @ string offset=1750
+	.asciz	"GPC_MFP2"                      @ string offset=1768
 .Linfo_string156:
-	.asciz	"GPC_MFP3"                      @ string offset=1759
+	.asciz	"GPC_MFP3"                      @ string offset=1777
 .Linfo_string157:
-	.asciz	"GPD_MFP0"                      @ string offset=1768
+	.asciz	"GPD_MFP0"                      @ string offset=1786
 .Linfo_string158:
-	.asciz	"GPD_MFP1"                      @ string offset=1777
+	.asciz	"GPD_MFP1"                      @ string offset=1795
 .Linfo_string159:
-	.asciz	"GPD_MFP2"                      @ string offset=1786
+	.asciz	"GPD_MFP2"                      @ string offset=1804
 .Linfo_string160:
-	.asciz	"GPD_MFP3"                      @ string offset=1795
+	.asciz	"GPD_MFP3"                      @ string offset=1813
 .Linfo_string161:
-	.asciz	"GPE_MFP0"                      @ string offset=1804
+	.asciz	"GPE_MFP0"                      @ string offset=1822
 .Linfo_string162:
-	.asciz	"GPE_MFP1"                      @ string offset=1813
+	.asciz	"GPE_MFP1"                      @ string offset=1831
 .Linfo_string163:
-	.asciz	"GPE_MFP2"                      @ string offset=1822
+	.asciz	"GPE_MFP2"                      @ string offset=1840
 .Linfo_string164:
-	.asciz	"GPE_MFP3"                      @ string offset=1831
+	.asciz	"GPE_MFP3"                      @ string offset=1849
 .Linfo_string165:
-	.asciz	"GPF_MFP0"                      @ string offset=1840
+	.asciz	"GPF_MFP0"                      @ string offset=1858
 .Linfo_string166:
-	.asciz	"GPF_MFP1"                      @ string offset=1849
+	.asciz	"GPF_MFP1"                      @ string offset=1867
 .Linfo_string167:
-	.asciz	"GPF_MFP2"                      @ string offset=1858
+	.asciz	"GPF_MFP2"                      @ string offset=1876
 .Linfo_string168:
-	.asciz	"RESERVE9"                      @ string offset=1867
+	.asciz	"RESERVE9"                      @ string offset=1885
 .Linfo_string169:
-	.asciz	"GPG_MFP0"                      @ string offset=1876
+	.asciz	"GPG_MFP0"                      @ string offset=1894
 .Linfo_string170:
-	.asciz	"GPG_MFP1"                      @ string offset=1885
+	.asciz	"GPG_MFP1"                      @ string offset=1903
 .Linfo_string171:
-	.asciz	"GPG_MFP2"                      @ string offset=1894
+	.asciz	"GPG_MFP2"                      @ string offset=1912
 .Linfo_string172:
-	.asciz	"GPG_MFP3"                      @ string offset=1903
+	.asciz	"GPG_MFP3"                      @ string offset=1921
 .Linfo_string173:
-	.asciz	"GPH_MFP0"                      @ string offset=1912
+	.asciz	"GPH_MFP0"                      @ string offset=1930
 .Linfo_string174:
-	.asciz	"GPH_MFP1"                      @ string offset=1921
+	.asciz	"GPH_MFP1"                      @ string offset=1939
 .Linfo_string175:
-	.asciz	"GPH_MFP2"                      @ string offset=1930
+	.asciz	"GPH_MFP2"                      @ string offset=1948
 .Linfo_string176:
-	.asciz	"GPH_MFP3"                      @ string offset=1939
+	.asciz	"GPH_MFP3"                      @ string offset=1957
 .Linfo_string177:
-	.asciz	"RESERVE10"                     @ string offset=1948
+	.asciz	"RESERVE10"                     @ string offset=1966
 .Linfo_string178:
-	.asciz	"GPI_MFP1"                      @ string offset=1958
+	.asciz	"GPI_MFP1"                      @ string offset=1976
 .Linfo_string179:
-	.asciz	"GPI_MFP2"                      @ string offset=1967
+	.asciz	"GPI_MFP2"                      @ string offset=1985
 .Linfo_string180:
-	.asciz	"GPI_MFP3"                      @ string offset=1976
+	.asciz	"GPI_MFP3"                      @ string offset=1994
 .Linfo_string181:
-	.asciz	"GPJ_MFP0"                      @ string offset=1985
+	.asciz	"GPJ_MFP0"                      @ string offset=2003
 .Linfo_string182:
-	.asciz	"GPJ_MFP1"                      @ string offset=1994
+	.asciz	"GPJ_MFP1"                      @ string offset=2012
 .Linfo_string183:
-	.asciz	"GPJ_MFP2"                      @ string offset=2003
+	.asciz	"GPJ_MFP2"                      @ string offset=2021
 .Linfo_string184:
-	.asciz	"GPJ_MFP3"                      @ string offset=2012
+	.asciz	"GPJ_MFP3"                      @ string offset=2030
 .Linfo_string185:
-	.asciz	"RESERVE11"                     @ string offset=2021
+	.asciz	"RESERVE11"                     @ string offset=2039
 .Linfo_string186:
-	.asciz	"NMIEN"                         @ string offset=2031
+	.asciz	"NMIEN"                         @ string offset=2049
 .Linfo_string187:
-	.asciz	"NMISTS"                        @ string offset=2037
+	.asciz	"NMISTS"                        @ string offset=2055
 .Linfo_string188:
-	.asciz	"SYS_T"                         @ string offset=2044
+	.asciz	"SYS_T"                         @ string offset=2062
 .Linfo_string189:
-	.asciz	"MODE"                          @ string offset=2050
+	.asciz	"MODE"                          @ string offset=2068
 .Linfo_string190:
-	.asciz	"DINOFF"                        @ string offset=2055
+	.asciz	"DINOFF"                        @ string offset=2073
 .Linfo_string191:
-	.asciz	"DOUT"                          @ string offset=2062
+	.asciz	"DOUT"                          @ string offset=2080
 .Linfo_string192:
-	.asciz	"DATMSK"                        @ string offset=2067
+	.asciz	"DATMSK"                        @ string offset=2085
 .Linfo_string193:
-	.asciz	"PIN"                           @ string offset=2074
+	.asciz	"PIN"                           @ string offset=2092
 .Linfo_string194:
-	.asciz	"DBEN"                          @ string offset=2078
+	.asciz	"DBEN"                          @ string offset=2096
 .Linfo_string195:
-	.asciz	"INTTYPE"                       @ string offset=2083
+	.asciz	"INTTYPE"                       @ string offset=2101
 .Linfo_string196:
-	.asciz	"INTEN"                         @ string offset=2091
+	.asciz	"INTEN"                         @ string offset=2109
 .Linfo_string197:
-	.asciz	"INTSRC"                        @ string offset=2097
+	.asciz	"INTSRC"                        @ string offset=2115
 .Linfo_string198:
-	.asciz	"SMTEN"                         @ string offset=2104
+	.asciz	"SMTEN"                         @ string offset=2122
 .Linfo_string199:
-	.asciz	"SLEWCTL"                       @ string offset=2110
+	.asciz	"SLEWCTL"                       @ string offset=2128
 .Linfo_string200:
-	.asciz	"PUSEL"                         @ string offset=2118
+	.asciz	"PUSEL"                         @ string offset=2136
 .Linfo_string201:
-	.asciz	"DBCTL"                         @ string offset=2124
+	.asciz	"DBCTL"                         @ string offset=2142
 .Linfo_string202:
-	.asciz	"GPIO_T"                        @ string offset=2130
+	.asciz	"GPIO_T"                        @ string offset=2148
 .Linfo_string203:
-	.asciz	"CTL"                           @ string offset=2137
+	.asciz	"CTL"                           @ string offset=2155
 .Linfo_string204:
-	.asciz	"PAR"                           @ string offset=2141
+	.asciz	"PAR"                           @ string offset=2159
 .Linfo_string205:
-	.asciz	"INTSTS"                        @ string offset=2145
+	.asciz	"INTSTS"                        @ string offset=2163
 .Linfo_string206:
-	.asciz	"PARM"                          @ string offset=2152
+	.asciz	"PARM"                          @ string offset=2170
 .Linfo_string207:
-	.asciz	"CWSP"                          @ string offset=2157
+	.asciz	"CWSP"                          @ string offset=2175
 .Linfo_string208:
-	.asciz	"CWS"                           @ string offset=2162
+	.asciz	"CWS"                           @ string offset=2180
 .Linfo_string209:
-	.asciz	"PKTSL"                         @ string offset=2166
+	.asciz	"PKTSL"                         @ string offset=2184
 .Linfo_string210:
-	.asciz	"FRCTL"                         @ string offset=2172
+	.asciz	"FRCTL"                         @ string offset=2190
 .Linfo_string211:
-	.asciz	"STRIDE"                        @ string offset=2178
+	.asciz	"STRIDE"                        @ string offset=2196
 .Linfo_string212:
-	.asciz	"FIFOTH"                        @ string offset=2185
+	.asciz	"FIFOTH"                        @ string offset=2203
 .Linfo_string213:
-	.asciz	"CMPADDR"                       @ string offset=2192
+	.asciz	"CMPADDR"                       @ string offset=2210
 .Linfo_string214:
-	.asciz	"LUMA_Y1_THD"                   @ string offset=2200
+	.asciz	"LUMA_Y1_THD"                   @ string offset=2218
 .Linfo_string215:
-	.asciz	"PKTSM"                         @ string offset=2212
+	.asciz	"PKTSM"                         @ string offset=2230
 .Linfo_string216:
-	.asciz	"CURADDRP"                      @ string offset=2218
+	.asciz	"CURADDRP"                      @ string offset=2236
 .Linfo_string217:
-	.asciz	"PKTBA0"                        @ string offset=2227
+	.asciz	"PKTBA0"                        @ string offset=2245
 .Linfo_string218:
-	.asciz	"MDCTL"                         @ string offset=2234
+	.asciz	"MDCTL"                         @ string offset=2252
 .Linfo_string219:
-	.asciz	"MDTRG_WK"                      @ string offset=2240
+	.asciz	"MDTRG_WK"                      @ string offset=2258
 .Linfo_string220:
-	.asciz	"MDTTH"                         @ string offset=2249
+	.asciz	"MDTTH"                         @ string offset=2267
 .Linfo_string221:
-	.asciz	"MDTSAD"                        @ string offset=2255
+	.asciz	"MDTSAD"                        @ string offset=2273
 .Linfo_string222:
-	.asciz	"MDWOCTH"                       @ string offset=2262
+	.asciz	"MDWOCTH"                       @ string offset=2280
 .Linfo_string223:
-	.asciz	"MDWOC"                         @ string offset=2270
+	.asciz	"MDWOC"                         @ string offset=2288
 .Linfo_string224:
-	.asciz	"MDWTH"                         @ string offset=2276
+	.asciz	"MDWTH"                         @ string offset=2294
 .Linfo_string225:
-	.asciz	"MDWSAD"                        @ string offset=2282
+	.asciz	"MDWSAD"                        @ string offset=2300
 .Linfo_string226:
-	.asciz	"CCAP_T"                        @ string offset=2289
+	.asciz	"CCAP_T"                        @ string offset=2307
 .Linfo_string227:
-	.asciz	"InitHM1055_VGA_YUV422"         @ string offset=2296
+	.asciz	"InitHM1055_VGA_YUV422"         @ string offset=2314
 .Linfo_string228:
-	.asciz	"Delay"                         @ string offset=2318
+	.asciz	"Delay"                         @ string offset=2336
 .Linfo_string229:
-	.asciz	"u8DeviceID"                    @ string offset=2324
+	.asciz	"u8DeviceID"                    @ string offset=2342
 .Linfo_string230:
-	.asciz	"u8ID"                          @ string offset=2335
+	.asciz	"u8ID"                          @ string offset=2353
 .Linfo_string231:
-	.asciz	"i"                             @ string offset=2340
+	.asciz	"i"                             @ string offset=2358
 .Linfo_string232:
-	.asciz	"u32Param"                      @ string offset=2342
+	.asciz	"u32Param"                      @ string offset=2360
 .Linfo_string233:
-	.asciz	"current_pc"                    @ string offset=2351
+	.asciz	"current_pc"                    @ string offset=2369
 .Linfo_string234:
-	.asciz	"nCount"                        @ string offset=2362
-	.ident	"Component: Arm Compiler for Embedded 6.19 Tool: armclang [5e73cb00]"
+	.asciz	"nCount"                        @ string offset=2380
+	.ident	"Component: Arm Compiler for Embedded 6.22 Tool: armclang [5ee92100]"
 	.section	".note.GNU-stack","",%progbits
 	.eabi_attribute	30, 1	@ Tag_ABI_optimization_goals
 	.ARM_attribute	16, 1	@ Tag_AV_eba

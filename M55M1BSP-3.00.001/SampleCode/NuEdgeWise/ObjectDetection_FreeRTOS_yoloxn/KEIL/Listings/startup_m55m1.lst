@@ -7,6 +7,7 @@
 	.eabi_attribute	8, 0	@ Tag_ARM_ISA_use
 	.eabi_attribute	9, 3	@ Tag_THUMB_ISA_use
 	.fpu	fpv5-d16
+	.arch_extension	mve.fp
 	.eabi_attribute	36, 1	@ Tag_FP_HP_extension
 	.eabi_attribute	48, 2	@ Tag_MVE_arch
 	.eabi_attribute	46, 1	@ Tag_DSP_extension
@@ -23,14 +24,14 @@
 	.eabi_attribute	26, 1	@ Tag_ABI_enum_size
 	.eabi_attribute	14, 0	@ Tag_ABI_PCS_R9_use
 	.file	"startup_M55M1.c"
-	.file	1 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include/system_M55M1.h"
-	.file	2 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Source/startup_M55M1.c"
-	.file	3 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include" "stdint.h"
-	.file	4 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include/sys_reg.h"
-	.file	5 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include/pmc_reg.h"
-	.file	6 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include/clk_reg.h"
-	.file	7 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/CMSIS/Core/Include\\core_cm55.h"
-	.file	8 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include/ccap_reg.h"
+	.file	1 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include\\system_M55M1.h"
+	.file	2 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Source/startup_M55M1.c"
+	.file	3 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include" "stdint.h"
+	.file	4 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include\\sys_reg.h"
+	.file	5 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include\\pmc_reg.h"
+	.file	6 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include\\clk_reg.h"
+	.file	7 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/CMSIS/Core/Include\\core_cm55.h"
+	.file	8 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include\\ccap_reg.h"
 	.section	.text.Default_Handler,"ax",%progbits
 	.hidden	Default_Handler                 @ -- Begin function Default_Handler
 	.globl	Default_Handler
@@ -40,7 +41,6 @@
 	.thumb_func
 Default_Handler:
 .Lfunc_begin0:
-	.loc	2 569 0                         @ ../../../../Library/Device/Nuvoton/M55M1/Source/startup_M55M1.c:569:0
 	.fnstart
 	.cfi_sections .debug_frame
 	.cfi_startproc
@@ -65,7 +65,6 @@ Default_Handler:
 	.thumb_func
 Reset_Handler:
 .Lfunc_begin1:
-	.loc	2 432 0                         @ ../../../../Library/Device/Nuvoton/M55M1/Source/startup_M55M1.c:432:0
 	.fnstart
 	.cfi_startproc
 @ %bb.0:
@@ -103,7 +102,6 @@ Reset_Handler:
 	.thumb_func
 HardFault_Handler:
 .Lfunc_begin2:
-	.loc	2 548 0                         @ ../../../../Library/Device/Nuvoton/M55M1/Source/startup_M55M1.c:548:0
 	.fnstart
 	.cfi_startproc
 @ %bb.0:
@@ -119,7 +117,6 @@ HardFault_Handler:
 
 	@NO_APP
 .Ltmp2:
-	@DEBUG_VALUE: HardFault_Handler:u32IRQ <- undef
 	@DEBUG_VALUE: HardFault_Handler:psStackFrame <- $r0
 	.loc	2 562 5                         @ ../../../../Library/Device/Nuvoton/M55M1/Source/startup_M55M1.c:562:5
 	b	ProcessHardFault
@@ -139,7 +136,6 @@ HardFault_Handler:
 	.thumb_func
 Reset_Handler_PreInit:
 .Lfunc_begin3:
-	.loc	2 422 0                         @ ../../../../Library/Device/Nuvoton/M55M1/Source/startup_M55M1.c:422:0
 	.fnstart
 	.cfi_startproc
 @ %bb.0:
@@ -248,7 +244,7 @@ Reset_Handler_Main:
 	.loc	2 457 13 is_stmt 0              @ ../../../../Library/Device/Nuvoton/M55M1/Source/startup_M55M1.c:457:13
 	lsls	r1, r1, #31
 .Ltmp18:
-	.file	9 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/StdDriver/inc\\sys.h"
+	.file	9 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/StdDriver/inc\\sys.h"
 	.loc	9 4572 17 is_stmt 1             @ ../../../../Library/StdDriver/inc\sys.h:4572:17
 	ittt	eq
 	ldreq	r1, [r0, #-252]
@@ -308,332 +304,334 @@ Reset_Handler_Main:
 	str	r2, [r1]
 	movs	r1, #0
 .Ltmp24:
-	.file	10 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/CMSIS/Core/Include/cachel1_armv7.h"
-	.loc	10 98 5                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:98:5
+	.file	10 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/CMSIS/Core/Include\\cachel1_armv7.h"
+	.loc	10 98 5                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:98:5
 	dsb	sy
-	.loc	10 99 5                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:99:5
+	.loc	10 99 5                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:99:5
 	isb	sy
-	.loc	10 100 18                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:100:18
+	.loc	10 100 18                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:100:18
 	str	r1, [r0, #-16]
 	movw	r2, #64948
-	.loc	10 101 5                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:101:5
+	.loc	10 101 5                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:101:5
 	dsb	sy
-	.loc	10 102 5                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:102:5
+	.loc	10 102 5                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:102:5
 	isb	sy
 	movt	r2, #65535
 .Ltmp25:
-	.loc	10 60 14                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:60:14
+	.loc	10 60 14                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:60:14
 	ldr	r2, [r0, r2]
 .Ltmp26:
-	.loc	10 60 9 is_stmt 0               @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:60:9
+	.loc	10 60 9 is_stmt 0               @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:60:9
 	lsls	r2, r2, #14
 	bmi	.LBB4_11
 @ %bb.10:
-	.loc	10 62 5 is_stmt 1               @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:62:5
+	.loc	10 62 5 is_stmt 1               @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:62:5
 	dsb	sy
-	.loc	10 63 5                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:63:5
+	.loc	10 63 5                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:63:5
 	isb	sy
-	.loc	10 64 18                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:64:18
+	.loc	10 64 18                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:64:18
 	str	r1, [r0, #-16]
 	movw	r3, #64948
-	.loc	10 65 5                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:65:5
+	.loc	10 65 5                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:65:5
 	dsb	sy
-	.loc	10 66 5                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:66:5
+	.loc	10 66 5                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:66:5
 	isb	sy
 	movt	r3, #65535
-	.loc	10 67 14                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:67:14
+	.loc	10 67 14                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:67:14
 	ldr	r2, [r0, r3]
 	orr	r2, r2, #131072
 	str	r2, [r0, r3]
-	.loc	10 68 5                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:68:5
+	.loc	10 68 5                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:68:5
 	dsb	sy
-	.loc	10 69 5                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:69:5
+	.loc	10 69 5                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:69:5
 	isb	sy
 .Ltmp27:
 .LBB4_11:
-	.loc	10 0 5 is_stmt 0                @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:5
+	.loc	10 0 5 is_stmt 0                @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:5
 	movw	r2, #65060
 	movt	r2, #65535
 .Ltmp28:
-	.loc	10 226 17 is_stmt 1             @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:226:17
+	.loc	10 226 17 is_stmt 1             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:226:17
 	str	r1, [r0, r2]
 	movw	r1, #65056
-	.loc	10 227 5                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:227:5
+	.loc	10 227 5                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:227:5
 	dsb	sy
 	movt	r1, #65535
-	.loc	10 229 19                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:229:19
-	ldr	r1, [r0, r1]
+	.loc	10 229 19                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:229:19
+	ldr	r2, [r0, r1]
 .Ltmp29:
-	@DEBUG_VALUE: SCB_InvalidateDCache:ccsidr <- $r1
-	.loc	10 232 23                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:232:23
-	ubfx	r4, r1, #13, #15
+	@DEBUG_VALUE: SCB_InvalidateDCache:ccsidr <- $r2
+	.loc	10 0 19 is_stmt 0               @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:19
+	ubfx	r6, r2, #3, #10
+	.loc	10 232 23 is_stmt 1             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:232:23
+	ubfx	r1, r2, #13, #15
 .Ltmp30:
 	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- [DW_OP_constu 32767, DW_OP_and, DW_OP_stack_value] undef
-	.loc	10 0 23 is_stmt 0               @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:23
-	ubfx	r11, r1, #3, #10
-	lsr.w	r12, r1, #3
-	mov	r3, r4
-	.loc	10 233 5 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:233:5
-	add.w	lr, r11, #1
-	lsls	r2, r1, #18
+	.loc	10 233 5                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:233:5
+	adds	r3, r6, #1
+	lsr.w	r12, r2, #3
+	lsls	r7, r2, #18
+	mov	r4, r1
+	and	r11, r3, #3
 	bmi	.LBB4_19
 .Ltmp31:
 @ %bb.12:
-	@DEBUG_VALUE: SCB_InvalidateDCache:ccsidr <- $r1
-	.loc	10 0 0 is_stmt 0                @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:0
-	lsrs	r1, r1, #13
+	@DEBUG_VALUE: SCB_InvalidateDCache:ccsidr <- $r2
+	.loc	10 0 0 is_stmt 0                @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:0
+	lsrs	r2, r2, #13
 .Ltmp32:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 1023, DW_OP_and, DW_OP_stack_value] $r12
-	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- [DW_OP_constu 32767, DW_OP_and, DW_OP_stack_value] $r1
-	movw	r2, #16352
-	and.w	r3, r2, r1, lsl #5
+	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- [DW_OP_constu 32767, DW_OP_and, DW_OP_stack_value] $r2
+	mov.w	r3, #16320
+	and.w	r7, r3, r2, lsl #5
 .Ltmp33:
-	.loc	10 235 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:235:7
-	ands	r6, lr, #3
-	mov	r2, r11
+	.loc	10 235 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:235:7
+	cmp.w	r11, #0
+	mov	lr, r6
 	beq	.LBB4_15
 .Ltmp34:
 @ %bb.13:
-	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- [DW_OP_constu 32767, DW_OP_and, DW_OP_stack_value] $r1
+	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- [DW_OP_constu 32767, DW_OP_and, DW_OP_stack_value] $r2
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 1023, DW_OP_and, DW_OP_stack_value] $r12
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 1023, DW_OP_and, DW_OP_stack_value] $r12
-	.loc	10 236 73                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:73
-	orr.w	r1, r3, r12, lsl #30
+	.loc	10 236 73                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:73
+	orr.w	r2, r7, r12, lsl #30
 .Ltmp35:
-	.loc	10 241 7                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:7
-	cmp	r6, #1
+	.loc	10 241 7                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:7
+	cmp.w	r11, #1
 .Ltmp36:
-	.loc	10 241 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:20
-	sub.w	r2, r11, #1
+	.loc	10 241 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:20
+	sub.w	lr, r6, #1
 .Ltmp37:
-	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r2
-	.loc	10 236 20 is_stmt 1             @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:20
-	str	r1, [r0]
-	.loc	10 241 7                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:7
+	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $lr
+	.loc	10 236 20 is_stmt 1             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:20
+	str	r2, [r0]
+	.loc	10 241 7                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:7
 	beq	.LBB4_15
 .Ltmp38:
 @ %bb.14:
-	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r2
+	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $lr
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- undef
-	.loc	10 236 73                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:73
-	orr.w	r1, r3, r2, lsl #30
+	.loc	10 236 73                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:73
+	orr.w	r2, r7, lr, lsl #30
 .Ltmp39:
-	.loc	10 241 20                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:20
-	sub.w	r2, r11, #2
+	.loc	10 241 20                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:20
+	sub.w	lr, r6, #2
 .Ltmp40:
-	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r2
+	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $lr
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- undef
-	.loc	10 241 7 is_stmt 0              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:7
-	cmp	r6, #2
-	.loc	10 236 20 is_stmt 1             @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:20
-	str	r1, [r0]
-	.loc	10 236 73 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:73
+	.loc	10 241 7 is_stmt 0              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:7
+	cmp.w	r11, #2
+	.loc	10 236 20 is_stmt 1             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:20
+	str	r2, [r0]
+	.loc	10 236 73 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:73
 	ittt	ne
-	orrne.w	r1, r3, r2, lsl #30
-	.loc	10 236 20                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:20
-	strne	r1, [r0]
+	orrne.w	r2, r7, lr, lsl #30
+	.loc	10 236 20                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:20
+	strne	r2, [r0]
 .Ltmp41:
-	.loc	10 241 20 is_stmt 1             @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:20
-	subne.w	r2, r11, #3
+	.loc	10 241 20 is_stmt 1             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:20
+	subne.w	lr, r6, #3
 .Ltmp42:
-	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r2
+	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $lr
 .LBB4_15:
-	.loc	10 235 7                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:235:7
-	cmp.w	r11, #3
+	.loc	10 235 7                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:235:7
+	cmp	r6, #3
 	blo	.LBB4_18
 @ %bb.16:
-	orr.w	r3, r3, r2, lsl #30
-	adds	r2, #1
-	add.w	r6, r3, #-1073741824
-	eor	r1, r3, #-2147483648
-	add.w	r5, r3, #1073741824
+	orr.w	r7, r7, lr, lsl #30
+	add.w	r3, lr, #1
+	add.w	r4, r7, #-1073741824
+	eor	r5, r7, #-2147483648
+	add.w	r2, r7, #1073741824
 	.p2align	2
 .LBB4_17:                               @ =>This Inner Loop Header: Depth=1
 .Ltmp43:
-	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 1, DW_OP_minus, DW_OP_stack_value] $r2
-	.loc	10 241 23                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:23
-	subs	r2, #4
+	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 1, DW_OP_minus, DW_OP_stack_value] $r3
+	.loc	10 241 23                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:23
+	subs	r3, #4
 .Ltmp44:
-	.loc	10 236 20                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:20
-	str	r3, [r0]
-	str	r6, [r0]
+	.loc	10 236 20                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:20
+	str	r7, [r0]
+	str	r4, [r0]
 .Ltmp45:
-	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 2, DW_OP_minus, DW_OP_stack_value] $r2
-	str	r1, [r0]
-.Ltmp46:
-	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 3, DW_OP_minus, DW_OP_stack_value] $r2
+	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 2, DW_OP_minus, DW_OP_stack_value] $r3
 	str	r5, [r0]
+.Ltmp46:
+	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 3, DW_OP_minus, DW_OP_stack_value] $r3
+	str	r2, [r0]
 .Ltmp47:
-	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 5, DW_OP_minus, DW_OP_stack_value] $r2
-	.loc	10 241 7                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:7
+	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 5, DW_OP_minus, DW_OP_stack_value] $r3
+	.loc	10 241 7                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:7
 	bne	.LBB4_17
 .Ltmp48:
 .LBB4_18:
-	.loc	10 242 17                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:242:17
-	subs	r3, r4, #1
+	.loc	10 242 17                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:242:17
+	subs	r4, r1, #1
 .Ltmp49:
-	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r3
+	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r4
 .LBB4_19:
-	.loc	10 233 5                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:233:5
-	cmp	r4, #0
+	.loc	10 233 5                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:233:5
+	cmp	r1, #0
 	bne	.LBB4_32
 .LBB4_20:
-	.loc	10 244 5                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:244:5
+	.loc	10 244 5                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:244:5
 	dsb	sy
 .Ltmp50:
-	.loc	10 148 14                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:148:14
+	.loc	10 148 14                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:148:14
 	movw	r1, #64948
 .Ltmp51:
-	.loc	10 245 5                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:245:5
+	.loc	10 245 5                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:245:5
 	isb	sy
 .Ltmp52:
-	.loc	10 148 14                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:148:14
+	.loc	10 148 14                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:148:14
 	movt	r1, #65535
 	ldr	r1, [r0, r1]
 .Ltmp53:
-	.loc	10 148 9 is_stmt 0              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:148:9
+	.loc	10 148 9 is_stmt 0              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:148:9
 	lsls	r1, r1, #15
 	bmi	.LBB4_31
 @ %bb.21:
-	.loc	10 150 17 is_stmt 1             @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:150:17
+	.loc	10 150 17 is_stmt 1             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:150:17
 	movw	r2, #65060
 	movs	r1, #0
 	movt	r2, #65535
 	str	r1, [r0, r2]
-	.loc	10 153 19                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:153:19
+	.loc	10 153 19                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:153:19
 	movw	r1, #65056
-	.loc	10 151 5                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:151:5
+	.loc	10 151 5                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:151:5
 	dsb	sy
-	.loc	10 153 19                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:153:19
+	.loc	10 153 19                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:153:19
 	movt	r1, #65535
-	ldr	r1, [r0, r1]
+	ldr	r2, [r0, r1]
 .Ltmp54:
-	@DEBUG_VALUE: SCB_EnableDCache:ccsidr <- $r1
-	.loc	10 156 23                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:156:23
-	ubfx	r7, r1, #13, #15
+	@DEBUG_VALUE: SCB_EnableDCache:ccsidr <- $r2
+	.loc	10 0 19 is_stmt 0               @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:19
+	ubfx	r5, r2, #3, #10
+	.loc	10 156 23 is_stmt 1             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:156:23
+	ubfx	r1, r2, #13, #15
 .Ltmp55:
 	@DEBUG_VALUE: SCB_EnableDCache:sets <- [DW_OP_constu 32767, DW_OP_and, DW_OP_stack_value] undef
-	.loc	10 0 23 is_stmt 0               @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:23
-	ubfx	r9, r1, #3, #10
-	lsr.w	r12, r1, #3
-	mov	r3, r7
-	.loc	10 157 5 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:157:5
-	add.w	lr, r9, #1
-	lsls	r2, r1, #18
+	.loc	10 157 5                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:157:5
+	adds	r3, r5, #1
+	lsr.w	r12, r2, #3
+	lsls	r7, r2, #18
+	mov	r4, r1
+	and	r9, r3, #3
 	bmi	.LBB4_29
 .Ltmp56:
 @ %bb.22:
-	@DEBUG_VALUE: SCB_EnableDCache:ccsidr <- $r1
-	.loc	10 0 0 is_stmt 0                @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:0
-	lsrs	r1, r1, #13
+	@DEBUG_VALUE: SCB_EnableDCache:ccsidr <- $r2
+	.loc	10 0 0 is_stmt 0                @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:0
+	lsrs	r2, r2, #13
 .Ltmp57:
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- [DW_OP_constu 1023, DW_OP_and, DW_OP_stack_value] $r12
-	@DEBUG_VALUE: SCB_EnableDCache:sets <- [DW_OP_constu 32767, DW_OP_and, DW_OP_stack_value] $r1
-	movw	r2, #16352
-	and.w	r3, r2, r1, lsl #5
+	@DEBUG_VALUE: SCB_EnableDCache:sets <- [DW_OP_constu 32767, DW_OP_and, DW_OP_stack_value] $r2
+	mov.w	r3, #16320
+	and.w	r6, r3, r2, lsl #5
 .Ltmp58:
-	.loc	10 159 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:159:7
-	ands	r4, lr, #3
-	mov	r2, r9
+	.loc	10 159 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:159:7
+	cmp.w	r9, #0
+	mov	lr, r5
 	beq	.LBB4_25
 .Ltmp59:
 @ %bb.23:
-	@DEBUG_VALUE: SCB_EnableDCache:sets <- [DW_OP_constu 32767, DW_OP_and, DW_OP_stack_value] $r1
+	@DEBUG_VALUE: SCB_EnableDCache:sets <- [DW_OP_constu 32767, DW_OP_and, DW_OP_stack_value] $r2
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- [DW_OP_constu 1023, DW_OP_and, DW_OP_stack_value] $r12
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- [DW_OP_constu 1023, DW_OP_and, DW_OP_stack_value] $r12
-	.loc	10 160 73                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:160:73
-	orr.w	r1, r3, r12, lsl #30
+	.loc	10 160 73                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:160:73
+	orr.w	r2, r6, r12, lsl #30
 .Ltmp60:
-	.loc	10 165 7                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:165:7
-	cmp	r4, #1
+	.loc	10 165 7                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:165:7
+	cmp.w	r9, #1
 .Ltmp61:
-	.loc	10 165 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:165:20
-	sub.w	r2, r9, #1
+	.loc	10 165 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:165:20
+	sub.w	lr, r5, #1
 .Ltmp62:
-	@DEBUG_VALUE: SCB_EnableDCache:ways <- $r2
-	.loc	10 160 20 is_stmt 1             @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:160:20
-	str	r1, [r0]
-	.loc	10 165 7                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:165:7
+	@DEBUG_VALUE: SCB_EnableDCache:ways <- $lr
+	.loc	10 160 20 is_stmt 1             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:160:20
+	str	r2, [r0]
+	.loc	10 165 7                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:165:7
 	beq	.LBB4_25
 .Ltmp63:
 @ %bb.24:
-	@DEBUG_VALUE: SCB_EnableDCache:ways <- $r2
+	@DEBUG_VALUE: SCB_EnableDCache:ways <- $lr
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- undef
-	.loc	10 160 73                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:160:73
-	orr.w	r1, r3, r2, lsl #30
+	.loc	10 160 73                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:160:73
+	orr.w	r2, r6, lr, lsl #30
 .Ltmp64:
-	.loc	10 165 20                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:165:20
-	sub.w	r2, r9, #2
+	.loc	10 165 20                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:165:20
+	sub.w	lr, r5, #2
 .Ltmp65:
-	@DEBUG_VALUE: SCB_EnableDCache:ways <- $r2
+	@DEBUG_VALUE: SCB_EnableDCache:ways <- $lr
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- undef
-	.loc	10 165 7 is_stmt 0              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:165:7
-	cmp	r4, #2
-	.loc	10 160 20 is_stmt 1             @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:160:20
-	str	r1, [r0]
-	.loc	10 160 73 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:160:73
+	.loc	10 165 7 is_stmt 0              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:165:7
+	cmp.w	r9, #2
+	.loc	10 160 20 is_stmt 1             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:160:20
+	str	r2, [r0]
+	.loc	10 160 73 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:160:73
 	ittt	ne
-	orrne.w	r1, r3, r2, lsl #30
-	.loc	10 160 20                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:160:20
-	strne	r1, [r0]
+	orrne.w	r2, r6, lr, lsl #30
+	.loc	10 160 20                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:160:20
+	strne	r2, [r0]
 .Ltmp66:
-	.loc	10 165 20 is_stmt 1             @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:165:20
-	subne.w	r2, r9, #3
+	.loc	10 165 20 is_stmt 1             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:165:20
+	subne.w	lr, r5, #3
 .Ltmp67:
-	@DEBUG_VALUE: SCB_EnableDCache:ways <- $r2
+	@DEBUG_VALUE: SCB_EnableDCache:ways <- $lr
 .LBB4_25:
-	.loc	10 159 7                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:159:7
-	cmp.w	r9, #3
+	.loc	10 159 7                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:159:7
+	cmp	r5, #3
 	blo	.LBB4_28
 @ %bb.26:
-	orr.w	r3, r3, r2, lsl #30
-	adds	r2, #1
-	add.w	r4, r3, #-1073741824
-	eor	r1, r3, #-2147483648
-	add.w	r6, r3, #1073741824
+	orr.w	r6, r6, lr, lsl #30
+	add.w	r3, lr, #1
+	add.w	r4, r6, #-1073741824
+	eor	r7, r6, #-2147483648
+	add.w	r2, r6, #1073741824
 	.p2align	2
 .LBB4_27:                               @ =>This Inner Loop Header: Depth=1
 .Ltmp68:
-	@DEBUG_VALUE: SCB_EnableDCache:ways <- [DW_OP_constu 1, DW_OP_minus, DW_OP_stack_value] $r2
-	.loc	10 165 23                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:165:23
-	subs	r2, #4
+	@DEBUG_VALUE: SCB_EnableDCache:ways <- [DW_OP_constu 1, DW_OP_minus, DW_OP_stack_value] $r3
+	.loc	10 165 23                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:165:23
+	subs	r3, #4
 .Ltmp69:
-	.loc	10 160 20                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:160:20
-	str	r3, [r0]
+	.loc	10 160 20                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:160:20
+	str	r6, [r0]
 	str	r4, [r0]
 .Ltmp70:
-	@DEBUG_VALUE: SCB_EnableDCache:ways <- [DW_OP_constu 2, DW_OP_minus, DW_OP_stack_value] $r2
-	str	r1, [r0]
+	@DEBUG_VALUE: SCB_EnableDCache:ways <- [DW_OP_constu 2, DW_OP_minus, DW_OP_stack_value] $r3
+	str	r7, [r0]
 .Ltmp71:
-	@DEBUG_VALUE: SCB_EnableDCache:ways <- [DW_OP_constu 3, DW_OP_minus, DW_OP_stack_value] $r2
-	str	r6, [r0]
+	@DEBUG_VALUE: SCB_EnableDCache:ways <- [DW_OP_constu 3, DW_OP_minus, DW_OP_stack_value] $r3
+	str	r2, [r0]
 .Ltmp72:
-	@DEBUG_VALUE: SCB_EnableDCache:ways <- [DW_OP_constu 5, DW_OP_minus, DW_OP_stack_value] $r2
-	.loc	10 165 7                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:165:7
+	@DEBUG_VALUE: SCB_EnableDCache:ways <- [DW_OP_constu 5, DW_OP_minus, DW_OP_stack_value] $r3
+	.loc	10 165 7                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:165:7
 	bne	.LBB4_27
 .Ltmp73:
 .LBB4_28:
-	.loc	10 166 17                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:166:17
-	subs	r3, r7, #1
+	.loc	10 166 17                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:166:17
+	subs	r4, r1, #1
 .Ltmp74:
-	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r3
+	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r4
 .LBB4_29:
-	.loc	10 157 5                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:157:5
-	cmp	r7, #0
+	.loc	10 157 5                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:157:5
+	cmp	r1, #0
 	bne.w	.LBB4_58
 .LBB4_30:
-	.loc	10 0 5 is_stmt 0                @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:5
+	.loc	10 0 5 is_stmt 0                @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:5
 	movw	r2, #64948
-	.loc	10 167 5 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:167:5
+	.loc	10 167 5 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:167:5
 	dsb	sy
 	movt	r2, #65535
-	.loc	10 169 14                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:169:14
+	.loc	10 169 14                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:169:14
 	ldr	r1, [r0, r2]
 	orr	r1, r1, #65536
 	str	r1, [r0, r2]
-	.loc	10 171 5                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:171:5
+	.loc	10 171 5                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:171:5
 	dsb	sy
-	.loc	10 172 5                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:172:5
+	.loc	10 172 5                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:172:5
 	isb	sy
 .Ltmp75:
 .LBB4_31:
@@ -645,232 +643,231 @@ Reset_Handler_Main:
 .Ltmp77:
 .LBB4_32:
 	.loc	2 0 5 is_stmt 0                 @ ../../../../Library/Device/Nuvoton/M55M1/Source/startup_M55M1.c:0:5
-	sub.w	r10, r11, #1
-	and	r4, lr, #3
-	lsl.w	r1, r10, #30
-	sub.w	lr, r11, #2
+	sub.w	r8, r6, #1
+	sub.w	lr, r6, #2
+	lsl.w	r1, r8, #30
+	movw	r9, #16352
 	str	r1, [sp, #12]                   @ 4-byte Spill
-	movw	r8, #16352
 	lsl.w	r1, lr, #30
-	lsl.w	r9, r12, #30
+	lsl.w	r10, r12, #30
 	str	r1, [sp, #8]                    @ 4-byte Spill
-	sub.w	r1, r11, #3
+	subs	r1, r6, #3
 	str	r1, [sp, #4]                    @ 4-byte Spill
 	b	.LBB4_34
 	.p2align	2
 .LBB4_33:                               @   in Loop: Header=BB4_34 Depth=1
 .Ltmp78:
 	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r12
-	.loc	10 242 5 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:242:5
+	.loc	10 242 5 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:242:5
 	cmp.w	r12, #0
 .Ltmp79:
-	.loc	10 242 17 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:242:17
-	sub.w	r3, r3, #2
+	.loc	10 242 17 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:242:17
+	sub.w	r4, r4, #2
 .Ltmp80:
-	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r3
-	.loc	10 242 5                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:242:5
+	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r4
+	.loc	10 242 5                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:242:5
 	beq.w	.LBB4_20
 .Ltmp81:
 .LBB4_34:                               @ =>This Loop Header: Depth=1
                                         @     Child Loop BB4_40 Depth 2
                                         @     Child Loop BB4_47 Depth 2
-	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r3
+	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r4
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 1023, DW_OP_and, DW_OP_stack_value] undef
-	.loc	10 0 5                          @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:5
-	and.w	r1, r8, r3, lsl #5
-	mov	r2, r11
-	.loc	10 235 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:235:7
-	cbz	r4, .LBB4_38
+	.loc	10 0 5                          @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:5
+	and.w	r1, r9, r4, lsl #5
+	.loc	10 235 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:235:7
+	cmp.w	r11, #0
+	mov	r2, r6
+	beq	.LBB4_38
 .Ltmp82:
 @ %bb.35:                               @   in Loop: Header=BB4_34 Depth=1
-	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r3
+	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r4
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 1023, DW_OP_and, DW_OP_stack_value] undef
-	.loc	10 236 73                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:73
-	orr.w	r2, r9, r1
-	.loc	10 236 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:20
+	.loc	10 236 73                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:73
+	orr.w	r2, r10, r1
+	.loc	10 236 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:20
 	str	r2, [r0]
 .Ltmp83:
-	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r10
-	.loc	10 0 20                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:20
-	mov	r2, r10
-	.loc	10 241 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:7
-	cmp	r4, #1
+	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r8
+	.loc	10 0 20                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:20
+	mov	r2, r8
+	.loc	10 241 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:7
+	cmp.w	r11, #1
 	beq	.LBB4_38
 .Ltmp84:
 @ %bb.36:                               @   in Loop: Header=BB4_34 Depth=1
-	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r10
-	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r3
-	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r10
-	.loc	10 236 73                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:73
+	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r8
+	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r4
+	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r8
+	.loc	10 236 73                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:73
 	ldr	r2, [sp, #12]                   @ 4-byte Reload
-	.loc	10 241 7                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:7
-	cmp	r4, #2
-	.loc	10 236 73                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:73
+	.loc	10 241 7                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:7
+	cmp.w	r11, #2
+	.loc	10 236 73                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:73
 	orr.w	r2, r2, r1
-	.loc	10 236 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:20
+	.loc	10 236 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:20
 	str	r2, [r0]
 .Ltmp85:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $lr
-	.loc	10 0 20                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:20
+	.loc	10 0 20                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:20
 	mov	r2, lr
-	.loc	10 241 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:7
+	.loc	10 241 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:7
 	beq	.LBB4_38
 .Ltmp86:
 @ %bb.37:                               @   in Loop: Header=BB4_34 Depth=1
+	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r4
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $lr
-	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r3
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $lr
-	.loc	10 236 73                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:73
+	.loc	10 236 73                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:73
 	ldr	r2, [sp, #8]                    @ 4-byte Reload
 	orrs	r2, r1
-	.loc	10 236 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:20
+	.loc	10 236 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:20
 	str	r2, [r0]
 .Ltmp87:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_plus_uconst 4] [$sp+0]
-	.loc	10 0 20                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:20
+	.loc	10 0 20                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:20
 	ldr	r2, [sp, #4]                    @ 4-byte Reload
 .Ltmp88:
 	.p2align	2
 .LBB4_38:                               @   in Loop: Header=BB4_34 Depth=1
-	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r3
-	.loc	10 235 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:235:7
-	cmp.w	r11, #3
+	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r4
+	.loc	10 235 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:235:7
+	cmp	r6, #3
 	blo	.LBB4_41
 .Ltmp89:
 @ %bb.39:                               @   in Loop: Header=BB4_34 Depth=1
-	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r3
+	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r4
 	orr.w	r1, r1, r2, lsl #30
 	adds	r2, #1
-	add.w	r5, r1, #-1073741824
-	eor	r6, r1, #-2147483648
-	add.w	r7, r1, #1073741824
+	add.w	r7, r1, #-1073741824
+	eor	r5, r1, #-2147483648
+	add.w	r3, r1, #1073741824
 .Ltmp90:
 	.p2align	2
 .LBB4_40:                               @   Parent Loop BB4_34 Depth=1
                                         @ =>  This Inner Loop Header: Depth=2
-	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r3
+	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r4
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 1, DW_OP_minus, DW_OP_stack_value] $r2
-	.loc	10 241 23                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:23
+	.loc	10 241 23                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:23
 	subs	r2, #4
 .Ltmp91:
-	.loc	10 236 20                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:20
+	.loc	10 236 20                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:20
 	str	r1, [r0]
-	str	r5, [r0]
+	str	r7, [r0]
 .Ltmp92:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 2, DW_OP_minus, DW_OP_stack_value] $r2
-	str	r6, [r0]
+	str	r5, [r0]
 .Ltmp93:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 3, DW_OP_minus, DW_OP_stack_value] $r2
-	str	r7, [r0]
+	str	r3, [r0]
 .Ltmp94:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 5, DW_OP_minus, DW_OP_stack_value] $r2
-	.loc	10 241 7                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:7
+	.loc	10 241 7                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:7
 	bne	.LBB4_40
 .Ltmp95:
 .LBB4_41:                               @   in Loop: Header=BB4_34 Depth=1
-	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r3
-	.loc	10 242 17                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:242:17
-	sub.w	r12, r3, #1
+	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r4
+	.loc	10 242 17                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:242:17
+	sub.w	r12, r4, #1
 .Ltmp96:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 1023, DW_OP_and, DW_OP_stack_value] undef
 	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r12
-	.loc	10 0 17 is_stmt 0               @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:17
-	and.w	r1, r8, r12, lsl #5
-	mov	r2, r11
+	.loc	10 235 7                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:235:7
+	cmp.w	r11, #0
+	and.w	r1, r9, r12, lsl #5
+	mov	r2, r6
+	beq	.LBB4_45
 .Ltmp97:
-	.loc	10 235 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:235:7
-	cbz	r4, .LBB4_45
-.Ltmp98:
 @ %bb.42:                               @   in Loop: Header=BB4_34 Depth=1
 	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r12
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 1023, DW_OP_and, DW_OP_stack_value] undef
-	.loc	10 236 73                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:73
-	orr.w	r2, r9, r1
-	.loc	10 236 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:20
+	.loc	10 236 73                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:73
+	orr.w	r2, r10, r1
+	.loc	10 236 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:20
 	str	r2, [r0]
-.Ltmp99:
-	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r10
-	.loc	10 0 20                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:20
-	mov	r2, r10
-	.loc	10 241 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:7
-	cmp	r4, #1
+.Ltmp98:
+	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r8
+	.loc	10 0 20                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:20
+	mov	r2, r8
+	.loc	10 241 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:7
+	cmp.w	r11, #1
 	beq	.LBB4_45
-.Ltmp100:
+.Ltmp99:
 @ %bb.43:                               @   in Loop: Header=BB4_34 Depth=1
 	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r12
-	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r10
-	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r10
-	.loc	10 236 73                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:73
+	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r8
+	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r8
+	.loc	10 236 73                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:73
 	ldr	r2, [sp, #12]                   @ 4-byte Reload
-	.loc	10 241 7                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:7
-	cmp	r4, #2
-	.loc	10 236 73                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:73
+	.loc	10 241 7                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:7
+	cmp.w	r11, #2
+	.loc	10 236 73                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:73
 	orr.w	r2, r2, r1
-	.loc	10 236 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:20
+	.loc	10 236 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:20
 	str	r2, [r0]
-.Ltmp101:
+.Ltmp100:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $lr
-	.loc	10 0 20                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:20
+	.loc	10 0 20                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:20
 	mov	r2, lr
-	.loc	10 241 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:7
+	.loc	10 241 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:7
 	beq	.LBB4_45
-.Ltmp102:
+.Ltmp101:
 @ %bb.44:                               @   in Loop: Header=BB4_34 Depth=1
 	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r12
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $lr
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $lr
-	.loc	10 236 73                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:73
+	.loc	10 236 73                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:73
 	ldr	r2, [sp, #8]                    @ 4-byte Reload
 	orrs	r2, r1
-	.loc	10 236 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:20
+	.loc	10 236 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:20
 	str	r2, [r0]
-.Ltmp103:
+.Ltmp102:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_plus_uconst 4] [$sp+0]
-	.loc	10 0 20                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:20
+	.loc	10 0 20                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:20
 	ldr	r2, [sp, #4]                    @ 4-byte Reload
-.Ltmp104:
+.Ltmp103:
 	.p2align	2
 .LBB4_45:                               @   in Loop: Header=BB4_34 Depth=1
 	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r12
-	.loc	10 235 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:235:7
-	cmp.w	r11, #3
+	.loc	10 235 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:235:7
+	cmp	r6, #3
 	blo	.LBB4_33
-.Ltmp105:
+.Ltmp104:
 @ %bb.46:                               @   in Loop: Header=BB4_34 Depth=1
 	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r12
 	orr.w	r1, r1, r2, lsl #30
 	adds	r2, #1
-	add.w	r5, r1, #-1073741824
-	eor	r6, r1, #-2147483648
-	add.w	r7, r1, #1073741824
-.Ltmp106:
+	add.w	r7, r1, #-1073741824
+	eor	r5, r1, #-2147483648
+	add.w	r3, r1, #1073741824
+.Ltmp105:
 	.p2align	2
 .LBB4_47:                               @   Parent Loop BB4_34 Depth=1
                                         @ =>  This Inner Loop Header: Depth=2
 	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r12
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 1, DW_OP_minus, DW_OP_stack_value] $r2
-	.loc	10 241 23                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:23
+	.loc	10 241 23                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:23
 	subs	r2, #4
-.Ltmp107:
-	.loc	10 236 20                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:20
+.Ltmp106:
+	.loc	10 236 20                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:20
 	str	r1, [r0]
+	str	r7, [r0]
+.Ltmp107:
+	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 2, DW_OP_minus, DW_OP_stack_value] $r2
 	str	r5, [r0]
 .Ltmp108:
-	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 2, DW_OP_minus, DW_OP_stack_value] $r2
-	str	r6, [r0]
-.Ltmp109:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 3, DW_OP_minus, DW_OP_stack_value] $r2
-	str	r7, [r0]
-.Ltmp110:
+	str	r3, [r0]
+.Ltmp109:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 5, DW_OP_minus, DW_OP_stack_value] $r2
-	.loc	10 241 7                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:7
+	.loc	10 241 7                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:7
 	bne	.LBB4_47
 	b	.LBB4_33
-.Ltmp111:
+.Ltmp110:
 .LBB4_48:
-	.loc	10 0 7 is_stmt 0                @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:7
+	.loc	10 0 7 is_stmt 0                @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:7
 	movs	r1, #0
-.Ltmp112:
+.Ltmp111:
 	.loc	2 467 27 is_stmt 1              @ ../../../../Library/Device/Nuvoton/M55M1/Source/startup_M55M1.c:467:27
 	str	r1, [r0]
 	.p2align	2
@@ -899,11 +896,11 @@ Reset_Handler_Main:
 	cmp	r1, #0
 	bmi	.LBB4_49
 	b	.LBB4_7
-.Ltmp113:
+.Ltmp112:
 .LBB4_53:
 	.loc	2 0 13                          @ ../../../../Library/Device/Nuvoton/M55M1/Source/startup_M55M1.c:0:13
 	movs	r3, #0
-.Ltmp114:
+.Ltmp113:
 	.loc	2 479 27 is_stmt 1              @ ../../../../Library/Device/Nuvoton/M55M1/Source/startup_M55M1.c:479:27
 	str	r3, [r2]
 	.p2align	2
@@ -932,230 +929,229 @@ Reset_Handler_Main:
 	cmp	r3, #0
 	bmi	.LBB4_54
 	b	.LBB4_8
-.Ltmp115:
+.Ltmp114:
 .LBB4_58:
 	.loc	2 0 13                          @ ../../../../Library/Device/Nuvoton/M55M1/Source/startup_M55M1.c:0:13
-	and	r4, lr, #3
-	sub.w	lr, r9, #1
+	sub.w	lr, r5, #1
+	sub.w	r10, r5, #2
 	lsl.w	r1, lr, #30
-	sub.w	r10, r9, #2
-	str	r1, [sp, #12]                   @ 4-byte Spill
 	movw	r11, #16352
+	str	r1, [sp, #12]                   @ 4-byte Spill
 	lsl.w	r1, r10, #30
 	lsl.w	r8, r12, #30
 	str	r1, [sp, #8]                    @ 4-byte Spill
-	sub.w	r1, r9, #3
+	subs	r1, r5, #3
 	str	r1, [sp, #4]                    @ 4-byte Spill
 	b	.LBB4_60
 	.p2align	2
 .LBB4_59:                               @   in Loop: Header=BB4_60 Depth=1
-.Ltmp116:
+.Ltmp115:
 	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r1
-	.loc	10 166 5 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:166:5
+	.loc	10 166 5 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:166:5
 	cmp	r1, #0
+.Ltmp116:
+	.loc	10 166 17 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:166:17
+	sub.w	r4, r4, #2
 .Ltmp117:
-	.loc	10 166 17 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:166:17
-	sub.w	r3, r3, #2
-.Ltmp118:
-	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r3
-	.loc	10 166 5                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:166:5
+	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r4
+	.loc	10 166 5                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:166:5
 	beq.w	.LBB4_30
-.Ltmp119:
+.Ltmp118:
 .LBB4_60:                               @ =>This Loop Header: Depth=1
                                         @     Child Loop BB4_66 Depth 2
                                         @     Child Loop BB4_73 Depth 2
-	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r3
+	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r4
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- [DW_OP_constu 1023, DW_OP_and, DW_OP_stack_value] undef
-	.loc	10 0 5                          @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:5
-	and.w	r1, r11, r3, lsl #5
-	mov	r7, r9
-	.loc	10 159 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:159:7
-	cbz	r4, .LBB4_64
-.Ltmp120:
+	.loc	10 0 5                          @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:5
+	and.w	r1, r11, r4, lsl #5
+	.loc	10 159 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:159:7
+	cmp.w	r9, #0
+	mov	r7, r5
+	beq	.LBB4_64
+.Ltmp119:
 @ %bb.61:                               @   in Loop: Header=BB4_60 Depth=1
-	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r3
+	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r4
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- [DW_OP_constu 1023, DW_OP_and, DW_OP_stack_value] undef
-	.loc	10 160 73                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:160:73
+	.loc	10 160 73                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:160:73
 	orr.w	r2, r8, r1
 	mov	r7, lr
-	.loc	10 165 7                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:165:7
-	cmp	r4, #1
-	.loc	10 160 20                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:160:20
+	.loc	10 165 7                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:165:7
+	cmp.w	r9, #1
+	.loc	10 160 20                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:160:20
 	str	r2, [r0]
-.Ltmp121:
+.Ltmp120:
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- $lr
-	.loc	10 165 7                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:165:7
+	.loc	10 165 7                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:165:7
 	beq	.LBB4_64
-.Ltmp122:
+.Ltmp121:
 @ %bb.62:                               @   in Loop: Header=BB4_60 Depth=1
+	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r4
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- $lr
-	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r3
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- $lr
-	.loc	10 160 73                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:160:73
+	.loc	10 160 73                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:160:73
 	ldr	r2, [sp, #12]                   @ 4-byte Reload
 	mov	r7, r10
-	.loc	10 165 7                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:165:7
-	cmp	r4, #2
-	.loc	10 160 73                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:160:73
+	.loc	10 165 7                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:165:7
+	cmp.w	r9, #2
+	.loc	10 160 73                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:160:73
 	orr.w	r2, r2, r1
-	.loc	10 160 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:160:20
+	.loc	10 160 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:160:20
 	str	r2, [r0]
-.Ltmp123:
+.Ltmp122:
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- $r10
-	.loc	10 165 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:165:7
+	.loc	10 165 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:165:7
 	beq	.LBB4_64
-.Ltmp124:
+.Ltmp123:
 @ %bb.63:                               @   in Loop: Header=BB4_60 Depth=1
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- $r10
-	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r3
+	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r4
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- $r10
-	.loc	10 160 73                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:160:73
+	.loc	10 160 73                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:160:73
 	ldr	r2, [sp, #8]                    @ 4-byte Reload
 	orrs	r2, r1
-	.loc	10 160 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:160:20
+	.loc	10 160 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:160:20
 	str	r2, [r0]
-.Ltmp125:
+.Ltmp124:
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- [DW_OP_plus_uconst 4] [$sp+0]
-	.loc	10 0 20                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:20
+	.loc	10 0 20                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:20
 	ldr	r7, [sp, #4]                    @ 4-byte Reload
-.Ltmp126:
+.Ltmp125:
 	.p2align	2
 .LBB4_64:                               @   in Loop: Header=BB4_60 Depth=1
-	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r3
-	.loc	10 159 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:159:7
-	cmp.w	r9, #3
+	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r4
+	.loc	10 159 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:159:7
+	cmp	r5, #3
 	blo	.LBB4_67
-.Ltmp127:
+.Ltmp126:
 @ %bb.65:                               @   in Loop: Header=BB4_60 Depth=1
-	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r3
+	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r4
 	orr.w	r1, r1, r7, lsl #30
 	adds	r7, #1
 	add.w	r2, r1, #-1073741824
 	eor	r6, r1, #-2147483648
-	add.w	r5, r1, #1073741824
-.Ltmp128:
+	add.w	r3, r1, #1073741824
+.Ltmp127:
 	.p2align	2
 .LBB4_66:                               @   Parent Loop BB4_60 Depth=1
                                         @ =>  This Inner Loop Header: Depth=2
-	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r3
+	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r4
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- [DW_OP_constu 1, DW_OP_minus, DW_OP_stack_value] $r7
-	.loc	10 165 23                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:165:23
+	.loc	10 165 23                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:165:23
 	subs	r7, #4
-.Ltmp129:
-	.loc	10 160 20                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:160:20
+.Ltmp128:
+	.loc	10 160 20                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:160:20
 	str	r1, [r0]
 	str	r2, [r0]
-.Ltmp130:
+.Ltmp129:
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- [DW_OP_constu 2, DW_OP_minus, DW_OP_stack_value] $r7
 	str	r6, [r0]
-.Ltmp131:
+.Ltmp130:
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- [DW_OP_constu 3, DW_OP_minus, DW_OP_stack_value] $r7
-	str	r5, [r0]
-.Ltmp132:
+	str	r3, [r0]
+.Ltmp131:
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- [DW_OP_constu 5, DW_OP_minus, DW_OP_stack_value] $r7
-	.loc	10 165 7                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:165:7
+	.loc	10 165 7                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:165:7
 	bne	.LBB4_66
-.Ltmp133:
+.Ltmp132:
 .LBB4_67:                               @   in Loop: Header=BB4_60 Depth=1
-	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r3
-	.loc	10 166 17                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:166:17
-	subs	r1, r3, #1
-.Ltmp134:
+	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r4
+	.loc	10 166 17                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:166:17
+	subs	r1, r4, #1
+.Ltmp133:
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- [DW_OP_constu 1023, DW_OP_and, DW_OP_stack_value] undef
 	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r1
-	.loc	10 0 17 is_stmt 0               @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:17
+	.loc	10 159 7                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:159:7
+	cmp.w	r9, #0
 	and.w	r7, r11, r1, lsl #5
-	mov	r2, r9
-.Ltmp135:
-	.loc	10 159 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:159:7
-	cbz	r4, .LBB4_71
-.Ltmp136:
+	mov	r2, r5
+	beq	.LBB4_71
+.Ltmp134:
 @ %bb.68:                               @   in Loop: Header=BB4_60 Depth=1
 	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r1
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- [DW_OP_constu 1023, DW_OP_and, DW_OP_stack_value] undef
-	.loc	10 160 73                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:160:73
+	.loc	10 160 73                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:160:73
 	orr.w	r2, r8, r7
-	.loc	10 160 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:160:20
+	.loc	10 160 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:160:20
 	str	r2, [r0]
-.Ltmp137:
+.Ltmp135:
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- $lr
-	.loc	10 0 20                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:20
+	.loc	10 0 20                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:20
 	mov	r2, lr
-	.loc	10 165 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:165:7
-	cmp	r4, #1
+	.loc	10 165 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:165:7
+	cmp.w	r9, #1
 	beq	.LBB4_71
-.Ltmp138:
+.Ltmp136:
 @ %bb.69:                               @   in Loop: Header=BB4_60 Depth=1
 	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r1
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- $lr
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- $lr
-	.loc	10 160 73                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:160:73
+	.loc	10 160 73                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:160:73
 	ldr	r2, [sp, #12]                   @ 4-byte Reload
-	.loc	10 165 7                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:165:7
-	cmp	r4, #2
-	.loc	10 160 73                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:160:73
+	.loc	10 165 7                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:165:7
+	cmp.w	r9, #2
+	.loc	10 160 73                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:160:73
 	orr.w	r2, r2, r7
-	.loc	10 160 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:160:20
+	.loc	10 160 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:160:20
 	str	r2, [r0]
-.Ltmp139:
+.Ltmp137:
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- $r10
-	.loc	10 0 20                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:20
+	.loc	10 0 20                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:20
 	mov	r2, r10
-	.loc	10 165 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:165:7
+	.loc	10 165 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:165:7
 	beq	.LBB4_71
-.Ltmp140:
+.Ltmp138:
 @ %bb.70:                               @   in Loop: Header=BB4_60 Depth=1
 	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r1
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- $r10
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- $r10
-	.loc	10 160 73                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:160:73
+	.loc	10 160 73                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:160:73
 	ldr	r2, [sp, #8]                    @ 4-byte Reload
 	orrs	r2, r7
-	.loc	10 160 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:160:20
+	.loc	10 160 20 is_stmt 0             @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:160:20
 	str	r2, [r0]
-.Ltmp141:
+.Ltmp139:
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- [DW_OP_plus_uconst 4] [$sp+0]
-	.loc	10 0 20                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:20
+	.loc	10 0 20                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:20
 	ldr	r2, [sp, #4]                    @ 4-byte Reload
-.Ltmp142:
+.Ltmp140:
 	.p2align	2
 .LBB4_71:                               @   in Loop: Header=BB4_60 Depth=1
 	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r1
-	.loc	10 159 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:159:7
-	cmp.w	r9, #3
+	.loc	10 159 7 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:159:7
+	cmp	r5, #3
 	blo	.LBB4_59
-.Ltmp143:
+.Ltmp141:
 @ %bb.72:                               @   in Loop: Header=BB4_60 Depth=1
 	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r1
 	orr.w	r7, r7, r2, lsl #30
 	adds	r2, #1
 	add.w	r12, r7, #-1073741824
 	eor	r6, r7, #-2147483648
-	add.w	r5, r7, #1073741824
-.Ltmp144:
+	add.w	r3, r7, #1073741824
+.Ltmp142:
 	.p2align	2
 .LBB4_73:                               @   Parent Loop BB4_60 Depth=1
                                         @ =>  This Inner Loop Header: Depth=2
 	@DEBUG_VALUE: SCB_EnableDCache:sets <- $r1
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- [DW_OP_constu 1, DW_OP_minus, DW_OP_stack_value] $r2
-	.loc	10 165 23                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:165:23
+	.loc	10 165 23                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:165:23
 	subs	r2, #4
-.Ltmp145:
-	.loc	10 160 20                       @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:160:20
+.Ltmp143:
+	.loc	10 160 20                       @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:160:20
 	str	r7, [r0]
 	str.w	r12, [r0]
-.Ltmp146:
+.Ltmp144:
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- [DW_OP_constu 2, DW_OP_minus, DW_OP_stack_value] $r2
 	str	r6, [r0]
-.Ltmp147:
+.Ltmp145:
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- [DW_OP_constu 3, DW_OP_minus, DW_OP_stack_value] $r2
-	str	r5, [r0]
-.Ltmp148:
+	str	r3, [r0]
+.Ltmp146:
 	@DEBUG_VALUE: SCB_EnableDCache:ways <- [DW_OP_constu 5, DW_OP_minus, DW_OP_stack_value] $r2
-	.loc	10 165 7                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:165:7
+	.loc	10 165 7                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:165:7
 	bne	.LBB4_73
 	b	.LBB4_59
-.Ltmp149:
+.Ltmp147:
 .Lfunc_end4:
 	.size	Reset_Handler_Main, .Lfunc_end4-Reset_Handler_Main
 	.cfi_endproc
@@ -1349,6 +1345,554 @@ __tagsym$$used.0:
 	.long	GDMACH1_IRQHandler
 	.size	__Vectors, 712
 
+	.weak	NMI_Handler
+	.type	NMI_Handler,%function
+	.hidden	NMI_Handler
+.set NMI_Handler, Default_Handler
+	.weak	MemManage_Handler
+	.type	MemManage_Handler,%function
+	.hidden	MemManage_Handler
+.set MemManage_Handler, Default_Handler
+	.weak	BusFault_Handler
+	.type	BusFault_Handler,%function
+	.hidden	BusFault_Handler
+.set BusFault_Handler, Default_Handler
+	.weak	UsageFault_Handler
+	.type	UsageFault_Handler,%function
+	.hidden	UsageFault_Handler
+.set UsageFault_Handler, Default_Handler
+	.weak	SecureFault_Handler
+	.type	SecureFault_Handler,%function
+	.hidden	SecureFault_Handler
+.set SecureFault_Handler, Default_Handler
+	.weak	SVC_Handler
+	.type	SVC_Handler,%function
+	.hidden	SVC_Handler
+.set SVC_Handler, Default_Handler
+	.weak	DebugMon_Handler
+	.type	DebugMon_Handler,%function
+	.hidden	DebugMon_Handler
+.set DebugMon_Handler, Default_Handler
+	.weak	PendSV_Handler
+	.type	PendSV_Handler,%function
+	.hidden	PendSV_Handler
+.set PendSV_Handler, Default_Handler
+	.weak	SysTick_Handler
+	.type	SysTick_Handler,%function
+	.hidden	SysTick_Handler
+.set SysTick_Handler, Default_Handler
+	.weak	ACMP01_IRQHandler
+	.type	ACMP01_IRQHandler,%function
+	.hidden	ACMP01_IRQHandler
+.set ACMP01_IRQHandler, Default_Handler
+	.weak	ACMP23_IRQHandler
+	.type	ACMP23_IRQHandler,%function
+	.hidden	ACMP23_IRQHandler
+.set ACMP23_IRQHandler, Default_Handler
+	.weak	AWF_IRQHandler
+	.type	AWF_IRQHandler,%function
+	.hidden	AWF_IRQHandler
+.set AWF_IRQHandler, Default_Handler
+	.weak	BODOUT_IRQHandler
+	.type	BODOUT_IRQHandler,%function
+	.hidden	BODOUT_IRQHandler
+.set BODOUT_IRQHandler, Default_Handler
+	.weak	BPWM0_IRQHandler
+	.type	BPWM0_IRQHandler,%function
+	.hidden	BPWM0_IRQHandler
+.set BPWM0_IRQHandler, Default_Handler
+	.weak	BPWM1_IRQHandler
+	.type	BPWM1_IRQHandler,%function
+	.hidden	BPWM1_IRQHandler
+.set BPWM1_IRQHandler, Default_Handler
+	.weak	BRAKE0_IRQHandler
+	.type	BRAKE0_IRQHandler,%function
+	.hidden	BRAKE0_IRQHandler
+.set BRAKE0_IRQHandler, Default_Handler
+	.weak	BRAKE1_IRQHandler
+	.type	BRAKE1_IRQHandler,%function
+	.hidden	BRAKE1_IRQHandler
+.set BRAKE1_IRQHandler, Default_Handler
+	.weak	CANFD00_IRQHandler
+	.type	CANFD00_IRQHandler,%function
+	.hidden	CANFD00_IRQHandler
+.set CANFD00_IRQHandler, Default_Handler
+	.weak	CANFD01_IRQHandler
+	.type	CANFD01_IRQHandler,%function
+	.hidden	CANFD01_IRQHandler
+.set CANFD01_IRQHandler, Default_Handler
+	.weak	CANFD10_IRQHandler
+	.type	CANFD10_IRQHandler,%function
+	.hidden	CANFD10_IRQHandler
+.set CANFD10_IRQHandler, Default_Handler
+	.weak	CANFD11_IRQHandler
+	.type	CANFD11_IRQHandler,%function
+	.hidden	CANFD11_IRQHandler
+.set CANFD11_IRQHandler, Default_Handler
+	.weak	CCAP_IRQHandler
+	.type	CCAP_IRQHandler,%function
+	.hidden	CCAP_IRQHandler
+.set CCAP_IRQHandler, Default_Handler
+	.weak	CKFAIL_IRQHandler
+	.type	CKFAIL_IRQHandler,%function
+	.hidden	CKFAIL_IRQHandler
+.set CKFAIL_IRQHandler, Default_Handler
+	.weak	CRC_IRQHandler
+	.type	CRC_IRQHandler,%function
+	.hidden	CRC_IRQHandler
+.set CRC_IRQHandler, Default_Handler
+	.weak	CRYPTO_IRQHandler
+	.type	CRYPTO_IRQHandler,%function
+	.hidden	CRYPTO_IRQHandler
+.set CRYPTO_IRQHandler, Default_Handler
+	.weak	DAC01_IRQHandler
+	.type	DAC01_IRQHandler,%function
+	.hidden	DAC01_IRQHandler
+.set DAC01_IRQHandler, Default_Handler
+	.weak	DMIC0_IRQHandler
+	.type	DMIC0_IRQHandler,%function
+	.hidden	DMIC0_IRQHandler
+.set DMIC0_IRQHandler, Default_Handler
+	.weak	DMIC0VAD_IRQHandler
+	.type	DMIC0VAD_IRQHandler,%function
+	.hidden	DMIC0VAD_IRQHandler
+.set DMIC0VAD_IRQHandler, Default_Handler
+	.weak	EADC00_IRQHandler
+	.type	EADC00_IRQHandler,%function
+	.hidden	EADC00_IRQHandler
+.set EADC00_IRQHandler, Default_Handler
+	.weak	EADC01_IRQHandler
+	.type	EADC01_IRQHandler,%function
+	.hidden	EADC01_IRQHandler
+.set EADC01_IRQHandler, Default_Handler
+	.weak	EADC02_IRQHandler
+	.type	EADC02_IRQHandler,%function
+	.hidden	EADC02_IRQHandler
+.set EADC02_IRQHandler, Default_Handler
+	.weak	EADC03_IRQHandler
+	.type	EADC03_IRQHandler,%function
+	.hidden	EADC03_IRQHandler
+.set EADC03_IRQHandler, Default_Handler
+	.weak	ECAP0_IRQHandler
+	.type	ECAP0_IRQHandler,%function
+	.hidden	ECAP0_IRQHandler
+.set ECAP0_IRQHandler, Default_Handler
+	.weak	ECAP1_IRQHandler
+	.type	ECAP1_IRQHandler,%function
+	.hidden	ECAP1_IRQHandler
+.set ECAP1_IRQHandler, Default_Handler
+	.weak	ECAP2_IRQHandler
+	.type	ECAP2_IRQHandler,%function
+	.hidden	ECAP2_IRQHandler
+.set ECAP2_IRQHandler, Default_Handler
+	.weak	ECAP3_IRQHandler
+	.type	ECAP3_IRQHandler,%function
+	.hidden	ECAP3_IRQHandler
+.set ECAP3_IRQHandler, Default_Handler
+	.weak	EINT0_IRQHandler
+	.type	EINT0_IRQHandler,%function
+	.hidden	EINT0_IRQHandler
+.set EINT0_IRQHandler, Default_Handler
+	.weak	EINT1_IRQHandler
+	.type	EINT1_IRQHandler,%function
+	.hidden	EINT1_IRQHandler
+.set EINT1_IRQHandler, Default_Handler
+	.weak	EINT2_IRQHandler
+	.type	EINT2_IRQHandler,%function
+	.hidden	EINT2_IRQHandler
+.set EINT2_IRQHandler, Default_Handler
+	.weak	EINT3_IRQHandler
+	.type	EINT3_IRQHandler,%function
+	.hidden	EINT3_IRQHandler
+.set EINT3_IRQHandler, Default_Handler
+	.weak	EINT4_IRQHandler
+	.type	EINT4_IRQHandler,%function
+	.hidden	EINT4_IRQHandler
+.set EINT4_IRQHandler, Default_Handler
+	.weak	EINT5_IRQHandler
+	.type	EINT5_IRQHandler,%function
+	.hidden	EINT5_IRQHandler
+.set EINT5_IRQHandler, Default_Handler
+	.weak	EINT6_IRQHandler
+	.type	EINT6_IRQHandler,%function
+	.hidden	EINT6_IRQHandler
+.set EINT6_IRQHandler, Default_Handler
+	.weak	EINT7_IRQHandler
+	.type	EINT7_IRQHandler,%function
+	.hidden	EINT7_IRQHandler
+.set EINT7_IRQHandler, Default_Handler
+	.weak	EMAC0_IRQHandler
+	.type	EMAC0_IRQHandler,%function
+	.hidden	EMAC0_IRQHandler
+.set EMAC0_IRQHandler, Default_Handler
+	.weak	EPWM0P0_IRQHandler
+	.type	EPWM0P0_IRQHandler,%function
+	.hidden	EPWM0P0_IRQHandler
+.set EPWM0P0_IRQHandler, Default_Handler
+	.weak	EPWM0P1_IRQHandler
+	.type	EPWM0P1_IRQHandler,%function
+	.hidden	EPWM0P1_IRQHandler
+.set EPWM0P1_IRQHandler, Default_Handler
+	.weak	EPWM0P2_IRQHandler
+	.type	EPWM0P2_IRQHandler,%function
+	.hidden	EPWM0P2_IRQHandler
+.set EPWM0P2_IRQHandler, Default_Handler
+	.weak	EPWM1P0_IRQHandler
+	.type	EPWM1P0_IRQHandler,%function
+	.hidden	EPWM1P0_IRQHandler
+.set EPWM1P0_IRQHandler, Default_Handler
+	.weak	EPWM1P1_IRQHandler
+	.type	EPWM1P1_IRQHandler,%function
+	.hidden	EPWM1P1_IRQHandler
+.set EPWM1P1_IRQHandler, Default_Handler
+	.weak	EPWM1P2_IRQHandler
+	.type	EPWM1P2_IRQHandler,%function
+	.hidden	EPWM1P2_IRQHandler
+.set EPWM1P2_IRQHandler, Default_Handler
+	.weak	EQEI0_IRQHandler
+	.type	EQEI0_IRQHandler,%function
+	.hidden	EQEI0_IRQHandler
+.set EQEI0_IRQHandler, Default_Handler
+	.weak	EQEI1_IRQHandler
+	.type	EQEI1_IRQHandler,%function
+	.hidden	EQEI1_IRQHandler
+.set EQEI1_IRQHandler, Default_Handler
+	.weak	EQEI2_IRQHandler
+	.type	EQEI2_IRQHandler,%function
+	.hidden	EQEI2_IRQHandler
+.set EQEI2_IRQHandler, Default_Handler
+	.weak	EQEI3_IRQHandler
+	.type	EQEI3_IRQHandler,%function
+	.hidden	EQEI3_IRQHandler
+.set EQEI3_IRQHandler, Default_Handler
+	.weak	ETI_IRQHandler
+	.type	ETI_IRQHandler,%function
+	.hidden	ETI_IRQHandler
+.set ETI_IRQHandler, Default_Handler
+	.weak	GDMACH0_IRQHandler
+	.type	GDMACH0_IRQHandler,%function
+	.hidden	GDMACH0_IRQHandler
+.set GDMACH0_IRQHandler, Default_Handler
+	.weak	GDMACH1_IRQHandler
+	.type	GDMACH1_IRQHandler,%function
+	.hidden	GDMACH1_IRQHandler
+.set GDMACH1_IRQHandler, Default_Handler
+	.weak	GPA_IRQHandler
+	.type	GPA_IRQHandler,%function
+	.hidden	GPA_IRQHandler
+.set GPA_IRQHandler, Default_Handler
+	.weak	GPB_IRQHandler
+	.type	GPB_IRQHandler,%function
+	.hidden	GPB_IRQHandler
+.set GPB_IRQHandler, Default_Handler
+	.weak	GPC_IRQHandler
+	.type	GPC_IRQHandler,%function
+	.hidden	GPC_IRQHandler
+.set GPC_IRQHandler, Default_Handler
+	.weak	GPD_IRQHandler
+	.type	GPD_IRQHandler,%function
+	.hidden	GPD_IRQHandler
+.set GPD_IRQHandler, Default_Handler
+	.weak	GPE_IRQHandler
+	.type	GPE_IRQHandler,%function
+	.hidden	GPE_IRQHandler
+.set GPE_IRQHandler, Default_Handler
+	.weak	GPF_IRQHandler
+	.type	GPF_IRQHandler,%function
+	.hidden	GPF_IRQHandler
+.set GPF_IRQHandler, Default_Handler
+	.weak	GPG_IRQHandler
+	.type	GPG_IRQHandler,%function
+	.hidden	GPG_IRQHandler
+.set GPG_IRQHandler, Default_Handler
+	.weak	GPH_IRQHandler
+	.type	GPH_IRQHandler,%function
+	.hidden	GPH_IRQHandler
+.set GPH_IRQHandler, Default_Handler
+	.weak	GPI_IRQHandler
+	.type	GPI_IRQHandler,%function
+	.hidden	GPI_IRQHandler
+.set GPI_IRQHandler, Default_Handler
+	.weak	GPJ_IRQHandler
+	.type	GPJ_IRQHandler,%function
+	.hidden	GPJ_IRQHandler
+.set GPJ_IRQHandler, Default_Handler
+	.weak	HSOTG_IRQHandler
+	.type	HSOTG_IRQHandler,%function
+	.hidden	HSOTG_IRQHandler
+.set HSOTG_IRQHandler, Default_Handler
+	.weak	HSUSBD_IRQHandler
+	.type	HSUSBD_IRQHandler,%function
+	.hidden	HSUSBD_IRQHandler
+.set HSUSBD_IRQHandler, Default_Handler
+	.weak	HSUSBH_IRQHandler
+	.type	HSUSBH_IRQHandler,%function
+	.hidden	HSUSBH_IRQHandler
+.set HSUSBH_IRQHandler, Default_Handler
+	.weak	I2C0_IRQHandler
+	.type	I2C0_IRQHandler,%function
+	.hidden	I2C0_IRQHandler
+.set I2C0_IRQHandler, Default_Handler
+	.weak	I2C1_IRQHandler
+	.type	I2C1_IRQHandler,%function
+	.hidden	I2C1_IRQHandler
+.set I2C1_IRQHandler, Default_Handler
+	.weak	I2C2_IRQHandler
+	.type	I2C2_IRQHandler,%function
+	.hidden	I2C2_IRQHandler
+.set I2C2_IRQHandler, Default_Handler
+	.weak	I2C3_IRQHandler
+	.type	I2C3_IRQHandler,%function
+	.hidden	I2C3_IRQHandler
+.set I2C3_IRQHandler, Default_Handler
+	.weak	I2S0_IRQHandler
+	.type	I2S0_IRQHandler,%function
+	.hidden	I2S0_IRQHandler
+.set I2S0_IRQHandler, Default_Handler
+	.weak	I2S1_IRQHandler
+	.type	I2S1_IRQHandler,%function
+	.hidden	I2S1_IRQHandler
+.set I2S1_IRQHandler, Default_Handler
+	.weak	I3C0_IRQHandler
+	.type	I3C0_IRQHandler,%function
+	.hidden	I3C0_IRQHandler
+.set I3C0_IRQHandler, Default_Handler
+	.weak	IRC_IRQHandler
+	.type	IRC_IRQHandler,%function
+	.hidden	IRC_IRQHandler
+.set IRC_IRQHandler, Default_Handler
+	.weak	ISP_IRQHandler
+	.type	ISP_IRQHandler,%function
+	.hidden	ISP_IRQHandler
+.set ISP_IRQHandler, Default_Handler
+	.weak	KPI_IRQHandler
+	.type	KPI_IRQHandler,%function
+	.hidden	KPI_IRQHandler
+.set KPI_IRQHandler, Default_Handler
+	.weak	KS_IRQHandler
+	.type	KS_IRQHandler,%function
+	.hidden	KS_IRQHandler
+.set KS_IRQHandler, Default_Handler
+	.weak	LPADC0_IRQHandler
+	.type	LPADC0_IRQHandler,%function
+	.hidden	LPADC0_IRQHandler
+.set LPADC0_IRQHandler, Default_Handler
+	.weak	LPI2C0_IRQHandler
+	.type	LPI2C0_IRQHandler,%function
+	.hidden	LPI2C0_IRQHandler
+.set LPI2C0_IRQHandler, Default_Handler
+	.weak	LPPDMA_IRQHandler
+	.type	LPPDMA_IRQHandler,%function
+	.hidden	LPPDMA_IRQHandler
+.set LPPDMA_IRQHandler, Default_Handler
+	.weak	LPSPI0_IRQHandler
+	.type	LPSPI0_IRQHandler,%function
+	.hidden	LPSPI0_IRQHandler
+.set LPSPI0_IRQHandler, Default_Handler
+	.weak	LPTMR0_IRQHandler
+	.type	LPTMR0_IRQHandler,%function
+	.hidden	LPTMR0_IRQHandler
+.set LPTMR0_IRQHandler, Default_Handler
+	.weak	LPTMR1_IRQHandler
+	.type	LPTMR1_IRQHandler,%function
+	.hidden	LPTMR1_IRQHandler
+.set LPTMR1_IRQHandler, Default_Handler
+	.weak	LPUART0_IRQHandler
+	.type	LPUART0_IRQHandler,%function
+	.hidden	LPUART0_IRQHandler
+.set LPUART0_IRQHandler, Default_Handler
+	.weak	NPU_IRQHandler
+	.type	NPU_IRQHandler,%function
+	.hidden	NPU_IRQHandler
+.set NPU_IRQHandler, Default_Handler
+	.weak	OTFC0_IRQHandler
+	.type	OTFC0_IRQHandler,%function
+	.hidden	OTFC0_IRQHandler
+.set OTFC0_IRQHandler, Default_Handler
+	.weak	PDMA0_IRQHandler
+	.type	PDMA0_IRQHandler,%function
+	.hidden	PDMA0_IRQHandler
+.set PDMA0_IRQHandler, Default_Handler
+	.weak	PDMA1_IRQHandler
+	.type	PDMA1_IRQHandler,%function
+	.hidden	PDMA1_IRQHandler
+.set PDMA1_IRQHandler, Default_Handler
+	.weak	PMC_IRQHandler
+	.type	PMC_IRQHandler,%function
+	.hidden	PMC_IRQHandler
+.set PMC_IRQHandler, Default_Handler
+	.weak	PSIO_IRQHandler
+	.type	PSIO_IRQHandler,%function
+	.hidden	PSIO_IRQHandler
+.set PSIO_IRQHandler, Default_Handler
+	.weak	QSPI0_IRQHandler
+	.type	QSPI0_IRQHandler,%function
+	.hidden	QSPI0_IRQHandler
+.set QSPI0_IRQHandler, Default_Handler
+	.weak	QSPI1_IRQHandler
+	.type	QSPI1_IRQHandler,%function
+	.hidden	QSPI1_IRQHandler
+.set QSPI1_IRQHandler, Default_Handler
+	.weak	RTC_IRQHandler
+	.type	RTC_IRQHandler,%function
+	.hidden	RTC_IRQHandler
+.set RTC_IRQHandler, Default_Handler
+	.weak	RTCTAMPER_IRQHandler
+	.type	RTCTAMPER_IRQHandler,%function
+	.hidden	RTCTAMPER_IRQHandler
+.set RTCTAMPER_IRQHandler, Default_Handler
+	.weak	SC0_IRQHandler
+	.type	SC0_IRQHandler,%function
+	.hidden	SC0_IRQHandler
+.set SC0_IRQHandler, Default_Handler
+	.weak	SC1_IRQHandler
+	.type	SC1_IRQHandler,%function
+	.hidden	SC1_IRQHandler
+.set SC1_IRQHandler, Default_Handler
+	.weak	SC2_IRQHandler
+	.type	SC2_IRQHandler,%function
+	.hidden	SC2_IRQHandler
+.set SC2_IRQHandler, Default_Handler
+	.weak	SDH0_IRQHandler
+	.type	SDH0_IRQHandler,%function
+	.hidden	SDH0_IRQHandler
+.set SDH0_IRQHandler, Default_Handler
+	.weak	SDH1_IRQHandler
+	.type	SDH1_IRQHandler,%function
+	.hidden	SDH1_IRQHandler
+.set SDH1_IRQHandler, Default_Handler
+	.weak	SPI0_IRQHandler
+	.type	SPI0_IRQHandler,%function
+	.hidden	SPI0_IRQHandler
+.set SPI0_IRQHandler, Default_Handler
+	.weak	SPI1_IRQHandler
+	.type	SPI1_IRQHandler,%function
+	.hidden	SPI1_IRQHandler
+.set SPI1_IRQHandler, Default_Handler
+	.weak	SPI2_IRQHandler
+	.type	SPI2_IRQHandler,%function
+	.hidden	SPI2_IRQHandler
+.set SPI2_IRQHandler, Default_Handler
+	.weak	SPI3_IRQHandler
+	.type	SPI3_IRQHandler,%function
+	.hidden	SPI3_IRQHandler
+.set SPI3_IRQHandler, Default_Handler
+	.weak	SPIM0_IRQHandler
+	.type	SPIM0_IRQHandler,%function
+	.hidden	SPIM0_IRQHandler
+.set SPIM0_IRQHandler, Default_Handler
+	.weak	SRAMPERR_IRQHandler
+	.type	SRAMPERR_IRQHandler,%function
+	.hidden	SRAMPERR_IRQHandler
+.set SRAMPERR_IRQHandler, Default_Handler
+	.weak	TIMER0_IRQHandler
+	.type	TIMER0_IRQHandler,%function
+	.hidden	TIMER0_IRQHandler
+.set TIMER0_IRQHandler, Default_Handler
+	.weak	TIMER1_IRQHandler
+	.type	TIMER1_IRQHandler,%function
+	.hidden	TIMER1_IRQHandler
+.set TIMER1_IRQHandler, Default_Handler
+	.weak	TIMER2_IRQHandler
+	.type	TIMER2_IRQHandler,%function
+	.hidden	TIMER2_IRQHandler
+.set TIMER2_IRQHandler, Default_Handler
+	.weak	TIMER3_IRQHandler
+	.type	TIMER3_IRQHandler,%function
+	.hidden	TIMER3_IRQHandler
+.set TIMER3_IRQHandler, Default_Handler
+	.weak	TRNG_IRQHandler
+	.type	TRNG_IRQHandler,%function
+	.hidden	TRNG_IRQHandler
+.set TRNG_IRQHandler, Default_Handler
+	.weak	TTMR0_IRQHandler
+	.type	TTMR0_IRQHandler,%function
+	.hidden	TTMR0_IRQHandler
+.set TTMR0_IRQHandler, Default_Handler
+	.weak	TTMR1_IRQHandler
+	.type	TTMR1_IRQHandler,%function
+	.hidden	TTMR1_IRQHandler
+.set TTMR1_IRQHandler, Default_Handler
+	.weak	UART0_IRQHandler
+	.type	UART0_IRQHandler,%function
+	.hidden	UART0_IRQHandler
+.set UART0_IRQHandler, Default_Handler
+	.weak	UART1_IRQHandler
+	.type	UART1_IRQHandler,%function
+	.hidden	UART1_IRQHandler
+.set UART1_IRQHandler, Default_Handler
+	.weak	UART2_IRQHandler
+	.type	UART2_IRQHandler,%function
+	.hidden	UART2_IRQHandler
+.set UART2_IRQHandler, Default_Handler
+	.weak	UART3_IRQHandler
+	.type	UART3_IRQHandler,%function
+	.hidden	UART3_IRQHandler
+.set UART3_IRQHandler, Default_Handler
+	.weak	UART4_IRQHandler
+	.type	UART4_IRQHandler,%function
+	.hidden	UART4_IRQHandler
+.set UART4_IRQHandler, Default_Handler
+	.weak	UART5_IRQHandler
+	.type	UART5_IRQHandler,%function
+	.hidden	UART5_IRQHandler
+.set UART5_IRQHandler, Default_Handler
+	.weak	UART6_IRQHandler
+	.type	UART6_IRQHandler,%function
+	.hidden	UART6_IRQHandler
+.set UART6_IRQHandler, Default_Handler
+	.weak	UART7_IRQHandler
+	.type	UART7_IRQHandler,%function
+	.hidden	UART7_IRQHandler
+.set UART7_IRQHandler, Default_Handler
+	.weak	UART8_IRQHandler
+	.type	UART8_IRQHandler,%function
+	.hidden	UART8_IRQHandler
+.set UART8_IRQHandler, Default_Handler
+	.weak	UART9_IRQHandler
+	.type	UART9_IRQHandler,%function
+	.hidden	UART9_IRQHandler
+.set UART9_IRQHandler, Default_Handler
+	.weak	USBD_IRQHandler
+	.type	USBD_IRQHandler,%function
+	.hidden	USBD_IRQHandler
+.set USBD_IRQHandler, Default_Handler
+	.weak	USBH0_IRQHandler
+	.type	USBH0_IRQHandler,%function
+	.hidden	USBH0_IRQHandler
+.set USBH0_IRQHandler, Default_Handler
+	.weak	USBH1_IRQHandler
+	.type	USBH1_IRQHandler,%function
+	.hidden	USBH1_IRQHandler
+.set USBH1_IRQHandler, Default_Handler
+	.weak	USBOTG_IRQHandler
+	.type	USBOTG_IRQHandler,%function
+	.hidden	USBOTG_IRQHandler
+.set USBOTG_IRQHandler, Default_Handler
+	.weak	USCI0_IRQHandler
+	.type	USCI0_IRQHandler,%function
+	.hidden	USCI0_IRQHandler
+.set USCI0_IRQHandler, Default_Handler
+	.weak	UTCPD_IRQHandler
+	.type	UTCPD_IRQHandler,%function
+	.hidden	UTCPD_IRQHandler
+.set UTCPD_IRQHandler, Default_Handler
+	.weak	WDT0_IRQHandler
+	.type	WDT0_IRQHandler,%function
+	.hidden	WDT0_IRQHandler
+.set WDT0_IRQHandler, Default_Handler
+	.weak	WDT1_IRQHandler
+	.type	WDT1_IRQHandler,%function
+	.hidden	WDT1_IRQHandler
+.set WDT1_IRQHandler, Default_Handler
+	.weak	WWDT0_IRQHandler
+	.type	WWDT0_IRQHandler,%function
+	.hidden	WWDT0_IRQHandler
+.set WWDT0_IRQHandler, Default_Handler
+	.weak	WWDT1_IRQHandler
+	.type	WWDT1_IRQHandler,%function
+	.hidden	WWDT1_IRQHandler
+.set WWDT1_IRQHandler, Default_Handler
 	.section	.debug_loc,"",%progbits
 .Ldebug_loc0:
 	.long	-1
@@ -1370,7 +1914,7 @@ __tagsym$$used.0:
 	.long	.Ltmp29-.Lfunc_begin4
 	.long	.Ltmp32-.Lfunc_begin4
 	.short	1                               @ Loc expr size
-	.byte	81                              @ DW_OP_reg1
+	.byte	82                              @ DW_OP_reg2
 	.long	0
 	.long	0
 .Ldebug_loc2:
@@ -1379,7 +1923,7 @@ __tagsym$$used.0:
 	.long	.Ltmp32-.Lfunc_begin4
 	.long	.Ltmp35-.Lfunc_begin4
 	.short	8                               @ Loc expr size
-	.byte	113                             @ DW_OP_breg1
+	.byte	114                             @ DW_OP_breg2
 	.byte	0                               @ 0
 	.byte	16                              @ DW_OP_constu
 	.byte	255                             @ 32767
@@ -1394,9 +1938,9 @@ __tagsym$$used.0:
 	.long	.Ltmp80-.Lfunc_begin4
 	.long	.Ltmp96-.Lfunc_begin4
 	.short	1                               @ Loc expr size
-	.byte	83                              @ DW_OP_reg3
+	.byte	84                              @ DW_OP_reg4
 	.long	.Ltmp96-.Lfunc_begin4
-	.long	.Ltmp111-.Lfunc_begin4
+	.long	.Ltmp110-.Lfunc_begin4
 	.short	1                               @ Loc expr size
 	.byte	92                              @ DW_OP_reg12
 	.long	0
@@ -1417,35 +1961,35 @@ __tagsym$$used.0:
 	.long	.Ltmp37-.Lfunc_begin4
 	.long	.Ltmp38-.Lfunc_begin4
 	.short	1                               @ Loc expr size
-	.byte	82                              @ DW_OP_reg2
+	.byte	94                              @ DW_OP_reg14
 	.long	.Ltmp43-.Lfunc_begin4
 	.long	.Ltmp44-.Lfunc_begin4
 	.short	3                               @ Loc expr size
-	.byte	114                             @ DW_OP_breg2
+	.byte	115                             @ DW_OP_breg3
 	.byte	127                             @ -1
 	.byte	159                             @ DW_OP_stack_value
 	.long	.Ltmp45-.Lfunc_begin4
 	.long	.Ltmp46-.Lfunc_begin4
 	.short	3                               @ Loc expr size
-	.byte	114                             @ DW_OP_breg2
+	.byte	115                             @ DW_OP_breg3
 	.byte	126                             @ -2
 	.byte	159                             @ DW_OP_stack_value
 	.long	.Ltmp46-.Lfunc_begin4
 	.long	.Ltmp47-.Lfunc_begin4
 	.short	3                               @ Loc expr size
-	.byte	114                             @ DW_OP_breg2
+	.byte	115                             @ DW_OP_breg3
 	.byte	125                             @ -3
 	.byte	159                             @ DW_OP_stack_value
 	.long	.Ltmp47-.Lfunc_begin4
 	.long	.Ltmp48-.Lfunc_begin4
 	.short	3                               @ Loc expr size
-	.byte	114                             @ DW_OP_breg2
+	.byte	115                             @ DW_OP_breg3
 	.byte	123                             @ -5
 	.byte	159                             @ DW_OP_stack_value
 	.long	.Ltmp83-.Lfunc_begin4
 	.long	.Ltmp85-.Lfunc_begin4
 	.short	1                               @ Loc expr size
-	.byte	90                              @ DW_OP_reg10
+	.byte	88                              @ DW_OP_reg8
 	.long	.Ltmp85-.Lfunc_begin4
 	.long	.Ltmp87-.Lfunc_begin4
 	.short	1                               @ Loc expr size
@@ -1479,39 +2023,39 @@ __tagsym$$used.0:
 	.byte	114                             @ DW_OP_breg2
 	.byte	123                             @ -5
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp99-.Lfunc_begin4
-	.long	.Ltmp101-.Lfunc_begin4
+	.long	.Ltmp98-.Lfunc_begin4
+	.long	.Ltmp100-.Lfunc_begin4
 	.short	1                               @ Loc expr size
-	.byte	90                              @ DW_OP_reg10
-	.long	.Ltmp101-.Lfunc_begin4
-	.long	.Ltmp103-.Lfunc_begin4
+	.byte	88                              @ DW_OP_reg8
+	.long	.Ltmp100-.Lfunc_begin4
+	.long	.Ltmp102-.Lfunc_begin4
 	.short	1                               @ Loc expr size
 	.byte	94                              @ DW_OP_reg14
+	.long	.Ltmp102-.Lfunc_begin4
 	.long	.Ltmp103-.Lfunc_begin4
-	.long	.Ltmp104-.Lfunc_begin4
 	.short	2                               @ Loc expr size
 	.byte	125                             @ DW_OP_breg13
 	.byte	4                               @ 4
+	.long	.Ltmp105-.Lfunc_begin4
 	.long	.Ltmp106-.Lfunc_begin4
-	.long	.Ltmp107-.Lfunc_begin4
 	.short	3                               @ Loc expr size
 	.byte	114                             @ DW_OP_breg2
 	.byte	127                             @ -1
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp107-.Lfunc_begin4
+	.long	.Ltmp108-.Lfunc_begin4
+	.short	3                               @ Loc expr size
+	.byte	114                             @ DW_OP_breg2
+	.byte	126                             @ -2
 	.byte	159                             @ DW_OP_stack_value
 	.long	.Ltmp108-.Lfunc_begin4
 	.long	.Ltmp109-.Lfunc_begin4
 	.short	3                               @ Loc expr size
 	.byte	114                             @ DW_OP_breg2
-	.byte	126                             @ -2
+	.byte	125                             @ -3
 	.byte	159                             @ DW_OP_stack_value
 	.long	.Ltmp109-.Lfunc_begin4
 	.long	.Ltmp110-.Lfunc_begin4
-	.short	3                               @ Loc expr size
-	.byte	114                             @ DW_OP_breg2
-	.byte	125                             @ -3
-	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp110-.Lfunc_begin4
-	.long	.Ltmp111-.Lfunc_begin4
 	.short	3                               @ Loc expr size
 	.byte	114                             @ DW_OP_breg2
 	.byte	123                             @ -5
@@ -1524,7 +2068,7 @@ __tagsym$$used.0:
 	.long	.Ltmp54-.Lfunc_begin4
 	.long	.Ltmp57-.Lfunc_begin4
 	.short	1                               @ Loc expr size
-	.byte	81                              @ DW_OP_reg1
+	.byte	82                              @ DW_OP_reg2
 	.long	0
 	.long	0
 .Ldebug_loc5:
@@ -1533,7 +2077,7 @@ __tagsym$$used.0:
 	.long	.Ltmp57-.Lfunc_begin4
 	.long	.Ltmp60-.Lfunc_begin4
 	.short	8                               @ Loc expr size
-	.byte	113                             @ DW_OP_breg1
+	.byte	114                             @ DW_OP_breg2
 	.byte	0                               @ 0
 	.byte	16                              @ DW_OP_constu
 	.byte	255                             @ 32767
@@ -1541,15 +2085,15 @@ __tagsym$$used.0:
 	.byte	1                               @ 
 	.byte	26                              @ DW_OP_and
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp116-.Lfunc_begin4
-	.long	.Ltmp118-.Lfunc_begin4
+	.long	.Ltmp115-.Lfunc_begin4
+	.long	.Ltmp117-.Lfunc_begin4
 	.short	1                               @ Loc expr size
 	.byte	81                              @ DW_OP_reg1
-	.long	.Ltmp118-.Lfunc_begin4
-	.long	.Ltmp134-.Lfunc_begin4
+	.long	.Ltmp117-.Lfunc_begin4
+	.long	.Ltmp133-.Lfunc_begin4
 	.short	1                               @ Loc expr size
-	.byte	83                              @ DW_OP_reg3
-	.long	.Ltmp134-.Lfunc_begin4
+	.byte	84                              @ DW_OP_reg4
+	.long	.Ltmp133-.Lfunc_begin4
 	.long	.Lfunc_end4-.Lfunc_begin4
 	.short	1                               @ Loc expr size
 	.byte	81                              @ DW_OP_reg1
@@ -1571,100 +2115,100 @@ __tagsym$$used.0:
 	.long	.Ltmp62-.Lfunc_begin4
 	.long	.Ltmp63-.Lfunc_begin4
 	.short	1                               @ Loc expr size
-	.byte	82                              @ DW_OP_reg2
+	.byte	94                              @ DW_OP_reg14
 	.long	.Ltmp68-.Lfunc_begin4
 	.long	.Ltmp69-.Lfunc_begin4
 	.short	3                               @ Loc expr size
-	.byte	114                             @ DW_OP_breg2
+	.byte	115                             @ DW_OP_breg3
 	.byte	127                             @ -1
 	.byte	159                             @ DW_OP_stack_value
 	.long	.Ltmp70-.Lfunc_begin4
 	.long	.Ltmp71-.Lfunc_begin4
 	.short	3                               @ Loc expr size
-	.byte	114                             @ DW_OP_breg2
+	.byte	115                             @ DW_OP_breg3
 	.byte	126                             @ -2
 	.byte	159                             @ DW_OP_stack_value
 	.long	.Ltmp71-.Lfunc_begin4
 	.long	.Ltmp72-.Lfunc_begin4
 	.short	3                               @ Loc expr size
-	.byte	114                             @ DW_OP_breg2
+	.byte	115                             @ DW_OP_breg3
 	.byte	125                             @ -3
 	.byte	159                             @ DW_OP_stack_value
 	.long	.Ltmp72-.Lfunc_begin4
 	.long	.Ltmp73-.Lfunc_begin4
 	.short	3                               @ Loc expr size
-	.byte	114                             @ DW_OP_breg2
+	.byte	115                             @ DW_OP_breg3
 	.byte	123                             @ -5
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp121-.Lfunc_begin4
-	.long	.Ltmp123-.Lfunc_begin4
+	.long	.Ltmp120-.Lfunc_begin4
+	.long	.Ltmp122-.Lfunc_begin4
 	.short	1                               @ Loc expr size
 	.byte	94                              @ DW_OP_reg14
-	.long	.Ltmp123-.Lfunc_begin4
-	.long	.Ltmp125-.Lfunc_begin4
+	.long	.Ltmp122-.Lfunc_begin4
+	.long	.Ltmp124-.Lfunc_begin4
 	.short	1                               @ Loc expr size
 	.byte	90                              @ DW_OP_reg10
+	.long	.Ltmp124-.Lfunc_begin4
 	.long	.Ltmp125-.Lfunc_begin4
-	.long	.Ltmp126-.Lfunc_begin4
 	.short	2                               @ Loc expr size
 	.byte	125                             @ DW_OP_breg13
 	.byte	4                               @ 4
+	.long	.Ltmp127-.Lfunc_begin4
 	.long	.Ltmp128-.Lfunc_begin4
-	.long	.Ltmp129-.Lfunc_begin4
 	.short	3                               @ Loc expr size
 	.byte	119                             @ DW_OP_breg7
 	.byte	127                             @ -1
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp129-.Lfunc_begin4
+	.long	.Ltmp130-.Lfunc_begin4
+	.short	3                               @ Loc expr size
+	.byte	119                             @ DW_OP_breg7
+	.byte	126                             @ -2
 	.byte	159                             @ DW_OP_stack_value
 	.long	.Ltmp130-.Lfunc_begin4
 	.long	.Ltmp131-.Lfunc_begin4
 	.short	3                               @ Loc expr size
 	.byte	119                             @ DW_OP_breg7
-	.byte	126                             @ -2
+	.byte	125                             @ -3
 	.byte	159                             @ DW_OP_stack_value
 	.long	.Ltmp131-.Lfunc_begin4
 	.long	.Ltmp132-.Lfunc_begin4
 	.short	3                               @ Loc expr size
 	.byte	119                             @ DW_OP_breg7
-	.byte	125                             @ -3
-	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp132-.Lfunc_begin4
-	.long	.Ltmp133-.Lfunc_begin4
-	.short	3                               @ Loc expr size
-	.byte	119                             @ DW_OP_breg7
 	.byte	123                             @ -5
 	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp135-.Lfunc_begin4
+	.long	.Ltmp137-.Lfunc_begin4
+	.short	1                               @ Loc expr size
+	.byte	94                              @ DW_OP_reg14
 	.long	.Ltmp137-.Lfunc_begin4
 	.long	.Ltmp139-.Lfunc_begin4
 	.short	1                               @ Loc expr size
-	.byte	94                              @ DW_OP_reg14
-	.long	.Ltmp139-.Lfunc_begin4
-	.long	.Ltmp141-.Lfunc_begin4
-	.short	1                               @ Loc expr size
 	.byte	90                              @ DW_OP_reg10
-	.long	.Ltmp141-.Lfunc_begin4
-	.long	.Ltmp142-.Lfunc_begin4
+	.long	.Ltmp139-.Lfunc_begin4
+	.long	.Ltmp140-.Lfunc_begin4
 	.short	2                               @ Loc expr size
 	.byte	125                             @ DW_OP_breg13
 	.byte	4                               @ 4
-	.long	.Ltmp144-.Lfunc_begin4
-	.long	.Ltmp145-.Lfunc_begin4
+	.long	.Ltmp142-.Lfunc_begin4
+	.long	.Ltmp143-.Lfunc_begin4
 	.short	3                               @ Loc expr size
 	.byte	114                             @ DW_OP_breg2
 	.byte	127                             @ -1
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp146-.Lfunc_begin4
-	.long	.Ltmp147-.Lfunc_begin4
+	.long	.Ltmp144-.Lfunc_begin4
+	.long	.Ltmp145-.Lfunc_begin4
 	.short	3                               @ Loc expr size
 	.byte	114                             @ DW_OP_breg2
 	.byte	126                             @ -2
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp147-.Lfunc_begin4
-	.long	.Ltmp148-.Lfunc_begin4
+	.long	.Ltmp145-.Lfunc_begin4
+	.long	.Ltmp146-.Lfunc_begin4
 	.short	3                               @ Loc expr size
 	.byte	114                             @ DW_OP_breg2
 	.byte	125                             @ -3
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp148-.Lfunc_begin4
+	.long	.Ltmp146-.Lfunc_begin4
 	.long	.Lfunc_end4-.Lfunc_begin4
 	.short	3                               @ Loc expr size
 	.byte	114                             @ DW_OP_breg2
@@ -2154,7 +2698,7 @@ __tagsym$$used.0:
 	.byte	4                               @ Address Size (in bytes)
 	.byte	1                               @ Abbrev [1] 0xb:0x183e DW_TAG_compile_unit
 	.long	.Linfo_string0                  @ DW_AT_producer
-	.short	12                              @ DW_AT_language
+	.short	29                              @ DW_AT_language
 	.long	.Linfo_string1                  @ DW_AT_name
 	.long	.Lline_table_start0             @ DW_AT_stmt_list
 	.long	.Linfo_string2                  @ DW_AT_comp_dir
@@ -4943,7 +5487,7 @@ __tagsym$$used.0:
 	.long	.Ltmp51
 	.long	.Ltmp52
 	.long	.Ltmp78
-	.long	.Ltmp111
+	.long	.Ltmp110
 	.long	0
 	.long	0
 .Ldebug_ranges1:
@@ -4951,8 +5495,8 @@ __tagsym$$used.0:
 	.long	.Ltmp51
 	.long	.Ltmp52
 	.long	.Ltmp75
-	.long	.Ltmp116
-	.long	.Ltmp149
+	.long	.Ltmp115
+	.long	.Ltmp147
 	.long	0
 	.long	0
 .Ldebug_ranges2:
@@ -4970,1341 +5514,793 @@ __tagsym$$used.0:
 	.long	0
 	.section	.debug_str,"MS",%progbits,1
 .Linfo_string0:
-	.asciz	"Component: Arm Compiler for Embedded 6.19 Tool: armclang [5e73cb00]" @ string offset=0
+	.asciz	"Component: Arm Compiler for Embedded 6.22 Tool: armclang [5ee92100]" @ string offset=0
 .Linfo_string1:
 	.asciz	"../../../../Library/Device/Nuvoton/M55M1/Source\\startup_M55M1.c" @ string offset=68
 .Linfo_string2:
-	.asciz	"C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" @ string offset=132
+	.asciz	"D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" @ string offset=132
 .Linfo_string3:
-	.asciz	"__Vectors"                     @ string offset=231
+	.asciz	"__Vectors"                     @ string offset=249
 .Linfo_string4:
-	.asciz	"VECTOR_TABLE_Type"             @ string offset=241
+	.asciz	"VECTOR_TABLE_Type"             @ string offset=259
 .Linfo_string5:
-	.asciz	"__ARRAY_SIZE_TYPE__"           @ string offset=259
+	.asciz	"__ARRAY_SIZE_TYPE__"           @ string offset=277
 .Linfo_string6:
-	.asciz	"unsigned int"                  @ string offset=279
+	.asciz	"unsigned int"                  @ string offset=297
 .Linfo_string7:
-	.asciz	"uint32_t"                      @ string offset=292
+	.asciz	"uint32_t"                      @ string offset=310
 .Linfo_string8:
-	.asciz	"PDID"                          @ string offset=301
+	.asciz	"PDID"                          @ string offset=319
 .Linfo_string9:
-	.asciz	"RSTCTL"                        @ string offset=306
+	.asciz	"RSTCTL"                        @ string offset=324
 .Linfo_string10:
-	.asciz	"RSTSTS"                        @ string offset=313
+	.asciz	"RSTSTS"                        @ string offset=331
 .Linfo_string11:
-	.asciz	"VTORSET"                       @ string offset=320
+	.asciz	"VTORSET"                       @ string offset=338
 .Linfo_string12:
-	.asciz	"RESERVE0"                      @ string offset=328
+	.asciz	"RESERVE0"                      @ string offset=346
 .Linfo_string13:
-	.asciz	"BODCTL"                        @ string offset=337
+	.asciz	"BODCTL"                        @ string offset=355
 .Linfo_string14:
-	.asciz	"PORCTL"                        @ string offset=344
+	.asciz	"PORCTL"                        @ string offset=362
 .Linfo_string15:
-	.asciz	"VREFCTL"                       @ string offset=351
+	.asciz	"VREFCTL"                       @ string offset=369
 .Linfo_string16:
-	.asciz	"IVSCTL"                        @ string offset=359
+	.asciz	"IVSCTL"                        @ string offset=377
 .Linfo_string17:
-	.asciz	"USBPHY"                        @ string offset=366
+	.asciz	"USBPHY"                        @ string offset=384
 .Linfo_string18:
-	.asciz	"UTCPDCTL"                      @ string offset=373
+	.asciz	"UTCPDCTL"                      @ string offset=391
 .Linfo_string19:
-	.asciz	"RESERVE1"                      @ string offset=382
+	.asciz	"RESERVE1"                      @ string offset=400
 .Linfo_string20:
-	.asciz	"GPA_MFOS"                      @ string offset=391
+	.asciz	"GPA_MFOS"                      @ string offset=409
 .Linfo_string21:
-	.asciz	"GPB_MFOS"                      @ string offset=400
+	.asciz	"GPB_MFOS"                      @ string offset=418
 .Linfo_string22:
-	.asciz	"GPC_MFOS"                      @ string offset=409
+	.asciz	"GPC_MFOS"                      @ string offset=427
 .Linfo_string23:
-	.asciz	"GPD_MFOS"                      @ string offset=418
+	.asciz	"GPD_MFOS"                      @ string offset=436
 .Linfo_string24:
-	.asciz	"GPE_MFOS"                      @ string offset=427
+	.asciz	"GPE_MFOS"                      @ string offset=445
 .Linfo_string25:
-	.asciz	"GPF_MFOS"                      @ string offset=436
+	.asciz	"GPF_MFOS"                      @ string offset=454
 .Linfo_string26:
-	.asciz	"GPG_MFOS"                      @ string offset=445
+	.asciz	"GPG_MFOS"                      @ string offset=463
 .Linfo_string27:
-	.asciz	"GPH_MFOS"                      @ string offset=454
+	.asciz	"GPH_MFOS"                      @ string offset=472
 .Linfo_string28:
-	.asciz	"GPI_MFOS"                      @ string offset=463
+	.asciz	"GPI_MFOS"                      @ string offset=481
 .Linfo_string29:
-	.asciz	"GPJ_MFOS"                      @ string offset=472
+	.asciz	"GPJ_MFOS"                      @ string offset=490
 .Linfo_string30:
-	.asciz	"RESERVE2"                      @ string offset=481
+	.asciz	"RESERVE2"                      @ string offset=499
 .Linfo_string31:
-	.asciz	"REGLCTL"                       @ string offset=490
+	.asciz	"REGLCTL"                       @ string offset=508
 .Linfo_string32:
-	.asciz	"RESERVE3"                      @ string offset=498
+	.asciz	"RESERVE3"                      @ string offset=516
 .Linfo_string33:
-	.asciz	"TCTL48M"                       @ string offset=507
+	.asciz	"TCTL48M"                       @ string offset=525
 .Linfo_string34:
-	.asciz	"TIEN48M"                       @ string offset=515
+	.asciz	"TIEN48M"                       @ string offset=533
 .Linfo_string35:
-	.asciz	"TISTS48M"                      @ string offset=523
+	.asciz	"TISTS48M"                      @ string offset=541
 .Linfo_string36:
-	.asciz	"RESERVE4"                      @ string offset=532
+	.asciz	"RESERVE4"                      @ string offset=550
 .Linfo_string37:
-	.asciz	"TCTL12M"                       @ string offset=541
+	.asciz	"TCTL12M"                       @ string offset=559
 .Linfo_string38:
-	.asciz	"TIEN12M"                       @ string offset=549
+	.asciz	"TIEN12M"                       @ string offset=567
 .Linfo_string39:
-	.asciz	"TISTS12M"                      @ string offset=557
+	.asciz	"TISTS12M"                      @ string offset=575
 .Linfo_string40:
-	.asciz	"RESERVE5"                      @ string offset=566
+	.asciz	"RESERVE5"                      @ string offset=584
 .Linfo_string41:
-	.asciz	"TCTLMIRC"                      @ string offset=575
+	.asciz	"TCTLMIRC"                      @ string offset=593
 .Linfo_string42:
-	.asciz	"TIENMIRC"                      @ string offset=584
+	.asciz	"TIENMIRC"                      @ string offset=602
 .Linfo_string43:
-	.asciz	"TISTSMIRC"                     @ string offset=593
+	.asciz	"TISTSMIRC"                     @ string offset=611
 .Linfo_string44:
-	.asciz	"RESERVE6"                      @ string offset=603
+	.asciz	"RESERVE6"                      @ string offset=621
 .Linfo_string45:
-	.asciz	"ACMPRST"                       @ string offset=612
+	.asciz	"ACMPRST"                       @ string offset=630
 .Linfo_string46:
-	.asciz	"AWFRST"                        @ string offset=620
+	.asciz	"AWFRST"                        @ string offset=638
 .Linfo_string47:
-	.asciz	"BPWMRST"                       @ string offset=627
+	.asciz	"BPWMRST"                       @ string offset=645
 .Linfo_string48:
-	.asciz	"CANFDRST"                      @ string offset=635
+	.asciz	"CANFDRST"                      @ string offset=653
 .Linfo_string49:
-	.asciz	"CCAPRST"                       @ string offset=644
+	.asciz	"CCAPRST"                       @ string offset=662
 .Linfo_string50:
-	.asciz	"CRCRST"                        @ string offset=652
+	.asciz	"CRCRST"                        @ string offset=670
 .Linfo_string51:
-	.asciz	"CRYPTORST"                     @ string offset=659
+	.asciz	"CRYPTORST"                     @ string offset=677
 .Linfo_string52:
-	.asciz	"DACRST"                        @ string offset=669
+	.asciz	"DACRST"                        @ string offset=687
 .Linfo_string53:
-	.asciz	"DMICRST"                       @ string offset=676
+	.asciz	"DMICRST"                       @ string offset=694
 .Linfo_string54:
-	.asciz	"EADCRST"                       @ string offset=684
+	.asciz	"EADCRST"                       @ string offset=702
 .Linfo_string55:
-	.asciz	"EBIRST"                        @ string offset=692
+	.asciz	"EBIRST"                        @ string offset=710
 .Linfo_string56:
-	.asciz	"ECAPRST"                       @ string offset=699
+	.asciz	"ECAPRST"                       @ string offset=717
 .Linfo_string57:
-	.asciz	"EMACRST"                       @ string offset=707
+	.asciz	"EMACRST"                       @ string offset=725
 .Linfo_string58:
-	.asciz	"EPWMRST"                       @ string offset=715
+	.asciz	"EPWMRST"                       @ string offset=733
 .Linfo_string59:
-	.asciz	"EQEIRST"                       @ string offset=723
+	.asciz	"EQEIRST"                       @ string offset=741
 .Linfo_string60:
-	.asciz	"FMCRST"                        @ string offset=731
+	.asciz	"FMCRST"                        @ string offset=749
 .Linfo_string61:
-	.asciz	"GDMARST"                       @ string offset=738
+	.asciz	"GDMARST"                       @ string offset=756
 .Linfo_string62:
-	.asciz	"GPIORST"                       @ string offset=746
+	.asciz	"GPIORST"                       @ string offset=764
 .Linfo_string63:
-	.asciz	"HSOTGRST"                      @ string offset=754
+	.asciz	"HSOTGRST"                      @ string offset=772
 .Linfo_string64:
-	.asciz	"HSUSBDRST"                     @ string offset=763
+	.asciz	"HSUSBDRST"                     @ string offset=781
 .Linfo_string65:
-	.asciz	"HSUSBHRST"                     @ string offset=773
+	.asciz	"HSUSBHRST"                     @ string offset=791
 .Linfo_string66:
-	.asciz	"I2CRST"                        @ string offset=783
+	.asciz	"I2CRST"                        @ string offset=801
 .Linfo_string67:
-	.asciz	"I2SRST"                        @ string offset=790
+	.asciz	"I2SRST"                        @ string offset=808
 .Linfo_string68:
-	.asciz	"I3CRST"                        @ string offset=797
+	.asciz	"I3CRST"                        @ string offset=815
 .Linfo_string69:
-	.asciz	"KDFRST"                        @ string offset=804
+	.asciz	"KDFRST"                        @ string offset=822
 .Linfo_string70:
-	.asciz	"KPIRST"                        @ string offset=811
+	.asciz	"KPIRST"                        @ string offset=829
 .Linfo_string71:
-	.asciz	"KSRST"                         @ string offset=818
+	.asciz	"KSRST"                         @ string offset=836
 .Linfo_string72:
-	.asciz	"LPADCRST"                      @ string offset=824
+	.asciz	"LPADCRST"                      @ string offset=842
 .Linfo_string73:
-	.asciz	"LPPDMARST"                     @ string offset=833
+	.asciz	"LPPDMARST"                     @ string offset=851
 .Linfo_string74:
-	.asciz	"LPGPIORST"                     @ string offset=843
+	.asciz	"LPGPIORST"                     @ string offset=861
 .Linfo_string75:
-	.asciz	"LPI2CRST"                      @ string offset=853
+	.asciz	"LPI2CRST"                      @ string offset=871
 .Linfo_string76:
-	.asciz	"LPSPIRST"                      @ string offset=862
+	.asciz	"LPSPIRST"                      @ string offset=880
 .Linfo_string77:
-	.asciz	"LPTMRRST"                      @ string offset=871
+	.asciz	"LPTMRRST"                      @ string offset=889
 .Linfo_string78:
-	.asciz	"LPUARTRST"                     @ string offset=880
+	.asciz	"LPUARTRST"                     @ string offset=898
 .Linfo_string79:
-	.asciz	"OTFCRST"                       @ string offset=890
+	.asciz	"OTFCRST"                       @ string offset=908
 .Linfo_string80:
-	.asciz	"OTGRST"                        @ string offset=898
+	.asciz	"OTGRST"                        @ string offset=916
 .Linfo_string81:
-	.asciz	"PDMARST"                       @ string offset=905
+	.asciz	"PDMARST"                       @ string offset=923
 .Linfo_string82:
-	.asciz	"PSIORST"                       @ string offset=913
+	.asciz	"PSIORST"                       @ string offset=931
 .Linfo_string83:
-	.asciz	"QSPIRST"                       @ string offset=921
+	.asciz	"QSPIRST"                       @ string offset=939
 .Linfo_string84:
-	.asciz	"RTCRST"                        @ string offset=929
+	.asciz	"RTCRST"                        @ string offset=947
 .Linfo_string85:
-	.asciz	"SCRST"                         @ string offset=936
+	.asciz	"SCRST"                         @ string offset=954
 .Linfo_string86:
-	.asciz	"SCURST"                        @ string offset=942
+	.asciz	"SCURST"                        @ string offset=960
 .Linfo_string87:
-	.asciz	"SDHRST"                        @ string offset=949
+	.asciz	"SDHRST"                        @ string offset=967
 .Linfo_string88:
-	.asciz	"SPIRST"                        @ string offset=956
+	.asciz	"SPIRST"                        @ string offset=974
 .Linfo_string89:
-	.asciz	"SPIMRST"                       @ string offset=963
+	.asciz	"SPIMRST"                       @ string offset=981
 .Linfo_string90:
-	.asciz	"RESERVE7"                      @ string offset=971
+	.asciz	"RESERVE7"                      @ string offset=989
 .Linfo_string91:
-	.asciz	"TMRRST"                        @ string offset=980
+	.asciz	"TMRRST"                        @ string offset=998
 .Linfo_string92:
-	.asciz	"TRNGRST"                       @ string offset=987
+	.asciz	"TRNGRST"                       @ string offset=1005
 .Linfo_string93:
-	.asciz	"TTMRRST"                       @ string offset=995
+	.asciz	"TTMRRST"                       @ string offset=1013
 .Linfo_string94:
-	.asciz	"UARTRST"                       @ string offset=1003
+	.asciz	"UARTRST"                       @ string offset=1021
 .Linfo_string95:
-	.asciz	"USBDRST"                       @ string offset=1011
+	.asciz	"USBDRST"                       @ string offset=1029
 .Linfo_string96:
-	.asciz	"USBHRST"                       @ string offset=1019
+	.asciz	"USBHRST"                       @ string offset=1037
 .Linfo_string97:
-	.asciz	"USCIRST"                       @ string offset=1027
+	.asciz	"USCIRST"                       @ string offset=1045
 .Linfo_string98:
-	.asciz	"UTCPDRST"                      @ string offset=1035
+	.asciz	"UTCPDRST"                      @ string offset=1053
 .Linfo_string99:
-	.asciz	"RESERVE8"                      @ string offset=1044
+	.asciz	"RESERVE8"                      @ string offset=1062
 .Linfo_string100:
-	.asciz	"GPA_MFP0"                      @ string offset=1053
+	.asciz	"GPA_MFP0"                      @ string offset=1071
 .Linfo_string101:
-	.asciz	"GPA_MFP1"                      @ string offset=1062
+	.asciz	"GPA_MFP1"                      @ string offset=1080
 .Linfo_string102:
-	.asciz	"GPA_MFP2"                      @ string offset=1071
+	.asciz	"GPA_MFP2"                      @ string offset=1089
 .Linfo_string103:
-	.asciz	"GPA_MFP3"                      @ string offset=1080
+	.asciz	"GPA_MFP3"                      @ string offset=1098
 .Linfo_string104:
-	.asciz	"GPB_MFP0"                      @ string offset=1089
+	.asciz	"GPB_MFP0"                      @ string offset=1107
 .Linfo_string105:
-	.asciz	"GPB_MFP1"                      @ string offset=1098
+	.asciz	"GPB_MFP1"                      @ string offset=1116
 .Linfo_string106:
-	.asciz	"GPB_MFP2"                      @ string offset=1107
+	.asciz	"GPB_MFP2"                      @ string offset=1125
 .Linfo_string107:
-	.asciz	"GPB_MFP3"                      @ string offset=1116
+	.asciz	"GPB_MFP3"                      @ string offset=1134
 .Linfo_string108:
-	.asciz	"GPC_MFP0"                      @ string offset=1125
+	.asciz	"GPC_MFP0"                      @ string offset=1143
 .Linfo_string109:
-	.asciz	"GPC_MFP1"                      @ string offset=1134
+	.asciz	"GPC_MFP1"                      @ string offset=1152
 .Linfo_string110:
-	.asciz	"GPC_MFP2"                      @ string offset=1143
+	.asciz	"GPC_MFP2"                      @ string offset=1161
 .Linfo_string111:
-	.asciz	"GPC_MFP3"                      @ string offset=1152
+	.asciz	"GPC_MFP3"                      @ string offset=1170
 .Linfo_string112:
-	.asciz	"GPD_MFP0"                      @ string offset=1161
+	.asciz	"GPD_MFP0"                      @ string offset=1179
 .Linfo_string113:
-	.asciz	"GPD_MFP1"                      @ string offset=1170
+	.asciz	"GPD_MFP1"                      @ string offset=1188
 .Linfo_string114:
-	.asciz	"GPD_MFP2"                      @ string offset=1179
+	.asciz	"GPD_MFP2"                      @ string offset=1197
 .Linfo_string115:
-	.asciz	"GPD_MFP3"                      @ string offset=1188
+	.asciz	"GPD_MFP3"                      @ string offset=1206
 .Linfo_string116:
-	.asciz	"GPE_MFP0"                      @ string offset=1197
+	.asciz	"GPE_MFP0"                      @ string offset=1215
 .Linfo_string117:
-	.asciz	"GPE_MFP1"                      @ string offset=1206
+	.asciz	"GPE_MFP1"                      @ string offset=1224
 .Linfo_string118:
-	.asciz	"GPE_MFP2"                      @ string offset=1215
+	.asciz	"GPE_MFP2"                      @ string offset=1233
 .Linfo_string119:
-	.asciz	"GPE_MFP3"                      @ string offset=1224
+	.asciz	"GPE_MFP3"                      @ string offset=1242
 .Linfo_string120:
-	.asciz	"GPF_MFP0"                      @ string offset=1233
+	.asciz	"GPF_MFP0"                      @ string offset=1251
 .Linfo_string121:
-	.asciz	"GPF_MFP1"                      @ string offset=1242
+	.asciz	"GPF_MFP1"                      @ string offset=1260
 .Linfo_string122:
-	.asciz	"GPF_MFP2"                      @ string offset=1251
+	.asciz	"GPF_MFP2"                      @ string offset=1269
 .Linfo_string123:
-	.asciz	"RESERVE9"                      @ string offset=1260
+	.asciz	"RESERVE9"                      @ string offset=1278
 .Linfo_string124:
-	.asciz	"GPG_MFP0"                      @ string offset=1269
+	.asciz	"GPG_MFP0"                      @ string offset=1287
 .Linfo_string125:
-	.asciz	"GPG_MFP1"                      @ string offset=1278
+	.asciz	"GPG_MFP1"                      @ string offset=1296
 .Linfo_string126:
-	.asciz	"GPG_MFP2"                      @ string offset=1287
+	.asciz	"GPG_MFP2"                      @ string offset=1305
 .Linfo_string127:
-	.asciz	"GPG_MFP3"                      @ string offset=1296
+	.asciz	"GPG_MFP3"                      @ string offset=1314
 .Linfo_string128:
-	.asciz	"GPH_MFP0"                      @ string offset=1305
+	.asciz	"GPH_MFP0"                      @ string offset=1323
 .Linfo_string129:
-	.asciz	"GPH_MFP1"                      @ string offset=1314
+	.asciz	"GPH_MFP1"                      @ string offset=1332
 .Linfo_string130:
-	.asciz	"GPH_MFP2"                      @ string offset=1323
+	.asciz	"GPH_MFP2"                      @ string offset=1341
 .Linfo_string131:
-	.asciz	"GPH_MFP3"                      @ string offset=1332
+	.asciz	"GPH_MFP3"                      @ string offset=1350
 .Linfo_string132:
-	.asciz	"RESERVE10"                     @ string offset=1341
+	.asciz	"RESERVE10"                     @ string offset=1359
 .Linfo_string133:
-	.asciz	"GPI_MFP1"                      @ string offset=1351
+	.asciz	"GPI_MFP1"                      @ string offset=1369
 .Linfo_string134:
-	.asciz	"GPI_MFP2"                      @ string offset=1360
+	.asciz	"GPI_MFP2"                      @ string offset=1378
 .Linfo_string135:
-	.asciz	"GPI_MFP3"                      @ string offset=1369
+	.asciz	"GPI_MFP3"                      @ string offset=1387
 .Linfo_string136:
-	.asciz	"GPJ_MFP0"                      @ string offset=1378
+	.asciz	"GPJ_MFP0"                      @ string offset=1396
 .Linfo_string137:
-	.asciz	"GPJ_MFP1"                      @ string offset=1387
+	.asciz	"GPJ_MFP1"                      @ string offset=1405
 .Linfo_string138:
-	.asciz	"GPJ_MFP2"                      @ string offset=1396
+	.asciz	"GPJ_MFP2"                      @ string offset=1414
 .Linfo_string139:
-	.asciz	"GPJ_MFP3"                      @ string offset=1405
+	.asciz	"GPJ_MFP3"                      @ string offset=1423
 .Linfo_string140:
-	.asciz	"RESERVE11"                     @ string offset=1414
+	.asciz	"RESERVE11"                     @ string offset=1432
 .Linfo_string141:
-	.asciz	"NMIEN"                         @ string offset=1424
+	.asciz	"NMIEN"                         @ string offset=1442
 .Linfo_string142:
-	.asciz	"NMISTS"                        @ string offset=1430
+	.asciz	"NMISTS"                        @ string offset=1448
 .Linfo_string143:
-	.asciz	"SYS_T"                         @ string offset=1437
+	.asciz	"SYS_T"                         @ string offset=1455
 .Linfo_string144:
-	.asciz	"PWRCTL"                        @ string offset=1443
+	.asciz	"PWRCTL"                        @ string offset=1461
 .Linfo_string145:
-	.asciz	"INTEN"                         @ string offset=1450
+	.asciz	"INTEN"                         @ string offset=1468
 .Linfo_string146:
-	.asciz	"INTSTS"                        @ string offset=1456
+	.asciz	"INTSTS"                        @ string offset=1474
 .Linfo_string147:
-	.asciz	"PLCTL"                         @ string offset=1463
+	.asciz	"PLCTL"                         @ string offset=1481
 .Linfo_string148:
-	.asciz	"PLSTS"                         @ string offset=1469
+	.asciz	"PLSTS"                         @ string offset=1487
 .Linfo_string149:
-	.asciz	"VRCTL"                         @ string offset=1475
+	.asciz	"VRCTL"                         @ string offset=1493
 .Linfo_string150:
-	.asciz	"VRSTS"                         @ string offset=1481
+	.asciz	"VRSTS"                         @ string offset=1499
 .Linfo_string151:
-	.asciz	"IOSHCTL"                       @ string offset=1487
+	.asciz	"IOSHCTL"                       @ string offset=1505
 .Linfo_string152:
-	.asciz	"FSHPCTL"                       @ string offset=1495
+	.asciz	"FSHPCTL"                       @ string offset=1513
 .Linfo_string153:
-	.asciz	"BATLDCTL"                      @ string offset=1503
+	.asciz	"BATLDCTL"                      @ string offset=1521
 .Linfo_string154:
-	.asciz	"IOTGDBCTL"                     @ string offset=1512
+	.asciz	"IOTGDBCTL"                     @ string offset=1530
 .Linfo_string155:
-	.asciz	"GPATGCTL"                      @ string offset=1522
+	.asciz	"GPATGCTL"                      @ string offset=1540
 .Linfo_string156:
-	.asciz	"GPBTGCTL"                      @ string offset=1531
+	.asciz	"GPBTGCTL"                      @ string offset=1549
 .Linfo_string157:
-	.asciz	"GPCTGCTL"                      @ string offset=1540
+	.asciz	"GPCTGCTL"                      @ string offset=1558
 .Linfo_string158:
-	.asciz	"GPDTGCTL"                      @ string offset=1549
+	.asciz	"GPDTGCTL"                      @ string offset=1567
 .Linfo_string159:
-	.asciz	"STMRWKCTL"                     @ string offset=1558
+	.asciz	"STMRWKCTL"                     @ string offset=1576
 .Linfo_string160:
-	.asciz	"PINWKCTL"                      @ string offset=1568
+	.asciz	"PINWKCTL"                      @ string offset=1586
 .Linfo_string161:
-	.asciz	"SYSRB0PC"                      @ string offset=1577
+	.asciz	"SYSRB0PC"                      @ string offset=1595
 .Linfo_string162:
-	.asciz	"SYSRB1PC"                      @ string offset=1586
+	.asciz	"SYSRB1PC"                      @ string offset=1604
 .Linfo_string163:
-	.asciz	"SYSRB2PC"                      @ string offset=1595
+	.asciz	"SYSRB2PC"                      @ string offset=1613
 .Linfo_string164:
-	.asciz	"LPSYSRPC"                      @ string offset=1604
+	.asciz	"LPSYSRPC"                      @ string offset=1622
 .Linfo_string165:
-	.asciz	"PMC_T"                         @ string offset=1613
+	.asciz	"PMC_T"                         @ string offset=1631
 .Linfo_string166:
-	.asciz	"SRCCTL"                        @ string offset=1619
+	.asciz	"SRCCTL"                        @ string offset=1637
 .Linfo_string167:
-	.asciz	"STATUS"                        @ string offset=1626
+	.asciz	"STATUS"                        @ string offset=1644
 .Linfo_string168:
-	.asciz	"MIRCCTL"                       @ string offset=1633
+	.asciz	"MIRCCTL"                       @ string offset=1651
 .Linfo_string169:
-	.asciz	"HIRCCTL"                       @ string offset=1641
+	.asciz	"HIRCCTL"                       @ string offset=1659
 .Linfo_string170:
-	.asciz	"HXTCTL"                        @ string offset=1649
+	.asciz	"HXTCTL"                        @ string offset=1667
 .Linfo_string171:
-	.asciz	"HIRC48MCTL"                    @ string offset=1656
+	.asciz	"HIRC48MCTL"                    @ string offset=1674
 .Linfo_string172:
-	.asciz	"APLL0CTL"                      @ string offset=1667
+	.asciz	"APLL0CTL"                      @ string offset=1685
 .Linfo_string173:
-	.asciz	"APLL0SEL"                      @ string offset=1676
+	.asciz	"APLL0SEL"                      @ string offset=1694
 .Linfo_string174:
-	.asciz	"APLL1CTL"                      @ string offset=1685
+	.asciz	"APLL1CTL"                      @ string offset=1703
 .Linfo_string175:
-	.asciz	"APLL1SEL"                      @ string offset=1694
+	.asciz	"APLL1SEL"                      @ string offset=1712
 .Linfo_string176:
-	.asciz	"CLKOCTL"                       @ string offset=1703
+	.asciz	"CLKOCTL"                       @ string offset=1721
 .Linfo_string177:
-	.asciz	"CLKDCTL"                       @ string offset=1711
+	.asciz	"CLKDCTL"                       @ string offset=1729
 .Linfo_string178:
-	.asciz	"CLKDSTS"                       @ string offset=1719
+	.asciz	"CLKDSTS"                       @ string offset=1737
 .Linfo_string179:
-	.asciz	"CDUPB"                         @ string offset=1727
+	.asciz	"CDUPB"                         @ string offset=1745
 .Linfo_string180:
-	.asciz	"CDLOWB"                        @ string offset=1733
+	.asciz	"CDLOWB"                        @ string offset=1751
 .Linfo_string181:
-	.asciz	"STOPREQ"                       @ string offset=1740
+	.asciz	"STOPREQ"                       @ string offset=1758
 .Linfo_string182:
-	.asciz	"STOPACK"                       @ string offset=1748
+	.asciz	"STOPACK"                       @ string offset=1766
 .Linfo_string183:
-	.asciz	"ACMPCTL"                       @ string offset=1756
+	.asciz	"ACMPCTL"                       @ string offset=1774
 .Linfo_string184:
-	.asciz	"AWFCTL"                        @ string offset=1764
+	.asciz	"AWFCTL"                        @ string offset=1782
 .Linfo_string185:
-	.asciz	"BPWMCTL"                       @ string offset=1771
+	.asciz	"BPWMCTL"                       @ string offset=1789
 .Linfo_string186:
-	.asciz	"CANFDCTL"                      @ string offset=1779
+	.asciz	"CANFDCTL"                      @ string offset=1797
 .Linfo_string187:
-	.asciz	"CCAPCTL"                       @ string offset=1788
+	.asciz	"CCAPCTL"                       @ string offset=1806
 .Linfo_string188:
-	.asciz	"CRCCTL"                        @ string offset=1796
+	.asciz	"CRCCTL"                        @ string offset=1814
 .Linfo_string189:
-	.asciz	"CRYPTOCTL"                     @ string offset=1803
+	.asciz	"CRYPTOCTL"                     @ string offset=1821
 .Linfo_string190:
-	.asciz	"DACCTL"                        @ string offset=1813
+	.asciz	"DACCTL"                        @ string offset=1831
 .Linfo_string191:
-	.asciz	"DMICCTL"                       @ string offset=1820
+	.asciz	"DMICCTL"                       @ string offset=1838
 .Linfo_string192:
-	.asciz	"EADCCTL"                       @ string offset=1828
+	.asciz	"EADCCTL"                       @ string offset=1846
 .Linfo_string193:
-	.asciz	"EBICTL"                        @ string offset=1836
+	.asciz	"EBICTL"                        @ string offset=1854
 .Linfo_string194:
-	.asciz	"ECAPCTL"                       @ string offset=1843
+	.asciz	"ECAPCTL"                       @ string offset=1861
 .Linfo_string195:
-	.asciz	"EMACCTL"                       @ string offset=1851
+	.asciz	"EMACCTL"                       @ string offset=1869
 .Linfo_string196:
-	.asciz	"EPWMCTL"                       @ string offset=1859
+	.asciz	"EPWMCTL"                       @ string offset=1877
 .Linfo_string197:
-	.asciz	"EQEICTL"                       @ string offset=1867
+	.asciz	"EQEICTL"                       @ string offset=1885
 .Linfo_string198:
-	.asciz	"FMCCTL"                        @ string offset=1875
+	.asciz	"FMCCTL"                        @ string offset=1893
 .Linfo_string199:
-	.asciz	"GDMACTL"                       @ string offset=1882
+	.asciz	"GDMACTL"                       @ string offset=1900
 .Linfo_string200:
-	.asciz	"GPIOCTL"                       @ string offset=1890
+	.asciz	"GPIOCTL"                       @ string offset=1908
 .Linfo_string201:
-	.asciz	"HSOTGCTL"                      @ string offset=1898
+	.asciz	"HSOTGCTL"                      @ string offset=1916
 .Linfo_string202:
-	.asciz	"HSUSBDCTL"                     @ string offset=1907
+	.asciz	"HSUSBDCTL"                     @ string offset=1925
 .Linfo_string203:
-	.asciz	"HSUSBHCTL"                     @ string offset=1917
+	.asciz	"HSUSBHCTL"                     @ string offset=1935
 .Linfo_string204:
-	.asciz	"I2CCTL"                        @ string offset=1927
+	.asciz	"I2CCTL"                        @ string offset=1945
 .Linfo_string205:
-	.asciz	"I2SCTL"                        @ string offset=1934
+	.asciz	"I2SCTL"                        @ string offset=1952
 .Linfo_string206:
-	.asciz	"I3CCTL"                        @ string offset=1941
+	.asciz	"I3CCTL"                        @ string offset=1959
 .Linfo_string207:
-	.asciz	"KDFCTL"                        @ string offset=1948
+	.asciz	"KDFCTL"                        @ string offset=1966
 .Linfo_string208:
-	.asciz	"KPICTL"                        @ string offset=1955
+	.asciz	"KPICTL"                        @ string offset=1973
 .Linfo_string209:
-	.asciz	"KSCTL"                         @ string offset=1962
+	.asciz	"KSCTL"                         @ string offset=1980
 .Linfo_string210:
-	.asciz	"LPADCCTL"                      @ string offset=1968
+	.asciz	"LPADCCTL"                      @ string offset=1986
 .Linfo_string211:
-	.asciz	"LPPDMACTL"                     @ string offset=1977
+	.asciz	"LPPDMACTL"                     @ string offset=1995
 .Linfo_string212:
-	.asciz	"LPGPIOCTL"                     @ string offset=1987
+	.asciz	"LPGPIOCTL"                     @ string offset=2005
 .Linfo_string213:
-	.asciz	"LPI2CCTL"                      @ string offset=1997
+	.asciz	"LPI2CCTL"                      @ string offset=2015
 .Linfo_string214:
-	.asciz	"LPSPICTL"                      @ string offset=2006
+	.asciz	"LPSPICTL"                      @ string offset=2024
 .Linfo_string215:
-	.asciz	"LPSRAMCTL"                     @ string offset=2015
+	.asciz	"LPSRAMCTL"                     @ string offset=2033
 .Linfo_string216:
-	.asciz	"LPTMRCTL"                      @ string offset=2025
+	.asciz	"LPTMRCTL"                      @ string offset=2043
 .Linfo_string217:
-	.asciz	"LPUARTCTL"                     @ string offset=2034
+	.asciz	"LPUARTCTL"                     @ string offset=2052
 .Linfo_string218:
-	.asciz	"NPUCTL"                        @ string offset=2044
+	.asciz	"NPUCTL"                        @ string offset=2062
 .Linfo_string219:
-	.asciz	"OTFCCTL"                       @ string offset=2051
+	.asciz	"OTFCCTL"                       @ string offset=2069
 .Linfo_string220:
-	.asciz	"OTGCTL"                        @ string offset=2059
+	.asciz	"OTGCTL"                        @ string offset=2077
 .Linfo_string221:
-	.asciz	"PDMACTL"                       @ string offset=2066
+	.asciz	"PDMACTL"                       @ string offset=2084
 .Linfo_string222:
-	.asciz	"PSIOCTL"                       @ string offset=2074
+	.asciz	"PSIOCTL"                       @ string offset=2092
 .Linfo_string223:
-	.asciz	"QSPICTL"                       @ string offset=2082
+	.asciz	"QSPICTL"                       @ string offset=2100
 .Linfo_string224:
-	.asciz	"RTCCTL"                        @ string offset=2090
+	.asciz	"RTCCTL"                        @ string offset=2108
 .Linfo_string225:
-	.asciz	"SCCTL"                         @ string offset=2097
+	.asciz	"SCCTL"                         @ string offset=2115
 .Linfo_string226:
-	.asciz	"SCUCTL"                        @ string offset=2103
+	.asciz	"SCUCTL"                        @ string offset=2121
 .Linfo_string227:
-	.asciz	"SDHCTL"                        @ string offset=2110
+	.asciz	"SDHCTL"                        @ string offset=2128
 .Linfo_string228:
-	.asciz	"SPICTL"                        @ string offset=2117
+	.asciz	"SPICTL"                        @ string offset=2135
 .Linfo_string229:
-	.asciz	"SPIMCTL"                       @ string offset=2124
+	.asciz	"SPIMCTL"                       @ string offset=2142
 .Linfo_string230:
-	.asciz	"SRAMCTL"                       @ string offset=2132
+	.asciz	"SRAMCTL"                       @ string offset=2150
 .Linfo_string231:
-	.asciz	"STCTL"                         @ string offset=2140
+	.asciz	"STCTL"                         @ string offset=2158
 .Linfo_string232:
-	.asciz	"TAMPERCTL"                     @ string offset=2146
+	.asciz	"TAMPERCTL"                     @ string offset=2164
 .Linfo_string233:
-	.asciz	"TMRCTL"                        @ string offset=2156
+	.asciz	"TMRCTL"                        @ string offset=2174
 .Linfo_string234:
-	.asciz	"TRNGCTL"                       @ string offset=2163
+	.asciz	"TRNGCTL"                       @ string offset=2181
 .Linfo_string235:
-	.asciz	"TTMRCTL"                       @ string offset=2171
+	.asciz	"TTMRCTL"                       @ string offset=2189
 .Linfo_string236:
-	.asciz	"UARTCTL"                       @ string offset=2179
+	.asciz	"UARTCTL"                       @ string offset=2197
 .Linfo_string237:
-	.asciz	"USBDCTL"                       @ string offset=2187
+	.asciz	"USBDCTL"                       @ string offset=2205
 .Linfo_string238:
-	.asciz	"USBHCTL"                       @ string offset=2195
+	.asciz	"USBHCTL"                       @ string offset=2213
 .Linfo_string239:
-	.asciz	"USCICTL"                       @ string offset=2203
+	.asciz	"USCICTL"                       @ string offset=2221
 .Linfo_string240:
-	.asciz	"WDTCTL"                        @ string offset=2211
+	.asciz	"WDTCTL"                        @ string offset=2229
 .Linfo_string241:
-	.asciz	"WWDTCTL"                       @ string offset=2218
+	.asciz	"WWDTCTL"                       @ string offset=2236
 .Linfo_string242:
-	.asciz	"SCLKSEL"                       @ string offset=2226
+	.asciz	"SCLKSEL"                       @ string offset=2244
 .Linfo_string243:
-	.asciz	"BPWMSEL"                       @ string offset=2234
+	.asciz	"BPWMSEL"                       @ string offset=2252
 .Linfo_string244:
-	.asciz	"CANFDSEL"                      @ string offset=2242
+	.asciz	"CANFDSEL"                      @ string offset=2260
 .Linfo_string245:
-	.asciz	"CCAPSEL"                       @ string offset=2251
+	.asciz	"CCAPSEL"                       @ string offset=2269
 .Linfo_string246:
-	.asciz	"CLKOSEL"                       @ string offset=2259
+	.asciz	"CLKOSEL"                       @ string offset=2277
 .Linfo_string247:
-	.asciz	"DMICSEL"                       @ string offset=2267
+	.asciz	"DMICSEL"                       @ string offset=2285
 .Linfo_string248:
-	.asciz	"EADCSEL"                       @ string offset=2275
+	.asciz	"EADCSEL"                       @ string offset=2293
 .Linfo_string249:
-	.asciz	"EPWMSEL"                       @ string offset=2283
+	.asciz	"EPWMSEL"                       @ string offset=2301
 .Linfo_string250:
-	.asciz	"FMCSEL"                        @ string offset=2291
+	.asciz	"FMCSEL"                        @ string offset=2309
 .Linfo_string251:
-	.asciz	"I2SSEL"                        @ string offset=2298
+	.asciz	"I2SSEL"                        @ string offset=2316
 .Linfo_string252:
-	.asciz	"I3CSEL"                        @ string offset=2305
+	.asciz	"I3CSEL"                        @ string offset=2323
 .Linfo_string253:
-	.asciz	"KPISEL"                        @ string offset=2312
+	.asciz	"KPISEL"                        @ string offset=2330
 .Linfo_string254:
-	.asciz	"LPADCSEL"                      @ string offset=2319
+	.asciz	"LPADCSEL"                      @ string offset=2337
 .Linfo_string255:
-	.asciz	"LPSPISEL"                      @ string offset=2328
+	.asciz	"LPSPISEL"                      @ string offset=2346
 .Linfo_string256:
-	.asciz	"LPTMRSEL"                      @ string offset=2337
+	.asciz	"LPTMRSEL"                      @ string offset=2355
 .Linfo_string257:
-	.asciz	"LPUARTSEL"                     @ string offset=2346
+	.asciz	"LPUARTSEL"                     @ string offset=2364
 .Linfo_string258:
-	.asciz	"PSIOSEL"                       @ string offset=2356
+	.asciz	"PSIOSEL"                       @ string offset=2374
 .Linfo_string259:
-	.asciz	"QSPISEL"                       @ string offset=2364
+	.asciz	"QSPISEL"                       @ string offset=2382
 .Linfo_string260:
-	.asciz	"SCSEL"                         @ string offset=2372
+	.asciz	"SCSEL"                         @ string offset=2390
 .Linfo_string261:
-	.asciz	"SDHSEL"                        @ string offset=2378
+	.asciz	"SDHSEL"                        @ string offset=2396
 .Linfo_string262:
-	.asciz	"SPISEL"                        @ string offset=2385
+	.asciz	"SPISEL"                        @ string offset=2403
 .Linfo_string263:
-	.asciz	"STSEL"                         @ string offset=2392
+	.asciz	"STSEL"                         @ string offset=2410
 .Linfo_string264:
-	.asciz	"TMRSEL"                        @ string offset=2398
+	.asciz	"TMRSEL"                        @ string offset=2416
 .Linfo_string265:
-	.asciz	"TTMRSEL"                       @ string offset=2405
+	.asciz	"TTMRSEL"                       @ string offset=2423
 .Linfo_string266:
-	.asciz	"UARTSEL0"                      @ string offset=2413
+	.asciz	"UARTSEL0"                      @ string offset=2431
 .Linfo_string267:
-	.asciz	"UARTSEL1"                      @ string offset=2422
+	.asciz	"UARTSEL1"                      @ string offset=2440
 .Linfo_string268:
-	.asciz	"USBSEL"                        @ string offset=2431
+	.asciz	"USBSEL"                        @ string offset=2449
 .Linfo_string269:
-	.asciz	"WDTSEL"                        @ string offset=2438
+	.asciz	"WDTSEL"                        @ string offset=2456
 .Linfo_string270:
-	.asciz	"WWDTSEL"                       @ string offset=2445
+	.asciz	"WWDTSEL"                       @ string offset=2463
 .Linfo_string271:
-	.asciz	"DLLSEL"                        @ string offset=2453
+	.asciz	"DLLSEL"                        @ string offset=2471
 .Linfo_string272:
-	.asciz	"SCLKDIV"                       @ string offset=2460
+	.asciz	"SCLKDIV"                       @ string offset=2478
 .Linfo_string273:
-	.asciz	"HCLKDIV"                       @ string offset=2468
+	.asciz	"HCLKDIV"                       @ string offset=2486
 .Linfo_string274:
-	.asciz	"PCLKDIV"                       @ string offset=2476
+	.asciz	"PCLKDIV"                       @ string offset=2494
 .Linfo_string275:
-	.asciz	"CANFDDIV"                      @ string offset=2484
+	.asciz	"CANFDDIV"                      @ string offset=2502
 .Linfo_string276:
-	.asciz	"DMICDIV"                       @ string offset=2493
+	.asciz	"DMICDIV"                       @ string offset=2511
 .Linfo_string277:
-	.asciz	"EADCDIV"                       @ string offset=2501
+	.asciz	"EADCDIV"                       @ string offset=2519
 .Linfo_string278:
-	.asciz	"I2SDIV"                        @ string offset=2509
+	.asciz	"I2SDIV"                        @ string offset=2527
 .Linfo_string279:
-	.asciz	"KPIDIV"                        @ string offset=2516
+	.asciz	"KPIDIV"                        @ string offset=2534
 .Linfo_string280:
-	.asciz	"LPADCDIV"                      @ string offset=2523
+	.asciz	"LPADCDIV"                      @ string offset=2541
 .Linfo_string281:
-	.asciz	"LPUARTDIV"                     @ string offset=2532
+	.asciz	"LPUARTDIV"                     @ string offset=2550
 .Linfo_string282:
-	.asciz	"PSIODIV"                       @ string offset=2542
+	.asciz	"PSIODIV"                       @ string offset=2560
 .Linfo_string283:
-	.asciz	"SCDIV"                         @ string offset=2550
+	.asciz	"SCDIV"                         @ string offset=2568
 .Linfo_string284:
-	.asciz	"SDHDIV"                        @ string offset=2556
+	.asciz	"SDHDIV"                        @ string offset=2574
 .Linfo_string285:
-	.asciz	"STDIV"                         @ string offset=2563
+	.asciz	"STDIV"                         @ string offset=2581
 .Linfo_string286:
-	.asciz	"UARTDIV0"                      @ string offset=2569
+	.asciz	"UARTDIV0"                      @ string offset=2587
 .Linfo_string287:
-	.asciz	"UARTDIV1"                      @ string offset=2578
+	.asciz	"UARTDIV1"                      @ string offset=2596
 .Linfo_string288:
-	.asciz	"USBDIV"                        @ string offset=2587
+	.asciz	"USBDIV"                        @ string offset=2605
 .Linfo_string289:
-	.asciz	"VSENSEDIV"                     @ string offset=2594
+	.asciz	"VSENSEDIV"                     @ string offset=2612
 .Linfo_string290:
-	.asciz	"CLK_T"                         @ string offset=2604
+	.asciz	"CLK_T"                         @ string offset=2622
 .Linfo_string291:
-	.asciz	"CPUID"                         @ string offset=2610
+	.asciz	"CPUID"                         @ string offset=2628
 .Linfo_string292:
-	.asciz	"ICSR"                          @ string offset=2616
+	.asciz	"ICSR"                          @ string offset=2634
 .Linfo_string293:
-	.asciz	"VTOR"                          @ string offset=2621
+	.asciz	"VTOR"                          @ string offset=2639
 .Linfo_string294:
-	.asciz	"AIRCR"                         @ string offset=2626
+	.asciz	"AIRCR"                         @ string offset=2644
 .Linfo_string295:
-	.asciz	"SCR"                           @ string offset=2632
+	.asciz	"SCR"                           @ string offset=2650
 .Linfo_string296:
-	.asciz	"CCR"                           @ string offset=2636
+	.asciz	"CCR"                           @ string offset=2654
 .Linfo_string297:
-	.asciz	"SHPR"                          @ string offset=2640
+	.asciz	"SHPR"                          @ string offset=2658
 .Linfo_string298:
-	.asciz	"unsigned char"                 @ string offset=2645
+	.asciz	"unsigned char"                 @ string offset=2663
 .Linfo_string299:
-	.asciz	"uint8_t"                       @ string offset=2659
+	.asciz	"uint8_t"                       @ string offset=2677
 .Linfo_string300:
-	.asciz	"SHCSR"                         @ string offset=2667
+	.asciz	"SHCSR"                         @ string offset=2685
 .Linfo_string301:
-	.asciz	"CFSR"                          @ string offset=2673
+	.asciz	"CFSR"                          @ string offset=2691
 .Linfo_string302:
-	.asciz	"HFSR"                          @ string offset=2678
+	.asciz	"HFSR"                          @ string offset=2696
 .Linfo_string303:
-	.asciz	"DFSR"                          @ string offset=2683
+	.asciz	"DFSR"                          @ string offset=2701
 .Linfo_string304:
-	.asciz	"MMFAR"                         @ string offset=2688
+	.asciz	"MMFAR"                         @ string offset=2706
 .Linfo_string305:
-	.asciz	"BFAR"                          @ string offset=2694
+	.asciz	"BFAR"                          @ string offset=2712
 .Linfo_string306:
-	.asciz	"AFSR"                          @ string offset=2699
+	.asciz	"AFSR"                          @ string offset=2717
 .Linfo_string307:
-	.asciz	"ID_PFR"                        @ string offset=2704
+	.asciz	"ID_PFR"                        @ string offset=2722
 .Linfo_string308:
-	.asciz	"ID_DFR"                        @ string offset=2711
+	.asciz	"ID_DFR"                        @ string offset=2729
 .Linfo_string309:
-	.asciz	"ID_AFR"                        @ string offset=2718
+	.asciz	"ID_AFR"                        @ string offset=2736
 .Linfo_string310:
-	.asciz	"ID_MMFR"                       @ string offset=2725
+	.asciz	"ID_MMFR"                       @ string offset=2743
 .Linfo_string311:
-	.asciz	"ID_ISAR"                       @ string offset=2733
+	.asciz	"ID_ISAR"                       @ string offset=2751
 .Linfo_string312:
-	.asciz	"CLIDR"                         @ string offset=2741
+	.asciz	"CLIDR"                         @ string offset=2759
 .Linfo_string313:
-	.asciz	"CTR"                           @ string offset=2747
+	.asciz	"CTR"                           @ string offset=2765
 .Linfo_string314:
-	.asciz	"CCSIDR"                        @ string offset=2751
+	.asciz	"CCSIDR"                        @ string offset=2769
 .Linfo_string315:
-	.asciz	"CSSELR"                        @ string offset=2758
+	.asciz	"CSSELR"                        @ string offset=2776
 .Linfo_string316:
-	.asciz	"CPACR"                         @ string offset=2765
+	.asciz	"CPACR"                         @ string offset=2783
 .Linfo_string317:
-	.asciz	"NSACR"                         @ string offset=2771
+	.asciz	"NSACR"                         @ string offset=2789
 .Linfo_string318:
-	.asciz	"RESERVED7"                     @ string offset=2777
+	.asciz	"RESERVED7"                     @ string offset=2795
 .Linfo_string319:
-	.asciz	"SFSR"                          @ string offset=2787
+	.asciz	"SFSR"                          @ string offset=2805
 .Linfo_string320:
-	.asciz	"SFAR"                          @ string offset=2792
+	.asciz	"SFAR"                          @ string offset=2810
 .Linfo_string321:
-	.asciz	"RESERVED3"                     @ string offset=2797
+	.asciz	"RESERVED3"                     @ string offset=2815
 .Linfo_string322:
-	.asciz	"STIR"                          @ string offset=2807
+	.asciz	"STIR"                          @ string offset=2825
 .Linfo_string323:
-	.asciz	"RFSR"                          @ string offset=2812
+	.asciz	"RFSR"                          @ string offset=2830
 .Linfo_string324:
-	.asciz	"RESERVED4"                     @ string offset=2817
+	.asciz	"RESERVED4"                     @ string offset=2835
 .Linfo_string325:
-	.asciz	"MVFR0"                         @ string offset=2827
+	.asciz	"MVFR0"                         @ string offset=2845
 .Linfo_string326:
-	.asciz	"MVFR1"                         @ string offset=2833
+	.asciz	"MVFR1"                         @ string offset=2851
 .Linfo_string327:
-	.asciz	"MVFR2"                         @ string offset=2839
+	.asciz	"MVFR2"                         @ string offset=2857
 .Linfo_string328:
-	.asciz	"RESERVED5"                     @ string offset=2845
+	.asciz	"RESERVED5"                     @ string offset=2863
 .Linfo_string329:
-	.asciz	"ICIALLU"                       @ string offset=2855
+	.asciz	"ICIALLU"                       @ string offset=2873
 .Linfo_string330:
-	.asciz	"RESERVED6"                     @ string offset=2863
+	.asciz	"RESERVED6"                     @ string offset=2881
 .Linfo_string331:
-	.asciz	"ICIMVAU"                       @ string offset=2873
+	.asciz	"ICIMVAU"                       @ string offset=2891
 .Linfo_string332:
-	.asciz	"DCIMVAC"                       @ string offset=2881
+	.asciz	"DCIMVAC"                       @ string offset=2899
 .Linfo_string333:
-	.asciz	"DCISW"                         @ string offset=2889
+	.asciz	"DCISW"                         @ string offset=2907
 .Linfo_string334:
-	.asciz	"DCCMVAU"                       @ string offset=2895
+	.asciz	"DCCMVAU"                       @ string offset=2913
 .Linfo_string335:
-	.asciz	"DCCMVAC"                       @ string offset=2903
+	.asciz	"DCCMVAC"                       @ string offset=2921
 .Linfo_string336:
-	.asciz	"DCCSW"                         @ string offset=2911
+	.asciz	"DCCSW"                         @ string offset=2929
 .Linfo_string337:
-	.asciz	"DCCIMVAC"                      @ string offset=2917
+	.asciz	"DCCIMVAC"                      @ string offset=2935
 .Linfo_string338:
-	.asciz	"DCCISW"                        @ string offset=2926
+	.asciz	"DCCISW"                        @ string offset=2944
 .Linfo_string339:
-	.asciz	"BPIALL"                        @ string offset=2933
+	.asciz	"BPIALL"                        @ string offset=2951
 .Linfo_string340:
-	.asciz	"SCB_Type"                      @ string offset=2940
+	.asciz	"SCB_Type"                      @ string offset=2958
 .Linfo_string341:
-	.asciz	"CPDLPSTATE"                    @ string offset=2949
+	.asciz	"CPDLPSTATE"                    @ string offset=2967
 .Linfo_string342:
-	.asciz	"DPDLPSTATE"                    @ string offset=2960
+	.asciz	"DPDLPSTATE"                    @ string offset=2978
 .Linfo_string343:
-	.asciz	"PwrModCtl_Type"                @ string offset=2971
+	.asciz	"PwrModCtl_Type"                @ string offset=2989
 .Linfo_string344:
-	.asciz	"CTL"                           @ string offset=2986
+	.asciz	"CTL"                           @ string offset=3004
 .Linfo_string345:
-	.asciz	"PAR"                           @ string offset=2990
+	.asciz	"PAR"                           @ string offset=3008
 .Linfo_string346:
-	.asciz	"PARM"                          @ string offset=2994
+	.asciz	"PARM"                          @ string offset=3012
 .Linfo_string347:
-	.asciz	"CWSP"                          @ string offset=2999
+	.asciz	"CWSP"                          @ string offset=3017
 .Linfo_string348:
-	.asciz	"CWS"                           @ string offset=3004
+	.asciz	"CWS"                           @ string offset=3022
 .Linfo_string349:
-	.asciz	"PKTSL"                         @ string offset=3008
+	.asciz	"PKTSL"                         @ string offset=3026
 .Linfo_string350:
-	.asciz	"FRCTL"                         @ string offset=3014
+	.asciz	"FRCTL"                         @ string offset=3032
 .Linfo_string351:
-	.asciz	"STRIDE"                        @ string offset=3020
+	.asciz	"STRIDE"                        @ string offset=3038
 .Linfo_string352:
-	.asciz	"FIFOTH"                        @ string offset=3027
+	.asciz	"FIFOTH"                        @ string offset=3045
 .Linfo_string353:
-	.asciz	"CMPADDR"                       @ string offset=3034
+	.asciz	"CMPADDR"                       @ string offset=3052
 .Linfo_string354:
-	.asciz	"LUMA_Y1_THD"                   @ string offset=3042
+	.asciz	"LUMA_Y1_THD"                   @ string offset=3060
 .Linfo_string355:
-	.asciz	"PKTSM"                         @ string offset=3054
+	.asciz	"PKTSM"                         @ string offset=3072
 .Linfo_string356:
-	.asciz	"CURADDRP"                      @ string offset=3060
+	.asciz	"CURADDRP"                      @ string offset=3078
 .Linfo_string357:
-	.asciz	"PKTBA0"                        @ string offset=3069
+	.asciz	"PKTBA0"                        @ string offset=3087
 .Linfo_string358:
-	.asciz	"MDCTL"                         @ string offset=3076
+	.asciz	"MDCTL"                         @ string offset=3094
 .Linfo_string359:
-	.asciz	"MDTRG_WK"                      @ string offset=3082
+	.asciz	"MDTRG_WK"                      @ string offset=3100
 .Linfo_string360:
-	.asciz	"MDTTH"                         @ string offset=3091
+	.asciz	"MDTTH"                         @ string offset=3109
 .Linfo_string361:
-	.asciz	"MDTSAD"                        @ string offset=3097
+	.asciz	"MDTSAD"                        @ string offset=3115
 .Linfo_string362:
-	.asciz	"MDWOCTH"                       @ string offset=3104
+	.asciz	"MDWOCTH"                       @ string offset=3122
 .Linfo_string363:
-	.asciz	"MDWOC"                         @ string offset=3112
+	.asciz	"MDWOC"                         @ string offset=3130
 .Linfo_string364:
-	.asciz	"MDWTH"                         @ string offset=3118
+	.asciz	"MDWTH"                         @ string offset=3136
 .Linfo_string365:
-	.asciz	"MDWSAD"                        @ string offset=3124
+	.asciz	"MDWSAD"                        @ string offset=3142
 .Linfo_string366:
-	.asciz	"CCAP_T"                        @ string offset=3131
+	.asciz	"CCAP_T"                        @ string offset=3149
 .Linfo_string367:
-	.asciz	"ProcessHardFault"              @ string offset=3138
+	.asciz	"ProcessHardFault"              @ string offset=3156
 .Linfo_string368:
-	.asciz	"SYS_ResetChip"                 @ string offset=3155
+	.asciz	"SYS_ResetChip"                 @ string offset=3173
 .Linfo_string369:
-	.asciz	"SCB_InvalidateICache"          @ string offset=3169
+	.asciz	"SCB_InvalidateICache"          @ string offset=3187
 .Linfo_string370:
-	.asciz	"SCB_EnableICache"              @ string offset=3190
+	.asciz	"SCB_EnableICache"              @ string offset=3208
 .Linfo_string371:
-	.asciz	"SCB_InvalidateDCache"          @ string offset=3207
+	.asciz	"SCB_InvalidateDCache"          @ string offset=3225
 .Linfo_string372:
-	.asciz	"ccsidr"                        @ string offset=3228
+	.asciz	"ccsidr"                        @ string offset=3246
 .Linfo_string373:
-	.asciz	"sets"                          @ string offset=3235
+	.asciz	"sets"                          @ string offset=3253
 .Linfo_string374:
-	.asciz	"ways"                          @ string offset=3240
+	.asciz	"ways"                          @ string offset=3258
 .Linfo_string375:
-	.asciz	"SCB_EnableDCache"              @ string offset=3245
+	.asciz	"SCB_EnableDCache"              @ string offset=3263
 .Linfo_string376:
-	.asciz	"Default_Handler"               @ string offset=3262
+	.asciz	"Default_Handler"               @ string offset=3280
 .Linfo_string377:
-	.asciz	"Reset_Handler"                 @ string offset=3278
+	.asciz	"Reset_Handler"                 @ string offset=3296
 .Linfo_string378:
-	.asciz	"HardFault_Handler"             @ string offset=3292
+	.asciz	"HardFault_Handler"             @ string offset=3310
 .Linfo_string379:
-	.asciz	"Reset_Handler_PreInit"         @ string offset=3310
+	.asciz	"Reset_Handler_PreInit"         @ string offset=3328
 .Linfo_string380:
-	.asciz	"Reset_Handler_Main"            @ string offset=3332
+	.asciz	"Reset_Handler_Main"            @ string offset=3350
 .Linfo_string381:
-	.asciz	"psStackFrame"                  @ string offset=3351
+	.asciz	"psStackFrame"                  @ string offset=3369
 .Linfo_string382:
-	.asciz	"r0"                            @ string offset=3364
+	.asciz	"r0"                            @ string offset=3382
 .Linfo_string383:
-	.asciz	"r1"                            @ string offset=3367
+	.asciz	"r1"                            @ string offset=3385
 .Linfo_string384:
-	.asciz	"r2"                            @ string offset=3370
+	.asciz	"r2"                            @ string offset=3388
 .Linfo_string385:
-	.asciz	"r3"                            @ string offset=3373
+	.asciz	"r3"                            @ string offset=3391
 .Linfo_string386:
-	.asciz	"r12"                           @ string offset=3376
+	.asciz	"r12"                           @ string offset=3394
 .Linfo_string387:
-	.asciz	"lr"                            @ string offset=3380
+	.asciz	"lr"                            @ string offset=3398
 .Linfo_string388:
-	.asciz	"pc"                            @ string offset=3383
+	.asciz	"pc"                            @ string offset=3401
 .Linfo_string389:
-	.asciz	"xPsr"                          @ string offset=3386
+	.asciz	"xPsr"                          @ string offset=3404
 .Linfo_string390:
-	.asciz	"StackFrame"                    @ string offset=3391
+	.asciz	"StackFrame"                    @ string offset=3409
 .Linfo_string391:
-	.asciz	"u32IRQ"                        @ string offset=3402
+	.asciz	"u32IRQ"                        @ string offset=3420
 .Linfo_string392:
-	.asciz	"current_pc"                    @ string offset=3409
+	.asciz	"current_pc"                    @ string offset=3427
 	.weak	SCU_IRQHandler
-	.weak	NMI_Handler
-	.type	NMI_Handler,%function
-	.hidden	NMI_Handler
-.set NMI_Handler, Default_Handler
-	.weak	MemManage_Handler
-	.type	MemManage_Handler,%function
-	.hidden	MemManage_Handler
-.set MemManage_Handler, Default_Handler
-	.weak	BusFault_Handler
-	.type	BusFault_Handler,%function
-	.hidden	BusFault_Handler
-.set BusFault_Handler, Default_Handler
-	.weak	UsageFault_Handler
-	.type	UsageFault_Handler,%function
-	.hidden	UsageFault_Handler
-.set UsageFault_Handler, Default_Handler
-	.weak	SecureFault_Handler
-	.type	SecureFault_Handler,%function
-	.hidden	SecureFault_Handler
-.set SecureFault_Handler, Default_Handler
-	.weak	SVC_Handler
-	.type	SVC_Handler,%function
-	.hidden	SVC_Handler
-.set SVC_Handler, Default_Handler
-	.weak	DebugMon_Handler
-	.type	DebugMon_Handler,%function
-	.hidden	DebugMon_Handler
-.set DebugMon_Handler, Default_Handler
-	.weak	PendSV_Handler
-	.type	PendSV_Handler,%function
-	.hidden	PendSV_Handler
-.set PendSV_Handler, Default_Handler
-	.weak	SysTick_Handler
-	.type	SysTick_Handler,%function
-	.hidden	SysTick_Handler
-.set SysTick_Handler, Default_Handler
-	.weak	ACMP01_IRQHandler
-	.type	ACMP01_IRQHandler,%function
-	.hidden	ACMP01_IRQHandler
-.set ACMP01_IRQHandler, Default_Handler
-	.weak	ACMP23_IRQHandler
-	.type	ACMP23_IRQHandler,%function
-	.hidden	ACMP23_IRQHandler
-.set ACMP23_IRQHandler, Default_Handler
-	.weak	AWF_IRQHandler
-	.type	AWF_IRQHandler,%function
-	.hidden	AWF_IRQHandler
-.set AWF_IRQHandler, Default_Handler
-	.weak	BODOUT_IRQHandler
-	.type	BODOUT_IRQHandler,%function
-	.hidden	BODOUT_IRQHandler
-.set BODOUT_IRQHandler, Default_Handler
-	.weak	BPWM0_IRQHandler
-	.type	BPWM0_IRQHandler,%function
-	.hidden	BPWM0_IRQHandler
-.set BPWM0_IRQHandler, Default_Handler
-	.weak	BPWM1_IRQHandler
-	.type	BPWM1_IRQHandler,%function
-	.hidden	BPWM1_IRQHandler
-.set BPWM1_IRQHandler, Default_Handler
-	.weak	BRAKE0_IRQHandler
-	.type	BRAKE0_IRQHandler,%function
-	.hidden	BRAKE0_IRQHandler
-.set BRAKE0_IRQHandler, Default_Handler
-	.weak	BRAKE1_IRQHandler
-	.type	BRAKE1_IRQHandler,%function
-	.hidden	BRAKE1_IRQHandler
-.set BRAKE1_IRQHandler, Default_Handler
-	.weak	CANFD00_IRQHandler
-	.type	CANFD00_IRQHandler,%function
-	.hidden	CANFD00_IRQHandler
-.set CANFD00_IRQHandler, Default_Handler
-	.weak	CANFD01_IRQHandler
-	.type	CANFD01_IRQHandler,%function
-	.hidden	CANFD01_IRQHandler
-.set CANFD01_IRQHandler, Default_Handler
-	.weak	CANFD10_IRQHandler
-	.type	CANFD10_IRQHandler,%function
-	.hidden	CANFD10_IRQHandler
-.set CANFD10_IRQHandler, Default_Handler
-	.weak	CANFD11_IRQHandler
-	.type	CANFD11_IRQHandler,%function
-	.hidden	CANFD11_IRQHandler
-.set CANFD11_IRQHandler, Default_Handler
-	.weak	CCAP_IRQHandler
-	.type	CCAP_IRQHandler,%function
-	.hidden	CCAP_IRQHandler
-.set CCAP_IRQHandler, Default_Handler
-	.weak	CKFAIL_IRQHandler
-	.type	CKFAIL_IRQHandler,%function
-	.hidden	CKFAIL_IRQHandler
-.set CKFAIL_IRQHandler, Default_Handler
-	.weak	CRC_IRQHandler
-	.type	CRC_IRQHandler,%function
-	.hidden	CRC_IRQHandler
-.set CRC_IRQHandler, Default_Handler
-	.weak	CRYPTO_IRQHandler
-	.type	CRYPTO_IRQHandler,%function
-	.hidden	CRYPTO_IRQHandler
-.set CRYPTO_IRQHandler, Default_Handler
-	.weak	DAC01_IRQHandler
-	.type	DAC01_IRQHandler,%function
-	.hidden	DAC01_IRQHandler
-.set DAC01_IRQHandler, Default_Handler
-	.weak	DMIC0_IRQHandler
-	.type	DMIC0_IRQHandler,%function
-	.hidden	DMIC0_IRQHandler
-.set DMIC0_IRQHandler, Default_Handler
-	.weak	DMIC0VAD_IRQHandler
-	.type	DMIC0VAD_IRQHandler,%function
-	.hidden	DMIC0VAD_IRQHandler
-.set DMIC0VAD_IRQHandler, Default_Handler
-	.weak	EADC00_IRQHandler
-	.type	EADC00_IRQHandler,%function
-	.hidden	EADC00_IRQHandler
-.set EADC00_IRQHandler, Default_Handler
-	.weak	EADC01_IRQHandler
-	.type	EADC01_IRQHandler,%function
-	.hidden	EADC01_IRQHandler
-.set EADC01_IRQHandler, Default_Handler
-	.weak	EADC02_IRQHandler
-	.type	EADC02_IRQHandler,%function
-	.hidden	EADC02_IRQHandler
-.set EADC02_IRQHandler, Default_Handler
-	.weak	EADC03_IRQHandler
-	.type	EADC03_IRQHandler,%function
-	.hidden	EADC03_IRQHandler
-.set EADC03_IRQHandler, Default_Handler
-	.weak	ECAP0_IRQHandler
-	.type	ECAP0_IRQHandler,%function
-	.hidden	ECAP0_IRQHandler
-.set ECAP0_IRQHandler, Default_Handler
-	.weak	ECAP1_IRQHandler
-	.type	ECAP1_IRQHandler,%function
-	.hidden	ECAP1_IRQHandler
-.set ECAP1_IRQHandler, Default_Handler
-	.weak	ECAP2_IRQHandler
-	.type	ECAP2_IRQHandler,%function
-	.hidden	ECAP2_IRQHandler
-.set ECAP2_IRQHandler, Default_Handler
-	.weak	ECAP3_IRQHandler
-	.type	ECAP3_IRQHandler,%function
-	.hidden	ECAP3_IRQHandler
-.set ECAP3_IRQHandler, Default_Handler
-	.weak	EINT0_IRQHandler
-	.type	EINT0_IRQHandler,%function
-	.hidden	EINT0_IRQHandler
-.set EINT0_IRQHandler, Default_Handler
-	.weak	EINT1_IRQHandler
-	.type	EINT1_IRQHandler,%function
-	.hidden	EINT1_IRQHandler
-.set EINT1_IRQHandler, Default_Handler
-	.weak	EINT2_IRQHandler
-	.type	EINT2_IRQHandler,%function
-	.hidden	EINT2_IRQHandler
-.set EINT2_IRQHandler, Default_Handler
-	.weak	EINT3_IRQHandler
-	.type	EINT3_IRQHandler,%function
-	.hidden	EINT3_IRQHandler
-.set EINT3_IRQHandler, Default_Handler
-	.weak	EINT4_IRQHandler
-	.type	EINT4_IRQHandler,%function
-	.hidden	EINT4_IRQHandler
-.set EINT4_IRQHandler, Default_Handler
-	.weak	EINT5_IRQHandler
-	.type	EINT5_IRQHandler,%function
-	.hidden	EINT5_IRQHandler
-.set EINT5_IRQHandler, Default_Handler
-	.weak	EINT6_IRQHandler
-	.type	EINT6_IRQHandler,%function
-	.hidden	EINT6_IRQHandler
-.set EINT6_IRQHandler, Default_Handler
-	.weak	EINT7_IRQHandler
-	.type	EINT7_IRQHandler,%function
-	.hidden	EINT7_IRQHandler
-.set EINT7_IRQHandler, Default_Handler
-	.weak	EMAC0_IRQHandler
-	.type	EMAC0_IRQHandler,%function
-	.hidden	EMAC0_IRQHandler
-.set EMAC0_IRQHandler, Default_Handler
-	.weak	EPWM0P0_IRQHandler
-	.type	EPWM0P0_IRQHandler,%function
-	.hidden	EPWM0P0_IRQHandler
-.set EPWM0P0_IRQHandler, Default_Handler
-	.weak	EPWM0P1_IRQHandler
-	.type	EPWM0P1_IRQHandler,%function
-	.hidden	EPWM0P1_IRQHandler
-.set EPWM0P1_IRQHandler, Default_Handler
-	.weak	EPWM0P2_IRQHandler
-	.type	EPWM0P2_IRQHandler,%function
-	.hidden	EPWM0P2_IRQHandler
-.set EPWM0P2_IRQHandler, Default_Handler
-	.weak	EPWM1P0_IRQHandler
-	.type	EPWM1P0_IRQHandler,%function
-	.hidden	EPWM1P0_IRQHandler
-.set EPWM1P0_IRQHandler, Default_Handler
-	.weak	EPWM1P1_IRQHandler
-	.type	EPWM1P1_IRQHandler,%function
-	.hidden	EPWM1P1_IRQHandler
-.set EPWM1P1_IRQHandler, Default_Handler
-	.weak	EPWM1P2_IRQHandler
-	.type	EPWM1P2_IRQHandler,%function
-	.hidden	EPWM1P2_IRQHandler
-.set EPWM1P2_IRQHandler, Default_Handler
-	.weak	EQEI0_IRQHandler
-	.type	EQEI0_IRQHandler,%function
-	.hidden	EQEI0_IRQHandler
-.set EQEI0_IRQHandler, Default_Handler
-	.weak	EQEI1_IRQHandler
-	.type	EQEI1_IRQHandler,%function
-	.hidden	EQEI1_IRQHandler
-.set EQEI1_IRQHandler, Default_Handler
-	.weak	EQEI2_IRQHandler
-	.type	EQEI2_IRQHandler,%function
-	.hidden	EQEI2_IRQHandler
-.set EQEI2_IRQHandler, Default_Handler
-	.weak	EQEI3_IRQHandler
-	.type	EQEI3_IRQHandler,%function
-	.hidden	EQEI3_IRQHandler
-.set EQEI3_IRQHandler, Default_Handler
-	.weak	ETI_IRQHandler
-	.type	ETI_IRQHandler,%function
-	.hidden	ETI_IRQHandler
-.set ETI_IRQHandler, Default_Handler
-	.weak	GDMACH0_IRQHandler
-	.type	GDMACH0_IRQHandler,%function
-	.hidden	GDMACH0_IRQHandler
-.set GDMACH0_IRQHandler, Default_Handler
-	.weak	GDMACH1_IRQHandler
-	.type	GDMACH1_IRQHandler,%function
-	.hidden	GDMACH1_IRQHandler
-.set GDMACH1_IRQHandler, Default_Handler
-	.weak	GPA_IRQHandler
-	.type	GPA_IRQHandler,%function
-	.hidden	GPA_IRQHandler
-.set GPA_IRQHandler, Default_Handler
-	.weak	GPB_IRQHandler
-	.type	GPB_IRQHandler,%function
-	.hidden	GPB_IRQHandler
-.set GPB_IRQHandler, Default_Handler
-	.weak	GPC_IRQHandler
-	.type	GPC_IRQHandler,%function
-	.hidden	GPC_IRQHandler
-.set GPC_IRQHandler, Default_Handler
-	.weak	GPD_IRQHandler
-	.type	GPD_IRQHandler,%function
-	.hidden	GPD_IRQHandler
-.set GPD_IRQHandler, Default_Handler
-	.weak	GPE_IRQHandler
-	.type	GPE_IRQHandler,%function
-	.hidden	GPE_IRQHandler
-.set GPE_IRQHandler, Default_Handler
-	.weak	GPF_IRQHandler
-	.type	GPF_IRQHandler,%function
-	.hidden	GPF_IRQHandler
-.set GPF_IRQHandler, Default_Handler
-	.weak	GPG_IRQHandler
-	.type	GPG_IRQHandler,%function
-	.hidden	GPG_IRQHandler
-.set GPG_IRQHandler, Default_Handler
-	.weak	GPH_IRQHandler
-	.type	GPH_IRQHandler,%function
-	.hidden	GPH_IRQHandler
-.set GPH_IRQHandler, Default_Handler
-	.weak	GPI_IRQHandler
-	.type	GPI_IRQHandler,%function
-	.hidden	GPI_IRQHandler
-.set GPI_IRQHandler, Default_Handler
-	.weak	GPJ_IRQHandler
-	.type	GPJ_IRQHandler,%function
-	.hidden	GPJ_IRQHandler
-.set GPJ_IRQHandler, Default_Handler
-	.weak	HSOTG_IRQHandler
-	.type	HSOTG_IRQHandler,%function
-	.hidden	HSOTG_IRQHandler
-.set HSOTG_IRQHandler, Default_Handler
-	.weak	HSUSBD_IRQHandler
-	.type	HSUSBD_IRQHandler,%function
-	.hidden	HSUSBD_IRQHandler
-.set HSUSBD_IRQHandler, Default_Handler
-	.weak	HSUSBH_IRQHandler
-	.type	HSUSBH_IRQHandler,%function
-	.hidden	HSUSBH_IRQHandler
-.set HSUSBH_IRQHandler, Default_Handler
-	.weak	I2C0_IRQHandler
-	.type	I2C0_IRQHandler,%function
-	.hidden	I2C0_IRQHandler
-.set I2C0_IRQHandler, Default_Handler
-	.weak	I2C1_IRQHandler
-	.type	I2C1_IRQHandler,%function
-	.hidden	I2C1_IRQHandler
-.set I2C1_IRQHandler, Default_Handler
-	.weak	I2C2_IRQHandler
-	.type	I2C2_IRQHandler,%function
-	.hidden	I2C2_IRQHandler
-.set I2C2_IRQHandler, Default_Handler
-	.weak	I2C3_IRQHandler
-	.type	I2C3_IRQHandler,%function
-	.hidden	I2C3_IRQHandler
-.set I2C3_IRQHandler, Default_Handler
-	.weak	I2S0_IRQHandler
-	.type	I2S0_IRQHandler,%function
-	.hidden	I2S0_IRQHandler
-.set I2S0_IRQHandler, Default_Handler
-	.weak	I2S1_IRQHandler
-	.type	I2S1_IRQHandler,%function
-	.hidden	I2S1_IRQHandler
-.set I2S1_IRQHandler, Default_Handler
-	.weak	I3C0_IRQHandler
-	.type	I3C0_IRQHandler,%function
-	.hidden	I3C0_IRQHandler
-.set I3C0_IRQHandler, Default_Handler
-	.weak	IRC_IRQHandler
-	.type	IRC_IRQHandler,%function
-	.hidden	IRC_IRQHandler
-.set IRC_IRQHandler, Default_Handler
-	.weak	ISP_IRQHandler
-	.type	ISP_IRQHandler,%function
-	.hidden	ISP_IRQHandler
-.set ISP_IRQHandler, Default_Handler
-	.weak	KPI_IRQHandler
-	.type	KPI_IRQHandler,%function
-	.hidden	KPI_IRQHandler
-.set KPI_IRQHandler, Default_Handler
-	.weak	KS_IRQHandler
-	.type	KS_IRQHandler,%function
-	.hidden	KS_IRQHandler
-.set KS_IRQHandler, Default_Handler
-	.weak	LPADC0_IRQHandler
-	.type	LPADC0_IRQHandler,%function
-	.hidden	LPADC0_IRQHandler
-.set LPADC0_IRQHandler, Default_Handler
-	.weak	LPI2C0_IRQHandler
-	.type	LPI2C0_IRQHandler,%function
-	.hidden	LPI2C0_IRQHandler
-.set LPI2C0_IRQHandler, Default_Handler
-	.weak	LPPDMA_IRQHandler
-	.type	LPPDMA_IRQHandler,%function
-	.hidden	LPPDMA_IRQHandler
-.set LPPDMA_IRQHandler, Default_Handler
-	.weak	LPSPI0_IRQHandler
-	.type	LPSPI0_IRQHandler,%function
-	.hidden	LPSPI0_IRQHandler
-.set LPSPI0_IRQHandler, Default_Handler
-	.weak	LPTMR0_IRQHandler
-	.type	LPTMR0_IRQHandler,%function
-	.hidden	LPTMR0_IRQHandler
-.set LPTMR0_IRQHandler, Default_Handler
-	.weak	LPTMR1_IRQHandler
-	.type	LPTMR1_IRQHandler,%function
-	.hidden	LPTMR1_IRQHandler
-.set LPTMR1_IRQHandler, Default_Handler
-	.weak	LPUART0_IRQHandler
-	.type	LPUART0_IRQHandler,%function
-	.hidden	LPUART0_IRQHandler
-.set LPUART0_IRQHandler, Default_Handler
-	.weak	NPU_IRQHandler
-	.type	NPU_IRQHandler,%function
-	.hidden	NPU_IRQHandler
-.set NPU_IRQHandler, Default_Handler
-	.weak	OTFC0_IRQHandler
-	.type	OTFC0_IRQHandler,%function
-	.hidden	OTFC0_IRQHandler
-.set OTFC0_IRQHandler, Default_Handler
-	.weak	PDMA0_IRQHandler
-	.type	PDMA0_IRQHandler,%function
-	.hidden	PDMA0_IRQHandler
-.set PDMA0_IRQHandler, Default_Handler
-	.weak	PDMA1_IRQHandler
-	.type	PDMA1_IRQHandler,%function
-	.hidden	PDMA1_IRQHandler
-.set PDMA1_IRQHandler, Default_Handler
-	.weak	PMC_IRQHandler
-	.type	PMC_IRQHandler,%function
-	.hidden	PMC_IRQHandler
-.set PMC_IRQHandler, Default_Handler
-	.weak	PSIO_IRQHandler
-	.type	PSIO_IRQHandler,%function
-	.hidden	PSIO_IRQHandler
-.set PSIO_IRQHandler, Default_Handler
-	.weak	QSPI0_IRQHandler
-	.type	QSPI0_IRQHandler,%function
-	.hidden	QSPI0_IRQHandler
-.set QSPI0_IRQHandler, Default_Handler
-	.weak	QSPI1_IRQHandler
-	.type	QSPI1_IRQHandler,%function
-	.hidden	QSPI1_IRQHandler
-.set QSPI1_IRQHandler, Default_Handler
-	.weak	RTC_IRQHandler
-	.type	RTC_IRQHandler,%function
-	.hidden	RTC_IRQHandler
-.set RTC_IRQHandler, Default_Handler
-	.weak	RTCTAMPER_IRQHandler
-	.type	RTCTAMPER_IRQHandler,%function
-	.hidden	RTCTAMPER_IRQHandler
-.set RTCTAMPER_IRQHandler, Default_Handler
-	.weak	SC0_IRQHandler
-	.type	SC0_IRQHandler,%function
-	.hidden	SC0_IRQHandler
-.set SC0_IRQHandler, Default_Handler
-	.weak	SC1_IRQHandler
-	.type	SC1_IRQHandler,%function
-	.hidden	SC1_IRQHandler
-.set SC1_IRQHandler, Default_Handler
-	.weak	SC2_IRQHandler
-	.type	SC2_IRQHandler,%function
-	.hidden	SC2_IRQHandler
-.set SC2_IRQHandler, Default_Handler
-	.weak	SDH0_IRQHandler
-	.type	SDH0_IRQHandler,%function
-	.hidden	SDH0_IRQHandler
-.set SDH0_IRQHandler, Default_Handler
-	.weak	SDH1_IRQHandler
-	.type	SDH1_IRQHandler,%function
-	.hidden	SDH1_IRQHandler
-.set SDH1_IRQHandler, Default_Handler
-	.weak	SPI0_IRQHandler
-	.type	SPI0_IRQHandler,%function
-	.hidden	SPI0_IRQHandler
-.set SPI0_IRQHandler, Default_Handler
-	.weak	SPI1_IRQHandler
-	.type	SPI1_IRQHandler,%function
-	.hidden	SPI1_IRQHandler
-.set SPI1_IRQHandler, Default_Handler
-	.weak	SPI2_IRQHandler
-	.type	SPI2_IRQHandler,%function
-	.hidden	SPI2_IRQHandler
-.set SPI2_IRQHandler, Default_Handler
-	.weak	SPI3_IRQHandler
-	.type	SPI3_IRQHandler,%function
-	.hidden	SPI3_IRQHandler
-.set SPI3_IRQHandler, Default_Handler
-	.weak	SPIM0_IRQHandler
-	.type	SPIM0_IRQHandler,%function
-	.hidden	SPIM0_IRQHandler
-.set SPIM0_IRQHandler, Default_Handler
-	.weak	SRAMPERR_IRQHandler
-	.type	SRAMPERR_IRQHandler,%function
-	.hidden	SRAMPERR_IRQHandler
-.set SRAMPERR_IRQHandler, Default_Handler
-	.weak	TIMER0_IRQHandler
-	.type	TIMER0_IRQHandler,%function
-	.hidden	TIMER0_IRQHandler
-.set TIMER0_IRQHandler, Default_Handler
-	.weak	TIMER1_IRQHandler
-	.type	TIMER1_IRQHandler,%function
-	.hidden	TIMER1_IRQHandler
-.set TIMER1_IRQHandler, Default_Handler
-	.weak	TIMER2_IRQHandler
-	.type	TIMER2_IRQHandler,%function
-	.hidden	TIMER2_IRQHandler
-.set TIMER2_IRQHandler, Default_Handler
-	.weak	TIMER3_IRQHandler
-	.type	TIMER3_IRQHandler,%function
-	.hidden	TIMER3_IRQHandler
-.set TIMER3_IRQHandler, Default_Handler
-	.weak	TRNG_IRQHandler
-	.type	TRNG_IRQHandler,%function
-	.hidden	TRNG_IRQHandler
-.set TRNG_IRQHandler, Default_Handler
-	.weak	TTMR0_IRQHandler
-	.type	TTMR0_IRQHandler,%function
-	.hidden	TTMR0_IRQHandler
-.set TTMR0_IRQHandler, Default_Handler
-	.weak	TTMR1_IRQHandler
-	.type	TTMR1_IRQHandler,%function
-	.hidden	TTMR1_IRQHandler
-.set TTMR1_IRQHandler, Default_Handler
-	.weak	UART0_IRQHandler
-	.type	UART0_IRQHandler,%function
-	.hidden	UART0_IRQHandler
-.set UART0_IRQHandler, Default_Handler
-	.weak	UART1_IRQHandler
-	.type	UART1_IRQHandler,%function
-	.hidden	UART1_IRQHandler
-.set UART1_IRQHandler, Default_Handler
-	.weak	UART2_IRQHandler
-	.type	UART2_IRQHandler,%function
-	.hidden	UART2_IRQHandler
-.set UART2_IRQHandler, Default_Handler
-	.weak	UART3_IRQHandler
-	.type	UART3_IRQHandler,%function
-	.hidden	UART3_IRQHandler
-.set UART3_IRQHandler, Default_Handler
-	.weak	UART4_IRQHandler
-	.type	UART4_IRQHandler,%function
-	.hidden	UART4_IRQHandler
-.set UART4_IRQHandler, Default_Handler
-	.weak	UART5_IRQHandler
-	.type	UART5_IRQHandler,%function
-	.hidden	UART5_IRQHandler
-.set UART5_IRQHandler, Default_Handler
-	.weak	UART6_IRQHandler
-	.type	UART6_IRQHandler,%function
-	.hidden	UART6_IRQHandler
-.set UART6_IRQHandler, Default_Handler
-	.weak	UART7_IRQHandler
-	.type	UART7_IRQHandler,%function
-	.hidden	UART7_IRQHandler
-.set UART7_IRQHandler, Default_Handler
-	.weak	UART8_IRQHandler
-	.type	UART8_IRQHandler,%function
-	.hidden	UART8_IRQHandler
-.set UART8_IRQHandler, Default_Handler
-	.weak	UART9_IRQHandler
-	.type	UART9_IRQHandler,%function
-	.hidden	UART9_IRQHandler
-.set UART9_IRQHandler, Default_Handler
-	.weak	USBD_IRQHandler
-	.type	USBD_IRQHandler,%function
-	.hidden	USBD_IRQHandler
-.set USBD_IRQHandler, Default_Handler
-	.weak	USBH0_IRQHandler
-	.type	USBH0_IRQHandler,%function
-	.hidden	USBH0_IRQHandler
-.set USBH0_IRQHandler, Default_Handler
-	.weak	USBH1_IRQHandler
-	.type	USBH1_IRQHandler,%function
-	.hidden	USBH1_IRQHandler
-.set USBH1_IRQHandler, Default_Handler
-	.weak	USBOTG_IRQHandler
-	.type	USBOTG_IRQHandler,%function
-	.hidden	USBOTG_IRQHandler
-.set USBOTG_IRQHandler, Default_Handler
-	.weak	USCI0_IRQHandler
-	.type	USCI0_IRQHandler,%function
-	.hidden	USCI0_IRQHandler
-.set USCI0_IRQHandler, Default_Handler
-	.weak	UTCPD_IRQHandler
-	.type	UTCPD_IRQHandler,%function
-	.hidden	UTCPD_IRQHandler
-.set UTCPD_IRQHandler, Default_Handler
-	.weak	WDT0_IRQHandler
-	.type	WDT0_IRQHandler,%function
-	.hidden	WDT0_IRQHandler
-.set WDT0_IRQHandler, Default_Handler
-	.weak	WDT1_IRQHandler
-	.type	WDT1_IRQHandler,%function
-	.hidden	WDT1_IRQHandler
-.set WDT1_IRQHandler, Default_Handler
-	.weak	WWDT0_IRQHandler
-	.type	WWDT0_IRQHandler,%function
-	.hidden	WWDT0_IRQHandler
-.set WWDT0_IRQHandler, Default_Handler
-	.weak	WWDT1_IRQHandler
-	.type	WWDT1_IRQHandler,%function
-	.hidden	WWDT1_IRQHandler
-.set WWDT1_IRQHandler, Default_Handler
-	.ident	"Component: Arm Compiler for Embedded 6.19 Tool: armclang [5e73cb00]"
+	.ident	"Component: Arm Compiler for Embedded 6.22 Tool: armclang [5ee92100]"
 	.section	".note.GNU-stack","",%progbits
 	.eabi_attribute	30, 1	@ Tag_ABI_optimization_goals
 	.ARM_attribute	16, 1	@ Tag_AV_eba

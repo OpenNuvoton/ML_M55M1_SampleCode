@@ -41,7 +41,7 @@ public:
                            uint32_t imgSrcRows,
                            uint32_t imgSrcCols,
                            TfLiteTensor *screenLandmarkTensor,
-                           TfLiteTensor *presentTensor,
+                           TfLiteTensor *presenceTensor,
                            std::vector<KeypointResult> &resultsOut);
 
 private:
@@ -50,8 +50,8 @@ private:
 
 };
 
-} /* namespace hand_landmark */
+} /* namespace pose_landmark */
 } /* namespace app */
 } /* namespace arm */
 
-#endif /* HAND_LANDMARK_POST_PROCESSING_HPP */
+#endif /* POSE_LANDMARK_POST_PROCESSING_HPP */

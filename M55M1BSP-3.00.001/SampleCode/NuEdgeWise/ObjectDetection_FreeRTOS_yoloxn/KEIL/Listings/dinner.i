@@ -1,49 +1,54 @@
 # 1 "../Pattern/dinner.cpp"
 # 1 "<built-in>" 1
 # 1 "<built-in>" 3
-# 419 "<built-in>" 3
+# 466 "<built-in>" 3
 # 1 "<command line>" 1
 # 1 "<built-in>" 2
 # 1 "../Pattern/dinner.cpp" 2
 # 23 "../Pattern/dinner.cpp"
 # 1 "../Pattern/include\\InputFiles.hpp" 1
 # 26 "../Pattern/include\\InputFiles.hpp"
-# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\libcxx\\cstdint" 1 3
-# 143 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\libcxx\\cstdint" 3
-# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\libcxx\\__assert" 1 3
-# 13 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\libcxx\\__assert" 3
-# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\libcxx\\__config" 1 3
-# 26 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\libcxx\\__config" 3
-# 700 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\libcxx\\__config" 3
-namespace std { inline namespace __2 { }}
-# 14 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\libcxx\\__assert" 2 3
-# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\libcxx\\__verbose_abort" 1 3
-# 13 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\libcxx\\__verbose_abort" 3
-# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\libcxx\\__availability" 1 3
-# 17 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\libcxx\\__availability" 3
-# 14 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\libcxx\\__verbose_abort" 2 3
-# 18 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\libcxx\\__verbose_abort" 3
-# 42 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\libcxx\\__verbose_abort" 3
-namespace std { inline namespace __2 {
+# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\cstdint" 1 3
+# 143 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\cstdint" 3
+# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\__assert" 1 3
+# 13 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\__assert" 3
+# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\__assertion_handler" 1 3
+# 13 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\__assertion_handler" 3
+# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\__config" 1 3
+# 20 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\__config" 3
+# 14 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\__assertion_handler" 2 3
+# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\__verbose_abort" 1 3
+# 13 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\__verbose_abort" 3
+# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\__availability" 1 3
+# 17 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\__availability" 3
+# 14 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\__verbose_abort" 2 3
+# 18 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\__verbose_abort" 3
 
-[[noreturn]] __attribute__((__visibility__("default"))) __attribute__((__format__(__printf__, 1, 2)))
-void __libcpp_verbose_abort(const char *__format, ...);
 
+namespace __attribute__((__type_visibility__("default"))) std { inline namespace __2 {
+
+
+
+[[noreturn]] __attribute__((__visibility__("default")))
+    __attribute__((__format__(__printf__, 1, 2))) void __libcpp_verbose_abort(const char* __format, ...);
+# 51 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\__verbose_abort" 3
 }}
-# 15 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\libcxx\\__assert" 2 3
-# 18 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\libcxx\\__assert" 3
-# 144 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\libcxx\\cstdint" 2 3
+# 15 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\__assertion_handler" 2 3
+# 18 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\__assertion_handler" 3
+# 14 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\__assert" 2 3
+# 18 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\__assert" 3
+# 144 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\cstdint" 2 3
 
 
-# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\libcxx\\stdint.h" 1 3
-# 110 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\libcxx\\stdint.h" 3
-# 123 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\libcxx\\stdint.h" 3
-# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdint.h" 1 3
-# 40 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdint.h" 3
+# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\stdint.h" 1 3
+# 110 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\stdint.h" 3
+# 124 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\stdint.h" 3
+# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdint.h" 1 3
+# 40 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdint.h" 3
       namespace std {
 
           extern "C" {
-# 56 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdint.h" 3
+# 56 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdint.h" 3
 typedef signed char int8_t;
 typedef signed short int int16_t;
 typedef signed int int32_t;
@@ -96,7 +101,7 @@ typedef unsigned int uintptr_t;
 
 typedef signed long long intmax_t;
 typedef unsigned long long uintmax_t;
-# 268 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdint.h" 3
+# 259 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdint.h" 3
          }
       }
 
@@ -132,12 +137,12 @@ typedef unsigned long long uintmax_t;
       using ::std::uintptr_t;
       using ::std::intmax_t;
       using ::std::uintmax_t;
-# 124 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\libcxx\\stdint.h" 2 3
-# 147 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\libcxx\\cstdint" 2 3
-# 158 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\libcxx\\cstdint" 3
+# 125 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\stdint.h" 2 3
+# 147 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\cstdint" 2 3
+# 158 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\libcxx\\cstdint" 3
 
 
-namespace std { inline namespace __2 {
+namespace __attribute__((__type_visibility__("default"))) std { inline namespace __2 {
 
 using ::int8_t __attribute__((__using_if_exists__));
 using ::int16_t __attribute__((__using_if_exists__));

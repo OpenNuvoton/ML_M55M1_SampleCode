@@ -43,7 +43,7 @@ static float GetHandPresence(TfLiteTensor *modelOutput)
 	return fTensorData[0];
 }	
 
-static void GetHandLandmark(
+static void GetPoseLandmark(
     float fXScale,
     float fYScale,
     float fZScale,
@@ -92,7 +92,7 @@ void PoseLandmarkPostProcessing::RunPostProcessing(
     uint32_t imgSrcCols,
     uint32_t imgSrcRows,
 	TfLiteTensor *screenLandmarkTensor,
-    TfLiteTensor *presentTensor,
+    TfLiteTensor *presenceTensor,
     std::vector<KeypointResult> &resultsOut    /* init postprocessing */
 )
 {
@@ -101,14 +101,14 @@ void PoseLandmarkPostProcessing::RunPostProcessing(
     float fZScale = 1; //TODO: If have z-axis size
 
 	//model tensor output 1 is for hand presence
-	float fHandPresence = GetHandPresence(presentTensor);
+	float fPosePresence = GetHandPresence(presenceTensor);
 
 	resultsOut.clear();
 
-	// If detect hand presence, start get hand landmark
-	if(fHandPresence >= m_threshold)
+	// If detect pose presence, start to get pose landmark
+	if(fPosePresence >= m_threshold)
 	{
-		GetHandLandmark(fXScale, fYScale, fZScale, screenLandmarkTensor, resultsOut);
+		GetPoseLandmark(fXScale, fYScale, fZScale, screenLandmarkTensor, resultsOut);
 	}
 }
 

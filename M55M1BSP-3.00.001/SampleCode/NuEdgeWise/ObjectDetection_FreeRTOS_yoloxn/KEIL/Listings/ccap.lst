@@ -7,6 +7,7 @@
 	.eabi_attribute	8, 0	@ Tag_ARM_ISA_use
 	.eabi_attribute	9, 3	@ Tag_THUMB_ISA_use
 	.fpu	fpv5-d16
+	.arch_extension	mve.fp
 	.eabi_attribute	36, 1	@ Tag_FP_HP_extension
 	.eabi_attribute	48, 2	@ Tag_MVE_arch
 	.eabi_attribute	46, 1	@ Tag_DSP_extension
@@ -23,8 +24,8 @@
 	.eabi_attribute	26, 1	@ Tag_ABI_enum_size
 	.eabi_attribute	14, 0	@ Tag_ABI_PCS_R9_use
 	.file	"ccap.c"
-	.file	1 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include" "stdint.h"
-	.file	2 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include/ccap_reg.h"
+	.file	1 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include" "stdint.h"
+	.file	2 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include\\ccap_reg.h"
 	.section	.text.CCAP_Open,"ax",%progbits
 	.hidden	CCAP_Open                       @ -- Begin function CCAP_Open
 	.globl	CCAP_Open
@@ -34,7 +35,7 @@
 	.thumb_func
 CCAP_Open:
 .Lfunc_begin0:
-	.file	3 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/StdDriver/src/ccap.c"
+	.file	3 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/StdDriver/src/ccap.c"
 	.loc	3 71 0                          @ ../../../../Library/StdDriver/src/ccap.c:71:0
 	.fnstart
 	.cfi_sections .debug_frame
@@ -128,7 +129,7 @@ CCAP_Open:
 	ldr	r0, [r12, #-16]
 	orr	r0, r0, #64
 	str	r0, [r12, #-16]
-	.loc	3 85 1                          @ ../../../../Library/StdDriver/src/ccap.c:85:1
+	.loc	3 85 1 epilogue_begin           @ ../../../../Library/StdDriver/src/ccap.c:85:1
 	pop	{r7, pc}
 .Ltmp3:
 .Lfunc_end0:
@@ -188,7 +189,7 @@ CCAP_SetCroppingWindow:
 	orrs	r0, r1
 	.loc	3 104 15                        @ ../../../../Library/StdDriver/src/ccap.c:104:15
 	str.w	r0, [r12, #4]
-	.loc	3 106 1                         @ ../../../../Library/StdDriver/src/ccap.c:106:1
+	.loc	3 106 1 epilogue_begin          @ ../../../../Library/StdDriver/src/ccap.c:106:1
 	pop	{r4, pc}
 .Ltmp7:
 .Lfunc_end1:
@@ -206,7 +207,6 @@ CCAP_SetCroppingWindow:
 	.thumb_func
 CCAP_Stop:
 .Lfunc_begin2:
-	.loc	3 121 0                         @ ../../../../Library/StdDriver/src/ccap.c:121:0
 	.fnstart
 	.cfi_startproc
 @ %bb.0:
@@ -218,45 +218,54 @@ CCAP_Stop:
 	@DEBUG_VALUE: CCAP_Stop:u32FrameComplete <- [DW_OP_LLVM_entry_value 1] $r0
 	.loc	3 0 9 is_stmt 0                 @ ../../../../Library/StdDriver/src/ccap.c:0:9
 	movt	r0, #16448
-.Ltmp9:
-	@DEBUG_VALUE: CCAP_Stop:u32TimeOutCnt <- [DW_OP_constu 1, DW_OP_shl, DW_OP_stack_value] undef
 	.loc	3 124 9                         @ ../../../../Library/StdDriver/src/ccap.c:124:9
 	beq	.LBB2_7
-.Ltmp10:
+.Ltmp9:
 @ %bb.1:
 	@DEBUG_VALUE: CCAP_Stop:u32FrameComplete <- [DW_OP_LLVM_entry_value 1] $r0
 	.loc	3 122 30 is_stmt 1              @ ../../../../Library/StdDriver/src/ccap.c:122:30
 	movw	r1, :lower16:SystemCoreClock
 	movt	r1, :upper16:SystemCoreClock
 	ldr	r1, [r1]
-.Ltmp11:
+.Ltmp10:
 	@DEBUG_VALUE: CCAP_Stop:u32TimeOutCnt <- [DW_OP_constu 1, DW_OP_shl, DW_OP_stack_value] $r1
 	.loc	3 128 19                        @ ../../../../Library/StdDriver/src/ccap.c:128:19
 	ldr	r2, [r0]
-.Ltmp12:
+.Ltmp11:
 	.loc	3 122 46                        @ ../../../../Library/StdDriver/src/ccap.c:122:46
 	lsls	r1, r1, #1
-.Ltmp13:
+.Ltmp12:
 	@DEBUG_VALUE: CCAP_Stop:u32TimeOutCnt <- $r1
 	.loc	3 128 19                        @ ../../../../Library/StdDriver/src/ccap.c:128:19
 	orr	r2, r2, #65536
 	str	r2, [r0]
-	b	.LBB2_5
+.Ltmp13:
+.LBB2_2:                                @ =>This Inner Loop Header: Depth=1
+	@DEBUG_VALUE: CCAP_Stop:u32TimeOutCnt <- $r1
+	@DEBUG_VALUE: CCAP_Stop:u32FrameComplete <- [DW_OP_LLVM_entry_value 1] $r0
+	@DEBUG_VALUE: CCAP_Stop:u32TimeOutCnt <- $r1
+	.loc	3 130 17                        @ ../../../../Library/StdDriver/src/ccap.c:130:17
+	ldr	r2, [r0]
+	.loc	3 130 9 is_stmt 0               @ ../../../../Library/StdDriver/src/ccap.c:130:9
+	lsls	r2, r2, #31
 .Ltmp14:
-	.p2align	2
-.LBB2_2:                                @   in Loop: Header=BB2_5 Depth=1
+	@DEBUG_VALUE: CCAP_Stop:u32TimeOutCnt <- [DW_OP_constu 1, DW_OP_minus, DW_OP_stack_value] $r1
+	.loc	3 130 17                        @ ../../../../Library/StdDriver/src/ccap.c:130:17
+	itt	ne
+	ldrne	r2, [r0]
+	.loc	3 130 9                         @ ../../../../Library/StdDriver/src/ccap.c:130:9
+	lslsne.w	r2, r2, #31
+	beq	.LBB2_8
+.Ltmp15:
+@ %bb.3:                                @   in Loop: Header=BB2_2 Depth=1
 	@DEBUG_VALUE: CCAP_Stop:u32TimeOutCnt <- [DW_OP_constu 1, DW_OP_minus, DW_OP_stack_value] $r1
 	@DEBUG_VALUE: CCAP_Stop:u32FrameComplete <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: CCAP_Stop:u32TimeOutCnt <- [DW_OP_constu 2, DW_OP_minus, DW_OP_stack_value] $r1
-	.loc	3 132 17                        @ ../../../../Library/StdDriver/src/ccap.c:132:17
+	.loc	3 132 17 is_stmt 1              @ ../../../../Library/StdDriver/src/ccap.c:132:17
 	cmp	r1, #2
-	itt	eq
-	mvneq	r0, #1
-.Ltmp15:
-	.loc	3 137 1                         @ ../../../../Library/StdDriver/src/ccap.c:137:1
-	bxeq	lr
+	beq	.LBB2_6
 .Ltmp16:
-.LBB2_3:                                @   in Loop: Header=BB2_5 Depth=1
+@ %bb.4:                                @   in Loop: Header=BB2_2 Depth=1
 	@DEBUG_VALUE: CCAP_Stop:u32TimeOutCnt <- [DW_OP_constu 2, DW_OP_minus, DW_OP_stack_value] $r1
 	@DEBUG_VALUE: CCAP_Stop:u32FrameComplete <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: CCAP_Stop:u32TimeOutCnt <- [DW_OP_constu 2, DW_OP_minus, DW_OP_stack_value] $r1
@@ -265,64 +274,45 @@ CCAP_Stop:
 	.loc	3 130 9 is_stmt 0               @ ../../../../Library/StdDriver/src/ccap.c:130:9
 	lsls	r2, r2, #31
 .Ltmp17:
-	@DEBUG_VALUE: CCAP_Stop:u32TimeOutCnt <- [DW_OP_constu 2, DW_OP_minus, DW_OP_constu 1, DW_OP_minus, DW_OP_stack_value] $r1
+	@DEBUG_VALUE: CCAP_Stop:u32TimeOutCnt <- [DW_OP_constu 3, DW_OP_minus, DW_OP_stack_value] $r1
 	.loc	3 130 17                        @ ../../../../Library/StdDriver/src/ccap.c:130:17
 	itt	ne
 	ldrne	r2, [r0]
 	.loc	3 130 9                         @ ../../../../Library/StdDriver/src/ccap.c:130:9
 	lslsne.w	r2, r2, #31
-	beq	.LBB2_6
+	beq	.LBB2_8
 .Ltmp18:
-@ %bb.4:                                @   in Loop: Header=BB2_5 Depth=1
-	@DEBUG_VALUE: CCAP_Stop:u32TimeOutCnt <- [DW_OP_constu 2, DW_OP_minus, DW_OP_constu 1, DW_OP_minus, DW_OP_stack_value] $r1
-	@DEBUG_VALUE: CCAP_Stop:u32FrameComplete <- [DW_OP_LLVM_entry_value 1] $r0
+@ %bb.5:                                @   in Loop: Header=BB2_2 Depth=1
 	@DEBUG_VALUE: CCAP_Stop:u32TimeOutCnt <- [DW_OP_constu 3, DW_OP_minus, DW_OP_stack_value] $r1
+	@DEBUG_VALUE: CCAP_Stop:u32FrameComplete <- [DW_OP_LLVM_entry_value 1] $r0
 	.loc	3 132 17 is_stmt 1              @ ../../../../Library/StdDriver/src/ccap.c:132:17
 	subs	r1, #4
 .Ltmp19:
 	@DEBUG_VALUE: CCAP_Stop:u32TimeOutCnt <- $r1
-	.loc	3 0 17 is_stmt 0                @ ../../../../Library/StdDriver/src/ccap.c:0:17
-	itt	eq
-	mvneq	r0, #1
-.Ltmp20:
-	.loc	3 137 1 is_stmt 1               @ ../../../../Library/StdDriver/src/ccap.c:137:1
-	bxeq	lr
-.Ltmp21:
-.LBB2_5:                                @ =>This Inner Loop Header: Depth=1
-	@DEBUG_VALUE: CCAP_Stop:u32TimeOutCnt <- $r1
-	@DEBUG_VALUE: CCAP_Stop:u32FrameComplete <- [DW_OP_LLVM_entry_value 1] $r0
-	@DEBUG_VALUE: CCAP_Stop:u32TimeOutCnt <- $r1
-	.loc	3 130 17                        @ ../../../../Library/StdDriver/src/ccap.c:130:17
-	ldr	r2, [r0]
-	.loc	3 130 9 is_stmt 0               @ ../../../../Library/StdDriver/src/ccap.c:130:9
-	lsls	r2, r2, #31
-.Ltmp22:
-	@DEBUG_VALUE: CCAP_Stop:u32TimeOutCnt <- [DW_OP_constu 1, DW_OP_minus, DW_OP_stack_value] $r1
-	.loc	3 130 17                        @ ../../../../Library/StdDriver/src/ccap.c:130:17
-	itt	ne
-	ldrne	r2, [r0]
-	.loc	3 130 9                         @ ../../../../Library/StdDriver/src/ccap.c:130:9
-	lslsne.w	r2, r2, #31
+	.loc	3 132 17 is_stmt 0              @ ../../../../Library/StdDriver/src/ccap.c:132:17
 	bne	.LBB2_2
-.Ltmp23:
+.Ltmp20:
 .LBB2_6:
 	@DEBUG_VALUE: CCAP_Stop:u32FrameComplete <- [DW_OP_LLVM_entry_value 1] $r0
-	.loc	3 0 9                           @ ../../../../Library/StdDriver/src/ccap.c:0:9
-	movs	r0, #0
+	.loc	3 0 17                          @ ../../../../Library/StdDriver/src/ccap.c:0:17
+	mvn	r0, #1
 	.loc	3 137 1 is_stmt 1               @ ../../../../Library/StdDriver/src/ccap.c:137:1
 	bx	lr
-.Ltmp24:
+.Ltmp21:
 .LBB2_7:
 	@DEBUG_VALUE: CCAP_Stop:u32FrameComplete <- [DW_OP_LLVM_entry_value 1] $r0
 	.loc	3 125 19                        @ ../../../../Library/StdDriver/src/ccap.c:125:19
 	ldr	r1, [r0]
 	bic	r1, r1, #1
 	str	r1, [r0]
+.Ltmp22:
+.LBB2_8:
+	@DEBUG_VALUE: CCAP_Stop:u32FrameComplete <- [DW_OP_LLVM_entry_value 1] $r0
+	.loc	3 0 19 is_stmt 0                @ ../../../../Library/StdDriver/src/ccap.c:0:19
 	movs	r0, #0
-.Ltmp25:
-	.loc	3 137 1                         @ ../../../../Library/StdDriver/src/ccap.c:137:1
+	.loc	3 137 1 is_stmt 1               @ ../../../../Library/StdDriver/src/ccap.c:137:1
 	bx	lr
-.Ltmp26:
+.Ltmp23:
 .Lfunc_end2:
 	.size	CCAP_Stop, .Lfunc_end2-CCAP_Stop
 	.cfi_endproc
@@ -352,13 +342,13 @@ CCAP_SetPacketScaling:
 	.cfi_offset lr, -4
 	.cfi_offset r4, -8
 	movw	r12, #4136
-.Ltmp27:
+.Ltmp24:
 	.loc	3 161 37 prologue_end           @ ../../../../Library/StdDriver/src/ccap.c:161:37
 	lsls	r4, r0, #24
 	movt	r12, #16448
 	.loc	3 160 26                        @ ../../../../Library/StdDriver/src/ccap.c:160:26
 	ldr.w	lr, [r12]
-.Ltmp28:
+.Ltmp25:
 	@DEBUG_VALUE: CCAP_SetPacketScaling:u32DenominatorH <- [DW_OP_constu 8, DW_OP_shr, DW_OP_stack_value] $r1
 	@DEBUG_VALUE: CCAP_SetPacketScaling:u32DenominatorL <- [DW_OP_constu 255, DW_OP_and, DW_OP_stack_value] $r1
 	@DEBUG_VALUE: CCAP_SetPacketScaling:u32NumeratorH <- [DW_OP_constu 8, DW_OP_shr, DW_OP_stack_value] $r0
@@ -369,7 +359,7 @@ CCAP_SetPacketScaling:
 	uxth.w	lr, lr
 	.loc	3 163 63                        @ ../../../../Library/StdDriver/src/ccap.c:163:63
 	lsls	r1, r1, #8
-.Ltmp29:
+.Ltmp26:
 	@DEBUG_VALUE: CCAP_SetPacketScaling:u32VDenominator <- [DW_OP_LLVM_entry_value 1] $r1
 	.loc	3 161 19                        @ ../../../../Library/StdDriver/src/ccap.c:161:19
 	add	r4, lr
@@ -380,13 +370,13 @@ CCAP_SetPacketScaling:
 	ldr.w	lr, [r12, #32]
 	.loc	3 163 37                        @ ../../../../Library/StdDriver/src/ccap.c:163:37
 	bic	r0, r0, #255
-.Ltmp30:
+.Ltmp27:
 	@DEBUG_VALUE: CCAP_SetPacketScaling:u32VNumerator <- [DW_OP_LLVM_entry_value 1] $r0
 	.loc	3 163 63 is_stmt 0              @ ../../../../Library/StdDriver/src/ccap.c:163:63
 	bics	r1, r4
 	.loc	3 167 39 is_stmt 1              @ ../../../../Library/StdDriver/src/ccap.c:167:39
 	uxtb	r4, r3
-.Ltmp31:
+.Ltmp28:
 	@DEBUG_VALUE: CCAP_SetPacketScaling:u32DenominatorH <- undef
 	@DEBUG_VALUE: CCAP_SetPacketScaling:u32DenominatorL <- $r4
 	.loc	3 163 44                        @ ../../../../Library/StdDriver/src/ccap.c:163:44
@@ -397,13 +387,13 @@ CCAP_SetPacketScaling:
 	add	r0, r1
 	.loc	3 162 17                        @ ../../../../Library/StdDriver/src/ccap.c:162:17
 	str.w	r0, [r12, #32]
-.Ltmp32:
+.Ltmp29:
 	@DEBUG_VALUE: CCAP_SetPacketScaling:u32NumeratorL <- [DW_OP_constu 255, DW_OP_and, DW_OP_stack_value] $r2
 	.loc	3 169 26                        @ ../../../../Library/StdDriver/src/ccap.c:169:26
 	ldr.w	r0, [r12]
 	.loc	3 170 43                        @ ../../../../Library/StdDriver/src/ccap.c:170:43
 	bfi	r4, r2, #8, #8
-.Ltmp33:
+.Ltmp30:
 	.loc	3 169 32                        @ ../../../../Library/StdDriver/src/ccap.c:169:32
 	bfc	r0, #0, #16
 	.loc	3 170 19                        @ ../../../../Library/StdDriver/src/ccap.c:170:19
@@ -412,7 +402,7 @@ CCAP_SetPacketScaling:
 	str.w	r0, [r12]
 	.loc	3 172 37                        @ ../../../../Library/StdDriver/src/ccap.c:172:37
 	bic	r1, r2, #255
-.Ltmp34:
+.Ltmp31:
 	@DEBUG_VALUE: CCAP_SetPacketScaling:u32NumeratorH <- [DW_OP_constu 8, DW_OP_shr, DW_OP_stack_value] $r2
 	.loc	3 171 26                        @ ../../../../Library/StdDriver/src/ccap.c:171:26
 	ldr.w	r0, [r12, #32]
@@ -424,9 +414,9 @@ CCAP_SetPacketScaling:
 	orrs	r0, r1
 	.loc	3 171 17                        @ ../../../../Library/StdDriver/src/ccap.c:171:17
 	str.w	r0, [r12, #32]
-	.loc	3 173 1                         @ ../../../../Library/StdDriver/src/ccap.c:173:1
+	.loc	3 173 1 epilogue_begin          @ ../../../../Library/StdDriver/src/ccap.c:173:1
 	pop	{r4, pc}
-.Ltmp35:
+.Ltmp32:
 .Lfunc_end3:
 	.size	CCAP_SetPacketScaling, .Lfunc_end3-CCAP_SetPacketScaling
 	.cfi_endproc
@@ -450,20 +440,20 @@ CCAP_SetPacketStride:
 	movw	r1, #4148
 	movw	r3, #16383
 	movt	r1, #16448
-.Ltmp36:
+.Ltmp33:
 	.loc	3 186 27 prologue_end           @ ../../../../Library/StdDriver/src/ccap.c:186:27
 	ldr	r2, [r1]
 	.loc	3 186 34 is_stmt 0              @ ../../../../Library/StdDriver/src/ccap.c:186:34
 	bics	r2, r3
 	.loc	3 186 64                        @ ../../../../Library/StdDriver/src/ccap.c:186:64
 	orrs	r0, r2
-.Ltmp37:
+.Ltmp34:
 	@DEBUG_VALUE: CCAP_SetPacketStride:u32Stride <- [DW_OP_LLVM_entry_value 1] $r0
 	.loc	3 186 18                        @ ../../../../Library/StdDriver/src/ccap.c:186:18
 	str	r0, [r1]
 	.loc	3 187 1 is_stmt 1               @ ../../../../Library/StdDriver/src/ccap.c:187:1
 	bx	lr
-.Ltmp38:
+.Ltmp35:
 .Lfunc_end4:
 	.size	CCAP_SetPacketStride, .Lfunc_end4-CCAP_SetPacketStride
 	.cfi_endproc
@@ -499,56 +489,37 @@ CCAP_MD_SetRegionSensitivity:
 	.cfi_offset r6, -28
 	.cfi_offset r5, -32
 	.cfi_offset r4, -36
-	.pad	#20
-	sub	sp, #20
-	.cfi_def_cfa_offset 56
-.Ltmp39:
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
+	.pad	#16
+	sub	sp, #16
+	.cfi_def_cfa_offset 52
+.Ltmp36:
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 52] [$sp+0]
 	.loc	3 212 15 prologue_end           @ ../../../../Library/StdDriver/src/ccap.c:212:15
 	adds	r7, r2, r0
 	.loc	3 212 45 is_stmt 0              @ ../../../../Library/StdDriver/src/ccap.c:212:45
 	cmp	r7, #240
-	bls	.LBB5_2
-.Ltmp40:
-@ %bb.1:
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- $r3
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- $r2
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- $r0
-	.loc	3 0 45                          @ ../../../../Library/StdDriver/src/ccap.c:0:45
-	mvn	r2, #2
-.Ltmp41:
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- [DW_OP_LLVM_entry_value 1] $r2
-	b	.LBB5_5
-.Ltmp42:
-.LBB5_2:
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- $r3
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- $r2
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- $r0
 	.loc	3 212 54                        @ ../../../../Library/StdDriver/src/ccap.c:212:54
-	add.w	r12, r3, r1
-.Ltmp43:
+	itt	ls
+	addls.w	r12, r3, r1
+.Ltmp37:
 	.loc	3 212 9                         @ ../../../../Library/StdDriver/src/ccap.c:212:9
-	cmp.w	r12, #320
-	bls	.LBB5_4
-.Ltmp44:
-@ %bb.3:
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
+	cmpls.w	r12, #320
+	bls	.LBB5_2
+.Ltmp38:
+@ %bb.1:
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 52] [$sp+0]
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- $r2
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- $r0
 	.loc	3 0 9                           @ ../../../../Library/StdDriver/src/ccap.c:0:9
 	mvn	r2, #2
-.Ltmp45:
+.Ltmp39:
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- [DW_OP_LLVM_entry_value 1] $r2
-	b	.LBB5_5
-.Ltmp46:
-.LBB5_4:
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
+	b	.LBB5_3
+.Ltmp40:
+.LBB5_2:
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 52] [$sp+0]
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- $r2
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
@@ -556,177 +527,154 @@ CCAP_MD_SetRegionSensitivity:
 	.loc	3 215 24 is_stmt 1              @ ../../../../Library/StdDriver/src/ccap.c:215:24
 	cmp	r2, #0
 	mvn	r2, #2
-.Ltmp47:
+.Ltmp41:
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- [DW_OP_LLVM_entry_value 1] $r2
 	it	ne
 	cmpne	r3, #0
-	bne	.LBB5_6
-.Ltmp48:
-.LBB5_5:
+	bne	.LBB5_4
+.Ltmp42:
+.LBB5_3:
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- [DW_OP_LLVM_entry_value 1] $r2
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 52] [$sp+0]
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- $r0
 	.loc	3 258 1                         @ ../../../../Library/StdDriver/src/ccap.c:258:1
 	mov	r0, r2
-.Ltmp49:
+.Ltmp43:
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- [DW_OP_LLVM_entry_value 1] $r0
-	add	sp, #20
+	.loc	3 258 1 epilogue_begin is_stmt 0 @ ../../../../Library/StdDriver/src/ccap.c:258:1
+	add	sp, #16
 	pop.w	{r4, r5, r6, r7, r8, r9, r10, r11, pc}
-.Ltmp50:
-.LBB5_6:
+.Ltmp44:
+.LBB5_4:
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- [DW_OP_LLVM_entry_value 1] $r2
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 52] [$sp+0]
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- $r0
-	.loc	3 0 1 is_stmt 0                 @ ../../../../Library/StdDriver/src/ccap.c:0:1
-	ldr	r2, [sp, #56]
+	.loc	3 0 1                           @ ../../../../Library/StdDriver/src/ccap.c:0:1
+	ldr	r2, [sp, #52]
 	.loc	3 218 9 is_stmt 1               @ ../../../../Library/StdDriver/src/ccap.c:218:9
 	cmp	r2, #100
-	bls	.LBB5_8
-.Ltmp51:
-@ %bb.7:
+	bls	.LBB5_6
+.Ltmp45:
+@ %bb.5:
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- [DW_OP_LLVM_entry_value 1] $r2
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 52] [$sp+0]
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- $r0
 	.loc	3 0 9 is_stmt 0                 @ ../../../../Library/StdDriver/src/ccap.c:0:9
 	mvn	r2, #3
-	b	.LBB5_5
-.Ltmp52:
-.LBB5_8:
+	b	.LBB5_3
+.Ltmp46:
+.LBB5_6:
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- [DW_OP_LLVM_entry_value 1] $r2
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 52] [$sp+0]
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- $r0
 	movw	r3, #10964
-.Ltmp53:
+.Ltmp47:
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- [DW_OP_LLVM_entry_value 1] $r3
 	mvn	r6, #764
 	movt	r3, #1
 	mov.w	lr, #4
-	.loc	3 221 43 is_stmt 1              @ ../../../../Library/StdDriver/src/ccap.c:221:43
-	mla	r2, r2, r6, r3
-.Ltmp54:
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:x <- 0
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- $r2
-	.loc	3 0 43 is_stmt 0                @ ../../../../Library/StdDriver/src/ccap.c:0:43
 	cmp	r0, #0
-	movw	r5, #4448
-	str	r2, [sp, #16]                   @ 4-byte Spill
-.Ltmp55:
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- [DW_OP_plus_uconst 16] [$sp+0]
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- [DW_OP_plus_uconst 16] [$sp+0]
 	mov.w	r10, #0
+	.loc	3 221 43 is_stmt 1              @ ../../../../Library/StdDriver/src/ccap.c:221:43
+	mla	r3, r2, r6, r3
+.Ltmp48:
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:x <- 0
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- $r3
+	.loc	3 0 43 is_stmt 0                @ ../../../../Library/StdDriver/src/ccap.c:0:43
 	cset	r2, eq
 	cmp	r7, #0
 	mov.w	r11, #0
-	cset	r6, ne
-	ands	r2, r6
+	csel	r2, zr, r2, eq
 	cmp	r0, #61
 	str	r2, [sp, #12]                   @ 4-byte Spill
 	cset	r2, lo
 	cmp	r7, #60
-	cset	r6, hi
-	ands	r2, r6
+	csel	r2, zr, r2, ls
 	cmp	r0, #121
 	str	r2, [sp, #8]                    @ 4-byte Spill
 	cset	r2, lo
 	cmp	r7, #120
-	cset	r6, hi
-	ands	r2, r6
-	movw	r6, #4352
+	csel	r2, zr, r2, ls
 	cmp	r0, #181
 	str	r2, [sp, #4]                    @ 4-byte Spill
 	cset	r2, lo
 	cmp	r7, #180
-	cset	r7, hi
-	ands	r2, r7
+	movw	r7, #4352
+	csel	r2, zr, r2, ls
 	str	r2, [sp]                        @ 4-byte Spill
-.Ltmp56:
+.Ltmp49:
 	.loc	3 223 5 is_stmt 1               @ ../../../../Library/StdDriver/src/ccap.c:223:5
 	mov	lr, lr
-	movt	r6, #16448
-	movt	r5, #16448
-	b	.LBB5_10
-.Ltmp57:
+	movt	r7, #16448
+	add.w	r4, r7, #96
+	b	.LBB5_8
+.Ltmp50:
 	.p2align	2
-.LBB5_9:                                @   in Loop: Header=BB5_10 Depth=1
+.LBB5_7:                                @   in Loop: Header=BB5_8 Depth=1
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndY <- 240
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartY <- 180
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinIdx <- [DW_OP_plus_uconst 12, DW_OP_stack_value] $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_plus_uconst 80, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:x <- $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- [DW_OP_plus_uconst 16] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- [DW_OP_LLVM_entry_value 1] $r2
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 52] [$sp+0]
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- $r0
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 4
 	.loc	3 223 25 is_stmt 0              @ ../../../../Library/StdDriver/src/ccap.c:223:25
 	add.w	r11, r11, #1
-.Ltmp58:
+.Ltmp51:
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:x <- $r11
 	.loc	3 223 19                        @ ../../../../Library/StdDriver/src/ccap.c:223:19
-	adds	r5, #4
+	adds	r4, #4
 	movs	r2, #0
 	mov	r10, r8
-.Ltmp59:
+.Ltmp52:
 	.loc	3 223 5                         @ ../../../../Library/StdDriver/src/ccap.c:223:5
 	subs.w	lr, lr, #1
-	bne	.LBB5_10
-	b	.LBB5_5
-.Ltmp60:
-.LBB5_10:                               @ =>This Inner Loop Header: Depth=1
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- [DW_OP_plus_uconst 16] [$sp+0]
+	bne	.LBB5_8
+	b	.LBB5_3
+.Ltmp53:
+.LBB5_8:                                @ =>This Inner Loop Header: Depth=1
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- [DW_OP_LLVM_entry_value 1] $r2
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 52] [$sp+0]
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- $r0
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:x <- $r11
 	.loc	3 0 5                           @ ../../../../Library/StdDriver/src/ccap.c:0:5
 	cmp	r10, r1
 	add.w	r8, r10, #80
-.Ltmp61:
+.Ltmp54:
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 0
+	ldr	r5, [sp, #12]                   @ 4-byte Reload
 	cset	r2, ls
 	cmp	r12, r10
-	cset	r9, hi
-.Ltmp62:
+.Ltmp55:
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndY <- 60
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_plus_uconst 80, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartY <- 0
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinIdx <- $r11
+	csel	r9, zr, r5, ls
+.Ltmp56:
 	.loc	3 233 38 is_stmt 1              @ ../../../../Library/StdDriver/src/ccap.c:233:38
-	cmp	r8, r1
-	bls	.LBB5_14
-.Ltmp63:
-@ %bb.11:                               @   in Loop: Header=BB5_10 Depth=1
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinIdx <- $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_stack_value] $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartY <- 0
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_plus_uconst 80, DW_OP_stack_value] $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndY <- 60
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 0
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:x <- $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- [DW_OP_plus_uconst 16] [$sp+0]
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- [DW_OP_LLVM_entry_value 1] $r3
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- [DW_OP_LLVM_entry_value 1] $r2
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- $r0
 	cmp	r0, #59
-	bhi	.LBB5_14
-.Ltmp64:
-@ %bb.12:                               @   in Loop: Header=BB5_10 Depth=1
+	bhi	.LBB5_10
+.Ltmp57:
+@ %bb.9:                                @   in Loop: Header=BB5_8 Depth=1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinIdx <- $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartY <- 0
@@ -734,20 +682,20 @@ CCAP_MD_SetRegionSensitivity:
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndY <- 60
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 0
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:x <- $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- [DW_OP_plus_uconst 16] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- [DW_OP_LLVM_entry_value 1] $r2
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 52] [$sp+0]
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- $r0
 	.loc	3 0 38 is_stmt 0                @ ../../../../Library/StdDriver/src/ccap.c:0:38
-	ldr	r3, [sp, #12]                   @ 4-byte Reload
-	and.w	r7, r3, r9
-	orrs	r2, r7
+	orrs.w	r2, r2, r9
 	.loc	3 233 38                        @ ../../../../Library/StdDriver/src/ccap.c:233:38
-	beq	.LBB5_14
-.Ltmp65:
-@ %bb.13:                               @   in Loop: Header=BB5_10 Depth=1
+	it	ne
+	cmpne	r8, r1
+	bhi	.LBB5_11
+.Ltmp58:
+.LBB5_10:                               @   in Loop: Header=BB5_8 Depth=1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinIdx <- $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartY <- 0
@@ -755,307 +703,314 @@ CCAP_MD_SetRegionSensitivity:
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndY <- 60
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 0
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:x <- $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- [DW_OP_plus_uconst 16] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- [DW_OP_LLVM_entry_value 1] $r2
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 52] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- $r0
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinIdx <- [DW_OP_plus_uconst 4, DW_OP_stack_value] $r11
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_stack_value] $r11
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartY <- 60
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_plus_uconst 80, DW_OP_stack_value] $r11
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndY <- 120
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 1
+	cmp	r8, r1
+	bhi	.LBB5_12
+	b	.LBB5_15
+.Ltmp59:
+	.p2align	2
+.LBB5_11:                               @   in Loop: Header=BB5_8 Depth=1
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinIdx <- $r11
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_stack_value] $r11
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartY <- 0
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_plus_uconst 80, DW_OP_stack_value] $r11
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndY <- 60
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 0
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:x <- $r11
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- $r3
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- [DW_OP_LLVM_entry_value 1] $r3
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- [DW_OP_LLVM_entry_value 1] $r2
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 52] [$sp+0]
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- $r0
 	.loc	3 0 0                           @ ../../../../Library/StdDriver/src/ccap.c:0:0
-	ldr	r2, [r6]
-	movs	r3, #1
-	lsl.w	r7, r3, r11
-	orrs	r2, r7
-	str	r2, [r6]
-	ldr	r2, [sp, #16]                   @ 4-byte Reload
-	str	r2, [r5, #-32]
-.Ltmp66:
-.LBB5_14:                               @   in Loop: Header=BB5_10 Depth=1
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinIdx <- $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_stack_value] $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartY <- 0
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_plus_uconst 80, DW_OP_stack_value] $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndY <- 60
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 0
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:x <- $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- [DW_OP_plus_uconst 16] [$sp+0]
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- [DW_OP_LLVM_entry_value 1] $r3
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- [DW_OP_LLVM_entry_value 1] $r2
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- $r0
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 1
+	ldr	r2, [r7]
+	movs	r5, #1
+	lsl.w	r6, r5, r11
+	orrs	r2, r6
+	str	r2, [r7]
+	str	r3, [r4, #-32]
+.Ltmp60:
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinIdx <- [DW_OP_plus_uconst 4, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartY <- 60
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_plus_uconst 80, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndY <- 120
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 1
 	.loc	3 233 38                        @ ../../../../Library/StdDriver/src/ccap.c:233:38
 	cmp	r8, r1
-	bls	.LBB5_18
-.Ltmp67:
-@ %bb.15:                               @   in Loop: Header=BB5_10 Depth=1
+	bls	.LBB5_15
+.Ltmp61:
+.LBB5_12:                               @   in Loop: Header=BB5_8 Depth=1
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndY <- 120
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartY <- 60
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinIdx <- [DW_OP_plus_uconst 4, DW_OP_stack_value] $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_plus_uconst 80, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:x <- $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- [DW_OP_plus_uconst 16] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- [DW_OP_LLVM_entry_value 1] $r2
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 52] [$sp+0]
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- $r0
 	cmp	r0, #119
-	bhi	.LBB5_18
-.Ltmp68:
-@ %bb.16:                               @   in Loop: Header=BB5_10 Depth=1
+	bhi	.LBB5_15
+.Ltmp62:
+@ %bb.13:                               @   in Loop: Header=BB5_8 Depth=1
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndY <- 120
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartY <- 60
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinIdx <- [DW_OP_plus_uconst 4, DW_OP_stack_value] $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_plus_uconst 80, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:x <- $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- [DW_OP_plus_uconst 16] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- [DW_OP_LLVM_entry_value 1] $r2
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 52] [$sp+0]
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- $r0
 	.loc	3 0 38                          @ ../../../../Library/StdDriver/src/ccap.c:0:38
-	cmp	r12, r10
-	cset	r2, hi
 	cmp	r10, r1
-	cset	r7, hs
-	cset	r4, ls
+	cset	r6, ls
 	cmp	r0, #59
-	cset	r3, hi
-.Ltmp69:
+	ldr	r2, [sp, #8]                    @ 4-byte Reload
+	cset	r5, hi
+	cmp	r10, r1
+	csel	r2, zr, r2, lo
+	cmp	r12, r10
+	csel	r2, zr, r2, ls
+.Ltmp63:
 	.loc	3 236 40 is_stmt 1              @ ../../../../Library/StdDriver/src/ccap.c:236:40
-	tst	r4, r3
-	ittt	eq
-	ldreq	r3, [sp, #8]                    @ 4-byte Reload
-	andeq	r3, r7
-	andseq.w	r2, r2, r3
-	beq	.LBB5_18
-.Ltmp70:
-@ %bb.17:                               @   in Loop: Header=BB5_10 Depth=1
+	tst	r6, r5
+	it	eq
+	cmpeq	r2, #0
+	beq	.LBB5_15
+.Ltmp64:
+@ %bb.14:                               @   in Loop: Header=BB5_8 Depth=1
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndY <- 120
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartY <- 60
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinIdx <- [DW_OP_plus_uconst 4, DW_OP_stack_value] $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_plus_uconst 80, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:x <- $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- [DW_OP_plus_uconst 16] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- [DW_OP_LLVM_entry_value 1] $r2
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 52] [$sp+0]
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- $r0
 	.loc	3 0 0 is_stmt 0                 @ ../../../../Library/StdDriver/src/ccap.c:0:0
-	ldr	r2, [r6]
-	movs	r3, #16
-	lsl.w	r3, r3, r11
-	orrs	r2, r3
-	str	r2, [r6]
-	ldr	r2, [sp, #16]                   @ 4-byte Reload
-	str	r2, [r5, #-16]
-.Ltmp71:
-.LBB5_18:                               @   in Loop: Header=BB5_10 Depth=1
+	ldr	r2, [r7]
+	movs	r5, #16
+	lsl.w	r5, r5, r11
+	orrs	r2, r5
+	str	r2, [r7]
+	str	r3, [r4, #-16]
+.Ltmp65:
+.LBB5_15:                               @   in Loop: Header=BB5_8 Depth=1
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndY <- 120
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartY <- 60
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinIdx <- [DW_OP_plus_uconst 4, DW_OP_stack_value] $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_plus_uconst 80, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:x <- $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- [DW_OP_plus_uconst 16] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- [DW_OP_LLVM_entry_value 1] $r2
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 52] [$sp+0]
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- $r0
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 2
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinIdx <- [DW_OP_plus_uconst 8, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartY <- 120
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_plus_uconst 80, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndY <- 180
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 2
 	.loc	3 233 38 is_stmt 1              @ ../../../../Library/StdDriver/src/ccap.c:233:38
 	cmp	r8, r1
-	bls	.LBB5_22
-.Ltmp72:
-@ %bb.19:                               @   in Loop: Header=BB5_10 Depth=1
+	bls	.LBB5_19
+.Ltmp66:
+@ %bb.16:                               @   in Loop: Header=BB5_8 Depth=1
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 2
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndY <- 180
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartY <- 120
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinIdx <- [DW_OP_plus_uconst 8, DW_OP_stack_value] $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 2
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_plus_uconst 80, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:x <- $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- [DW_OP_plus_uconst 16] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- [DW_OP_LLVM_entry_value 1] $r2
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 52] [$sp+0]
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- $r0
 	cmp	r0, #179
-	bhi	.LBB5_22
-.Ltmp73:
-@ %bb.20:                               @   in Loop: Header=BB5_10 Depth=1
+	bhi	.LBB5_19
+.Ltmp67:
+@ %bb.17:                               @   in Loop: Header=BB5_8 Depth=1
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 2
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndY <- 180
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartY <- 120
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinIdx <- [DW_OP_plus_uconst 8, DW_OP_stack_value] $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 2
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_plus_uconst 80, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:x <- $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- [DW_OP_plus_uconst 16] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- [DW_OP_LLVM_entry_value 1] $r2
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 52] [$sp+0]
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- $r0
 	.loc	3 0 38 is_stmt 0                @ ../../../../Library/StdDriver/src/ccap.c:0:38
-	cmp	r12, r10
-	cset	r2, hi
 	cmp	r10, r1
-	cset	r7, hs
-	cset	r3, ls
+	cset	r5, ls
 	cmp	r0, #119
-	cset	r4, hi
-.Ltmp74:
+	ldr	r2, [sp, #4]                    @ 4-byte Reload
+	cset	r6, hi
+	cmp	r10, r1
+	csel	r2, zr, r2, lo
+	cmp	r12, r10
+	csel	r2, zr, r2, ls
+.Ltmp68:
 	.loc	3 236 40 is_stmt 1              @ ../../../../Library/StdDriver/src/ccap.c:236:40
-	tst	r3, r4
-	ittt	eq
-	ldreq	r3, [sp, #4]                    @ 4-byte Reload
-	andeq	r3, r7
-	andseq.w	r2, r2, r3
-	beq	.LBB5_22
-.Ltmp75:
-@ %bb.21:                               @   in Loop: Header=BB5_10 Depth=1
+	tst	r5, r6
+	it	eq
+	cmpeq	r2, #0
+	beq	.LBB5_19
+.Ltmp69:
+@ %bb.18:                               @   in Loop: Header=BB5_8 Depth=1
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 2
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndY <- 180
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartY <- 120
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinIdx <- [DW_OP_plus_uconst 8, DW_OP_stack_value] $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 2
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_plus_uconst 80, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:x <- $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- [DW_OP_plus_uconst 16] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- [DW_OP_LLVM_entry_value 1] $r2
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 52] [$sp+0]
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- $r0
 	.loc	3 0 0 is_stmt 0                 @ ../../../../Library/StdDriver/src/ccap.c:0:0
-	ldr	r2, [r6]
-	mov.w	r3, #256
-	lsl.w	r3, r3, r11
-	orrs	r2, r3
-	str	r2, [r6]
-	ldr	r2, [sp, #16]                   @ 4-byte Reload
-	str	r2, [r5]
-.Ltmp76:
-.LBB5_22:                               @   in Loop: Header=BB5_10 Depth=1
+	ldr	r2, [r7]
+	mov.w	r5, #256
+	lsl.w	r5, r5, r11
+	orrs	r2, r5
+	str	r2, [r7]
+	str	r3, [r4]
+.Ltmp70:
+.LBB5_19:                               @   in Loop: Header=BB5_8 Depth=1
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 2
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndY <- 180
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartY <- 120
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinIdx <- [DW_OP_plus_uconst 8, DW_OP_stack_value] $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 2
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_plus_uconst 80, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:x <- $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- [DW_OP_plus_uconst 16] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- [DW_OP_LLVM_entry_value 1] $r2
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 52] [$sp+0]
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- $r0
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinIdx <- [DW_OP_plus_uconst 12, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartY <- 180
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_plus_uconst 80, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndY <- 240
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 3
 	.loc	3 233 38 is_stmt 1              @ ../../../../Library/StdDriver/src/ccap.c:233:38
 	cmp	r8, r1
-	bls	.LBB5_9
-.Ltmp77:
-@ %bb.23:                               @   in Loop: Header=BB5_10 Depth=1
+	bls	.LBB5_7
+.Ltmp71:
+@ %bb.20:                               @   in Loop: Header=BB5_8 Depth=1
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndY <- 240
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartY <- 180
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinIdx <- [DW_OP_plus_uconst 12, DW_OP_stack_value] $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_plus_uconst 80, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:x <- $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- [DW_OP_plus_uconst 16] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- [DW_OP_LLVM_entry_value 1] $r2
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 52] [$sp+0]
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- $r0
 	cmp	r0, #239
-	bhi	.LBB5_9
-.Ltmp78:
-@ %bb.24:                               @   in Loop: Header=BB5_10 Depth=1
+	bhi	.LBB5_7
+.Ltmp72:
+@ %bb.21:                               @   in Loop: Header=BB5_8 Depth=1
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndY <- 240
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartY <- 180
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinIdx <- [DW_OP_plus_uconst 12, DW_OP_stack_value] $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_plus_uconst 80, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:x <- $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- [DW_OP_plus_uconst 16] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- [DW_OP_LLVM_entry_value 1] $r2
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 52] [$sp+0]
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- $r0
 	.loc	3 0 38 is_stmt 0                @ ../../../../Library/StdDriver/src/ccap.c:0:38
-	cmp	r12, r10
-	cset	r2, hi
 	cmp	r10, r1
-	cset	r7, hs
-	cset	r3, ls
+	cset	r5, ls
 	cmp	r0, #179
-	cset	r4, hi
-.Ltmp79:
+	ldr	r2, [sp]                        @ 4-byte Reload
+	cset	r6, hi
+	cmp	r10, r1
+	csel	r2, zr, r2, lo
+	cmp	r12, r10
+	csel	r2, zr, r2, ls
+.Ltmp73:
 	.loc	3 236 40 is_stmt 1              @ ../../../../Library/StdDriver/src/ccap.c:236:40
-	tst	r3, r4
-	ittt	eq
-	ldreq	r3, [sp]                        @ 4-byte Reload
-	andeq	r3, r7
-	andseq.w	r2, r2, r3
-	beq.w	.LBB5_9
-.Ltmp80:
-@ %bb.25:                               @   in Loop: Header=BB5_10 Depth=1
+	tst	r5, r6
+	it	eq
+	cmpeq	r2, #0
+	beq.w	.LBB5_7
+.Ltmp74:
+@ %bb.22:                               @   in Loop: Header=BB5_8 Depth=1
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndY <- 240
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartY <- 180
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinIdx <- [DW_OP_plus_uconst 12, DW_OP_stack_value] $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:y <- 3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinStartX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32WinEndX <- [DW_OP_constu 80, DW_OP_mul, DW_OP_plus_uconst 80, DW_OP_stack_value] $r11
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:x <- $r11
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- [DW_OP_plus_uconst 16] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Threshold <- $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Width <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Height <- [DW_OP_LLVM_entry_value 1] $r2
-	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 56] [$sp+0]
+	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Sensitivity <- [DW_OP_plus_uconst 52] [$sp+0]
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32X <- $r1
 	@DEBUG_VALUE: CCAP_MD_SetRegionSensitivity:u32Y <- $r0
 	.loc	3 0 0 is_stmt 0                 @ ../../../../Library/StdDriver/src/ccap.c:0:0
-	ldr	r2, [r6]
-	mov.w	r3, #4096
-	lsl.w	r3, r3, r11
-	orrs	r2, r3
-	str	r2, [r6]
-	ldr	r2, [sp, #16]                   @ 4-byte Reload
-	str	r2, [r5, #16]
-	b	.LBB5_9
-.Ltmp81:
+	ldr	r2, [r7]
+	mov.w	r5, #4096
+	lsl.w	r5, r5, r11
+	orrs	r2, r5
+	str	r2, [r7]
+	str	r3, [r4, #16]
+	b	.LBB5_7
+.Ltmp75:
 .Lfunc_end5:
 	.size	CCAP_MD_SetRegionSensitivity, .Lfunc_end5-CCAP_MD_SetRegionSensitivity
 	.cfi_endproc
@@ -1079,10 +1034,10 @@ CCAP_MD_SetGlobalSensitivity:
 	movw	r1, #44352
 	movw	r2, #34079
 	movt	r1, #18
-.Ltmp82:
+.Ltmp76:
 	.loc	3 273 5 prologue_end            @ ../../../../Library/StdDriver/src/ccap.c:273:5
 	muls	r0, r1, r0
-.Ltmp83:
+.Ltmp77:
 	@DEBUG_VALUE: CCAP_MD_SetGlobalSensitivity:u32Sensitivity <- [DW_OP_LLVM_entry_value 1] $r0
 	.loc	3 0 5 is_stmt 0                 @ ../../../../Library/StdDriver/src/ccap.c:0:5
 	movt	r2, #20971
@@ -1097,7 +1052,7 @@ CCAP_MD_SetGlobalSensitivity:
 	str	r1, [r2]
 	.loc	3 275 5                         @ ../../../../Library/StdDriver/src/ccap.c:275:5
 	bx	lr
-.Ltmp84:
+.Ltmp78:
 .Lfunc_end6:
 	.size	CCAP_MD_SetGlobalSensitivity, .Lfunc_end6-CCAP_MD_SetGlobalSensitivity
 	.cfi_endproc
@@ -1188,58 +1143,50 @@ CCAP_MD_SetGlobalSensitivity:
 .Ldebug_loc5:
 	.long	-1
 	.long	.Lfunc_begin2                   @   base address
-	.long	.Ltmp11-.Lfunc_begin2
-	.long	.Ltmp13-.Lfunc_begin2
+	.long	.Ltmp10-.Lfunc_begin2
+	.long	.Ltmp12-.Lfunc_begin2
 	.short	5                               @ Loc expr size
 	.byte	113                             @ DW_OP_breg1
 	.byte	0                               @ 0
 	.byte	49                              @ DW_OP_lit1
 	.byte	36                              @ DW_OP_shl
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp13-.Lfunc_begin2
+	.long	.Ltmp12-.Lfunc_begin2
 	.long	.Ltmp14-.Lfunc_begin2
 	.short	1                               @ Loc expr size
 	.byte	81                              @ DW_OP_reg1
 	.long	.Ltmp14-.Lfunc_begin2
+	.long	.Ltmp15-.Lfunc_begin2
+	.short	3                               @ Loc expr size
+	.byte	113                             @ DW_OP_breg1
+	.byte	127                             @ -1
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp15-.Lfunc_begin2
 	.long	.Ltmp17-.Lfunc_begin2
 	.short	3                               @ Loc expr size
 	.byte	113                             @ DW_OP_breg1
 	.byte	126                             @ -2
 	.byte	159                             @ DW_OP_stack_value
 	.long	.Ltmp17-.Lfunc_begin2
-	.long	.Ltmp18-.Lfunc_begin2
-	.short	5                               @ Loc expr size
-	.byte	113                             @ DW_OP_breg1
-	.byte	126                             @ -2
-	.byte	49                              @ DW_OP_lit1
-	.byte	28                              @ DW_OP_minus
-	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp18-.Lfunc_begin2
 	.long	.Ltmp19-.Lfunc_begin2
 	.short	3                               @ Loc expr size
 	.byte	113                             @ DW_OP_breg1
 	.byte	125                             @ -3
 	.byte	159                             @ DW_OP_stack_value
 	.long	.Ltmp19-.Lfunc_begin2
-	.long	.Ltmp22-.Lfunc_begin2
+	.long	.Ltmp20-.Lfunc_begin2
 	.short	1                               @ Loc expr size
 	.byte	81                              @ DW_OP_reg1
-	.long	.Ltmp22-.Lfunc_begin2
-	.long	.Ltmp23-.Lfunc_begin2
-	.short	3                               @ Loc expr size
-	.byte	113                             @ DW_OP_breg1
-	.byte	127                             @ -1
-	.byte	159                             @ DW_OP_stack_value
 	.long	0
 	.long	0
 .Ldebug_loc6:
 	.long	-1
 	.long	.Lfunc_begin3                   @   base address
 	.long	.Lfunc_begin3-.Lfunc_begin3
-	.long	.Ltmp30-.Lfunc_begin3
+	.long	.Ltmp27-.Lfunc_begin3
 	.short	1                               @ Loc expr size
 	.byte	80                              @ DW_OP_reg0
-	.long	.Ltmp30-.Lfunc_begin3
+	.long	.Ltmp27-.Lfunc_begin3
 	.long	.Lfunc_end3-.Lfunc_begin3
 	.short	4                               @ Loc expr size
 	.byte	243                             @ DW_OP_GNU_entry_value
@@ -1252,10 +1199,10 @@ CCAP_MD_SetGlobalSensitivity:
 	.long	-1
 	.long	.Lfunc_begin3                   @   base address
 	.long	.Lfunc_begin3-.Lfunc_begin3
-	.long	.Ltmp29-.Lfunc_begin3
+	.long	.Ltmp26-.Lfunc_begin3
 	.short	1                               @ Loc expr size
 	.byte	81                              @ DW_OP_reg1
-	.long	.Ltmp29-.Lfunc_begin3
+	.long	.Ltmp26-.Lfunc_begin3
 	.long	.Lfunc_end3-.Lfunc_begin3
 	.short	4                               @ Loc expr size
 	.byte	243                             @ DW_OP_GNU_entry_value
@@ -1267,8 +1214,8 @@ CCAP_MD_SetGlobalSensitivity:
 .Ldebug_loc8:
 	.long	-1
 	.long	.Lfunc_begin3                   @   base address
-	.long	.Ltmp28-.Lfunc_begin3
-	.long	.Ltmp29-.Lfunc_begin3
+	.long	.Ltmp25-.Lfunc_begin3
+	.long	.Ltmp26-.Lfunc_begin3
 	.short	5                               @ Loc expr size
 	.byte	113                             @ DW_OP_breg1
 	.byte	0                               @ 0
@@ -1280,8 +1227,8 @@ CCAP_MD_SetGlobalSensitivity:
 .Ldebug_loc9:
 	.long	-1
 	.long	.Lfunc_begin3                   @   base address
-	.long	.Ltmp28-.Lfunc_begin3
-	.long	.Ltmp29-.Lfunc_begin3
+	.long	.Ltmp25-.Lfunc_begin3
+	.long	.Ltmp26-.Lfunc_begin3
 	.short	7                               @ Loc expr size
 	.byte	113                             @ DW_OP_breg1
 	.byte	0                               @ 0
@@ -1290,8 +1237,8 @@ CCAP_MD_SetGlobalSensitivity:
 	.byte	1                               @ 
 	.byte	26                              @ DW_OP_and
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp31-.Lfunc_begin3
-	.long	.Ltmp33-.Lfunc_begin3
+	.long	.Ltmp28-.Lfunc_begin3
+	.long	.Ltmp30-.Lfunc_begin3
 	.short	1                               @ Loc expr size
 	.byte	84                              @ DW_OP_reg4
 	.long	0
@@ -1299,15 +1246,15 @@ CCAP_MD_SetGlobalSensitivity:
 .Ldebug_loc10:
 	.long	-1
 	.long	.Lfunc_begin3                   @   base address
-	.long	.Ltmp28-.Lfunc_begin3
-	.long	.Ltmp30-.Lfunc_begin3
+	.long	.Ltmp25-.Lfunc_begin3
+	.long	.Ltmp27-.Lfunc_begin3
 	.short	5                               @ Loc expr size
 	.byte	112                             @ DW_OP_breg0
 	.byte	0                               @ 0
 	.byte	56                              @ DW_OP_lit8
 	.byte	37                              @ DW_OP_shr
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp34-.Lfunc_begin3
+	.long	.Ltmp31-.Lfunc_begin3
 	.long	.Lfunc_end3-.Lfunc_begin3
 	.short	5                               @ Loc expr size
 	.byte	114                             @ DW_OP_breg2
@@ -1320,8 +1267,8 @@ CCAP_MD_SetGlobalSensitivity:
 .Ldebug_loc11:
 	.long	-1
 	.long	.Lfunc_begin3                   @   base address
-	.long	.Ltmp28-.Lfunc_begin3
-	.long	.Ltmp30-.Lfunc_begin3
+	.long	.Ltmp25-.Lfunc_begin3
+	.long	.Ltmp27-.Lfunc_begin3
 	.short	7                               @ Loc expr size
 	.byte	112                             @ DW_OP_breg0
 	.byte	0                               @ 0
@@ -1330,7 +1277,7 @@ CCAP_MD_SetGlobalSensitivity:
 	.byte	1                               @ 
 	.byte	26                              @ DW_OP_and
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp32-.Lfunc_begin3
+	.long	.Ltmp29-.Lfunc_begin3
 	.long	.Lfunc_end3-.Lfunc_begin3
 	.short	7                               @ Loc expr size
 	.byte	114                             @ DW_OP_breg2
@@ -1346,10 +1293,10 @@ CCAP_MD_SetGlobalSensitivity:
 	.long	-1
 	.long	.Lfunc_begin4                   @   base address
 	.long	.Lfunc_begin4-.Lfunc_begin4
-	.long	.Ltmp37-.Lfunc_begin4
+	.long	.Ltmp34-.Lfunc_begin4
 	.short	1                               @ Loc expr size
 	.byte	80                              @ DW_OP_reg0
-	.long	.Ltmp37-.Lfunc_begin4
+	.long	.Ltmp34-.Lfunc_begin4
 	.long	.Lfunc_end4-.Lfunc_begin4
 	.short	4                               @ Loc expr size
 	.byte	243                             @ DW_OP_GNU_entry_value
@@ -1362,17 +1309,17 @@ CCAP_MD_SetGlobalSensitivity:
 	.long	-1
 	.long	.Lfunc_begin5                   @   base address
 	.long	.Lfunc_begin5-.Lfunc_begin5
-	.long	.Ltmp49-.Lfunc_begin5
+	.long	.Ltmp43-.Lfunc_begin5
 	.short	1                               @ Loc expr size
 	.byte	80                              @ DW_OP_reg0
-	.long	.Ltmp49-.Lfunc_begin5
-	.long	.Ltmp50-.Lfunc_begin5
+	.long	.Ltmp43-.Lfunc_begin5
+	.long	.Ltmp44-.Lfunc_begin5
 	.short	4                               @ Loc expr size
 	.byte	243                             @ DW_OP_GNU_entry_value
 	.byte	1                               @ 1
 	.byte	80                              @ DW_OP_reg0
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp50-.Lfunc_begin5
+	.long	.Ltmp44-.Lfunc_begin5
 	.long	.Lfunc_end5-.Lfunc_begin5
 	.short	1                               @ Loc expr size
 	.byte	80                              @ DW_OP_reg0
@@ -1382,32 +1329,21 @@ CCAP_MD_SetGlobalSensitivity:
 	.long	-1
 	.long	.Lfunc_begin5                   @   base address
 	.long	.Lfunc_begin5-.Lfunc_begin5
-	.long	.Ltmp41-.Lfunc_begin5
+	.long	.Ltmp39-.Lfunc_begin5
 	.short	1                               @ Loc expr size
 	.byte	82                              @ DW_OP_reg2
-	.long	.Ltmp41-.Lfunc_begin5
-	.long	.Ltmp42-.Lfunc_begin5
+	.long	.Ltmp39-.Lfunc_begin5
+	.long	.Ltmp40-.Lfunc_begin5
 	.short	4                               @ Loc expr size
 	.byte	243                             @ DW_OP_GNU_entry_value
 	.byte	1                               @ 1
 	.byte	82                              @ DW_OP_reg2
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp42-.Lfunc_begin5
-	.long	.Ltmp45-.Lfunc_begin5
+	.long	.Ltmp40-.Lfunc_begin5
+	.long	.Ltmp41-.Lfunc_begin5
 	.short	1                               @ Loc expr size
 	.byte	82                              @ DW_OP_reg2
-	.long	.Ltmp45-.Lfunc_begin5
-	.long	.Ltmp46-.Lfunc_begin5
-	.short	4                               @ Loc expr size
-	.byte	243                             @ DW_OP_GNU_entry_value
-	.byte	1                               @ 1
-	.byte	82                              @ DW_OP_reg2
-	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp46-.Lfunc_begin5
-	.long	.Ltmp47-.Lfunc_begin5
-	.short	1                               @ Loc expr size
-	.byte	82                              @ DW_OP_reg2
-	.long	.Ltmp47-.Lfunc_begin5
+	.long	.Ltmp41-.Lfunc_begin5
 	.long	.Lfunc_end5-.Lfunc_begin5
 	.short	4                               @ Loc expr size
 	.byte	243                             @ DW_OP_GNU_entry_value
@@ -1420,14 +1356,14 @@ CCAP_MD_SetGlobalSensitivity:
 	.long	-1
 	.long	.Lfunc_begin5                   @   base address
 	.long	.Lfunc_begin5-.Lfunc_begin5
-	.long	.Ltmp48-.Lfunc_begin5
+	.long	.Ltmp42-.Lfunc_begin5
 	.short	1                               @ Loc expr size
 	.byte	83                              @ DW_OP_reg3
-	.long	.Ltmp50-.Lfunc_begin5
-	.long	.Ltmp53-.Lfunc_begin5
+	.long	.Ltmp44-.Lfunc_begin5
+	.long	.Ltmp47-.Lfunc_begin5
 	.short	1                               @ Loc expr size
 	.byte	83                              @ DW_OP_reg3
-	.long	.Ltmp53-.Lfunc_begin5
+	.long	.Ltmp47-.Lfunc_begin5
 	.long	.Lfunc_end5-.Lfunc_begin5
 	.short	4                               @ Loc expr size
 	.byte	243                             @ DW_OP_GNU_entry_value
@@ -1439,12 +1375,12 @@ CCAP_MD_SetGlobalSensitivity:
 .Ldebug_loc16:
 	.long	-1
 	.long	.Lfunc_begin5                   @   base address
-	.long	.Ltmp54-.Lfunc_begin5
-	.long	.Ltmp57-.Lfunc_begin5
+	.long	.Ltmp48-.Lfunc_begin5
+	.long	.Ltmp50-.Lfunc_begin5
 	.short	2                               @ Loc expr size
 	.byte	48                              @ DW_OP_lit0
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp57-.Lfunc_begin5
+	.long	.Ltmp50-.Lfunc_begin5
 	.long	.Lfunc_end5-.Lfunc_begin5
 	.short	1                               @ Loc expr size
 	.byte	91                              @ DW_OP_reg11
@@ -1453,87 +1389,98 @@ CCAP_MD_SetGlobalSensitivity:
 .Ldebug_loc17:
 	.long	-1
 	.long	.Lfunc_begin5                   @   base address
-	.long	.Ltmp54-.Lfunc_begin5
-	.long	.Ltmp55-.Lfunc_begin5
-	.short	1                               @ Loc expr size
-	.byte	82                              @ DW_OP_reg2
-	.long	.Ltmp55-.Lfunc_begin5
+	.long	.Ltmp48-.Lfunc_begin5
 	.long	.Lfunc_end5-.Lfunc_begin5
-	.short	2                               @ Loc expr size
-	.byte	125                             @ DW_OP_breg13
-	.byte	16                              @ 16
+	.short	1                               @ Loc expr size
+	.byte	83                              @ DW_OP_reg3
 	.long	0
 	.long	0
 .Ldebug_loc18:
 	.long	-1
 	.long	.Lfunc_begin5                   @   base address
-	.long	.Ltmp57-.Lfunc_begin5
+	.long	.Ltmp50-.Lfunc_begin5
+	.long	.Ltmp53-.Lfunc_begin5
+	.short	2                               @ Loc expr size
+	.byte	52                              @ DW_OP_lit4
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp54-.Lfunc_begin5
+	.long	.Ltmp58-.Lfunc_begin5
+	.short	2                               @ Loc expr size
+	.byte	48                              @ DW_OP_lit0
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp58-.Lfunc_begin5
+	.long	.Ltmp59-.Lfunc_begin5
+	.short	2                               @ Loc expr size
+	.byte	49                              @ DW_OP_lit1
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp59-.Lfunc_begin5
 	.long	.Ltmp60-.Lfunc_begin5
-	.short	4                               @ Loc expr size
-	.byte	16                              @ DW_OP_constu
-	.byte	240                             @ 240
-	.byte	1                               @ 
+	.short	2                               @ Loc expr size
+	.byte	48                              @ DW_OP_lit0
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp62-.Lfunc_begin5
-	.long	.Ltmp66-.Lfunc_begin5
-	.short	3                               @ Loc expr size
-	.byte	16                              @ DW_OP_constu
-	.byte	60                              @ 60
+	.long	.Ltmp60-.Lfunc_begin5
+	.long	.Ltmp65-.Lfunc_begin5
+	.short	2                               @ Loc expr size
+	.byte	49                              @ DW_OP_lit1
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp66-.Lfunc_begin5
-	.long	.Ltmp71-.Lfunc_begin5
-	.short	3                               @ Loc expr size
-	.byte	16                              @ DW_OP_constu
-	.byte	120                             @ 120
+	.long	.Ltmp65-.Lfunc_begin5
+	.long	.Ltmp70-.Lfunc_begin5
+	.short	2                               @ Loc expr size
+	.byte	50                              @ DW_OP_lit2
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp71-.Lfunc_begin5
-	.long	.Ltmp76-.Lfunc_begin5
-	.short	4                               @ Loc expr size
-	.byte	16                              @ DW_OP_constu
-	.byte	180                             @ 180
-	.byte	1                               @ 
-	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp76-.Lfunc_begin5
+	.long	.Ltmp70-.Lfunc_begin5
 	.long	.Lfunc_end5-.Lfunc_begin5
-	.short	4                               @ Loc expr size
-	.byte	16                              @ DW_OP_constu
-	.byte	240                             @ 240
-	.byte	1                               @ 
+	.short	2                               @ Loc expr size
+	.byte	51                              @ DW_OP_lit3
 	.byte	159                             @ DW_OP_stack_value
 	.long	0
 	.long	0
 .Ldebug_loc19:
 	.long	-1
 	.long	.Lfunc_begin5                   @   base address
-	.long	.Ltmp57-.Lfunc_begin5
+	.long	.Ltmp50-.Lfunc_begin5
+	.long	.Ltmp53-.Lfunc_begin5
+	.short	4                               @ Loc expr size
+	.byte	16                              @ DW_OP_constu
+	.byte	240                             @ 240
+	.byte	1                               @ 
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp55-.Lfunc_begin5
+	.long	.Ltmp58-.Lfunc_begin5
+	.short	3                               @ Loc expr size
+	.byte	16                              @ DW_OP_constu
+	.byte	60                              @ 60
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp58-.Lfunc_begin5
+	.long	.Ltmp59-.Lfunc_begin5
+	.short	3                               @ Loc expr size
+	.byte	16                              @ DW_OP_constu
+	.byte	120                             @ 120
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp59-.Lfunc_begin5
 	.long	.Ltmp60-.Lfunc_begin5
+	.short	3                               @ Loc expr size
+	.byte	16                              @ DW_OP_constu
+	.byte	60                              @ 60
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp60-.Lfunc_begin5
+	.long	.Ltmp65-.Lfunc_begin5
+	.short	3                               @ Loc expr size
+	.byte	16                              @ DW_OP_constu
+	.byte	120                             @ 120
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp65-.Lfunc_begin5
+	.long	.Ltmp70-.Lfunc_begin5
 	.short	4                               @ Loc expr size
 	.byte	16                              @ DW_OP_constu
 	.byte	180                             @ 180
 	.byte	1                               @ 
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp62-.Lfunc_begin5
-	.long	.Ltmp66-.Lfunc_begin5
-	.short	2                               @ Loc expr size
-	.byte	48                              @ DW_OP_lit0
-	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp66-.Lfunc_begin5
-	.long	.Ltmp71-.Lfunc_begin5
-	.short	3                               @ Loc expr size
-	.byte	16                              @ DW_OP_constu
-	.byte	60                              @ 60
-	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp71-.Lfunc_begin5
-	.long	.Ltmp76-.Lfunc_begin5
-	.short	3                               @ Loc expr size
-	.byte	16                              @ DW_OP_constu
-	.byte	120                             @ 120
-	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp76-.Lfunc_begin5
+	.long	.Ltmp70-.Lfunc_begin5
 	.long	.Lfunc_end5-.Lfunc_begin5
 	.short	4                               @ Loc expr size
 	.byte	16                              @ DW_OP_constu
-	.byte	180                             @ 180
+	.byte	240                             @ 240
 	.byte	1                               @ 
 	.byte	159                             @ DW_OP_stack_value
 	.long	0
@@ -1541,71 +1488,98 @@ CCAP_MD_SetGlobalSensitivity:
 .Ldebug_loc20:
 	.long	-1
 	.long	.Lfunc_begin5                   @   base address
-	.long	.Ltmp57-.Lfunc_begin5
+	.long	.Ltmp50-.Lfunc_begin5
+	.long	.Ltmp53-.Lfunc_begin5
+	.short	4                               @ Loc expr size
+	.byte	16                              @ DW_OP_constu
+	.byte	180                             @ 180
+	.byte	1                               @ 
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp55-.Lfunc_begin5
 	.long	.Ltmp58-.Lfunc_begin5
-	.short	3                               @ Loc expr size
-	.byte	123                             @ DW_OP_breg11
-	.byte	12                              @ 12
+	.short	2                               @ Loc expr size
+	.byte	48                              @ DW_OP_lit0
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp62-.Lfunc_begin5
-	.long	.Ltmp66-.Lfunc_begin5
-	.short	1                               @ Loc expr size
-	.byte	91                              @ DW_OP_reg11
-	.long	.Ltmp66-.Lfunc_begin5
-	.long	.Ltmp71-.Lfunc_begin5
+	.long	.Ltmp58-.Lfunc_begin5
+	.long	.Ltmp59-.Lfunc_begin5
 	.short	3                               @ Loc expr size
-	.byte	123                             @ DW_OP_breg11
-	.byte	4                               @ 4
+	.byte	16                              @ DW_OP_constu
+	.byte	60                              @ 60
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp71-.Lfunc_begin5
-	.long	.Ltmp76-.Lfunc_begin5
+	.long	.Ltmp59-.Lfunc_begin5
+	.long	.Ltmp60-.Lfunc_begin5
+	.short	2                               @ Loc expr size
+	.byte	48                              @ DW_OP_lit0
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp60-.Lfunc_begin5
+	.long	.Ltmp65-.Lfunc_begin5
 	.short	3                               @ Loc expr size
-	.byte	123                             @ DW_OP_breg11
-	.byte	8                               @ 8
+	.byte	16                              @ DW_OP_constu
+	.byte	60                              @ 60
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp76-.Lfunc_begin5
+	.long	.Ltmp65-.Lfunc_begin5
+	.long	.Ltmp70-.Lfunc_begin5
+	.short	3                               @ Loc expr size
+	.byte	16                              @ DW_OP_constu
+	.byte	120                             @ 120
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp70-.Lfunc_begin5
 	.long	.Lfunc_end5-.Lfunc_begin5
-	.short	3                               @ Loc expr size
-	.byte	123                             @ DW_OP_breg11
-	.byte	12                              @ 12
+	.short	4                               @ Loc expr size
+	.byte	16                              @ DW_OP_constu
+	.byte	180                             @ 180
+	.byte	1                               @ 
 	.byte	159                             @ DW_OP_stack_value
 	.long	0
 	.long	0
 .Ldebug_loc21:
 	.long	-1
 	.long	.Lfunc_begin5                   @   base address
-	.long	.Ltmp57-.Lfunc_begin5
+	.long	.Ltmp50-.Lfunc_begin5
+	.long	.Ltmp51-.Lfunc_begin5
+	.short	3                               @ Loc expr size
+	.byte	123                             @ DW_OP_breg11
+	.byte	12                              @ 12
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp55-.Lfunc_begin5
+	.long	.Ltmp58-.Lfunc_begin5
+	.short	1                               @ Loc expr size
+	.byte	91                              @ DW_OP_reg11
+	.long	.Ltmp58-.Lfunc_begin5
+	.long	.Ltmp59-.Lfunc_begin5
+	.short	3                               @ Loc expr size
+	.byte	123                             @ DW_OP_breg11
+	.byte	4                               @ 4
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp59-.Lfunc_begin5
 	.long	.Ltmp60-.Lfunc_begin5
-	.short	2                               @ Loc expr size
-	.byte	52                              @ DW_OP_lit4
+	.short	1                               @ Loc expr size
+	.byte	91                              @ DW_OP_reg11
+	.long	.Ltmp60-.Lfunc_begin5
+	.long	.Ltmp65-.Lfunc_begin5
+	.short	3                               @ Loc expr size
+	.byte	123                             @ DW_OP_breg11
+	.byte	4                               @ 4
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp61-.Lfunc_begin5
-	.long	.Ltmp66-.Lfunc_begin5
-	.short	2                               @ Loc expr size
-	.byte	48                              @ DW_OP_lit0
+	.long	.Ltmp65-.Lfunc_begin5
+	.long	.Ltmp70-.Lfunc_begin5
+	.short	3                               @ Loc expr size
+	.byte	123                             @ DW_OP_breg11
+	.byte	8                               @ 8
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp66-.Lfunc_begin5
-	.long	.Ltmp71-.Lfunc_begin5
-	.short	2                               @ Loc expr size
-	.byte	49                              @ DW_OP_lit1
-	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp71-.Lfunc_begin5
-	.long	.Ltmp76-.Lfunc_begin5
-	.short	2                               @ Loc expr size
-	.byte	50                              @ DW_OP_lit2
-	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp76-.Lfunc_begin5
+	.long	.Ltmp70-.Lfunc_begin5
 	.long	.Lfunc_end5-.Lfunc_begin5
-	.short	2                               @ Loc expr size
-	.byte	51                              @ DW_OP_lit3
+	.short	3                               @ Loc expr size
+	.byte	123                             @ DW_OP_breg11
+	.byte	12                              @ 12
 	.byte	159                             @ DW_OP_stack_value
 	.long	0
 	.long	0
 .Ldebug_loc22:
 	.long	-1
 	.long	.Lfunc_begin5                   @   base address
-	.long	.Ltmp57-.Lfunc_begin5
-	.long	.Ltmp58-.Lfunc_begin5
+	.long	.Ltmp50-.Lfunc_begin5
+	.long	.Ltmp51-.Lfunc_begin5
 	.short	6                               @ Loc expr size
 	.byte	123                             @ DW_OP_breg11
 	.byte	0                               @ 0
@@ -1613,7 +1587,7 @@ CCAP_MD_SetGlobalSensitivity:
 	.byte	80                              @ 80
 	.byte	30                              @ DW_OP_mul
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp62-.Lfunc_begin5
+	.long	.Ltmp55-.Lfunc_begin5
 	.long	.Lfunc_end5-.Lfunc_begin5
 	.short	6                               @ Loc expr size
 	.byte	123                             @ DW_OP_breg11
@@ -1627,8 +1601,8 @@ CCAP_MD_SetGlobalSensitivity:
 .Ldebug_loc23:
 	.long	-1
 	.long	.Lfunc_begin5                   @   base address
-	.long	.Ltmp57-.Lfunc_begin5
-	.long	.Ltmp58-.Lfunc_begin5
+	.long	.Ltmp50-.Lfunc_begin5
+	.long	.Ltmp51-.Lfunc_begin5
 	.short	8                               @ Loc expr size
 	.byte	123                             @ DW_OP_breg11
 	.byte	0                               @ 0
@@ -1638,7 +1612,7 @@ CCAP_MD_SetGlobalSensitivity:
 	.byte	35                              @ DW_OP_plus_uconst
 	.byte	80                              @ 80
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp62-.Lfunc_begin5
+	.long	.Ltmp55-.Lfunc_begin5
 	.long	.Lfunc_end5-.Lfunc_begin5
 	.short	8                               @ Loc expr size
 	.byte	123                             @ DW_OP_breg11
@@ -1655,10 +1629,10 @@ CCAP_MD_SetGlobalSensitivity:
 	.long	-1
 	.long	.Lfunc_begin6                   @   base address
 	.long	.Lfunc_begin6-.Lfunc_begin6
-	.long	.Ltmp83-.Lfunc_begin6
+	.long	.Ltmp77-.Lfunc_begin6
 	.short	1                               @ Loc expr size
 	.byte	80                              @ DW_OP_reg0
-	.long	.Ltmp83-.Lfunc_begin6
+	.long	.Ltmp77-.Lfunc_begin6
 	.long	.Lfunc_end6-.Lfunc_begin6
 	.short	4                               @ Loc expr size
 	.byte	243                             @ DW_OP_GNU_entry_value
@@ -1956,7 +1930,7 @@ CCAP_MD_SetGlobalSensitivity:
 	.byte	4                               @ Address Size (in bytes)
 	.byte	1                               @ Abbrev [1] 0xb:0x4d3 DW_TAG_compile_unit
 	.long	.Linfo_string0                  @ DW_AT_producer
-	.short	12                              @ DW_AT_language
+	.short	29                              @ DW_AT_language
 	.long	.Linfo_string1                  @ DW_AT_name
 	.long	.Lline_table_start0             @ DW_AT_stmt_list
 	.long	.Linfo_string2                  @ DW_AT_comp_dir
@@ -2445,7 +2419,7 @@ CCAP_MD_SetGlobalSensitivity:
 	.byte	16                              @ Abbrev [16] 0x41d:0xe DW_TAG_formal_parameter
 	.byte	2                               @ DW_AT_location
 	.byte	145
-	.byte	56
+	.byte	52
 	.long	.Linfo_string69                 @ DW_AT_name
 	.byte	3                               @ DW_AT_decl_file
 	.byte	206                             @ DW_AT_decl_line
@@ -2466,8 +2440,8 @@ CCAP_MD_SetGlobalSensitivity:
 	.long	.Ldebug_loc18                   @ DW_AT_location
 	.long	.Linfo_string72                 @ DW_AT_name
 	.byte	3                               @ DW_AT_decl_file
-	.byte	209                             @ DW_AT_decl_line
-	.long	506                             @ DW_AT_type
+	.byte	208                             @ DW_AT_decl_line
+	.long	1227                            @ DW_AT_type
 	.byte	18                              @ Abbrev [18] 0x458:0xf DW_TAG_variable
 	.long	.Ldebug_loc19                   @ DW_AT_location
 	.long	.Linfo_string73                 @ DW_AT_name
@@ -2478,14 +2452,14 @@ CCAP_MD_SetGlobalSensitivity:
 	.long	.Ldebug_loc20                   @ DW_AT_location
 	.long	.Linfo_string74                 @ DW_AT_name
 	.byte	3                               @ DW_AT_decl_file
-	.byte	210                             @ DW_AT_decl_line
+	.byte	209                             @ DW_AT_decl_line
 	.long	506                             @ DW_AT_type
 	.byte	18                              @ Abbrev [18] 0x476:0xf DW_TAG_variable
 	.long	.Ldebug_loc21                   @ DW_AT_location
 	.long	.Linfo_string75                 @ DW_AT_name
 	.byte	3                               @ DW_AT_decl_file
-	.byte	208                             @ DW_AT_decl_line
-	.long	1227                            @ DW_AT_type
+	.byte	210                             @ DW_AT_decl_line
+	.long	506                             @ DW_AT_type
 	.byte	18                              @ Abbrev [18] 0x485:0xf DW_TAG_variable
 	.long	.Ldebug_loc22                   @ DW_AT_location
 	.long	.Linfo_string76                 @ DW_AT_name
@@ -2549,162 +2523,162 @@ CCAP_MD_SetGlobalSensitivity:
 	.long	0
 	.section	.debug_str,"MS",%progbits,1
 .Linfo_string0:
-	.asciz	"Component: Arm Compiler for Embedded 6.19 Tool: armclang [5e73cb00]" @ string offset=0
+	.asciz	"Component: Arm Compiler for Embedded 6.22 Tool: armclang [5ee92100]" @ string offset=0
 .Linfo_string1:
 	.asciz	"../../../../Library/StdDriver/src\\ccap.c" @ string offset=68
 .Linfo_string2:
-	.asciz	"C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" @ string offset=109
+	.asciz	"D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" @ string offset=109
 .Linfo_string3:
-	.asciz	"CTL"                           @ string offset=208
+	.asciz	"CTL"                           @ string offset=226
 .Linfo_string4:
-	.asciz	"unsigned int"                  @ string offset=212
+	.asciz	"unsigned int"                  @ string offset=230
 .Linfo_string5:
-	.asciz	"uint32_t"                      @ string offset=225
+	.asciz	"uint32_t"                      @ string offset=243
 .Linfo_string6:
-	.asciz	"PAR"                           @ string offset=234
+	.asciz	"PAR"                           @ string offset=252
 .Linfo_string7:
-	.asciz	"INTEN"                         @ string offset=238
+	.asciz	"INTEN"                         @ string offset=256
 .Linfo_string8:
-	.asciz	"INTSTS"                        @ string offset=244
+	.asciz	"INTSTS"                        @ string offset=262
 .Linfo_string9:
-	.asciz	"PARM"                          @ string offset=251
+	.asciz	"PARM"                          @ string offset=269
 .Linfo_string10:
-	.asciz	"RESERVE0"                      @ string offset=256
+	.asciz	"RESERVE0"                      @ string offset=274
 .Linfo_string11:
-	.asciz	"__ARRAY_SIZE_TYPE__"           @ string offset=265
+	.asciz	"__ARRAY_SIZE_TYPE__"           @ string offset=283
 .Linfo_string12:
-	.asciz	"CWSP"                          @ string offset=285
+	.asciz	"CWSP"                          @ string offset=303
 .Linfo_string13:
-	.asciz	"CWS"                           @ string offset=290
+	.asciz	"CWS"                           @ string offset=308
 .Linfo_string14:
-	.asciz	"PKTSL"                         @ string offset=294
+	.asciz	"PKTSL"                         @ string offset=312
 .Linfo_string15:
-	.asciz	"RESERVE1"                      @ string offset=300
+	.asciz	"RESERVE1"                      @ string offset=318
 .Linfo_string16:
-	.asciz	"FRCTL"                         @ string offset=309
+	.asciz	"FRCTL"                         @ string offset=327
 .Linfo_string17:
-	.asciz	"STRIDE"                        @ string offset=315
+	.asciz	"STRIDE"                        @ string offset=333
 .Linfo_string18:
-	.asciz	"RESERVE2"                      @ string offset=322
+	.asciz	"RESERVE2"                      @ string offset=340
 .Linfo_string19:
-	.asciz	"FIFOTH"                        @ string offset=331
+	.asciz	"FIFOTH"                        @ string offset=349
 .Linfo_string20:
-	.asciz	"CMPADDR"                       @ string offset=338
+	.asciz	"CMPADDR"                       @ string offset=356
 .Linfo_string21:
-	.asciz	"LUMA_Y1_THD"                   @ string offset=346
+	.asciz	"LUMA_Y1_THD"                   @ string offset=364
 .Linfo_string22:
-	.asciz	"PKTSM"                         @ string offset=358
+	.asciz	"PKTSM"                         @ string offset=376
 .Linfo_string23:
-	.asciz	"RESERVE3"                      @ string offset=364
+	.asciz	"RESERVE3"                      @ string offset=382
 .Linfo_string24:
-	.asciz	"CURADDRP"                      @ string offset=373
+	.asciz	"CURADDRP"                      @ string offset=391
 .Linfo_string25:
-	.asciz	"RESERVE4"                      @ string offset=382
+	.asciz	"RESERVE4"                      @ string offset=400
 .Linfo_string26:
-	.asciz	"PKTBA0"                        @ string offset=391
+	.asciz	"PKTBA0"                        @ string offset=409
 .Linfo_string27:
-	.asciz	"RESERVE5"                      @ string offset=398
+	.asciz	"RESERVE5"                      @ string offset=416
 .Linfo_string28:
-	.asciz	"MDCTL"                         @ string offset=407
+	.asciz	"MDCTL"                         @ string offset=425
 .Linfo_string29:
-	.asciz	"MDTRG_WK"                      @ string offset=413
+	.asciz	"MDTRG_WK"                      @ string offset=431
 .Linfo_string30:
-	.asciz	"RESERVE6"                      @ string offset=422
+	.asciz	"RESERVE6"                      @ string offset=440
 .Linfo_string31:
-	.asciz	"MDTTH"                         @ string offset=431
+	.asciz	"MDTTH"                         @ string offset=449
 .Linfo_string32:
-	.asciz	"MDTSAD"                        @ string offset=437
+	.asciz	"MDTSAD"                        @ string offset=455
 .Linfo_string33:
-	.asciz	"RESERVE7"                      @ string offset=444
+	.asciz	"RESERVE7"                      @ string offset=462
 .Linfo_string34:
-	.asciz	"MDWOCTH"                       @ string offset=453
+	.asciz	"MDWOCTH"                       @ string offset=471
 .Linfo_string35:
-	.asciz	"MDWOC"                         @ string offset=461
+	.asciz	"MDWOC"                         @ string offset=479
 .Linfo_string36:
-	.asciz	"RESERVE8"                      @ string offset=467
+	.asciz	"RESERVE8"                      @ string offset=485
 .Linfo_string37:
-	.asciz	"MDWTH"                         @ string offset=476
+	.asciz	"MDWTH"                         @ string offset=494
 .Linfo_string38:
-	.asciz	"MDWSAD"                        @ string offset=482
+	.asciz	"MDWSAD"                        @ string offset=500
 .Linfo_string39:
-	.asciz	"CCAP_T"                        @ string offset=489
+	.asciz	"CCAP_T"                        @ string offset=507
 .Linfo_string40:
-	.asciz	"CCAP_Open"                     @ string offset=496
+	.asciz	"CCAP_Open"                     @ string offset=514
 .Linfo_string41:
-	.asciz	"CCAP_SetCroppingWindow"        @ string offset=506
+	.asciz	"CCAP_SetCroppingWindow"        @ string offset=524
 .Linfo_string42:
-	.asciz	"CCAP_Stop"                     @ string offset=529
+	.asciz	"CCAP_Stop"                     @ string offset=547
 .Linfo_string43:
-	.asciz	"int"                           @ string offset=539
+	.asciz	"int"                           @ string offset=557
 .Linfo_string44:
-	.asciz	"int32_t"                       @ string offset=543
+	.asciz	"int32_t"                       @ string offset=561
 .Linfo_string45:
-	.asciz	"CCAP_SetPacketScaling"         @ string offset=551
+	.asciz	"CCAP_SetPacketScaling"         @ string offset=569
 .Linfo_string46:
-	.asciz	"CCAP_SetPacketStride"          @ string offset=573
+	.asciz	"CCAP_SetPacketStride"          @ string offset=591
 .Linfo_string47:
-	.asciz	"CCAP_MD_SetRegionSensitivity"  @ string offset=594
+	.asciz	"CCAP_MD_SetRegionSensitivity"  @ string offset=612
 .Linfo_string48:
-	.asciz	"CCAP_MD_SetGlobalSensitivity"  @ string offset=623
+	.asciz	"CCAP_MD_SetGlobalSensitivity"  @ string offset=641
 .Linfo_string49:
-	.asciz	"u32SensorProp"                 @ string offset=652
+	.asciz	"u32SensorProp"                 @ string offset=670
 .Linfo_string50:
-	.asciz	"u32InFormat"                   @ string offset=666
+	.asciz	"u32InFormat"                   @ string offset=684
 .Linfo_string51:
-	.asciz	"u32OutFormat"                  @ string offset=678
+	.asciz	"u32OutFormat"                  @ string offset=696
 .Linfo_string52:
-	.asciz	"u32VStart"                     @ string offset=691
+	.asciz	"u32VStart"                     @ string offset=709
 .Linfo_string53:
-	.asciz	"u32HStart"                     @ string offset=701
+	.asciz	"u32HStart"                     @ string offset=719
 .Linfo_string54:
-	.asciz	"u32Height"                     @ string offset=711
+	.asciz	"u32Height"                     @ string offset=729
 .Linfo_string55:
-	.asciz	"u32Width"                      @ string offset=721
+	.asciz	"u32Width"                      @ string offset=739
 .Linfo_string56:
-	.asciz	"u32FrameComplete"              @ string offset=730
+	.asciz	"u32FrameComplete"              @ string offset=748
 .Linfo_string57:
-	.asciz	"u32TimeOutCnt"                 @ string offset=747
+	.asciz	"u32TimeOutCnt"                 @ string offset=765
 .Linfo_string58:
-	.asciz	"u32VNumerator"                 @ string offset=761
+	.asciz	"u32VNumerator"                 @ string offset=779
 .Linfo_string59:
-	.asciz	"u32VDenominator"               @ string offset=775
+	.asciz	"u32VDenominator"               @ string offset=793
 .Linfo_string60:
-	.asciz	"u32HNumerator"                 @ string offset=791
+	.asciz	"u32HNumerator"                 @ string offset=809
 .Linfo_string61:
-	.asciz	"u32HDenominator"               @ string offset=805
+	.asciz	"u32HDenominator"               @ string offset=823
 .Linfo_string62:
-	.asciz	"u32DenominatorH"               @ string offset=821
+	.asciz	"u32DenominatorH"               @ string offset=839
 .Linfo_string63:
-	.asciz	"u32DenominatorL"               @ string offset=837
+	.asciz	"u32DenominatorL"               @ string offset=855
 .Linfo_string64:
-	.asciz	"u32NumeratorH"                 @ string offset=853
+	.asciz	"u32NumeratorH"                 @ string offset=871
 .Linfo_string65:
-	.asciz	"u32NumeratorL"                 @ string offset=867
+	.asciz	"u32NumeratorL"                 @ string offset=885
 .Linfo_string66:
-	.asciz	"u32Stride"                     @ string offset=881
+	.asciz	"u32Stride"                     @ string offset=899
 .Linfo_string67:
-	.asciz	"u32Y"                          @ string offset=891
+	.asciz	"u32Y"                          @ string offset=909
 .Linfo_string68:
-	.asciz	"u32X"                          @ string offset=896
+	.asciz	"u32X"                          @ string offset=914
 .Linfo_string69:
-	.asciz	"u32Sensitivity"                @ string offset=901
+	.asciz	"u32Sensitivity"                @ string offset=919
 .Linfo_string70:
-	.asciz	"x"                             @ string offset=916
+	.asciz	"x"                             @ string offset=934
 .Linfo_string71:
-	.asciz	"u32Threshold"                  @ string offset=918
+	.asciz	"u32Threshold"                  @ string offset=936
 .Linfo_string72:
-	.asciz	"u32WinEndY"                    @ string offset=931
+	.asciz	"y"                             @ string offset=949
 .Linfo_string73:
-	.asciz	"u32WinStartY"                  @ string offset=942
+	.asciz	"u32WinEndY"                    @ string offset=951
 .Linfo_string74:
-	.asciz	"u32WinIdx"                     @ string offset=955
+	.asciz	"u32WinStartY"                  @ string offset=962
 .Linfo_string75:
-	.asciz	"y"                             @ string offset=965
+	.asciz	"u32WinIdx"                     @ string offset=975
 .Linfo_string76:
-	.asciz	"u32WinStartX"                  @ string offset=967
+	.asciz	"u32WinStartX"                  @ string offset=985
 .Linfo_string77:
-	.asciz	"u32WinEndX"                    @ string offset=980
-	.ident	"Component: Arm Compiler for Embedded 6.19 Tool: armclang [5e73cb00]"
+	.asciz	"u32WinEndX"                    @ string offset=998
+	.ident	"Component: Arm Compiler for Embedded 6.22 Tool: armclang [5ee92100]"
 	.section	".note.GNU-stack","",%progbits
 	.eabi_attribute	30, 1	@ Tag_ABI_optimization_goals
 	.ARM_attribute	16, 1	@ Tag_AV_eba

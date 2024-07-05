@@ -7,6 +7,7 @@
 	.eabi_attribute	8, 0	@ Tag_ARM_ISA_use
 	.eabi_attribute	9, 3	@ Tag_THUMB_ISA_use
 	.fpu	fpv5-d16
+	.arch_extension	mve.fp
 	.eabi_attribute	36, 1	@ Tag_FP_HP_extension
 	.eabi_attribute	48, 2	@ Tag_MVE_arch
 	.eabi_attribute	46, 1	@ Tag_DSP_extension
@@ -23,11 +24,11 @@
 	.eabi_attribute	26, 1	@ Tag_ABI_enum_size
 	.eabi_attribute	14, 0	@ Tag_ABI_PCS_R9_use
 	.file	"ethosu_profiler.c"
-	.file	1 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../NPU/ethosu_profiler.c"
-	.file	2 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include" "stdint.h"
-	.file	3 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../NPU/include\\ethosu_profiler.h"
-	.file	4 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/StdDriver/inc/npu\\pmu_ethosu.h"
-	.file	5 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/StdDriver/inc/npu/ethosu_driver.h"
+	.file	1 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../NPU/ethosu_profiler.c"
+	.file	2 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include" "stdint.h"
+	.file	3 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../NPU/include\\ethosu_profiler.h"
+	.file	4 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/StdDriver/inc/npu\\pmu_ethosu.h"
+	.file	5 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/StdDriver/inc/npu\\ethosu_driver.h"
 	.section	.text.ethosu_pmu_init,"ax",%progbits
 	.hidden	ethosu_pmu_init                 @ -- Begin function ethosu_pmu_init
 	.globl	ethosu_pmu_init
@@ -61,70 +62,65 @@ ethosu_pmu_init:
 	mov	r0, r4
 	bl	__aeabi_memclr8
 .Ltmp2:
-	.loc	1 0 5 is_stmt 0                 @ ../NPU/ethosu_profiler.c:0:5
-	movs	r0, #6
-	movs	r1, #1
-	.loc	1 56 34 is_stmt 1               @ ../NPU/ethosu_profiler.c:56:34
-	str	r0, [r4, #100]
-	movs	r0, #2
-	.loc	1 59 46                         @ ../NPU/ethosu_profiler.c:59:46
-	strb	r0, [r4, #8]
-	.loc	1 67 40                         @ ../NPU/ethosu_profiler.c:67:40
-	movw	r2, :lower16:.L.str.3
-	.loc	1 65 46                         @ ../NPU/ethosu_profiler.c:65:46
-	str	r0, [r4, #32]
-	movs	r0, #45
-	.loc	1 69 46                         @ ../NPU/ethosu_profiler.c:69:46
-	strb.w	r0, [r4, #48]
-	movs	r0, #4
-	.loc	1 60 46                         @ ../NPU/ethosu_profiler.c:60:46
-	str	r1, [r4, #12]
-	.loc	1 88 5                          @ ../NPU/ethosu_profiler.c:88:5
-	movw	r5, :lower16:ethosu_drv
-	.loc	1 66 40                         @ ../NPU/ethosu_profiler.c:66:40
-	adr	r1, .LCPI0_1
-	.loc	1 67 40                         @ ../NPU/ethosu_profiler.c:67:40
-	movt	r2, :upper16:.L.str.3
-	.loc	1 70 46                         @ ../NPU/ethosu_profiler.c:70:46
-	str	r0, [r4, #52]
-	.loc	1 71 40                         @ ../NPU/ethosu_profiler.c:71:40
-	adr	r0, .LCPI0_2
-	.loc	1 67 40                         @ ../NPU/ethosu_profiler.c:67:40
-	strd	r2, r1, [r4, #40]
+	.loc	1 62 40                         @ ../NPU/ethosu_profiler.c:62:40
+	movw	r0, :lower16:.L.str.1
 	.loc	1 61 40                         @ ../NPU/ethosu_profiler.c:61:40
 	adr	r1, .LCPI0_0
+	.loc	1 62 40                         @ ../NPU/ethosu_profiler.c:62:40
+	movt	r0, :upper16:.L.str.1
+	.loc	1 67 40                         @ ../NPU/ethosu_profiler.c:67:40
+	movw	r2, :lower16:.L.str.3
+	.loc	1 62 40                         @ ../NPU/ethosu_profiler.c:62:40
+	strd	r0, r1, [r4, #20]
+	.loc	1 66 40                         @ ../NPU/ethosu_profiler.c:66:40
+	adr	r1, .LCPI0_1
+	.loc	1 88 5                          @ ../NPU/ethosu_profiler.c:88:5
+	movw	r5, :lower16:ethosu_drv
+	.loc	1 67 40                         @ ../NPU/ethosu_profiler.c:67:40
+	movt	r2, :upper16:.L.str.3
+	strd	r2, r1, [r4, #40]
+	.loc	1 71 40                         @ ../NPU/ethosu_profiler.c:71:40
+	adr	r1, .LCPI0_2
 	.loc	1 72 40                         @ ../NPU/ethosu_profiler.c:72:40
-	strd	r2, r0, [r4, #60]
-	movs	r0, #62
-	.loc	1 61 40                         @ ../NPU/ethosu_profiler.c:61:40
-	str	r1, [r4, #24]
-	movs	r1, #40
-	.loc	1 74 46                         @ ../NPU/ethosu_profiler.c:74:46
-	strb.w	r0, [r4, #68]
-	movs	r0, #8
-	.loc	1 64 46                         @ ../NPU/ethosu_profiler.c:64:46
-	strb	r1, [r4, #28]
-	.loc	1 62 40                         @ ../NPU/ethosu_profiler.c:62:40
-	movw	r1, :lower16:.L.str.1
-	.loc	1 75 46                         @ ../NPU/ethosu_profiler.c:75:46
-	str	r0, [r4, #72]
-	.loc	1 76 40                         @ ../NPU/ethosu_profiler.c:76:40
-	adr	r0, .LCPI0_3
-	.loc	1 62 40                         @ ../NPU/ethosu_profiler.c:62:40
-	movt	r1, :upper16:.L.str.1
-	.loc	1 77 40                         @ ../NPU/ethosu_profiler.c:77:40
-	strd	r2, r0, [r4, #80]
-	.loc	1 83 44                         @ ../NPU/ethosu_profiler.c:83:44
-	adr	r0, .LCPI0_4
+	strd	r2, r1, [r4, #60]
+	movs	r1, #6
 	.loc	1 88 5                          @ ../NPU/ethosu_profiler.c:88:5
 	movt	r5, :upper16:ethosu_drv
+	.loc	1 56 34                         @ ../NPU/ethosu_profiler.c:56:34
+	str	r1, [r4, #100]
+	movs	r1, #1
+	.loc	1 60 46                         @ ../NPU/ethosu_profiler.c:60:46
+	str	r1, [r4, #12]
+	movs	r1, #40
+	.loc	1 64 46                         @ ../NPU/ethosu_profiler.c:64:46
+	strb	r1, [r4, #28]
+	movs	r1, #2
+	.loc	1 59 46                         @ ../NPU/ethosu_profiler.c:59:46
+	strb	r1, [r4, #8]
+	.loc	1 65 46                         @ ../NPU/ethosu_profiler.c:65:46
+	str	r1, [r4, #32]
+	movs	r1, #45
+	.loc	1 69 46                         @ ../NPU/ethosu_profiler.c:69:46
+	strb.w	r1, [r4, #48]
+	movs	r1, #4
+	.loc	1 70 46                         @ ../NPU/ethosu_profiler.c:70:46
+	str	r1, [r4, #52]
+	movs	r1, #62
+	.loc	1 74 46                         @ ../NPU/ethosu_profiler.c:74:46
+	strb.w	r1, [r4, #68]
+	movs	r1, #8
+	.loc	1 75 46                         @ ../NPU/ethosu_profiler.c:75:46
+	str	r1, [r4, #72]
+	.loc	1 76 40                         @ ../NPU/ethosu_profiler.c:76:40
+	adr	r1, .LCPI0_3
+	.loc	1 77 40                         @ ../NPU/ethosu_profiler.c:77:40
+	strd	r2, r1, [r4, #80]
+	.loc	1 83 44                         @ ../NPU/ethosu_profiler.c:83:44
+	adr	r1, .LCPI0_4
 	.loc	1 84 44                         @ ../NPU/ethosu_profiler.c:84:44
-	strd	r1, r0, [r4, #92]
+	strd	r0, r1, [r4, #92]
 	.loc	1 88 5                          @ ../NPU/ethosu_profiler.c:88:5
 	mov	r0, r5
-	.loc	1 62 40                         @ ../NPU/ethosu_profiler.c:62:40
-	str	r1, [r4, #20]
-	.loc	1 88 5                          @ ../NPU/ethosu_profiler.c:88:5
 	bl	ETHOSU_PMU_Enable
 .Ltmp3:
 	.loc	1 92 78                         @ ../NPU/ethosu_profiler.c:92:78
@@ -204,13 +200,14 @@ ethosu_pmu_init:
 	.loc	1 102 5                         @ ../NPU/ethosu_profiler.c:102:5
 	mov	r0, r5
 	mov	r1, r4
+	.loc	1 102 5 epilogue_begin is_stmt 0 @ ../NPU/ethosu_profiler.c:102:5
 	pop.w	{r4, r5, r6, lr}
 .Ltmp16:
 	b	ETHOSU_PMU_CNTR_Enable
 .Ltmp17:
 	.p2align	2
 @ %bb.1:
-	.loc	1 0 5 is_stmt 0                 @ ../NPU/ethosu_profiler.c:0:5
+	.loc	1 0 5                           @ ../NPU/ethosu_profiler.c:0:5
 .LCPI0_0:
 .L.str:
 	.asciz	"NPU IDLE\000\000\000"
@@ -229,7 +226,7 @@ ethosu_pmu_init:
 .Lfunc_end0:
 	.size	ethosu_pmu_init, .Lfunc_end0-ethosu_pmu_init
 	.cfi_endproc
-	.file	6 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include" "stddef.h"
+	.file	6 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include" "stddef.h"
 	.cantunwind
 	.fnend
                                         @ -- End function
@@ -260,6 +257,7 @@ ethosu_pmu_reset_counters:
 .Ltmp19:
 	.loc	1 112 5                         @ ../NPU/ethosu_profiler.c:112:5
 	mov	r0, r4
+	.loc	1 112 5 epilogue_begin is_stmt 0 @ ../NPU/ethosu_profiler.c:112:5
 	pop.w	{r4, lr}
 .Ltmp20:
 	b	ETHOSU_PMU_EVCNTR_ALL_Reset
@@ -279,7 +277,7 @@ ethosu_pmu_reset_counters:
 	.thumb_func
 ethosu_get_pmu_counters:
 .Lfunc_begin2:
-	.loc	1 120 0                         @ ../NPU/ethosu_profiler.c:120:0
+	.loc	1 120 0 is_stmt 1               @ ../NPU/ethosu_profiler.c:120:0
 	.fnstart
 	.cfi_startproc
 @ %bb.0:
@@ -493,7 +491,7 @@ ethosu_get_pmu_counters:
 	movs	r2, #104
 	bl	__aeabi_memcpy8
 .Ltmp58:
-	.loc	1 151 1                         @ ../NPU/ethosu_profiler.c:151:1
+	.loc	1 151 1 epilogue_begin          @ ../NPU/ethosu_profiler.c:151:1
 	add	sp, #4
 	pop	{r4, r5, r6, r7, pc}
 .Ltmp59:
@@ -1073,7 +1071,7 @@ npu_counters:
 	.byte	4                               @ Address Size (in bytes)
 	.byte	1                               @ Abbrev [1] 0xb:0x63b DW_TAG_compile_unit
 	.long	.Linfo_string0                  @ DW_AT_producer
-	.short	12                              @ DW_AT_language
+	.short	29                              @ DW_AT_language
 	.long	.Linfo_string1                  @ DW_AT_name
 	.long	.Lline_table_start0             @ DW_AT_stmt_list
 	.long	.Linfo_string2                  @ DW_AT_comp_dir
@@ -1903,284 +1901,284 @@ npu_counters:
 	.long	0
 	.section	.debug_str,"MS",%progbits,1
 .Linfo_string0:
-	.asciz	"Component: Arm Compiler for Embedded 6.19 Tool: armclang [5e73cb00]" @ string offset=0
+	.asciz	"Component: Arm Compiler for Embedded 6.22 Tool: armclang [5ee92100]" @ string offset=0
 .Linfo_string1:
 	.asciz	"../NPU\\ethosu_profiler.c"     @ string offset=68
 .Linfo_string2:
-	.asciz	"C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" @ string offset=93
+	.asciz	"D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" @ string offset=93
 .Linfo_string3:
-	.asciz	"char"                          @ string offset=192
+	.asciz	"char"                          @ string offset=210
 .Linfo_string4:
-	.asciz	"__ARRAY_SIZE_TYPE__"           @ string offset=197
+	.asciz	"__ARRAY_SIZE_TYPE__"           @ string offset=215
 .Linfo_string5:
-	.asciz	"npu_counters"                  @ string offset=217
+	.asciz	"npu_counters"                  @ string offset=235
 .Linfo_string6:
-	.asciz	"npu_total_ccnt"                @ string offset=230
+	.asciz	"npu_total_ccnt"                @ string offset=248
 .Linfo_string7:
-	.asciz	"unsigned long long"            @ string offset=245
+	.asciz	"unsigned long long"            @ string offset=263
 .Linfo_string8:
-	.asciz	"uint64_t"                      @ string offset=264
+	.asciz	"uint64_t"                      @ string offset=282
 .Linfo_string9:
-	.asciz	"npu_evt_counters"              @ string offset=273
+	.asciz	"npu_evt_counters"              @ string offset=291
 .Linfo_string10:
-	.asciz	"event_type"                    @ string offset=290
+	.asciz	"event_type"                    @ string offset=308
 .Linfo_string11:
-	.asciz	"unsigned char"                 @ string offset=301
+	.asciz	"unsigned char"                 @ string offset=319
 .Linfo_string12:
-	.asciz	"ETHOSU_PMU_NO_EVENT"           @ string offset=315
+	.asciz	"ETHOSU_PMU_NO_EVENT"           @ string offset=333
 .Linfo_string13:
-	.asciz	"ETHOSU_PMU_CYCLE"              @ string offset=335
+	.asciz	"ETHOSU_PMU_CYCLE"              @ string offset=353
 .Linfo_string14:
-	.asciz	"ETHOSU_PMU_NPU_IDLE"           @ string offset=352
+	.asciz	"ETHOSU_PMU_NPU_IDLE"           @ string offset=370
 .Linfo_string15:
-	.asciz	"ETHOSU_PMU_CC_STALLED_ON_BLOCKDEP" @ string offset=372
+	.asciz	"ETHOSU_PMU_CC_STALLED_ON_BLOCKDEP" @ string offset=390
 .Linfo_string16:
-	.asciz	"ETHOSU_PMU_CC_STALLED_ON_SHRAM_RECONFIG" @ string offset=406
+	.asciz	"ETHOSU_PMU_CC_STALLED_ON_SHRAM_RECONFIG" @ string offset=424
 .Linfo_string17:
-	.asciz	"ETHOSU_PMU_NPU_ACTIVE"         @ string offset=446
+	.asciz	"ETHOSU_PMU_NPU_ACTIVE"         @ string offset=464
 .Linfo_string18:
-	.asciz	"ETHOSU_PMU_MAC_ACTIVE"         @ string offset=468
+	.asciz	"ETHOSU_PMU_MAC_ACTIVE"         @ string offset=486
 .Linfo_string19:
-	.asciz	"ETHOSU_PMU_MAC_ACTIVE_8BIT"    @ string offset=490
+	.asciz	"ETHOSU_PMU_MAC_ACTIVE_8BIT"    @ string offset=508
 .Linfo_string20:
-	.asciz	"ETHOSU_PMU_MAC_ACTIVE_16BIT"   @ string offset=517
+	.asciz	"ETHOSU_PMU_MAC_ACTIVE_16BIT"   @ string offset=535
 .Linfo_string21:
-	.asciz	"ETHOSU_PMU_MAC_DPU_ACTIVE"     @ string offset=545
+	.asciz	"ETHOSU_PMU_MAC_DPU_ACTIVE"     @ string offset=563
 .Linfo_string22:
-	.asciz	"ETHOSU_PMU_MAC_STALLED_BY_WD_ACC" @ string offset=571
+	.asciz	"ETHOSU_PMU_MAC_STALLED_BY_WD_ACC" @ string offset=589
 .Linfo_string23:
-	.asciz	"ETHOSU_PMU_MAC_STALLED_BY_WD"  @ string offset=604
+	.asciz	"ETHOSU_PMU_MAC_STALLED_BY_WD"  @ string offset=622
 .Linfo_string24:
-	.asciz	"ETHOSU_PMU_MAC_STALLED_BY_ACC" @ string offset=633
+	.asciz	"ETHOSU_PMU_MAC_STALLED_BY_ACC" @ string offset=651
 .Linfo_string25:
-	.asciz	"ETHOSU_PMU_MAC_STALLED_BY_IB"  @ string offset=663
+	.asciz	"ETHOSU_PMU_MAC_STALLED_BY_IB"  @ string offset=681
 .Linfo_string26:
-	.asciz	"ETHOSU_PMU_MAC_ACTIVE_32BIT"   @ string offset=692
+	.asciz	"ETHOSU_PMU_MAC_ACTIVE_32BIT"   @ string offset=710
 .Linfo_string27:
-	.asciz	"ETHOSU_PMU_MAC_STALLED_BY_INT_W" @ string offset=720
+	.asciz	"ETHOSU_PMU_MAC_STALLED_BY_INT_W" @ string offset=738
 .Linfo_string28:
-	.asciz	"ETHOSU_PMU_MAC_STALLED_BY_INT_ACC" @ string offset=752
+	.asciz	"ETHOSU_PMU_MAC_STALLED_BY_INT_ACC" @ string offset=770
 .Linfo_string29:
-	.asciz	"ETHOSU_PMU_AO_ACTIVE"          @ string offset=786
+	.asciz	"ETHOSU_PMU_AO_ACTIVE"          @ string offset=804
 .Linfo_string30:
-	.asciz	"ETHOSU_PMU_AO_ACTIVE_8BIT"     @ string offset=807
+	.asciz	"ETHOSU_PMU_AO_ACTIVE_8BIT"     @ string offset=825
 .Linfo_string31:
-	.asciz	"ETHOSU_PMU_AO_ACTIVE_16BIT"    @ string offset=833
+	.asciz	"ETHOSU_PMU_AO_ACTIVE_16BIT"    @ string offset=851
 .Linfo_string32:
-	.asciz	"ETHOSU_PMU_AO_STALLED_BY_OFMP_OB" @ string offset=860
+	.asciz	"ETHOSU_PMU_AO_STALLED_BY_OFMP_OB" @ string offset=878
 .Linfo_string33:
-	.asciz	"ETHOSU_PMU_AO_STALLED_BY_OFMP" @ string offset=893
+	.asciz	"ETHOSU_PMU_AO_STALLED_BY_OFMP" @ string offset=911
 .Linfo_string34:
-	.asciz	"ETHOSU_PMU_AO_STALLED_BY_OB"   @ string offset=923
+	.asciz	"ETHOSU_PMU_AO_STALLED_BY_OB"   @ string offset=941
 .Linfo_string35:
-	.asciz	"ETHOSU_PMU_AO_STALLED_BY_ACC_IB" @ string offset=951
+	.asciz	"ETHOSU_PMU_AO_STALLED_BY_ACC_IB" @ string offset=969
 .Linfo_string36:
-	.asciz	"ETHOSU_PMU_AO_STALLED_BY_ACC"  @ string offset=983
+	.asciz	"ETHOSU_PMU_AO_STALLED_BY_ACC"  @ string offset=1001
 .Linfo_string37:
-	.asciz	"ETHOSU_PMU_AO_STALLED_BY_IB"   @ string offset=1012
+	.asciz	"ETHOSU_PMU_AO_STALLED_BY_IB"   @ string offset=1030
 .Linfo_string38:
-	.asciz	"ETHOSU_PMU_WD_ACTIVE"          @ string offset=1040
+	.asciz	"ETHOSU_PMU_WD_ACTIVE"          @ string offset=1058
 .Linfo_string39:
-	.asciz	"ETHOSU_PMU_WD_STALLED"         @ string offset=1061
+	.asciz	"ETHOSU_PMU_WD_STALLED"         @ string offset=1079
 .Linfo_string40:
-	.asciz	"ETHOSU_PMU_WD_STALLED_BY_WS"   @ string offset=1083
+	.asciz	"ETHOSU_PMU_WD_STALLED_BY_WS"   @ string offset=1101
 .Linfo_string41:
-	.asciz	"ETHOSU_PMU_WD_STALLED_BY_WD_BUF" @ string offset=1111
+	.asciz	"ETHOSU_PMU_WD_STALLED_BY_WD_BUF" @ string offset=1129
 .Linfo_string42:
-	.asciz	"ETHOSU_PMU_WD_PARSE_ACTIVE"    @ string offset=1143
+	.asciz	"ETHOSU_PMU_WD_PARSE_ACTIVE"    @ string offset=1161
 .Linfo_string43:
-	.asciz	"ETHOSU_PMU_WD_PARSE_STALLED"   @ string offset=1170
+	.asciz	"ETHOSU_PMU_WD_PARSE_STALLED"   @ string offset=1188
 .Linfo_string44:
-	.asciz	"ETHOSU_PMU_WD_PARSE_STALLED_IN" @ string offset=1198
+	.asciz	"ETHOSU_PMU_WD_PARSE_STALLED_IN" @ string offset=1216
 .Linfo_string45:
-	.asciz	"ETHOSU_PMU_WD_PARSE_STALLED_OUT" @ string offset=1229
+	.asciz	"ETHOSU_PMU_WD_PARSE_STALLED_OUT" @ string offset=1247
 .Linfo_string46:
-	.asciz	"ETHOSU_PMU_WD_TRANS_WS"        @ string offset=1261
+	.asciz	"ETHOSU_PMU_WD_TRANS_WS"        @ string offset=1279
 .Linfo_string47:
-	.asciz	"ETHOSU_PMU_WD_TRANS_WB"        @ string offset=1284
+	.asciz	"ETHOSU_PMU_WD_TRANS_WB"        @ string offset=1302
 .Linfo_string48:
-	.asciz	"ETHOSU_PMU_WD_TRANS_DW0"       @ string offset=1307
+	.asciz	"ETHOSU_PMU_WD_TRANS_DW0"       @ string offset=1325
 .Linfo_string49:
-	.asciz	"ETHOSU_PMU_WD_TRANS_DW1"       @ string offset=1331
+	.asciz	"ETHOSU_PMU_WD_TRANS_DW1"       @ string offset=1349
 .Linfo_string50:
-	.asciz	"ETHOSU_PMU_AXI0_RD_TRANS_ACCEPTED" @ string offset=1355
+	.asciz	"ETHOSU_PMU_AXI0_RD_TRANS_ACCEPTED" @ string offset=1373
 .Linfo_string51:
-	.asciz	"ETHOSU_PMU_AXI0_RD_TRANS_COMPLETED" @ string offset=1389
+	.asciz	"ETHOSU_PMU_AXI0_RD_TRANS_COMPLETED" @ string offset=1407
 .Linfo_string52:
-	.asciz	"ETHOSU_PMU_AXI0_RD_DATA_BEAT_RECEIVED" @ string offset=1424
+	.asciz	"ETHOSU_PMU_AXI0_RD_DATA_BEAT_RECEIVED" @ string offset=1442
 .Linfo_string53:
-	.asciz	"ETHOSU_PMU_AXI0_RD_TRAN_REQ_STALLED" @ string offset=1462
+	.asciz	"ETHOSU_PMU_AXI0_RD_TRAN_REQ_STALLED" @ string offset=1480
 .Linfo_string54:
-	.asciz	"ETHOSU_PMU_AXI0_WR_TRANS_ACCEPTED" @ string offset=1498
+	.asciz	"ETHOSU_PMU_AXI0_WR_TRANS_ACCEPTED" @ string offset=1516
 .Linfo_string55:
-	.asciz	"ETHOSU_PMU_AXI0_WR_TRANS_COMPLETED_M" @ string offset=1532
+	.asciz	"ETHOSU_PMU_AXI0_WR_TRANS_COMPLETED_M" @ string offset=1550
 .Linfo_string56:
-	.asciz	"ETHOSU_PMU_AXI0_WR_TRANS_COMPLETED_S" @ string offset=1569
+	.asciz	"ETHOSU_PMU_AXI0_WR_TRANS_COMPLETED_S" @ string offset=1587
 .Linfo_string57:
-	.asciz	"ETHOSU_PMU_AXI0_WR_DATA_BEAT_WRITTEN" @ string offset=1606
+	.asciz	"ETHOSU_PMU_AXI0_WR_DATA_BEAT_WRITTEN" @ string offset=1624
 .Linfo_string58:
-	.asciz	"ETHOSU_PMU_AXI0_WR_TRAN_REQ_STALLED" @ string offset=1643
+	.asciz	"ETHOSU_PMU_AXI0_WR_TRAN_REQ_STALLED" @ string offset=1661
 .Linfo_string59:
-	.asciz	"ETHOSU_PMU_AXI0_WR_DATA_BEAT_STALLED" @ string offset=1679
+	.asciz	"ETHOSU_PMU_AXI0_WR_DATA_BEAT_STALLED" @ string offset=1697
 .Linfo_string60:
-	.asciz	"ETHOSU_PMU_AXI0_ENABLED_CYCLES" @ string offset=1716
+	.asciz	"ETHOSU_PMU_AXI0_ENABLED_CYCLES" @ string offset=1734
 .Linfo_string61:
-	.asciz	"ETHOSU_PMU_AXI0_RD_STALL_LIMIT" @ string offset=1747
+	.asciz	"ETHOSU_PMU_AXI0_RD_STALL_LIMIT" @ string offset=1765
 .Linfo_string62:
-	.asciz	"ETHOSU_PMU_AXI0_WR_STALL_LIMIT" @ string offset=1778
+	.asciz	"ETHOSU_PMU_AXI0_WR_STALL_LIMIT" @ string offset=1796
 .Linfo_string63:
-	.asciz	"ETHOSU_PMU_AXI_LATENCY_ANY"    @ string offset=1809
+	.asciz	"ETHOSU_PMU_AXI_LATENCY_ANY"    @ string offset=1827
 .Linfo_string64:
-	.asciz	"ETHOSU_PMU_AXI_LATENCY_32"     @ string offset=1836
+	.asciz	"ETHOSU_PMU_AXI_LATENCY_32"     @ string offset=1854
 .Linfo_string65:
-	.asciz	"ETHOSU_PMU_AXI_LATENCY_64"     @ string offset=1862
+	.asciz	"ETHOSU_PMU_AXI_LATENCY_64"     @ string offset=1880
 .Linfo_string66:
-	.asciz	"ETHOSU_PMU_AXI_LATENCY_128"    @ string offset=1888
+	.asciz	"ETHOSU_PMU_AXI_LATENCY_128"    @ string offset=1906
 .Linfo_string67:
-	.asciz	"ETHOSU_PMU_AXI_LATENCY_256"    @ string offset=1915
+	.asciz	"ETHOSU_PMU_AXI_LATENCY_256"    @ string offset=1933
 .Linfo_string68:
-	.asciz	"ETHOSU_PMU_AXI_LATENCY_512"    @ string offset=1942
+	.asciz	"ETHOSU_PMU_AXI_LATENCY_512"    @ string offset=1960
 .Linfo_string69:
-	.asciz	"ETHOSU_PMU_AXI_LATENCY_1024"   @ string offset=1969
+	.asciz	"ETHOSU_PMU_AXI_LATENCY_1024"   @ string offset=1987
 .Linfo_string70:
-	.asciz	"ETHOSU_PMU_ECC_DMA"            @ string offset=1997
+	.asciz	"ETHOSU_PMU_ECC_DMA"            @ string offset=2015
 .Linfo_string71:
-	.asciz	"ETHOSU_PMU_ECC_SB0"            @ string offset=2016
+	.asciz	"ETHOSU_PMU_ECC_SB0"            @ string offset=2034
 .Linfo_string72:
-	.asciz	"ETHOSU_PMU_AXI1_RD_TRANS_ACCEPTED" @ string offset=2035
+	.asciz	"ETHOSU_PMU_AXI1_RD_TRANS_ACCEPTED" @ string offset=2053
 .Linfo_string73:
-	.asciz	"ETHOSU_PMU_AXI1_RD_TRANS_COMPLETED" @ string offset=2069
+	.asciz	"ETHOSU_PMU_AXI1_RD_TRANS_COMPLETED" @ string offset=2087
 .Linfo_string74:
-	.asciz	"ETHOSU_PMU_AXI1_RD_DATA_BEAT_RECEIVED" @ string offset=2104
+	.asciz	"ETHOSU_PMU_AXI1_RD_DATA_BEAT_RECEIVED" @ string offset=2122
 .Linfo_string75:
-	.asciz	"ETHOSU_PMU_AXI1_RD_TRAN_REQ_STALLED" @ string offset=2142
+	.asciz	"ETHOSU_PMU_AXI1_RD_TRAN_REQ_STALLED" @ string offset=2160
 .Linfo_string76:
-	.asciz	"ETHOSU_PMU_AXI1_WR_TRANS_ACCEPTED" @ string offset=2178
+	.asciz	"ETHOSU_PMU_AXI1_WR_TRANS_ACCEPTED" @ string offset=2196
 .Linfo_string77:
-	.asciz	"ETHOSU_PMU_AXI1_WR_TRANS_COMPLETED_M" @ string offset=2212
+	.asciz	"ETHOSU_PMU_AXI1_WR_TRANS_COMPLETED_M" @ string offset=2230
 .Linfo_string78:
-	.asciz	"ETHOSU_PMU_AXI1_WR_TRANS_COMPLETED_S" @ string offset=2249
+	.asciz	"ETHOSU_PMU_AXI1_WR_TRANS_COMPLETED_S" @ string offset=2267
 .Linfo_string79:
-	.asciz	"ETHOSU_PMU_AXI1_WR_DATA_BEAT_WRITTEN" @ string offset=2286
+	.asciz	"ETHOSU_PMU_AXI1_WR_DATA_BEAT_WRITTEN" @ string offset=2304
 .Linfo_string80:
-	.asciz	"ETHOSU_PMU_AXI1_WR_TRAN_REQ_STALLED" @ string offset=2323
+	.asciz	"ETHOSU_PMU_AXI1_WR_TRAN_REQ_STALLED" @ string offset=2341
 .Linfo_string81:
-	.asciz	"ETHOSU_PMU_AXI1_WR_DATA_BEAT_STALLED" @ string offset=2359
+	.asciz	"ETHOSU_PMU_AXI1_WR_DATA_BEAT_STALLED" @ string offset=2377
 .Linfo_string82:
-	.asciz	"ETHOSU_PMU_AXI1_ENABLED_CYCLES" @ string offset=2396
+	.asciz	"ETHOSU_PMU_AXI1_ENABLED_CYCLES" @ string offset=2414
 .Linfo_string83:
-	.asciz	"ETHOSU_PMU_AXI1_RD_STALL_LIMIT" @ string offset=2427
+	.asciz	"ETHOSU_PMU_AXI1_RD_STALL_LIMIT" @ string offset=2445
 .Linfo_string84:
-	.asciz	"ETHOSU_PMU_AXI1_WR_STALL_LIMIT" @ string offset=2458
+	.asciz	"ETHOSU_PMU_AXI1_WR_STALL_LIMIT" @ string offset=2476
 .Linfo_string85:
-	.asciz	"ETHOSU_PMU_ECC_SB1"            @ string offset=2489
+	.asciz	"ETHOSU_PMU_ECC_SB1"            @ string offset=2507
 .Linfo_string86:
-	.asciz	"ETHOSU_PMU_SENTINEL"           @ string offset=2508
+	.asciz	"ETHOSU_PMU_SENTINEL"           @ string offset=2526
 .Linfo_string87:
-	.asciz	"ethosu_pmu_event_type"         @ string offset=2528
+	.asciz	"ethosu_pmu_event_type"         @ string offset=2546
 .Linfo_string88:
-	.asciz	"event_mask"                    @ string offset=2550
+	.asciz	"event_mask"                    @ string offset=2568
 .Linfo_string89:
-	.asciz	"unsigned int"                  @ string offset=2561
+	.asciz	"unsigned int"                  @ string offset=2579
 .Linfo_string90:
-	.asciz	"uint32_t"                      @ string offset=2574
+	.asciz	"uint32_t"                      @ string offset=2592
 .Linfo_string91:
-	.asciz	"counter_value"                 @ string offset=2583
+	.asciz	"counter_value"                 @ string offset=2601
 .Linfo_string92:
-	.asciz	"unit"                          @ string offset=2597
+	.asciz	"unit"                          @ string offset=2615
 .Linfo_string93:
-	.asciz	"name"                          @ string offset=2602
+	.asciz	"name"                          @ string offset=2620
 .Linfo_string94:
-	.asciz	"npu_event_counter_"            @ string offset=2607
+	.asciz	"npu_event_counter_"            @ string offset=2625
 .Linfo_string95:
-	.asciz	"npu_evt_counter"               @ string offset=2626
+	.asciz	"npu_evt_counter"               @ string offset=2644
 .Linfo_string96:
-	.asciz	"npu_derived_counters"          @ string offset=2642
+	.asciz	"npu_derived_counters"          @ string offset=2660
 .Linfo_string97:
-	.asciz	"npu_derived_counter_"          @ string offset=2663
+	.asciz	"npu_derived_counter_"          @ string offset=2681
 .Linfo_string98:
-	.asciz	"npu_derived_counter"           @ string offset=2684
+	.asciz	"npu_derived_counter"           @ string offset=2702
 .Linfo_string99:
-	.asciz	"num_total_counters"            @ string offset=2704
+	.asciz	"num_total_counters"            @ string offset=2722
 .Linfo_string100:
-	.asciz	"ethosu_pmu_counters_"          @ string offset=2723
+	.asciz	"ethosu_pmu_counters_"          @ string offset=2741
 .Linfo_string101:
-	.asciz	"ethosu_pmu_counters"           @ string offset=2744
+	.asciz	"ethosu_pmu_counters"           @ string offset=2762
 .Linfo_string102:
-	.asciz	"ETHOSU_JOB_IDLE"               @ string offset=2764
+	.asciz	"ETHOSU_JOB_IDLE"               @ string offset=2782
 .Linfo_string103:
-	.asciz	"ETHOSU_JOB_RUNNING"            @ string offset=2780
+	.asciz	"ETHOSU_JOB_RUNNING"            @ string offset=2798
 .Linfo_string104:
-	.asciz	"ETHOSU_JOB_DONE"               @ string offset=2799
+	.asciz	"ETHOSU_JOB_DONE"               @ string offset=2817
 .Linfo_string105:
-	.asciz	"ethosu_job_state"              @ string offset=2815
+	.asciz	"ethosu_job_state"              @ string offset=2833
 .Linfo_string106:
-	.asciz	"ethosu_pmu_reset_counters"     @ string offset=2832
+	.asciz	"ethosu_pmu_reset_counters"     @ string offset=2850
 .Linfo_string107:
-	.asciz	"ETHOSU_PMU_CNTR_Enable"        @ string offset=2858
+	.asciz	"ETHOSU_PMU_CNTR_Enable"        @ string offset=2876
 .Linfo_string108:
-	.asciz	"dev"                           @ string offset=2881
+	.asciz	"dev"                           @ string offset=2899
 .Linfo_string109:
-	.asciz	"ethosu_device"                 @ string offset=2885
+	.asciz	"ethosu_device"                 @ string offset=2903
 .Linfo_string110:
-	.asciz	"next"                          @ string offset=2899
+	.asciz	"next"                          @ string offset=2917
 .Linfo_string111:
-	.asciz	"job"                           @ string offset=2904
+	.asciz	"job"                           @ string offset=2922
 .Linfo_string112:
-	.asciz	"state"                         @ string offset=2908
+	.asciz	"state"                         @ string offset=2926
 .Linfo_string113:
-	.asciz	"custom_data_ptr"               @ string offset=2914
+	.asciz	"custom_data_ptr"               @ string offset=2932
 .Linfo_string114:
-	.asciz	"custom_data_size"              @ string offset=2930
+	.asciz	"custom_data_size"              @ string offset=2948
 .Linfo_string115:
-	.asciz	"int"                           @ string offset=2947
+	.asciz	"int"                           @ string offset=2965
 .Linfo_string116:
-	.asciz	"base_addr"                     @ string offset=2951
+	.asciz	"base_addr"                     @ string offset=2969
 .Linfo_string117:
-	.asciz	"base_addr_size"                @ string offset=2961
+	.asciz	"base_addr_size"                @ string offset=2979
 .Linfo_string118:
-	.asciz	"size_t"                        @ string offset=2976
+	.asciz	"size_t"                        @ string offset=2994
 .Linfo_string119:
-	.asciz	"num_base_addr"                 @ string offset=2983
+	.asciz	"num_base_addr"                 @ string offset=3001
 .Linfo_string120:
-	.asciz	"user_arg"                      @ string offset=2997
+	.asciz	"user_arg"                      @ string offset=3015
 .Linfo_string121:
-	.asciz	"ethosu_job"                    @ string offset=3006
+	.asciz	"ethosu_job"                    @ string offset=3024
 .Linfo_string122:
-	.asciz	"semaphore"                     @ string offset=3017
+	.asciz	"semaphore"                     @ string offset=3035
 .Linfo_string123:
-	.asciz	"fast_memory"                   @ string offset=3027
+	.asciz	"fast_memory"                   @ string offset=3045
 .Linfo_string124:
-	.asciz	"fast_memory_size"              @ string offset=3039
+	.asciz	"fast_memory_size"              @ string offset=3057
 .Linfo_string125:
-	.asciz	"power_request_counter"         @ string offset=3056
+	.asciz	"power_request_counter"         @ string offset=3074
 .Linfo_string126:
-	.asciz	"status_error"                  @ string offset=3078
+	.asciz	"status_error"                  @ string offset=3096
 .Linfo_string127:
-	.asciz	"_Bool"                         @ string offset=3091
+	.asciz	"_Bool"                         @ string offset=3109
 .Linfo_string128:
-	.asciz	"reserved"                      @ string offset=3097
+	.asciz	"reserved"                      @ string offset=3115
 .Linfo_string129:
-	.asciz	"ethosu_driver"                 @ string offset=3106
+	.asciz	"ethosu_driver"                 @ string offset=3124
 .Linfo_string130:
-	.asciz	"ETHOSU_PMU_EVCNTR_ALL_Reset"   @ string offset=3120
+	.asciz	"ETHOSU_PMU_EVCNTR_ALL_Reset"   @ string offset=3138
 .Linfo_string131:
-	.asciz	"counter_overflow"              @ string offset=3148
+	.asciz	"counter_overflow"              @ string offset=3166
 .Linfo_string132:
-	.asciz	"pmu_counter_mask"              @ string offset=3165
+	.asciz	"pmu_counter_mask"              @ string offset=3183
 .Linfo_string133:
-	.asciz	"overflow_status"               @ string offset=3182
+	.asciz	"overflow_status"               @ string offset=3200
 .Linfo_string134:
-	.asciz	"ethosu_pmu_init"               @ string offset=3198
+	.asciz	"ethosu_pmu_init"               @ string offset=3216
 .Linfo_string135:
-	.asciz	"ethosu_get_pmu_counters"       @ string offset=3214
+	.asciz	"ethosu_get_pmu_counters"       @ string offset=3232
 .Linfo_string136:
-	.asciz	"i"                             @ string offset=3238
+	.asciz	"i"                             @ string offset=3256
 .Linfo_string137:
-	.asciz	"evt_mask"                      @ string offset=3240
+	.asciz	"evt_mask"                      @ string offset=3258
 .Linfo_string138:
-	.asciz	"counters"                      @ string offset=3249
-	.ident	"Component: Arm Compiler for Embedded 6.19 Tool: armclang [5e73cb00]"
+	.asciz	"counters"                      @ string offset=3267
+	.ident	"Component: Arm Compiler for Embedded 6.22 Tool: armclang [5ee92100]"
 	.section	".note.GNU-stack","",%progbits
 	.eabi_attribute	30, 1	@ Tag_ABI_optimization_goals
 	.ARM_attribute	16, 1	@ Tag_AV_eba

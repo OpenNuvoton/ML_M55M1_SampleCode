@@ -7,6 +7,7 @@
 	.eabi_attribute	8, 0	@ Tag_ARM_ISA_use
 	.eabi_attribute	9, 3	@ Tag_THUMB_ISA_use
 	.fpu	fpv5-d16
+	.arch_extension	mve.fp
 	.eabi_attribute	36, 1	@ Tag_FP_HP_extension
 	.eabi_attribute	48, 2	@ Tag_MVE_arch
 	.eabi_attribute	46, 1	@ Tag_DSP_extension
@@ -23,9 +24,9 @@
 	.eabi_attribute	26, 1	@ Tag_ABI_enum_size
 	.eabi_attribute	14, 0	@ Tag_ABI_PCS_R9_use
 	.file	"ethosu_cpu_cache.c"
-	.file	1 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include" "stdint.h"
-	.file	2 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/CMSIS/Core/Include\\core_cm55.h"
-	.file	3 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include/ccap_reg.h"
+	.file	1 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include" "stdint.h"
+	.file	2 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/CMSIS/Core/Include\\core_cm55.h"
+	.file	3 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include\\ccap_reg.h"
 	.section	.text.ethosu_flush_dcache,"ax",%progbits
 	.hidden	ethosu_flush_dcache             @ -- Begin function ethosu_flush_dcache
 	.globl	ethosu_flush_dcache
@@ -35,14 +36,13 @@
 	.thumb_func
 ethosu_flush_dcache:
 .Lfunc_begin0:
-	.file	4 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../NPU/ethosu_cpu_cache.c"
-	.loc	4 26 0                          @ ../NPU/ethosu_cpu_cache.c:26:0
 	.fnstart
 	.cfi_sections .debug_frame
 	.cfi_startproc
 @ %bb.0:
 	@DEBUG_VALUE: ethosu_flush_dcache:p <- $r0
 	@DEBUG_VALUE: ethosu_flush_dcache:bytes <- $r1
+	.file	4 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../NPU/ethosu_cpu_cache.c"
 	.loc	4 29 1 prologue_end             @ ../NPU/ethosu_cpu_cache.c:29:1
 	bx	lr
 .Ltmp0:
@@ -105,8 +105,8 @@ ethosu_invalidate_dcache:
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- $r0
 	@DEBUG_VALUE: SCB_InvalidateDCache_by_Addr:addr <- $r0
 	@DEBUG_VALUE: SCB_InvalidateDCache_by_Addr:dsize <- $r1
-	.file	5 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/CMSIS/Core/Include/cachel1_armv7.h"
-	.loc	5 331 10                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:331:10
+	.file	5 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/CMSIS/Core/Include\\cachel1_armv7.h"
+	.loc	5 331 10                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:331:10
 	and	r3, r0, #31
 	add	r3, r1
 	subs.w	r7, r3, #128
@@ -120,7 +120,7 @@ ethosu_invalidate_dcache:
 	@DEBUG_VALUE: SCB_InvalidateDCache_by_Addr:addr <- $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- $r1
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- $r0
-	.loc	5 0 10 is_stmt 0                @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:10
+	.loc	5 0 10 is_stmt 0                @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:10
 	mvns	r1, r7
 .Ltmp6:
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
@@ -130,7 +130,7 @@ ethosu_invalidate_dcache:
 .Ltmp7:
 	@DEBUG_VALUE: op_addr <- undef
 	@DEBUG_VALUE: op_size <- $r3
-	.loc	5 335 7 is_stmt 1               @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:335:7
+	.loc	5 335 7 is_stmt 1               @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:335:7
 	dsb	sy
 .Ltmp8:
 	.p2align	2
@@ -138,15 +138,15 @@ ethosu_invalidate_dcache:
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
 	@DEBUG_VALUE: op_size <- $r3
 	@DEBUG_VALUE: op_addr <- $r0
-	.loc	5 340 17                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:340:17
+	.loc	5 340 17                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:340:17
 	sub.w	r1, r3, #32
 .Ltmp9:
 	@DEBUG_VALUE: op_size <- $r1
-	.loc	5 338 22                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:338:22
+	.loc	5 338 22                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:338:22
 	str	r0, [r2, #-4]
 .Ltmp10:
 	@DEBUG_VALUE: op_addr <- [DW_OP_plus_uconst 32, DW_OP_stack_value] $r0
-	.loc	5 341 7                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:341:7
+	.loc	5 341 7                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:341:7
 	cmp	r1, #1
 	blt.w	.LBB1_33
 .Ltmp11:
@@ -154,436 +154,434 @@ ethosu_invalidate_dcache:
 	@DEBUG_VALUE: op_addr <- [DW_OP_plus_uconst 32, DW_OP_stack_value] $r0
 	@DEBUG_VALUE: op_size <- $r1
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
-	.loc	5 340 17                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:340:17
+	.loc	5 340 17                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:340:17
 	sub.w	r1, r3, #64
 .Ltmp12:
 	@DEBUG_VALUE: op_size <- [DW_OP_constu 32, DW_OP_minus, DW_OP_stack_value] $r3
-	.loc	5 339 17                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:339:17
+	.loc	5 339 17                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:339:17
 	adds	r0, #32
 .Ltmp13:
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
-	@DEBUG_VALUE: op_addr <- [DW_OP_plus_uconst 32, DW_OP_stack_value] undef
-	.loc	5 341 7                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:341:7
+	@DEBUG_VALUE: op_addr <- $r0
+	.loc	5 341 7                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:341:7
 	cmp	r1, #1
-	.loc	5 338 22                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:338:22
+	.loc	5 338 22                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:338:22
 	str	r0, [r2, #-4]
 .Ltmp14:
-	@DEBUG_VALUE: op_addr <- [DW_OP_plus_uconst 32, DW_OP_stack_value] $r0
-	.loc	5 341 7                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:341:7
+	@DEBUG_VALUE: op_addr <- [DW_OP_plus_uconst 64, DW_OP_stack_value] undef
+	.loc	5 341 7                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:341:7
 	blt.w	.LBB1_33
 .Ltmp15:
 @ %bb.6:                                @   in Loop: Header=BB1_4 Depth=1
 	@DEBUG_VALUE: op_size <- [DW_OP_constu 32, DW_OP_minus, DW_OP_stack_value] $r3
-	@DEBUG_VALUE: op_addr <- [DW_OP_plus_uconst 32, DW_OP_stack_value] $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
-	@DEBUG_VALUE: op_addr <- [DW_OP_plus_uconst 32, DW_OP_stack_value] $r0
-	.loc	5 340 17                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:340:17
+	@DEBUG_VALUE: op_addr <- [DW_OP_plus_uconst 64, DW_OP_stack_value] undef
+	.loc	5 340 17                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:340:17
 	sub.w	r1, r3, #96
 .Ltmp16:
 	@DEBUG_VALUE: op_size <- [DW_OP_constu 64, DW_OP_minus, DW_OP_stack_value] $r3
-	.loc	5 338 22                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:338:22
+	.loc	5 338 22                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:338:22
 	adds	r0, #32
-.Ltmp17:
-	.loc	5 341 7                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:341:7
+	.loc	5 341 7                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:341:7
 	cmp	r1, #1
-	.loc	5 338 22                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:338:22
+	.loc	5 338 22                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:338:22
 	str	r0, [r2, #-4]
-.Ltmp18:
-	@DEBUG_VALUE: op_addr <- [DW_OP_plus_uconst 64, DW_OP_plus_uconst 32, DW_OP_stack_value] undef
-	.loc	5 341 7                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:341:7
+.Ltmp17:
+	@DEBUG_VALUE: op_addr <- [DW_OP_plus_uconst 96, DW_OP_stack_value] undef
+	.loc	5 341 7                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:341:7
 	blt.w	.LBB1_33
-.Ltmp19:
+.Ltmp18:
 @ %bb.7:                                @   in Loop: Header=BB1_4 Depth=1
 	@DEBUG_VALUE: op_size <- [DW_OP_constu 64, DW_OP_minus, DW_OP_stack_value] $r3
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
-	@DEBUG_VALUE: op_addr <- [DW_OP_plus_uconst 64, DW_OP_plus_uconst 32, DW_OP_stack_value] undef
-	.loc	5 338 22                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:338:22
+	@DEBUG_VALUE: op_addr <- [DW_OP_plus_uconst 96, DW_OP_stack_value] undef
+	.loc	5 338 22                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:338:22
 	add.w	r1, r0, #32
-	.loc	5 340 17                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:340:17
+	.loc	5 340 17                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:340:17
 	subs	r3, #128
-.Ltmp20:
+.Ltmp19:
 	@DEBUG_VALUE: op_size <- [DW_OP_constu 96, DW_OP_minus, DW_OP_stack_value] $r3
-	.loc	5 341 7                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:341:7
+	.loc	5 341 7                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:341:7
 	adds	r0, #64
-	.loc	5 338 22                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:338:22
+	.loc	5 338 22                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:338:22
 	str	r1, [r2, #-4]
-.Ltmp21:
+.Ltmp20:
 	@DEBUG_VALUE: op_addr <- [DW_OP_plus_uconst 128, DW_OP_stack_value] undef
-	.loc	5 341 7                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:341:7
+	.loc	5 341 7                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:341:7
 	le	lr, .LBB1_4
 	b	.LBB1_33
-.Ltmp22:
+.Ltmp21:
 .LBB1_8:
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- $r1
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- $r0
-	.loc	5 0 7 is_stmt 0                 @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:7
+	.loc	5 0 7 is_stmt 0                 @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:7
 	movw	r0, #65060
-.Ltmp23:
+.Ltmp22:
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
 	movs	r1, #0
-.Ltmp24:
+.Ltmp23:
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
 	movt	r0, #65535
-.Ltmp25:
-	.loc	5 226 17 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:226:17
+.Ltmp24:
+	.loc	5 226 17 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:226:17
 	str	r1, [r2, r0]
 	movw	r0, #65056
-	.loc	5 227 5                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:227:5
+	.loc	5 227 5                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:227:5
 	dsb	sy
 	movt	r0, #65535
-	.loc	5 229 19                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:229:19
+	.loc	5 229 19                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:229:19
 	ldr	r0, [r2, r0]
-.Ltmp26:
+.Ltmp25:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ccsidr <- $r0
-	.loc	5 232 23                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:232:23
-	ubfx	r3, r0, #13, #15
-.Ltmp27:
+	.loc	5 0 19 is_stmt 0                @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:19
+	ubfx	r5, r0, #3, #10
+	.loc	5 232 23 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:232:23
+	ubfx	lr, r0, #13, #15
+.Ltmp26:
 	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- [DW_OP_constu 32767, DW_OP_and, DW_OP_stack_value] undef
-	.loc	5 0 23 is_stmt 0                @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:23
-	ubfx	r10, r0, #3, #10
-	.loc	5 233 5 is_stmt 1               @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:233:5
-	lsls	r1, r0, #18
+	.loc	5 233 5                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:233:5
+	adds	r1, r5, #1
+	lsls	r3, r0, #18
 	lsr.w	r12, r0, #3
-	add.w	lr, r10, #1
-	mov	r1, r3
+	mov	r3, lr
+	and	r10, r1, #3
 	bmi	.LBB1_16
-.Ltmp28:
+.Ltmp27:
 @ %bb.9:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ccsidr <- $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
-	.loc	5 0 0 is_stmt 0                 @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:0
+	.loc	5 0 0 is_stmt 0                 @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:0
 	lsrs	r0, r0, #13
-.Ltmp29:
+.Ltmp28:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 1023, DW_OP_and, DW_OP_stack_value] $r12
 	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- [DW_OP_constu 32767, DW_OP_and, DW_OP_stack_value] $r0
-	movw	r1, #16352
-	and.w	r1, r1, r0, lsl #5
+	mov.w	r1, #16320
+	and.w	r3, r1, r0, lsl #5
+.Ltmp29:
+	.loc	5 235 7 is_stmt 1               @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:235:7
+	cmp.w	r10, #0
+	mov	r0, r5
 .Ltmp30:
-	.loc	5 235 7 is_stmt 1               @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:235:7
-	ands	r4, lr, #3
-	mov	r0, r10
-.Ltmp31:
 	beq	.LBB1_12
-.Ltmp32:
+.Ltmp31:
 @ %bb.10:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 1023, DW_OP_and, DW_OP_stack_value] $r12
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 1023, DW_OP_and, DW_OP_stack_value] $r12
-	.loc	5 236 73                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:73
-	orr.w	r0, r1, r12, lsl #30
-	.loc	5 241 7                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:7
-	cmp	r4, #1
-	.loc	5 236 20                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:20
+	.loc	5 236 73                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:73
+	orr.w	r0, r3, r12, lsl #30
+	.loc	5 241 7                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:7
+	cmp.w	r10, #1
+	.loc	5 236 20                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:20
 	str	r0, [r2]
+.Ltmp32:
+	.loc	5 241 20                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:20
+	sub.w	r0, r5, #1
 .Ltmp33:
-	.loc	5 241 20                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:20
-	sub.w	r0, r10, #1
-.Ltmp34:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r0
-	.loc	5 241 7 is_stmt 0               @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:7
+	.loc	5 241 7 is_stmt 0               @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:7
 	beq	.LBB1_12
-.Ltmp35:
+.Ltmp34:
 @ %bb.11:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- undef
-	.loc	5 236 73 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:73
-	orr.w	r0, r1, r0, lsl #30
-	.loc	5 241 7                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:7
-	cmp	r4, #2
-	.loc	5 236 20                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:20
+	.loc	5 236 73 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:73
+	orr.w	r0, r3, r0, lsl #30
+	.loc	5 241 7                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:7
+	cmp.w	r10, #2
+	.loc	5 236 20                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:20
 	str	r0, [r2]
+.Ltmp35:
+	.loc	5 241 20                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:20
+	sub.w	r0, r5, #2
 .Ltmp36:
-	.loc	5 241 20                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:20
-	sub.w	r0, r10, #2
-.Ltmp37:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r0
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- undef
-	.loc	5 236 73                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:73
+	.loc	5 236 73                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:73
 	ittt	ne
-	orrne.w	r0, r1, r0, lsl #30
-	.loc	5 236 20 is_stmt 0              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:20
+	orrne.w	r0, r3, r0, lsl #30
+	.loc	5 236 20 is_stmt 0              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:20
 	strne	r0, [r2]
+.Ltmp37:
+	.loc	5 241 20 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:20
+	subne	r0, r5, #3
 .Ltmp38:
-	.loc	5 241 20 is_stmt 1              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:20
-	subne.w	r0, r10, #3
-.Ltmp39:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r0
 .LBB1_12:
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
-	.loc	5 235 7                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:235:7
-	cmp.w	r10, #3
+	.loc	5 235 7                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:235:7
+	cmp	r5, #3
 	blo	.LBB1_15
-.Ltmp40:
+.Ltmp39:
 @ %bb.13:
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
-	orr.w	r1, r1, r0, lsl #30
+	orr.w	r3, r3, r0, lsl #30
 	adds	r0, #1
-	add.w	r4, r1, #-1073741824
-	eor	r7, r1, #-2147483648
-	add.w	r6, r1, #1073741824
-.Ltmp41:
+	add.w	r4, r3, #-1073741824
+	eor	r6, r3, #-2147483648
+	add.w	r7, r3, #1073741824
+.Ltmp40:
 	.p2align	2
 .LBB1_14:                               @ =>This Inner Loop Header: Depth=1
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 1, DW_OP_minus, DW_OP_stack_value] $r0
-	.loc	5 241 23                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:23
+	.loc	5 241 23                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:23
 	subs	r0, #4
-.Ltmp42:
-	.loc	5 236 20                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:20
-	str	r1, [r2]
+.Ltmp41:
+	.loc	5 236 20                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:20
+	str	r3, [r2]
 	str	r4, [r2]
-.Ltmp43:
+.Ltmp42:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 2, DW_OP_minus, DW_OP_stack_value] $r0
+	str	r6, [r2]
+.Ltmp43:
+	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 3, DW_OP_minus, DW_OP_stack_value] $r0
 	str	r7, [r2]
 .Ltmp44:
-	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 3, DW_OP_minus, DW_OP_stack_value] $r0
-	str	r6, [r2]
-.Ltmp45:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 5, DW_OP_minus, DW_OP_stack_value] $r0
-	.loc	5 241 7                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:7
+	.loc	5 241 7                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:7
 	bne	.LBB1_14
-.Ltmp46:
+.Ltmp45:
 .LBB1_15:
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
-	.loc	5 242 17                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:242:17
-	subs	r1, r3, #1
-.Ltmp47:
-	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r1
+	.loc	5 242 17                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:242:17
+	sub.w	r3, lr, #1
+.Ltmp46:
+	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r3
 .LBB1_16:
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
-	.loc	5 233 5                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:233:5
-	cmp	r3, #0
+	.loc	5 233 5                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:233:5
+	cmp.w	lr, #0
 	beq	.LBB1_33
-.Ltmp48:
+.Ltmp47:
 @ %bb.17:
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
-	.loc	5 0 5 is_stmt 0                 @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:5
-	and	r3, lr, #3
-	sub.w	lr, r10, #1
+	.loc	5 0 5 is_stmt 0                 @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:5
+	sub.w	lr, r5, #1
+	sub.w	r11, r5, #2
 	lsl.w	r0, lr, #30
-	sub.w	r11, r10, #2
-	str	r0, [sp, #8]                    @ 4-byte Spill
 	movw	r9, #16352
+	str	r0, [sp, #8]                    @ 4-byte Spill
 	lsl.w	r0, r11, #30
 	lsl.w	r12, r12, #30
 	str	r0, [sp, #4]                    @ 4-byte Spill
-	sub.w	r0, r10, #3
+	subs	r0, r5, #3
 	str	r0, [sp]                        @ 4-byte Spill
 	b	.LBB1_19
-.Ltmp49:
+.Ltmp48:
 	.p2align	2
 .LBB1_18:                               @   in Loop: Header=BB1_19 Depth=1
 	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r7
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
-	.loc	5 242 5 is_stmt 1               @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:242:5
+	.loc	5 242 5 is_stmt 1               @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:242:5
 	cmp	r7, #0
+.Ltmp49:
+	.loc	5 242 17 is_stmt 0              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:242:17
+	sub.w	r3, r3, #2
 .Ltmp50:
-	.loc	5 242 17 is_stmt 0              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:242:17
-	sub.w	r1, r1, #2
-.Ltmp51:
-	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r1
-	.loc	5 242 5                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:242:5
+	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r3
+	.loc	5 242 5                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:242:5
 	beq	.LBB1_33
-.Ltmp52:
+.Ltmp51:
 .LBB1_19:                               @ =>This Loop Header: Depth=1
                                         @     Child Loop BB1_25 Depth 2
                                         @     Child Loop BB1_32 Depth 2
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
-	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r1
+	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r3
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 1023, DW_OP_and, DW_OP_stack_value] undef
-	.loc	5 0 5                           @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:5
-	and.w	r7, r9, r1, lsl #5
-	mov	r4, r10
-	.loc	5 235 7 is_stmt 1               @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:235:7
-	cbz	r3, .LBB1_23
-.Ltmp53:
+	.loc	5 0 5                           @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:5
+	and.w	r7, r9, r3, lsl #5
+	.loc	5 235 7 is_stmt 1               @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:235:7
+	cmp.w	r10, #0
+	mov	r4, r5
+	beq	.LBB1_23
+.Ltmp52:
 @ %bb.20:                               @   in Loop: Header=BB1_19 Depth=1
-	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r1
+	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r3
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 1023, DW_OP_and, DW_OP_stack_value] undef
-	.loc	5 236 73                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:73
+	.loc	5 236 73                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:73
 	orr.w	r0, r12, r7
 	mov	r4, lr
-	.loc	5 241 7                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:7
-	cmp	r3, #1
-	.loc	5 236 20                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:20
+	.loc	5 241 7                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:7
+	cmp.w	r10, #1
+	.loc	5 236 20                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:20
 	str	r0, [r2]
-.Ltmp54:
+.Ltmp53:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $lr
-	.loc	5 241 7                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:7
+	.loc	5 241 7                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:7
 	beq	.LBB1_23
-.Ltmp55:
+.Ltmp54:
 @ %bb.21:                               @   in Loop: Header=BB1_19 Depth=1
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $lr
-	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r1
+	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r3
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $lr
-	.loc	5 236 73                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:73
+	.loc	5 236 73                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:73
 	ldr	r0, [sp, #8]                    @ 4-byte Reload
 	mov	r4, r11
-	.loc	5 241 7                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:7
-	cmp	r3, #2
-	.loc	5 236 73                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:73
+	.loc	5 241 7                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:7
+	cmp.w	r10, #2
+	.loc	5 236 73                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:73
 	orr.w	r0, r0, r7
-	.loc	5 236 20 is_stmt 0              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:20
+	.loc	5 236 20 is_stmt 0              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:20
 	str	r0, [r2]
-.Ltmp56:
+.Ltmp55:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r11
-	.loc	5 241 7 is_stmt 1               @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:7
+	.loc	5 241 7 is_stmt 1               @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:7
 	beq	.LBB1_23
-.Ltmp57:
+.Ltmp56:
 @ %bb.22:                               @   in Loop: Header=BB1_19 Depth=1
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r11
-	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r1
+	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r3
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r11
-	.loc	5 236 73                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:73
+	.loc	5 236 73                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:73
 	ldr	r0, [sp, #4]                    @ 4-byte Reload
 	orrs	r0, r7
-	.loc	5 236 20 is_stmt 0              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:20
+	.loc	5 236 20 is_stmt 0              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:20
 	str	r0, [r2]
-.Ltmp58:
+.Ltmp57:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [$sp+0]
-	.loc	5 0 20                          @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:20
+	.loc	5 0 20                          @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:20
 	ldr	r4, [sp]                        @ 4-byte Reload
-.Ltmp59:
+.Ltmp58:
 	.p2align	2
 .LBB1_23:                               @   in Loop: Header=BB1_19 Depth=1
-	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r1
+	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r3
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
-	.loc	5 235 7 is_stmt 1               @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:235:7
-	cmp.w	r10, #3
+	.loc	5 235 7 is_stmt 1               @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:235:7
+	cmp	r5, #3
 	blo	.LBB1_26
-.Ltmp60:
+.Ltmp59:
 @ %bb.24:                               @   in Loop: Header=BB1_19 Depth=1
-	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r1
+	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r3
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
 	orr.w	r0, r7, r4, lsl #30
 	adds	r4, #1
 	add.w	r7, r0, #-1073741824
 	eor	r6, r0, #-2147483648
-	add.w	r5, r0, #1073741824
-.Ltmp61:
+	add.w	r1, r0, #1073741824
+.Ltmp60:
 	.p2align	2
 .LBB1_25:                               @   Parent Loop BB1_19 Depth=1
                                         @ =>  This Inner Loop Header: Depth=2
-	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r1
+	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r3
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 1, DW_OP_minus, DW_OP_stack_value] $r4
-	.loc	5 241 23                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:23
+	.loc	5 241 23                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:23
 	subs	r4, #4
-.Ltmp62:
-	.loc	5 236 20                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:20
+.Ltmp61:
+	.loc	5 236 20                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:20
 	str	r0, [r2]
 	str	r7, [r2]
-.Ltmp63:
+.Ltmp62:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 2, DW_OP_minus, DW_OP_stack_value] $r4
 	str	r6, [r2]
-.Ltmp64:
+.Ltmp63:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 3, DW_OP_minus, DW_OP_stack_value] $r4
-	str	r5, [r2]
-.Ltmp65:
+	str	r1, [r2]
+.Ltmp64:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 5, DW_OP_minus, DW_OP_stack_value] $r4
-	.loc	5 241 7                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:7
+	.loc	5 241 7                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:7
 	bne	.LBB1_25
-.Ltmp66:
+.Ltmp65:
 .LBB1_26:                               @   in Loop: Header=BB1_19 Depth=1
-	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r1
+	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r3
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
-	.loc	5 242 17                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:242:17
-	subs	r7, r1, #1
-.Ltmp67:
+	.loc	5 242 17                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:242:17
+	subs	r7, r3, #1
+.Ltmp66:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 1023, DW_OP_and, DW_OP_stack_value] undef
 	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r7
-	.loc	5 0 17 is_stmt 0                @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:17
+	.loc	5 235 7                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:235:7
+	cmp.w	r10, #0
 	and.w	r4, r9, r7, lsl #5
-	mov	r0, r10
-.Ltmp68:
-	.loc	5 235 7 is_stmt 1               @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:235:7
-	cbz	r3, .LBB1_30
-.Ltmp69:
+	mov	r0, r5
+	beq	.LBB1_30
+.Ltmp67:
 @ %bb.27:                               @   in Loop: Header=BB1_19 Depth=1
 	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r7
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 1023, DW_OP_and, DW_OP_stack_value] undef
-	.loc	5 236 73                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:73
+	.loc	5 236 73                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:73
 	orr.w	r0, r12, r4
-	.loc	5 236 20 is_stmt 0              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:20
+	.loc	5 236 20 is_stmt 0              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:20
 	str	r0, [r2]
-.Ltmp70:
+.Ltmp68:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $lr
-	.loc	5 0 20                          @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:20
+	.loc	5 0 20                          @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:20
 	mov	r0, lr
-	.loc	5 241 7 is_stmt 1               @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:7
-	cmp	r3, #1
+	.loc	5 241 7 is_stmt 1               @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:7
+	cmp.w	r10, #1
 	beq	.LBB1_30
-.Ltmp71:
+.Ltmp69:
 @ %bb.28:                               @   in Loop: Header=BB1_19 Depth=1
 	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r7
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $lr
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $lr
-	.loc	5 236 73                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:73
+	.loc	5 236 73                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:73
 	ldr	r0, [sp, #8]                    @ 4-byte Reload
-	.loc	5 241 7                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:7
-	cmp	r3, #2
-	.loc	5 236 73                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:73
+	.loc	5 241 7                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:7
+	cmp.w	r10, #2
+	.loc	5 236 73                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:73
 	orr.w	r0, r0, r4
-	.loc	5 236 20 is_stmt 0              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:20
+	.loc	5 236 20 is_stmt 0              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:20
 	str	r0, [r2]
-.Ltmp72:
+.Ltmp70:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r11
-	.loc	5 0 20                          @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:20
+	.loc	5 0 20                          @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:20
 	mov	r0, r11
-	.loc	5 241 7 is_stmt 1               @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:7
+	.loc	5 241 7 is_stmt 1               @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:7
 	beq	.LBB1_30
-.Ltmp73:
+.Ltmp71:
 @ %bb.29:                               @   in Loop: Header=BB1_19 Depth=1
 	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r7
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r11
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- $r11
-	.loc	5 236 73                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:73
+	.loc	5 236 73                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:73
 	ldr	r0, [sp, #4]                    @ 4-byte Reload
 	orrs	r0, r4
-	.loc	5 236 20 is_stmt 0              @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:20
+	.loc	5 236 20 is_stmt 0              @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:20
 	str	r0, [r2]
-.Ltmp74:
+.Ltmp72:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [$sp+0]
-	.loc	5 0 20                          @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:0:20
+	.loc	5 0 20                          @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:0:20
 	ldr	r0, [sp]                        @ 4-byte Reload
-.Ltmp75:
+.Ltmp73:
 	.p2align	2
 .LBB1_30:                               @   in Loop: Header=BB1_19 Depth=1
 	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r7
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
-	.loc	5 235 7 is_stmt 1               @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:235:7
-	cmp.w	r10, #3
+	.loc	5 235 7 is_stmt 1               @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:235:7
+	cmp	r5, #3
 	blo	.LBB1_18
-.Ltmp76:
+.Ltmp74:
 @ %bb.31:                               @   in Loop: Header=BB1_19 Depth=1
 	@DEBUG_VALUE: SCB_InvalidateDCache:sets <- $r7
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
@@ -592,8 +590,8 @@ ethosu_invalidate_dcache:
 	adds	r0, #1
 	add.w	r8, r4, #-1073741824
 	eor	r6, r4, #-2147483648
-	add.w	r5, r4, #1073741824
-.Ltmp77:
+	add.w	r1, r4, #1073741824
+.Ltmp75:
 	.p2align	2
 .LBB1_32:                               @   Parent Loop BB1_19 Depth=1
                                         @ =>  This Inner Loop Header: Depth=2
@@ -601,42 +599,42 @@ ethosu_invalidate_dcache:
 	@DEBUG_VALUE: ethosu_invalidate_dcache:p <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 1, DW_OP_minus, DW_OP_stack_value] $r0
-	.loc	5 241 23                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:23
+	.loc	5 241 23                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:23
 	subs	r0, #4
-.Ltmp78:
-	.loc	5 236 20                        @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:236:20
+.Ltmp76:
+	.loc	5 236 20                        @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:236:20
 	str	r4, [r2]
 	str.w	r8, [r2]
-.Ltmp79:
+.Ltmp77:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 2, DW_OP_minus, DW_OP_stack_value] $r0
 	str	r6, [r2]
-.Ltmp80:
+.Ltmp78:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 3, DW_OP_minus, DW_OP_stack_value] $r0
-	str	r5, [r2]
-.Ltmp81:
+	str	r1, [r2]
+.Ltmp79:
 	@DEBUG_VALUE: SCB_InvalidateDCache:ways <- [DW_OP_constu 5, DW_OP_minus, DW_OP_stack_value] $r0
-	.loc	5 241 7                         @ ../../../../Library/CMSIS/Core/Include/cachel1_armv7.h:241:7
+	.loc	5 241 7                         @ ../../../../Library/CMSIS/Core/Include\cachel1_armv7.h:241:7
 	bne	.LBB1_32
 	b	.LBB1_18
-.Ltmp82:
+.Ltmp80:
 .LBB1_33:
 	@DEBUG_VALUE: ethosu_invalidate_dcache:bytes <- [DW_OP_LLVM_entry_value 1] $r1
 	.loc	4 0 0 is_stmt 0                 @ ../NPU/ethosu_cpu_cache.c:0:0
 	dsb	sy
 	isb	sy
-.Ltmp83:
+.Ltmp81:
 .LBB1_34:
-	.loc	4 44 1 is_stmt 1                @ ../NPU/ethosu_cpu_cache.c:44:1
+	.loc	4 44 1 epilogue_begin is_stmt 1 @ ../NPU/ethosu_cpu_cache.c:44:1
 	add	sp, #12
 	pop.w	{r4, r5, r6, r7, r8, r9, r10, r11, pc}
-.Ltmp84:
+.Ltmp82:
 .Lfunc_end1:
 	.size	ethosu_invalidate_dcache, .Lfunc_end1-ethosu_invalidate_dcache
 	.cfi_endproc
 	.cantunwind
 	.fnend
                                         @ -- End function
-	.file	6 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include" "stddef.h"
+	.file	6 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include" "stddef.h"
 	.section	.debug_loc,"",%progbits
 .Ldebug_loc0:
 	.long	-1
@@ -652,12 +650,12 @@ ethosu_invalidate_dcache:
 	.byte	1                               @ 1
 	.byte	80                              @ DW_OP_reg0
 	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp21-.Lfunc_begin1
 	.long	.Ltmp22-.Lfunc_begin1
-	.long	.Ltmp23-.Lfunc_begin1
 	.short	1                               @ Loc expr size
 	.byte	80                              @ DW_OP_reg0
-	.long	.Ltmp23-.Lfunc_begin1
-	.long	.Ltmp82-.Lfunc_begin1
+	.long	.Ltmp22-.Lfunc_begin1
+	.long	.Ltmp80-.Lfunc_begin1
 	.short	4                               @ Loc expr size
 	.byte	243                             @ DW_OP_GNU_entry_value
 	.byte	1                               @ 1
@@ -673,18 +671,18 @@ ethosu_invalidate_dcache:
 	.short	1                               @ Loc expr size
 	.byte	81                              @ DW_OP_reg1
 	.long	.Ltmp6-.Lfunc_begin1
-	.long	.Ltmp22-.Lfunc_begin1
+	.long	.Ltmp21-.Lfunc_begin1
 	.short	4                               @ Loc expr size
 	.byte	243                             @ DW_OP_GNU_entry_value
 	.byte	1                               @ 1
 	.byte	81                              @ DW_OP_reg1
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp22-.Lfunc_begin1
-	.long	.Ltmp24-.Lfunc_begin1
+	.long	.Ltmp21-.Lfunc_begin1
+	.long	.Ltmp23-.Lfunc_begin1
 	.short	1                               @ Loc expr size
 	.byte	81                              @ DW_OP_reg1
-	.long	.Ltmp24-.Lfunc_begin1
-	.long	.Ltmp83-.Lfunc_begin1
+	.long	.Ltmp23-.Lfunc_begin1
+	.long	.Ltmp81-.Lfunc_begin1
 	.short	4                               @ Loc expr size
 	.byte	243                             @ DW_OP_GNU_entry_value
 	.byte	1                               @ 1
@@ -723,12 +721,10 @@ ethosu_invalidate_dcache:
 	.byte	112                             @ DW_OP_breg0
 	.byte	32                              @ 32
 	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp13-.Lfunc_begin1
 	.long	.Ltmp14-.Lfunc_begin1
-	.long	.Ltmp17-.Lfunc_begin1
-	.short	3                               @ Loc expr size
-	.byte	112                             @ DW_OP_breg0
-	.byte	32                              @ 32
-	.byte	159                             @ DW_OP_stack_value
+	.short	1                               @ Loc expr size
+	.byte	80                              @ DW_OP_reg0
 	.long	0
 	.long	0
 .Ldebug_loc5:
@@ -749,13 +745,13 @@ ethosu_invalidate_dcache:
 	.byte	96                              @ -32
 	.byte	159                             @ DW_OP_stack_value
 	.long	.Ltmp16-.Lfunc_begin1
-	.long	.Ltmp20-.Lfunc_begin1
+	.long	.Ltmp19-.Lfunc_begin1
 	.short	3                               @ Loc expr size
 	.byte	115                             @ DW_OP_breg3
 	.byte	64                              @ -64
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp20-.Lfunc_begin1
-	.long	.Ltmp22-.Lfunc_begin1
+	.long	.Ltmp19-.Lfunc_begin1
+	.long	.Ltmp21-.Lfunc_begin1
 	.short	4                               @ Loc expr size
 	.byte	115                             @ DW_OP_breg3
 	.byte	160                             @ -96
@@ -766,8 +762,8 @@ ethosu_invalidate_dcache:
 .Ldebug_loc6:
 	.long	-1
 	.long	.Lfunc_begin1                   @   base address
-	.long	.Ltmp26-.Lfunc_begin1
-	.long	.Ltmp29-.Lfunc_begin1
+	.long	.Ltmp25-.Lfunc_begin1
+	.long	.Ltmp28-.Lfunc_begin1
 	.short	1                               @ Loc expr size
 	.byte	80                              @ DW_OP_reg0
 	.long	0
@@ -775,8 +771,8 @@ ethosu_invalidate_dcache:
 .Ldebug_loc7:
 	.long	-1
 	.long	.Lfunc_begin1                   @   base address
-	.long	.Ltmp29-.Lfunc_begin1
-	.long	.Ltmp31-.Lfunc_begin1
+	.long	.Ltmp28-.Lfunc_begin1
+	.long	.Ltmp30-.Lfunc_begin1
 	.short	8                               @ Loc expr size
 	.byte	112                             @ DW_OP_breg0
 	.byte	0                               @ 0
@@ -786,16 +782,16 @@ ethosu_invalidate_dcache:
 	.byte	1                               @ 
 	.byte	26                              @ DW_OP_and
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp49-.Lfunc_begin1
-	.long	.Ltmp51-.Lfunc_begin1
+	.long	.Ltmp48-.Lfunc_begin1
+	.long	.Ltmp50-.Lfunc_begin1
 	.short	1                               @ Loc expr size
 	.byte	87                              @ DW_OP_reg7
-	.long	.Ltmp51-.Lfunc_begin1
-	.long	.Ltmp67-.Lfunc_begin1
+	.long	.Ltmp50-.Lfunc_begin1
+	.long	.Ltmp66-.Lfunc_begin1
 	.short	1                               @ Loc expr size
-	.byte	81                              @ DW_OP_reg1
-	.long	.Ltmp67-.Lfunc_begin1
-	.long	.Ltmp82-.Lfunc_begin1
+	.byte	83                              @ DW_OP_reg3
+	.long	.Ltmp66-.Lfunc_begin1
+	.long	.Ltmp80-.Lfunc_begin1
 	.short	1                               @ Loc expr size
 	.byte	87                              @ DW_OP_reg7
 	.long	0
@@ -803,8 +799,8 @@ ethosu_invalidate_dcache:
 .Ldebug_loc8:
 	.long	-1
 	.long	.Lfunc_begin1                   @   base address
-	.long	.Ltmp29-.Lfunc_begin1
-	.long	.Ltmp34-.Lfunc_begin1
+	.long	.Ltmp28-.Lfunc_begin1
+	.long	.Ltmp33-.Lfunc_begin1
 	.short	7                               @ Loc expr size
 	.byte	124                             @ DW_OP_breg12
 	.byte	0                               @ 0
@@ -813,104 +809,104 @@ ethosu_invalidate_dcache:
 	.byte	7                               @ 
 	.byte	26                              @ DW_OP_and
 	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp33-.Lfunc_begin1
 	.long	.Ltmp34-.Lfunc_begin1
-	.long	.Ltmp35-.Lfunc_begin1
 	.short	1                               @ Loc expr size
 	.byte	80                              @ DW_OP_reg0
+	.long	.Ltmp40-.Lfunc_begin1
 	.long	.Ltmp41-.Lfunc_begin1
-	.long	.Ltmp42-.Lfunc_begin1
 	.short	3                               @ Loc expr size
 	.byte	112                             @ DW_OP_breg0
 	.byte	127                             @ -1
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp42-.Lfunc_begin1
+	.long	.Ltmp43-.Lfunc_begin1
+	.short	3                               @ Loc expr size
+	.byte	112                             @ DW_OP_breg0
+	.byte	126                             @ -2
 	.byte	159                             @ DW_OP_stack_value
 	.long	.Ltmp43-.Lfunc_begin1
 	.long	.Ltmp44-.Lfunc_begin1
 	.short	3                               @ Loc expr size
 	.byte	112                             @ DW_OP_breg0
-	.byte	126                             @ -2
+	.byte	125                             @ -3
 	.byte	159                             @ DW_OP_stack_value
 	.long	.Ltmp44-.Lfunc_begin1
 	.long	.Ltmp45-.Lfunc_begin1
 	.short	3                               @ Loc expr size
 	.byte	112                             @ DW_OP_breg0
-	.byte	125                             @ -3
-	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp45-.Lfunc_begin1
-	.long	.Ltmp46-.Lfunc_begin1
-	.short	3                               @ Loc expr size
-	.byte	112                             @ DW_OP_breg0
 	.byte	123                             @ -5
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp54-.Lfunc_begin1
-	.long	.Ltmp56-.Lfunc_begin1
+	.long	.Ltmp53-.Lfunc_begin1
+	.long	.Ltmp55-.Lfunc_begin1
 	.short	1                               @ Loc expr size
 	.byte	94                              @ DW_OP_reg14
-	.long	.Ltmp56-.Lfunc_begin1
-	.long	.Ltmp58-.Lfunc_begin1
+	.long	.Ltmp55-.Lfunc_begin1
+	.long	.Ltmp57-.Lfunc_begin1
 	.short	1                               @ Loc expr size
 	.byte	91                              @ DW_OP_reg11
+	.long	.Ltmp57-.Lfunc_begin1
 	.long	.Ltmp58-.Lfunc_begin1
-	.long	.Ltmp59-.Lfunc_begin1
 	.short	2                               @ Loc expr size
 	.byte	125                             @ DW_OP_breg13
 	.byte	0                               @ 0
+	.long	.Ltmp60-.Lfunc_begin1
 	.long	.Ltmp61-.Lfunc_begin1
-	.long	.Ltmp62-.Lfunc_begin1
 	.short	3                               @ Loc expr size
 	.byte	116                             @ DW_OP_breg4
 	.byte	127                             @ -1
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp62-.Lfunc_begin1
+	.long	.Ltmp63-.Lfunc_begin1
+	.short	3                               @ Loc expr size
+	.byte	116                             @ DW_OP_breg4
+	.byte	126                             @ -2
 	.byte	159                             @ DW_OP_stack_value
 	.long	.Ltmp63-.Lfunc_begin1
 	.long	.Ltmp64-.Lfunc_begin1
 	.short	3                               @ Loc expr size
 	.byte	116                             @ DW_OP_breg4
-	.byte	126                             @ -2
+	.byte	125                             @ -3
 	.byte	159                             @ DW_OP_stack_value
 	.long	.Ltmp64-.Lfunc_begin1
 	.long	.Ltmp65-.Lfunc_begin1
 	.short	3                               @ Loc expr size
 	.byte	116                             @ DW_OP_breg4
-	.byte	125                             @ -3
-	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp65-.Lfunc_begin1
-	.long	.Ltmp66-.Lfunc_begin1
-	.short	3                               @ Loc expr size
-	.byte	116                             @ DW_OP_breg4
 	.byte	123                             @ -5
 	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp68-.Lfunc_begin1
+	.long	.Ltmp70-.Lfunc_begin1
+	.short	1                               @ Loc expr size
+	.byte	94                              @ DW_OP_reg14
 	.long	.Ltmp70-.Lfunc_begin1
 	.long	.Ltmp72-.Lfunc_begin1
 	.short	1                               @ Loc expr size
-	.byte	94                              @ DW_OP_reg14
-	.long	.Ltmp72-.Lfunc_begin1
-	.long	.Ltmp74-.Lfunc_begin1
-	.short	1                               @ Loc expr size
 	.byte	91                              @ DW_OP_reg11
-	.long	.Ltmp74-.Lfunc_begin1
-	.long	.Ltmp75-.Lfunc_begin1
+	.long	.Ltmp72-.Lfunc_begin1
+	.long	.Ltmp73-.Lfunc_begin1
 	.short	2                               @ Loc expr size
 	.byte	125                             @ DW_OP_breg13
 	.byte	0                               @ 0
-	.long	.Ltmp77-.Lfunc_begin1
-	.long	.Ltmp78-.Lfunc_begin1
+	.long	.Ltmp75-.Lfunc_begin1
+	.long	.Ltmp76-.Lfunc_begin1
 	.short	3                               @ Loc expr size
 	.byte	112                             @ DW_OP_breg0
 	.byte	127                             @ -1
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp79-.Lfunc_begin1
-	.long	.Ltmp80-.Lfunc_begin1
+	.long	.Ltmp77-.Lfunc_begin1
+	.long	.Ltmp78-.Lfunc_begin1
 	.short	3                               @ Loc expr size
 	.byte	112                             @ DW_OP_breg0
 	.byte	126                             @ -2
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp80-.Lfunc_begin1
-	.long	.Ltmp81-.Lfunc_begin1
+	.long	.Ltmp78-.Lfunc_begin1
+	.long	.Ltmp79-.Lfunc_begin1
 	.short	3                               @ Loc expr size
 	.byte	112                             @ DW_OP_breg0
 	.byte	125                             @ -3
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp81-.Lfunc_begin1
-	.long	.Ltmp82-.Lfunc_begin1
+	.long	.Ltmp79-.Lfunc_begin1
+	.long	.Ltmp80-.Lfunc_begin1
 	.short	3                               @ Loc expr size
 	.byte	112                             @ DW_OP_breg0
 	.byte	123                             @ -5
@@ -1265,7 +1261,7 @@ ethosu_invalidate_dcache:
 	.byte	4                               @ Address Size (in bytes)
 	.byte	1                               @ Abbrev [1] 0xb:0x6a4 DW_TAG_compile_unit
 	.long	.Linfo_string0                  @ DW_AT_producer
-	.short	12                              @ DW_AT_language
+	.short	29                              @ DW_AT_language
 	.long	.Linfo_string1                  @ DW_AT_name
 	.long	.Lline_table_start0             @ DW_AT_stmt_list
 	.long	.Linfo_string2                  @ DW_AT_comp_dir
@@ -1997,7 +1993,7 @@ ethosu_invalidate_dcache:
 	.byte	26                              @ Abbrev [26] 0x632:0x3f DW_TAG_inlined_subroutine
 	.long	1431                            @ DW_AT_abstract_origin
 	.long	.Ltmp4                          @ DW_AT_low_pc
-	.long	.Ltmp22-.Ltmp4                  @ DW_AT_high_pc
+	.long	.Ltmp21-.Ltmp4                  @ DW_AT_high_pc
 	.byte	4                               @ DW_AT_call_file
 	.byte	37                              @ DW_AT_call_line
 	.byte	13                              @ DW_AT_call_column
@@ -2009,7 +2005,7 @@ ethosu_invalidate_dcache:
 	.long	1452                            @ DW_AT_abstract_origin
 	.byte	28                              @ Abbrev [28] 0x654:0x1c DW_TAG_lexical_block
 	.long	.Ltmp7                          @ DW_AT_low_pc
-	.long	.Ltmp22-.Ltmp7                  @ DW_AT_high_pc
+	.long	.Ltmp21-.Ltmp7                  @ DW_AT_high_pc
 	.byte	29                              @ Abbrev [29] 0x65d:0x9 DW_TAG_variable
 	.long	.Ldebug_loc4                    @ DW_AT_location
 	.long	1465                            @ DW_AT_abstract_origin
@@ -2020,8 +2016,8 @@ ethosu_invalidate_dcache:
 	.byte	0                               @ End Of Children Mark
 	.byte	26                              @ Abbrev [26] 0x671:0x2c DW_TAG_inlined_subroutine
 	.long	1497                            @ DW_AT_abstract_origin
-	.long	.Ltmp25                         @ DW_AT_low_pc
-	.long	.Ltmp82-.Ltmp25                 @ DW_AT_high_pc
+	.long	.Ltmp24                         @ DW_AT_low_pc
+	.long	.Ltmp80-.Ltmp24                 @ DW_AT_high_pc
 	.byte	4                               @ DW_AT_call_file
 	.byte	41                              @ DW_AT_call_line
 	.byte	13                              @ DW_AT_call_column
@@ -2055,218 +2051,218 @@ ethosu_invalidate_dcache:
 	.long	0
 	.section	.debug_str,"MS",%progbits,1
 .Linfo_string0:
-	.asciz	"Component: Arm Compiler for Embedded 6.19 Tool: armclang [5e73cb00]" @ string offset=0
+	.asciz	"Component: Arm Compiler for Embedded 6.22 Tool: armclang [5ee92100]" @ string offset=0
 .Linfo_string1:
 	.asciz	"../NPU\\ethosu_cpu_cache.c"    @ string offset=68
 .Linfo_string2:
-	.asciz	"C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" @ string offset=94
+	.asciz	"D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" @ string offset=94
 .Linfo_string3:
-	.asciz	"CPUID"                         @ string offset=193
+	.asciz	"CPUID"                         @ string offset=211
 .Linfo_string4:
-	.asciz	"unsigned int"                  @ string offset=199
+	.asciz	"unsigned int"                  @ string offset=217
 .Linfo_string5:
-	.asciz	"uint32_t"                      @ string offset=212
+	.asciz	"uint32_t"                      @ string offset=230
 .Linfo_string6:
-	.asciz	"ICSR"                          @ string offset=221
+	.asciz	"ICSR"                          @ string offset=239
 .Linfo_string7:
-	.asciz	"VTOR"                          @ string offset=226
+	.asciz	"VTOR"                          @ string offset=244
 .Linfo_string8:
-	.asciz	"AIRCR"                         @ string offset=231
+	.asciz	"AIRCR"                         @ string offset=249
 .Linfo_string9:
-	.asciz	"SCR"                           @ string offset=237
+	.asciz	"SCR"                           @ string offset=255
 .Linfo_string10:
-	.asciz	"CCR"                           @ string offset=241
+	.asciz	"CCR"                           @ string offset=259
 .Linfo_string11:
-	.asciz	"SHPR"                          @ string offset=245
+	.asciz	"SHPR"                          @ string offset=263
 .Linfo_string12:
-	.asciz	"unsigned char"                 @ string offset=250
+	.asciz	"unsigned char"                 @ string offset=268
 .Linfo_string13:
-	.asciz	"uint8_t"                       @ string offset=264
+	.asciz	"uint8_t"                       @ string offset=282
 .Linfo_string14:
-	.asciz	"__ARRAY_SIZE_TYPE__"           @ string offset=272
+	.asciz	"__ARRAY_SIZE_TYPE__"           @ string offset=290
 .Linfo_string15:
-	.asciz	"SHCSR"                         @ string offset=292
+	.asciz	"SHCSR"                         @ string offset=310
 .Linfo_string16:
-	.asciz	"CFSR"                          @ string offset=298
+	.asciz	"CFSR"                          @ string offset=316
 .Linfo_string17:
-	.asciz	"HFSR"                          @ string offset=303
+	.asciz	"HFSR"                          @ string offset=321
 .Linfo_string18:
-	.asciz	"DFSR"                          @ string offset=308
+	.asciz	"DFSR"                          @ string offset=326
 .Linfo_string19:
-	.asciz	"MMFAR"                         @ string offset=313
+	.asciz	"MMFAR"                         @ string offset=331
 .Linfo_string20:
-	.asciz	"BFAR"                          @ string offset=319
+	.asciz	"BFAR"                          @ string offset=337
 .Linfo_string21:
-	.asciz	"AFSR"                          @ string offset=324
+	.asciz	"AFSR"                          @ string offset=342
 .Linfo_string22:
-	.asciz	"ID_PFR"                        @ string offset=329
+	.asciz	"ID_PFR"                        @ string offset=347
 .Linfo_string23:
-	.asciz	"ID_DFR"                        @ string offset=336
+	.asciz	"ID_DFR"                        @ string offset=354
 .Linfo_string24:
-	.asciz	"ID_AFR"                        @ string offset=343
+	.asciz	"ID_AFR"                        @ string offset=361
 .Linfo_string25:
-	.asciz	"ID_MMFR"                       @ string offset=350
+	.asciz	"ID_MMFR"                       @ string offset=368
 .Linfo_string26:
-	.asciz	"ID_ISAR"                       @ string offset=358
+	.asciz	"ID_ISAR"                       @ string offset=376
 .Linfo_string27:
-	.asciz	"CLIDR"                         @ string offset=366
+	.asciz	"CLIDR"                         @ string offset=384
 .Linfo_string28:
-	.asciz	"CTR"                           @ string offset=372
+	.asciz	"CTR"                           @ string offset=390
 .Linfo_string29:
-	.asciz	"CCSIDR"                        @ string offset=376
+	.asciz	"CCSIDR"                        @ string offset=394
 .Linfo_string30:
-	.asciz	"CSSELR"                        @ string offset=383
+	.asciz	"CSSELR"                        @ string offset=401
 .Linfo_string31:
-	.asciz	"CPACR"                         @ string offset=390
+	.asciz	"CPACR"                         @ string offset=408
 .Linfo_string32:
-	.asciz	"NSACR"                         @ string offset=396
+	.asciz	"NSACR"                         @ string offset=414
 .Linfo_string33:
-	.asciz	"RESERVED7"                     @ string offset=402
+	.asciz	"RESERVED7"                     @ string offset=420
 .Linfo_string34:
-	.asciz	"SFSR"                          @ string offset=412
+	.asciz	"SFSR"                          @ string offset=430
 .Linfo_string35:
-	.asciz	"SFAR"                          @ string offset=417
+	.asciz	"SFAR"                          @ string offset=435
 .Linfo_string36:
-	.asciz	"RESERVED3"                     @ string offset=422
+	.asciz	"RESERVED3"                     @ string offset=440
 .Linfo_string37:
-	.asciz	"STIR"                          @ string offset=432
+	.asciz	"STIR"                          @ string offset=450
 .Linfo_string38:
-	.asciz	"RFSR"                          @ string offset=437
+	.asciz	"RFSR"                          @ string offset=455
 .Linfo_string39:
-	.asciz	"RESERVED4"                     @ string offset=442
+	.asciz	"RESERVED4"                     @ string offset=460
 .Linfo_string40:
-	.asciz	"MVFR0"                         @ string offset=452
+	.asciz	"MVFR0"                         @ string offset=470
 .Linfo_string41:
-	.asciz	"MVFR1"                         @ string offset=458
+	.asciz	"MVFR1"                         @ string offset=476
 .Linfo_string42:
-	.asciz	"MVFR2"                         @ string offset=464
+	.asciz	"MVFR2"                         @ string offset=482
 .Linfo_string43:
-	.asciz	"RESERVED5"                     @ string offset=470
+	.asciz	"RESERVED5"                     @ string offset=488
 .Linfo_string44:
-	.asciz	"ICIALLU"                       @ string offset=480
+	.asciz	"ICIALLU"                       @ string offset=498
 .Linfo_string45:
-	.asciz	"RESERVED6"                     @ string offset=488
+	.asciz	"RESERVED6"                     @ string offset=506
 .Linfo_string46:
-	.asciz	"ICIMVAU"                       @ string offset=498
+	.asciz	"ICIMVAU"                       @ string offset=516
 .Linfo_string47:
-	.asciz	"DCIMVAC"                       @ string offset=506
+	.asciz	"DCIMVAC"                       @ string offset=524
 .Linfo_string48:
-	.asciz	"DCISW"                         @ string offset=514
+	.asciz	"DCISW"                         @ string offset=532
 .Linfo_string49:
-	.asciz	"DCCMVAU"                       @ string offset=520
+	.asciz	"DCCMVAU"                       @ string offset=538
 .Linfo_string50:
-	.asciz	"DCCMVAC"                       @ string offset=528
+	.asciz	"DCCMVAC"                       @ string offset=546
 .Linfo_string51:
-	.asciz	"DCCSW"                         @ string offset=536
+	.asciz	"DCCSW"                         @ string offset=554
 .Linfo_string52:
-	.asciz	"DCCIMVAC"                      @ string offset=542
+	.asciz	"DCCIMVAC"                      @ string offset=560
 .Linfo_string53:
-	.asciz	"DCCISW"                        @ string offset=551
+	.asciz	"DCCISW"                        @ string offset=569
 .Linfo_string54:
-	.asciz	"BPIALL"                        @ string offset=558
+	.asciz	"BPIALL"                        @ string offset=576
 .Linfo_string55:
-	.asciz	"SCB_Type"                      @ string offset=565
+	.asciz	"SCB_Type"                      @ string offset=583
 .Linfo_string56:
-	.asciz	"int"                           @ string offset=574
+	.asciz	"int"                           @ string offset=592
 .Linfo_string57:
-	.asciz	"int32_t"                       @ string offset=578
+	.asciz	"int32_t"                       @ string offset=596
 .Linfo_string58:
-	.asciz	"CTL"                           @ string offset=586
+	.asciz	"CTL"                           @ string offset=604
 .Linfo_string59:
-	.asciz	"PAR"                           @ string offset=590
+	.asciz	"PAR"                           @ string offset=608
 .Linfo_string60:
-	.asciz	"INTEN"                         @ string offset=594
+	.asciz	"INTEN"                         @ string offset=612
 .Linfo_string61:
-	.asciz	"INTSTS"                        @ string offset=600
+	.asciz	"INTSTS"                        @ string offset=618
 .Linfo_string62:
-	.asciz	"PARM"                          @ string offset=607
+	.asciz	"PARM"                          @ string offset=625
 .Linfo_string63:
-	.asciz	"RESERVE0"                      @ string offset=612
+	.asciz	"RESERVE0"                      @ string offset=630
 .Linfo_string64:
-	.asciz	"CWSP"                          @ string offset=621
+	.asciz	"CWSP"                          @ string offset=639
 .Linfo_string65:
-	.asciz	"CWS"                           @ string offset=626
+	.asciz	"CWS"                           @ string offset=644
 .Linfo_string66:
-	.asciz	"PKTSL"                         @ string offset=630
+	.asciz	"PKTSL"                         @ string offset=648
 .Linfo_string67:
-	.asciz	"RESERVE1"                      @ string offset=636
+	.asciz	"RESERVE1"                      @ string offset=654
 .Linfo_string68:
-	.asciz	"FRCTL"                         @ string offset=645
+	.asciz	"FRCTL"                         @ string offset=663
 .Linfo_string69:
-	.asciz	"STRIDE"                        @ string offset=651
+	.asciz	"STRIDE"                        @ string offset=669
 .Linfo_string70:
-	.asciz	"RESERVE2"                      @ string offset=658
+	.asciz	"RESERVE2"                      @ string offset=676
 .Linfo_string71:
-	.asciz	"FIFOTH"                        @ string offset=667
+	.asciz	"FIFOTH"                        @ string offset=685
 .Linfo_string72:
-	.asciz	"CMPADDR"                       @ string offset=674
+	.asciz	"CMPADDR"                       @ string offset=692
 .Linfo_string73:
-	.asciz	"LUMA_Y1_THD"                   @ string offset=682
+	.asciz	"LUMA_Y1_THD"                   @ string offset=700
 .Linfo_string74:
-	.asciz	"PKTSM"                         @ string offset=694
+	.asciz	"PKTSM"                         @ string offset=712
 .Linfo_string75:
-	.asciz	"RESERVE3"                      @ string offset=700
+	.asciz	"RESERVE3"                      @ string offset=718
 .Linfo_string76:
-	.asciz	"CURADDRP"                      @ string offset=709
+	.asciz	"CURADDRP"                      @ string offset=727
 .Linfo_string77:
-	.asciz	"RESERVE4"                      @ string offset=718
+	.asciz	"RESERVE4"                      @ string offset=736
 .Linfo_string78:
-	.asciz	"PKTBA0"                        @ string offset=727
+	.asciz	"PKTBA0"                        @ string offset=745
 .Linfo_string79:
-	.asciz	"RESERVE5"                      @ string offset=734
+	.asciz	"RESERVE5"                      @ string offset=752
 .Linfo_string80:
-	.asciz	"MDCTL"                         @ string offset=743
+	.asciz	"MDCTL"                         @ string offset=761
 .Linfo_string81:
-	.asciz	"MDTRG_WK"                      @ string offset=749
+	.asciz	"MDTRG_WK"                      @ string offset=767
 .Linfo_string82:
-	.asciz	"RESERVE6"                      @ string offset=758
+	.asciz	"RESERVE6"                      @ string offset=776
 .Linfo_string83:
-	.asciz	"MDTTH"                         @ string offset=767
+	.asciz	"MDTTH"                         @ string offset=785
 .Linfo_string84:
-	.asciz	"MDTSAD"                        @ string offset=773
+	.asciz	"MDTSAD"                        @ string offset=791
 .Linfo_string85:
-	.asciz	"RESERVE7"                      @ string offset=780
+	.asciz	"RESERVE7"                      @ string offset=798
 .Linfo_string86:
-	.asciz	"MDWOCTH"                       @ string offset=789
+	.asciz	"MDWOCTH"                       @ string offset=807
 .Linfo_string87:
-	.asciz	"MDWOC"                         @ string offset=797
+	.asciz	"MDWOC"                         @ string offset=815
 .Linfo_string88:
-	.asciz	"RESERVE8"                      @ string offset=803
+	.asciz	"RESERVE8"                      @ string offset=821
 .Linfo_string89:
-	.asciz	"MDWTH"                         @ string offset=812
+	.asciz	"MDWTH"                         @ string offset=830
 .Linfo_string90:
-	.asciz	"MDWSAD"                        @ string offset=818
+	.asciz	"MDWSAD"                        @ string offset=836
 .Linfo_string91:
-	.asciz	"CCAP_T"                        @ string offset=825
+	.asciz	"CCAP_T"                        @ string offset=843
 .Linfo_string92:
-	.asciz	"SCB_InvalidateDCache_by_Addr"  @ string offset=832
+	.asciz	"SCB_InvalidateDCache_by_Addr"  @ string offset=850
 .Linfo_string93:
-	.asciz	"addr"                          @ string offset=861
+	.asciz	"addr"                          @ string offset=879
 .Linfo_string94:
-	.asciz	"dsize"                         @ string offset=866
+	.asciz	"dsize"                         @ string offset=884
 .Linfo_string95:
-	.asciz	"op_addr"                       @ string offset=872
+	.asciz	"op_addr"                       @ string offset=890
 .Linfo_string96:
-	.asciz	"op_size"                       @ string offset=880
+	.asciz	"op_size"                       @ string offset=898
 .Linfo_string97:
-	.asciz	"SCB_InvalidateDCache"          @ string offset=888
+	.asciz	"SCB_InvalidateDCache"          @ string offset=906
 .Linfo_string98:
-	.asciz	"ccsidr"                        @ string offset=909
+	.asciz	"ccsidr"                        @ string offset=927
 .Linfo_string99:
-	.asciz	"sets"                          @ string offset=916
+	.asciz	"sets"                          @ string offset=934
 .Linfo_string100:
-	.asciz	"ways"                          @ string offset=921
+	.asciz	"ways"                          @ string offset=939
 .Linfo_string101:
-	.asciz	"ethosu_flush_dcache"           @ string offset=926
+	.asciz	"ethosu_flush_dcache"           @ string offset=944
 .Linfo_string102:
-	.asciz	"ethosu_invalidate_dcache"      @ string offset=946
+	.asciz	"ethosu_invalidate_dcache"      @ string offset=964
 .Linfo_string103:
-	.asciz	"p"                             @ string offset=971
+	.asciz	"p"                             @ string offset=989
 .Linfo_string104:
-	.asciz	"bytes"                         @ string offset=973
+	.asciz	"bytes"                         @ string offset=991
 .Linfo_string105:
-	.asciz	"size_t"                        @ string offset=979
-	.ident	"Component: Arm Compiler for Embedded 6.19 Tool: armclang [5e73cb00]"
+	.asciz	"size_t"                        @ string offset=997
+	.ident	"Component: Arm Compiler for Embedded 6.22 Tool: armclang [5ee92100]"
 	.section	".note.GNU-stack","",%progbits
 	.eabi_attribute	30, 1	@ Tag_ABI_optimization_goals
 	.ARM_attribute	16, 1	@ Tag_AV_eba

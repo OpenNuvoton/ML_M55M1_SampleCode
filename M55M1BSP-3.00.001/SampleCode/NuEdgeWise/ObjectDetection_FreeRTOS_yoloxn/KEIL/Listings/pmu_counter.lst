@@ -7,6 +7,7 @@
 	.eabi_attribute	8, 0	@ Tag_ARM_ISA_use
 	.eabi_attribute	9, 3	@ Tag_THUMB_ISA_use
 	.fpu	fpv5-d16
+	.arch_extension	mve.fp
 	.eabi_attribute	36, 1	@ Tag_FP_HP_extension
 	.eabi_attribute	48, 2	@ Tag_MVE_arch
 	.eabi_attribute	46, 1	@ Tag_DSP_extension
@@ -23,12 +24,12 @@
 	.eabi_attribute	26, 1	@ Tag_ABI_enum_size
 	.eabi_attribute	14, 0	@ Tag_ABI_PCS_R9_use
 	.file	"pmu_counter.c"
-	.file	1 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../ProfilerCounter/pmu_counter.c"
-	.file	2 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include" "stdint.h"
-	.file	3 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/StdDriver/inc/npu\\pmu_ethosu.h"
-	.file	4 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include/M55M1.h"
-	.file	5 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/CMSIS/Core/Include\\core_cm55.h"
-	.file	6 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include/ccap_reg.h"
+	.file	1 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../ProfilerCounter/pmu_counter.c"
+	.file	2 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include" "stdint.h"
+	.file	3 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/StdDriver/inc/npu\\pmu_ethosu.h"
+	.file	4 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include\\M55M1.h"
+	.file	5 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/CMSIS/Core/Include\\core_cm55.h"
+	.file	6 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include\\ccap_reg.h"
 	.section	.text.FreeRTOS_TickHook,"ax",%progbits
 	.hidden	FreeRTOS_TickHook               @ -- Begin function FreeRTOS_TickHook
 	.globl	FreeRTOS_TickHook
@@ -79,7 +80,6 @@ FreeRTOS_TickHook:
 	.thumb_func
 pmu_reset_counters:
 .Lfunc_begin1:
-	.loc	1 129 0                         @ ../ProfilerCounter/pmu_counter.c:129:0
 	.fnstart
 	.cfi_startproc
 @ %bb.0:
@@ -89,7 +89,7 @@ pmu_reset_counters:
 .Lfunc_end1:
 	.size	pmu_reset_counters, .Lfunc_end1-pmu_reset_counters
 	.cfi_endproc
-	.file	7 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../NPU/include\\ethosu_profiler.h"
+	.file	7 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../NPU/include\\ethosu_profiler.h"
 	.cantunwind
 	.fnend
                                         @ -- End function
@@ -135,9 +135,6 @@ pmu_get_counters:
 	bl	ethosu_get_pmu_counters
 .Ltmp6:
 	@DEBUG_VALUE: add_pmu_counter:counters <- $r4
-	@DEBUG_VALUE: add_pmu_counter:unit <- undef
-	@DEBUG_VALUE: add_pmu_counter:name <- undef
-	@DEBUG_VALUE: add_pmu_counter:value <- [DW_OP_LLVM_convert 32 7, DW_OP_LLVM_convert 64 7, DW_OP_stack_value] undef
 	.loc	1 50 36                         @ ../ProfilerCounter/pmu_counter.c:50:36
 	ldr.w	r0, [r4, #160]
 .Ltmp7:
@@ -161,8 +158,8 @@ pmu_get_counters:
 	ldm	r3, {r1, r2, r3}
 .Ltmp11:
 	@DEBUG_VALUE: add_pmu_counter:value <- [DW_OP_LLVM_fragment 0 32] $r1
-	@DEBUG_VALUE: add_pmu_counter:unit <- $r2
 	@DEBUG_VALUE: add_pmu_counter:name <- $r3
+	@DEBUG_VALUE: add_pmu_counter:unit <- $r2
 	.loc	1 54 9                          @ ../ProfilerCounter/pmu_counter.c:54:9
 	add.w	r6, r4, r0, lsl #4
 	.loc	1 57 9                          @ ../ProfilerCounter/pmu_counter.c:57:9
@@ -172,7 +169,7 @@ pmu_get_counters:
 	str	r1, [r4, r5]
 .Ltmp13:
 	@DEBUG_VALUE: add_pmu_counter:value <- [DW_OP_LLVM_fragment 32 32] $r7
-	@DEBUG_VALUE: add_pmu_counter:value <- [DW_OP_LLVM_convert 32 7, DW_OP_LLVM_convert 64 7, DW_OP_stack_value] undef
+	@DEBUG_VALUE: add_pmu_counter:value <- undef
 	strd	r7, r3, [r6, #4]
 	.loc	1 56 38                         @ ../ProfilerCounter/pmu_counter.c:56:38
 	str	r2, [r6, #12]
@@ -180,11 +177,11 @@ pmu_get_counters:
 	str.w	r0, [r4, #160]
 .Ltmp14:
 	@DEBUG_VALUE: pmu_get_counters:i <- 1
-	@DEBUG_VALUE: add_pmu_counter:value <- [DW_OP_LLVM_convert 32 7, DW_OP_LLVM_convert 64 7, DW_OP_stack_value] undef
-	@DEBUG_VALUE: add_pmu_counter:name <- undef
-	@DEBUG_VALUE: add_pmu_counter:unit <- undef
 	@DEBUG_VALUE: add_pmu_counter:counters <- $r4
 	@DEBUG_VALUE: add_pmu_counter:idx <- $r0
+	@DEBUG_VALUE: add_pmu_counter:unit <- undef
+	@DEBUG_VALUE: add_pmu_counter:name <- undef
+	@DEBUG_VALUE: add_pmu_counter:value <- undef
 	.loc	1 52 9                          @ ../ProfilerCounter/pmu_counter.c:52:9
 	cmp	r0, #10
 	blo	.LBB2_7
@@ -208,11 +205,11 @@ pmu_get_counters:
 	ldr.w	r0, [r4, #160]
 .Ltmp19:
 	@DEBUG_VALUE: pmu_get_counters:i <- 2
-	@DEBUG_VALUE: add_pmu_counter:value <- [DW_OP_LLVM_convert 32 7, DW_OP_LLVM_convert 64 7, DW_OP_stack_value] undef
-	@DEBUG_VALUE: add_pmu_counter:name <- undef
-	@DEBUG_VALUE: add_pmu_counter:unit <- undef
 	@DEBUG_VALUE: add_pmu_counter:counters <- $r4
 	@DEBUG_VALUE: add_pmu_counter:idx <- $r0
+	@DEBUG_VALUE: add_pmu_counter:unit <- undef
+	@DEBUG_VALUE: add_pmu_counter:name <- undef
+	@DEBUG_VALUE: add_pmu_counter:value <- undef
 	.loc	1 52 9                          @ ../ProfilerCounter/pmu_counter.c:52:9
 	cmp	r0, #10
 	blo	.LBB2_8
@@ -236,11 +233,11 @@ pmu_get_counters:
 	ldr.w	r0, [r4, #160]
 .Ltmp24:
 	@DEBUG_VALUE: pmu_get_counters:i <- 3
-	@DEBUG_VALUE: add_pmu_counter:value <- [DW_OP_LLVM_convert 32 7, DW_OP_LLVM_convert 64 7, DW_OP_stack_value] undef
-	@DEBUG_VALUE: add_pmu_counter:name <- undef
-	@DEBUG_VALUE: add_pmu_counter:unit <- undef
 	@DEBUG_VALUE: add_pmu_counter:counters <- $r4
 	@DEBUG_VALUE: add_pmu_counter:idx <- $r0
+	@DEBUG_VALUE: add_pmu_counter:unit <- undef
+	@DEBUG_VALUE: add_pmu_counter:name <- undef
+	@DEBUG_VALUE: add_pmu_counter:value <- undef
 	.loc	1 52 9                          @ ../ProfilerCounter/pmu_counter.c:52:9
 	cmp	r0, #10
 	blo	.LBB2_9
@@ -264,7 +261,7 @@ pmu_get_counters:
 	ldr.w	r0, [r4, #160]
 .Ltmp29:
 	@DEBUG_VALUE: pmu_get_counters:i <- undef
-	@DEBUG_VALUE: add_pmu_counter:value <- [DW_OP_LLVM_convert 32 7, DW_OP_LLVM_convert 64 7, DW_OP_stack_value] undef
+	@DEBUG_VALUE: add_pmu_counter:value <- undef
 	@DEBUG_VALUE: add_pmu_counter:name <- undef
 	@DEBUG_VALUE: add_pmu_counter:unit <- undef
 	@DEBUG_VALUE: add_pmu_counter:counters <- $r4
@@ -310,11 +307,11 @@ pmu_get_counters:
 	ldr.w	r0, [r4, #160]
 .Ltmp38:
 	@DEBUG_VALUE: pmu_get_counters:i <- 1
-	@DEBUG_VALUE: add_pmu_counter:value <- [DW_OP_LLVM_convert 32 7, DW_OP_LLVM_convert 64 7, DW_OP_stack_value] undef
-	@DEBUG_VALUE: add_pmu_counter:name <- undef
-	@DEBUG_VALUE: add_pmu_counter:unit <- undef
 	@DEBUG_VALUE: add_pmu_counter:counters <- $r4
 	@DEBUG_VALUE: add_pmu_counter:idx <- $r0
+	@DEBUG_VALUE: add_pmu_counter:unit <- undef
+	@DEBUG_VALUE: add_pmu_counter:name <- undef
+	@DEBUG_VALUE: add_pmu_counter:value <- undef
 	.loc	1 52 9                          @ ../ProfilerCounter/pmu_counter.c:52:9
 	cmp	r0, #10
 	bhs	.LBB2_2
@@ -334,8 +331,8 @@ pmu_get_counters:
 	ldm	r3, {r1, r2, r3}
 .Ltmp42:
 	@DEBUG_VALUE: add_pmu_counter:value <- [DW_OP_LLVM_fragment 0 32] $r1
-	@DEBUG_VALUE: add_pmu_counter:unit <- $r2
 	@DEBUG_VALUE: add_pmu_counter:name <- $r3
+	@DEBUG_VALUE: add_pmu_counter:unit <- $r2
 	.loc	1 54 9                          @ ../ProfilerCounter/pmu_counter.c:54:9
 	add.w	r7, r4, r0, lsl #4
 	.loc	1 54 39 is_stmt 0               @ ../ProfilerCounter/pmu_counter.c:54:39
@@ -343,7 +340,7 @@ pmu_get_counters:
 	movs	r1, #0
 .Ltmp43:
 	@DEBUG_VALUE: add_pmu_counter:value <- [DW_OP_LLVM_fragment 32 32] $r1
-	@DEBUG_VALUE: add_pmu_counter:value <- [DW_OP_LLVM_convert 32 7, DW_OP_LLVM_convert 64 7, DW_OP_stack_value] undef
+	@DEBUG_VALUE: add_pmu_counter:value <- undef
 	.loc	1 57 9 is_stmt 1                @ ../ProfilerCounter/pmu_counter.c:57:9
 	adds	r0, #1
 .Ltmp44:
@@ -355,11 +352,11 @@ pmu_get_counters:
 	str.w	r0, [r4, #160]
 .Ltmp45:
 	@DEBUG_VALUE: pmu_get_counters:i <- 2
-	@DEBUG_VALUE: add_pmu_counter:value <- [DW_OP_LLVM_convert 32 7, DW_OP_LLVM_convert 64 7, DW_OP_stack_value] undef
-	@DEBUG_VALUE: add_pmu_counter:name <- undef
-	@DEBUG_VALUE: add_pmu_counter:unit <- undef
 	@DEBUG_VALUE: add_pmu_counter:counters <- $r4
 	@DEBUG_VALUE: add_pmu_counter:idx <- $r0
+	@DEBUG_VALUE: add_pmu_counter:unit <- undef
+	@DEBUG_VALUE: add_pmu_counter:name <- undef
+	@DEBUG_VALUE: add_pmu_counter:value <- undef
 	.loc	1 52 9                          @ ../ProfilerCounter/pmu_counter.c:52:9
 	cmp	r0, #10
 	bhs	.LBB2_3
@@ -379,8 +376,8 @@ pmu_get_counters:
 	ldm	r3, {r1, r2, r3}
 .Ltmp49:
 	@DEBUG_VALUE: add_pmu_counter:value <- [DW_OP_LLVM_fragment 0 32] $r1
-	@DEBUG_VALUE: add_pmu_counter:unit <- $r2
 	@DEBUG_VALUE: add_pmu_counter:name <- $r3
+	@DEBUG_VALUE: add_pmu_counter:unit <- $r2
 	.loc	1 54 9                          @ ../ProfilerCounter/pmu_counter.c:54:9
 	add.w	r7, r4, r0, lsl #4
 	.loc	1 54 39 is_stmt 0               @ ../ProfilerCounter/pmu_counter.c:54:39
@@ -388,7 +385,7 @@ pmu_get_counters:
 	movs	r1, #0
 .Ltmp50:
 	@DEBUG_VALUE: add_pmu_counter:value <- [DW_OP_LLVM_fragment 32 32] $r1
-	@DEBUG_VALUE: add_pmu_counter:value <- [DW_OP_LLVM_convert 32 7, DW_OP_LLVM_convert 64 7, DW_OP_stack_value] undef
+	@DEBUG_VALUE: add_pmu_counter:value <- undef
 	.loc	1 57 9 is_stmt 1                @ ../ProfilerCounter/pmu_counter.c:57:9
 	adds	r0, #1
 .Ltmp51:
@@ -400,11 +397,11 @@ pmu_get_counters:
 	str.w	r0, [r4, #160]
 .Ltmp52:
 	@DEBUG_VALUE: pmu_get_counters:i <- 3
-	@DEBUG_VALUE: add_pmu_counter:value <- [DW_OP_LLVM_convert 32 7, DW_OP_LLVM_convert 64 7, DW_OP_stack_value] undef
-	@DEBUG_VALUE: add_pmu_counter:name <- undef
-	@DEBUG_VALUE: add_pmu_counter:unit <- undef
 	@DEBUG_VALUE: add_pmu_counter:counters <- $r4
 	@DEBUG_VALUE: add_pmu_counter:idx <- $r0
+	@DEBUG_VALUE: add_pmu_counter:unit <- undef
+	@DEBUG_VALUE: add_pmu_counter:name <- undef
+	@DEBUG_VALUE: add_pmu_counter:value <- undef
 	.loc	1 52 9                          @ ../ProfilerCounter/pmu_counter.c:52:9
 	cmp	r0, #10
 	bhs	.LBB2_4
@@ -424,8 +421,8 @@ pmu_get_counters:
 	ldm	r3, {r1, r2, r3}
 .Ltmp56:
 	@DEBUG_VALUE: add_pmu_counter:value <- [DW_OP_LLVM_fragment 0 32] $r1
-	@DEBUG_VALUE: add_pmu_counter:unit <- $r2
 	@DEBUG_VALUE: add_pmu_counter:name <- $r3
+	@DEBUG_VALUE: add_pmu_counter:unit <- $r2
 	.loc	1 54 9                          @ ../ProfilerCounter/pmu_counter.c:54:9
 	add.w	r7, r4, r0, lsl #4
 	.loc	1 54 39 is_stmt 0               @ ../ProfilerCounter/pmu_counter.c:54:39
@@ -433,7 +430,7 @@ pmu_get_counters:
 	movs	r1, #0
 .Ltmp57:
 	@DEBUG_VALUE: add_pmu_counter:value <- [DW_OP_LLVM_fragment 32 32] $r1
-	@DEBUG_VALUE: add_pmu_counter:value <- [DW_OP_LLVM_convert 32 7, DW_OP_LLVM_convert 64 7, DW_OP_stack_value] undef
+	@DEBUG_VALUE: add_pmu_counter:value <- undef
 	.loc	1 57 9 is_stmt 1                @ ../ProfilerCounter/pmu_counter.c:57:9
 	adds	r0, #1
 .Ltmp58:
@@ -445,7 +442,7 @@ pmu_get_counters:
 	str.w	r0, [r4, #160]
 .Ltmp59:
 	@DEBUG_VALUE: pmu_get_counters:i <- undef
-	@DEBUG_VALUE: add_pmu_counter:value <- [DW_OP_LLVM_convert 32 7, DW_OP_LLVM_convert 64 7, DW_OP_stack_value] undef
+	@DEBUG_VALUE: add_pmu_counter:value <- undef
 	@DEBUG_VALUE: add_pmu_counter:name <- undef
 	@DEBUG_VALUE: add_pmu_counter:unit <- undef
 	@DEBUG_VALUE: add_pmu_counter:counters <- $r4
@@ -477,7 +474,7 @@ pmu_get_counters:
 	movs	r1, #0
 .Ltmp64:
 	@DEBUG_VALUE: add_pmu_counter:value <- [DW_OP_LLVM_fragment 32 32] $r1
-	@DEBUG_VALUE: add_pmu_counter:value <- [DW_OP_LLVM_convert 32 7, DW_OP_LLVM_convert 64 7, DW_OP_stack_value] undef
+	@DEBUG_VALUE: add_pmu_counter:value <- undef
 	.loc	1 57 9 is_stmt 1                @ ../ProfilerCounter/pmu_counter.c:57:9
 	adds	r0, #1
 .Ltmp65:
@@ -572,7 +569,7 @@ pmu_get_counters:
 .Ltmp80:
 	@DEBUG_VALUE: add_pmu_counter:idx <- $r0
 	@DEBUG_VALUE: add_pmu_counter:counters <- $r4
-	@DEBUG_VALUE: add_pmu_counter:value <- [DW_OP_LLVM_arg 0, DW_OP_LLVM_arg 1, DW_OP_LLVM_arg 2, DW_OP_constu 16777215, DW_OP_and, DW_OP_minus, DW_OP_LLVM_convert 32 7, DW_OP_LLVM_convert 64 7, DW_OP_plus, DW_OP_stack_value] undef
+	@DEBUG_VALUE: add_pmu_counter:value <- undef
 	.loc	1 52 9 is_stmt 1                @ ../ProfilerCounter/pmu_counter.c:52:9
 	cmp	r0, #9
 .Ltmp81:
@@ -622,7 +619,7 @@ pmu_get_counters:
 	.loc	1 57 9                          @ ../ProfilerCounter/pmu_counter.c:57:9
 	str.w	r0, [r4, #160]
 .Ltmp90:
-	.loc	1 189 1                         @ ../ProfilerCounter/pmu_counter.c:189:1
+	.loc	1 189 1 epilogue_begin          @ ../ProfilerCounter/pmu_counter.c:189:1
 	add	sp, #108
 	pop	{r4, r5, r6, r7, pc}
 .Ltmp91:
@@ -640,7 +637,7 @@ pmu_get_counters:
 	movt	r0, :upper16:.Lstr
 	bl	puts
 .Ltmp94:
-	.loc	1 189 1                         @ ../ProfilerCounter/pmu_counter.c:189:1
+	.loc	1 189 1 epilogue_begin          @ ../ProfilerCounter/pmu_counter.c:189:1
 	add	sp, #108
 	pop	{r4, r5, r6, r7, pc}
 .Ltmp95:
@@ -656,7 +653,7 @@ pmu_get_counters:
 .Lfunc_end2:
 	.size	pmu_get_counters, .Lfunc_end2-pmu_get_counters
 	.cfi_endproc
-	.file	8 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../ProfilerCounter/include\\pmu_counter.h"
+	.file	8 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../ProfilerCounter/include\\pmu_counter.h"
 	.cantunwind
 	.fnend
                                         @ -- End function
@@ -819,77 +816,6 @@ s_u64CPUCycleCount:
 .Ldebug_loc4:
 	.long	-1
 	.long	.Lfunc_begin2                   @   base address
-	.long	.Ltmp11-.Lfunc_begin2
-	.long	.Ltmp14-.Lfunc_begin2
-	.short	1                               @ Loc expr size
-	.byte	82                              @ DW_OP_reg2
-	.long	.Ltmp42-.Lfunc_begin2
-	.long	.Ltmp45-.Lfunc_begin2
-	.short	1                               @ Loc expr size
-	.byte	82                              @ DW_OP_reg2
-	.long	.Ltmp49-.Lfunc_begin2
-	.long	.Ltmp52-.Lfunc_begin2
-	.short	1                               @ Loc expr size
-	.byte	82                              @ DW_OP_reg2
-	.long	.Ltmp56-.Lfunc_begin2
-	.long	.Ltmp60-.Lfunc_begin2
-	.short	1                               @ Loc expr size
-	.byte	82                              @ DW_OP_reg2
-	.long	0
-	.long	0
-.Ldebug_loc5:
-	.long	-1
-	.long	.Lfunc_begin2                   @   base address
-	.long	.Ltmp11-.Lfunc_begin2
-	.long	.Ltmp14-.Lfunc_begin2
-	.short	1                               @ Loc expr size
-	.byte	83                              @ DW_OP_reg3
-	.long	.Ltmp42-.Lfunc_begin2
-	.long	.Ltmp45-.Lfunc_begin2
-	.short	1                               @ Loc expr size
-	.byte	83                              @ DW_OP_reg3
-	.long	.Ltmp49-.Lfunc_begin2
-	.long	.Ltmp52-.Lfunc_begin2
-	.short	1                               @ Loc expr size
-	.byte	83                              @ DW_OP_reg3
-	.long	.Ltmp56-.Lfunc_begin2
-	.long	.Ltmp60-.Lfunc_begin2
-	.short	1                               @ Loc expr size
-	.byte	83                              @ DW_OP_reg3
-	.long	0
-	.long	0
-.Ldebug_loc6:
-	.long	-1
-	.long	.Lfunc_begin2                   @   base address
-	.long	.Ltmp11-.Lfunc_begin2
-	.long	.Ltmp13-.Lfunc_begin2
-	.short	3                               @ Loc expr size
-	.byte	81                              @ DW_OP_reg1
-	.byte	147                             @ DW_OP_piece
-	.byte	4                               @ 4
-	.long	.Ltmp42-.Lfunc_begin2
-	.long	.Ltmp43-.Lfunc_begin2
-	.short	3                               @ Loc expr size
-	.byte	81                              @ DW_OP_reg1
-	.byte	147                             @ DW_OP_piece
-	.byte	4                               @ 4
-	.long	.Ltmp49-.Lfunc_begin2
-	.long	.Ltmp50-.Lfunc_begin2
-	.short	3                               @ Loc expr size
-	.byte	81                              @ DW_OP_reg1
-	.byte	147                             @ DW_OP_piece
-	.byte	4                               @ 4
-	.long	.Ltmp56-.Lfunc_begin2
-	.long	.Ltmp57-.Lfunc_begin2
-	.short	3                               @ Loc expr size
-	.byte	81                              @ DW_OP_reg1
-	.byte	147                             @ DW_OP_piece
-	.byte	4                               @ 4
-	.long	0
-	.long	0
-.Ldebug_loc7:
-	.long	-1
-	.long	.Lfunc_begin2                   @   base address
 	.long	.Ltmp7-.Lfunc_begin2
 	.long	.Ltmp12-.Lfunc_begin2
 	.short	1                               @ Loc expr size
@@ -922,6 +848,77 @@ s_u64CPUCycleCount:
 	.long	.Ltmp58-.Lfunc_begin2
 	.short	1                               @ Loc expr size
 	.byte	80                              @ DW_OP_reg0
+	.long	0
+	.long	0
+.Ldebug_loc5:
+	.long	-1
+	.long	.Lfunc_begin2                   @   base address
+	.long	.Ltmp11-.Lfunc_begin2
+	.long	.Ltmp13-.Lfunc_begin2
+	.short	3                               @ Loc expr size
+	.byte	81                              @ DW_OP_reg1
+	.byte	147                             @ DW_OP_piece
+	.byte	4                               @ 4
+	.long	.Ltmp42-.Lfunc_begin2
+	.long	.Ltmp43-.Lfunc_begin2
+	.short	3                               @ Loc expr size
+	.byte	81                              @ DW_OP_reg1
+	.byte	147                             @ DW_OP_piece
+	.byte	4                               @ 4
+	.long	.Ltmp49-.Lfunc_begin2
+	.long	.Ltmp50-.Lfunc_begin2
+	.short	3                               @ Loc expr size
+	.byte	81                              @ DW_OP_reg1
+	.byte	147                             @ DW_OP_piece
+	.byte	4                               @ 4
+	.long	.Ltmp56-.Lfunc_begin2
+	.long	.Ltmp57-.Lfunc_begin2
+	.short	3                               @ Loc expr size
+	.byte	81                              @ DW_OP_reg1
+	.byte	147                             @ DW_OP_piece
+	.byte	4                               @ 4
+	.long	0
+	.long	0
+.Ldebug_loc6:
+	.long	-1
+	.long	.Lfunc_begin2                   @   base address
+	.long	.Ltmp11-.Lfunc_begin2
+	.long	.Ltmp14-.Lfunc_begin2
+	.short	1                               @ Loc expr size
+	.byte	83                              @ DW_OP_reg3
+	.long	.Ltmp42-.Lfunc_begin2
+	.long	.Ltmp45-.Lfunc_begin2
+	.short	1                               @ Loc expr size
+	.byte	83                              @ DW_OP_reg3
+	.long	.Ltmp49-.Lfunc_begin2
+	.long	.Ltmp52-.Lfunc_begin2
+	.short	1                               @ Loc expr size
+	.byte	83                              @ DW_OP_reg3
+	.long	.Ltmp56-.Lfunc_begin2
+	.long	.Ltmp60-.Lfunc_begin2
+	.short	1                               @ Loc expr size
+	.byte	83                              @ DW_OP_reg3
+	.long	0
+	.long	0
+.Ldebug_loc7:
+	.long	-1
+	.long	.Lfunc_begin2                   @   base address
+	.long	.Ltmp11-.Lfunc_begin2
+	.long	.Ltmp14-.Lfunc_begin2
+	.short	1                               @ Loc expr size
+	.byte	82                              @ DW_OP_reg2
+	.long	.Ltmp42-.Lfunc_begin2
+	.long	.Ltmp45-.Lfunc_begin2
+	.short	1                               @ Loc expr size
+	.byte	82                              @ DW_OP_reg2
+	.long	.Ltmp49-.Lfunc_begin2
+	.long	.Ltmp52-.Lfunc_begin2
+	.short	1                               @ Loc expr size
+	.byte	82                              @ DW_OP_reg2
+	.long	.Ltmp56-.Lfunc_begin2
+	.long	.Ltmp60-.Lfunc_begin2
+	.short	1                               @ Loc expr size
+	.byte	82                              @ DW_OP_reg2
 	.long	0
 	.long	0
 .Ldebug_loc8:
@@ -1423,8 +1420,6 @@ s_u64CPUCycleCount:
 	.byte	11                              @ DW_FORM_data1
 	.byte	39                              @ DW_AT_prototyped
 	.byte	25                              @ DW_FORM_flag_present
-	.byte	54                              @ DW_AT_calling_convention
-	.byte	11                              @ DW_FORM_data1
 	.byte	73                              @ DW_AT_type
 	.byte	19                              @ DW_FORM_ref4
 	.byte	32                              @ DW_AT_inline
@@ -1486,23 +1481,6 @@ s_u64CPUCycleCount:
 	.byte	0                               @ EOM(1)
 	.byte	0                               @ EOM(2)
 	.byte	32                              @ Abbreviation Code
-	.byte	46                              @ DW_TAG_subprogram
-	.byte	1                               @ DW_CHILDREN_yes
-	.byte	3                               @ DW_AT_name
-	.byte	14                              @ DW_FORM_strp
-	.byte	58                              @ DW_AT_decl_file
-	.byte	11                              @ DW_FORM_data1
-	.byte	59                              @ DW_AT_decl_line
-	.byte	11                              @ DW_FORM_data1
-	.byte	39                              @ DW_AT_prototyped
-	.byte	25                              @ DW_FORM_flag_present
-	.byte	73                              @ DW_AT_type
-	.byte	19                              @ DW_FORM_ref4
-	.byte	32                              @ DW_AT_inline
-	.byte	11                              @ DW_FORM_data1
-	.byte	0                               @ EOM(1)
-	.byte	0                               @ EOM(2)
-	.byte	33                              @ Abbreviation Code
 	.byte	52                              @ DW_TAG_variable
 	.byte	0                               @ DW_CHILDREN_no
 	.byte	2                               @ DW_AT_location
@@ -1517,7 +1495,7 @@ s_u64CPUCycleCount:
 	.byte	19                              @ DW_FORM_ref4
 	.byte	0                               @ EOM(1)
 	.byte	0                               @ EOM(2)
-	.byte	34                              @ Abbreviation Code
+	.byte	33                              @ Abbreviation Code
 	.byte	52                              @ DW_TAG_variable
 	.byte	0                               @ DW_CHILDREN_no
 	.byte	2                               @ DW_AT_location
@@ -1532,7 +1510,7 @@ s_u64CPUCycleCount:
 	.byte	19                              @ DW_FORM_ref4
 	.byte	0                               @ EOM(1)
 	.byte	0                               @ EOM(2)
-	.byte	35                              @ Abbreviation Code
+	.byte	34                              @ Abbreviation Code
 	.byte	29                              @ DW_TAG_inlined_subroutine
 	.byte	1                               @ DW_CHILDREN_yes
 	.byte	49                              @ DW_AT_abstract_origin
@@ -1547,7 +1525,7 @@ s_u64CPUCycleCount:
 	.byte	11                              @ DW_FORM_data1
 	.byte	0                               @ EOM(1)
 	.byte	0                               @ EOM(2)
-	.byte	36                              @ Abbreviation Code
+	.byte	35                              @ Abbreviation Code
 	.byte	5                               @ DW_TAG_formal_parameter
 	.byte	0                               @ DW_CHILDREN_no
 	.byte	2                               @ DW_AT_location
@@ -1556,7 +1534,7 @@ s_u64CPUCycleCount:
 	.byte	19                              @ DW_FORM_ref4
 	.byte	0                               @ EOM(1)
 	.byte	0                               @ EOM(2)
-	.byte	37                              @ Abbreviation Code
+	.byte	36                              @ Abbreviation Code
 	.byte	52                              @ DW_TAG_variable
 	.byte	0                               @ DW_CHILDREN_no
 	.byte	2                               @ DW_AT_location
@@ -1565,7 +1543,7 @@ s_u64CPUCycleCount:
 	.byte	19                              @ DW_FORM_ref4
 	.byte	0                               @ EOM(1)
 	.byte	0                               @ EOM(2)
-	.byte	38                              @ Abbreviation Code
+	.byte	37                              @ Abbreviation Code
 	.byte	46                              @ DW_TAG_subprogram
 	.byte	1                               @ DW_CHILDREN_yes
 	.byte	17                              @ DW_AT_low_pc
@@ -1590,7 +1568,7 @@ s_u64CPUCycleCount:
 	.byte	25                              @ DW_FORM_flag_present
 	.byte	0                               @ EOM(1)
 	.byte	0                               @ EOM(2)
-	.byte	39                              @ Abbreviation Code
+	.byte	38                              @ Abbreviation Code
 	.byte	29                              @ DW_TAG_inlined_subroutine
 	.byte	1                               @ DW_CHILDREN_yes
 	.byte	49                              @ DW_AT_abstract_origin
@@ -1615,9 +1593,9 @@ s_u64CPUCycleCount:
 	.short	4                               @ DWARF version number
 	.long	.debug_abbrev                   @ Offset Into Abbrev. Section
 	.byte	4                               @ Address Size (in bytes)
-	.byte	1                               @ Abbrev [1] 0xb:0xd6a DW_TAG_compile_unit
+	.byte	1                               @ Abbrev [1] 0xb:0xd69 DW_TAG_compile_unit
 	.long	.Linfo_string0                  @ DW_AT_producer
-	.short	12                              @ DW_AT_language
+	.short	29                              @ DW_AT_language
 	.long	.Linfo_string1                  @ DW_AT_name
 	.long	.Lline_table_start0             @ DW_AT_stmt_list
 	.long	.Linfo_string2                  @ DW_AT_comp_dir
@@ -2862,130 +2840,129 @@ s_u64CPUCycleCount:
                                         @ DW_AT_prototyped
                                         @ DW_AT_declaration
                                         @ DW_AT_external
-	.byte	27                              @ Abbrev [27] 0xa4f:0x45 DW_TAG_subprogram
+	.byte	27                              @ Abbrev [27] 0xa4f:0x44 DW_TAG_subprogram
 	.long	.Linfo_string289                @ DW_AT_name
 	.byte	1                               @ DW_AT_decl_file
 	.byte	45                              @ DW_AT_decl_line
                                         @ DW_AT_prototyped
-	.byte	3                               @ DW_AT_calling_convention
-	.long	2708                            @ DW_AT_type
+	.long	2707                            @ DW_AT_type
 	.byte	1                               @ DW_AT_inline
-	.byte	28                              @ Abbrev [28] 0xa5c:0xb DW_TAG_formal_parameter
+	.byte	28                              @ Abbrev [28] 0xa5b:0xb DW_TAG_formal_parameter
 	.long	.Linfo_string291                @ DW_AT_name
 	.byte	1                               @ DW_AT_decl_file
 	.byte	45                              @ DW_AT_decl_line
 	.long	176                             @ DW_AT_type
-	.byte	28                              @ Abbrev [28] 0xa67:0xb DW_TAG_formal_parameter
+	.byte	28                              @ Abbrev [28] 0xa66:0xb DW_TAG_formal_parameter
 	.long	.Linfo_string292                @ DW_AT_name
 	.byte	1                               @ DW_AT_decl_file
 	.byte	46                              @ DW_AT_decl_line
-	.long	2715                            @ DW_AT_type
-	.byte	28                              @ Abbrev [28] 0xa72:0xb DW_TAG_formal_parameter
+	.long	2714                            @ DW_AT_type
+	.byte	28                              @ Abbrev [28] 0xa71:0xb DW_TAG_formal_parameter
 	.long	.Linfo_string293                @ DW_AT_name
 	.byte	1                               @ DW_AT_decl_file
 	.byte	47                              @ DW_AT_decl_line
-	.long	2715                            @ DW_AT_type
-	.byte	28                              @ Abbrev [28] 0xa7d:0xb DW_TAG_formal_parameter
+	.long	2714                            @ DW_AT_type
+	.byte	28                              @ Abbrev [28] 0xa7c:0xb DW_TAG_formal_parameter
 	.long	.Linfo_string294                @ DW_AT_name
 	.byte	1                               @ DW_AT_decl_file
 	.byte	48                              @ DW_AT_decl_line
-	.long	2725                            @ DW_AT_type
-	.byte	29                              @ Abbrev [29] 0xa88:0xb DW_TAG_variable
+	.long	2724                            @ DW_AT_type
+	.byte	29                              @ Abbrev [29] 0xa87:0xb DW_TAG_variable
 	.long	.Linfo_string301                @ DW_AT_name
 	.byte	1                               @ DW_AT_decl_file
 	.byte	50                              @ DW_AT_decl_line
-	.long	2854                            @ DW_AT_type
+	.long	2853                            @ DW_AT_type
 	.byte	0                               @ End Of Children Mark
-	.byte	5                               @ Abbrev [5] 0xa94:0x7 DW_TAG_base_type
+	.byte	5                               @ Abbrev [5] 0xa93:0x7 DW_TAG_base_type
 	.long	.Linfo_string290                @ DW_AT_name
 	.byte	2                               @ DW_AT_encoding
 	.byte	1                               @ DW_AT_byte_size
-	.byte	13                              @ Abbrev [13] 0xa9b:0x5 DW_TAG_pointer_type
-	.long	2720                            @ DW_AT_type
-	.byte	18                              @ Abbrev [18] 0xaa0:0x5 DW_TAG_const_type
+	.byte	13                              @ Abbrev [13] 0xa9a:0x5 DW_TAG_pointer_type
+	.long	2719                            @ DW_AT_type
+	.byte	18                              @ Abbrev [18] 0xa9f:0x5 DW_TAG_const_type
 	.long	63                              @ DW_AT_type
-	.byte	13                              @ Abbrev [13] 0xaa5:0x5 DW_TAG_pointer_type
-	.long	2730                            @ DW_AT_type
-	.byte	9                               @ Abbrev [9] 0xaaa:0xb DW_TAG_typedef
-	.long	2741                            @ DW_AT_type
+	.byte	13                              @ Abbrev [13] 0xaa4:0x5 DW_TAG_pointer_type
+	.long	2729                            @ DW_AT_type
+	.byte	9                               @ Abbrev [9] 0xaa9:0xb DW_TAG_typedef
+	.long	2740                            @ DW_AT_type
 	.long	.Linfo_string300                @ DW_AT_name
 	.byte	8                               @ DW_AT_decl_file
 	.byte	39                              @ DW_AT_decl_line
-	.byte	30                              @ Abbrev [30] 0xab5:0x2d DW_TAG_structure_type
+	.byte	30                              @ Abbrev [30] 0xab4:0x2d DW_TAG_structure_type
 	.long	.Linfo_string299                @ DW_AT_name
 	.byte	168                             @ DW_AT_byte_size
 	.byte	8                               @ DW_AT_decl_file
 	.byte	34                              @ DW_AT_decl_line
-	.byte	31                              @ Abbrev [31] 0xabd:0xc DW_TAG_member
+	.byte	31                              @ Abbrev [31] 0xabc:0xc DW_TAG_member
 	.long	.Linfo_string294                @ DW_AT_name
-	.long	2786                            @ DW_AT_type
+	.long	2785                            @ DW_AT_type
 	.byte	8                               @ DW_AT_decl_file
 	.byte	36                              @ DW_AT_decl_line
 	.byte	0                               @ DW_AT_data_member_location
-	.byte	31                              @ Abbrev [31] 0xac9:0xc DW_TAG_member
+	.byte	31                              @ Abbrev [31] 0xac8:0xc DW_TAG_member
 	.long	.Linfo_string297                @ DW_AT_name
 	.long	1700                            @ DW_AT_type
 	.byte	8                               @ DW_AT_decl_file
 	.byte	37                              @ DW_AT_decl_line
 	.byte	160                             @ DW_AT_data_member_location
-	.byte	31                              @ Abbrev [31] 0xad5:0xc DW_TAG_member
+	.byte	31                              @ Abbrev [31] 0xad4:0xc DW_TAG_member
 	.long	.Linfo_string298                @ DW_AT_name
-	.long	2708                            @ DW_AT_type
+	.long	2707                            @ DW_AT_type
 	.byte	8                               @ DW_AT_decl_file
 	.byte	38                              @ DW_AT_decl_line
 	.byte	164                             @ DW_AT_data_member_location
 	.byte	0                               @ End Of Children Mark
-	.byte	3                               @ Abbrev [3] 0xae2:0xc DW_TAG_array_type
-	.long	2798                            @ DW_AT_type
-	.byte	4                               @ Abbrev [4] 0xae7:0x6 DW_TAG_subrange_type
+	.byte	3                               @ Abbrev [3] 0xae1:0xc DW_TAG_array_type
+	.long	2797                            @ DW_AT_type
+	.byte	4                               @ Abbrev [4] 0xae6:0x6 DW_TAG_subrange_type
 	.long	70                              @ DW_AT_type
 	.byte	10                              @ DW_AT_count
 	.byte	0                               @ End Of Children Mark
-	.byte	9                               @ Abbrev [9] 0xaee:0xb DW_TAG_typedef
-	.long	2809                            @ DW_AT_type
+	.byte	9                               @ Abbrev [9] 0xaed:0xb DW_TAG_typedef
+	.long	2808                            @ DW_AT_type
 	.long	.Linfo_string296                @ DW_AT_name
 	.byte	8                               @ DW_AT_decl_file
 	.byte	29                              @ DW_AT_decl_line
-	.byte	30                              @ Abbrev [30] 0xaf9:0x2d DW_TAG_structure_type
+	.byte	30                              @ Abbrev [30] 0xaf8:0x2d DW_TAG_structure_type
 	.long	.Linfo_string295                @ DW_AT_name
 	.byte	16                              @ DW_AT_byte_size
 	.byte	8                               @ DW_AT_decl_file
 	.byte	24                              @ DW_AT_decl_line
-	.byte	31                              @ Abbrev [31] 0xb01:0xc DW_TAG_member
+	.byte	31                              @ Abbrev [31] 0xb00:0xc DW_TAG_member
 	.long	.Linfo_string291                @ DW_AT_name
 	.long	176                             @ DW_AT_type
 	.byte	8                               @ DW_AT_decl_file
 	.byte	26                              @ DW_AT_decl_line
 	.byte	0                               @ DW_AT_data_member_location
-	.byte	31                              @ Abbrev [31] 0xb0d:0xc DW_TAG_member
+	.byte	31                              @ Abbrev [31] 0xb0c:0xc DW_TAG_member
 	.long	.Linfo_string292                @ DW_AT_name
-	.long	2715                            @ DW_AT_type
+	.long	2714                            @ DW_AT_type
 	.byte	8                               @ DW_AT_decl_file
 	.byte	27                              @ DW_AT_decl_line
 	.byte	8                               @ DW_AT_data_member_location
-	.byte	31                              @ Abbrev [31] 0xb19:0xc DW_TAG_member
+	.byte	31                              @ Abbrev [31] 0xb18:0xc DW_TAG_member
 	.long	.Linfo_string293                @ DW_AT_name
-	.long	2715                            @ DW_AT_type
+	.long	2714                            @ DW_AT_type
 	.byte	8                               @ DW_AT_decl_file
 	.byte	28                              @ DW_AT_decl_line
 	.byte	12                              @ DW_AT_data_member_location
 	.byte	0                               @ End Of Children Mark
-	.byte	18                              @ Abbrev [18] 0xb26:0x5 DW_TAG_const_type
+	.byte	18                              @ Abbrev [18] 0xb25:0x5 DW_TAG_const_type
 	.long	1700                            @ DW_AT_type
-	.byte	32                              @ Abbrev [32] 0xb2b:0x18 DW_TAG_subprogram
+	.byte	27                              @ Abbrev [27] 0xb2a:0x18 DW_TAG_subprogram
 	.long	.Linfo_string302                @ DW_AT_name
 	.byte	1                               @ DW_AT_decl_file
 	.byte	68                              @ DW_AT_decl_line
                                         @ DW_AT_prototyped
 	.long	176                             @ DW_AT_type
 	.byte	1                               @ DW_AT_inline
-	.byte	29                              @ Abbrev [29] 0xb37:0xb DW_TAG_variable
+	.byte	29                              @ Abbrev [29] 0xb36:0xb DW_TAG_variable
 	.long	.Linfo_string303                @ DW_AT_name
 	.byte	1                               @ DW_AT_decl_file
 	.byte	70                              @ DW_AT_decl_line
 	.long	1700                            @ DW_AT_type
 	.byte	0                               @ End Of Children Mark
-	.byte	23                              @ Abbrev [23] 0xb43:0x118 DW_TAG_subprogram
+	.byte	23                              @ Abbrev [23] 0xb42:0x118 DW_TAG_subprogram
 	.long	.Lfunc_begin2                   @ DW_AT_low_pc
 	.long	.Lfunc_end2-.Lfunc_begin2       @ DW_AT_high_pc
 	.byte	1                               @ DW_AT_frame_base
@@ -2996,114 +2973,114 @@ s_u64CPUCycleCount:
 	.byte	142                             @ DW_AT_decl_line
                                         @ DW_AT_prototyped
                                         @ DW_AT_external
-	.byte	24                              @ Abbrev [24] 0xb54:0xf DW_TAG_formal_parameter
+	.byte	24                              @ Abbrev [24] 0xb53:0xf DW_TAG_formal_parameter
 	.long	.Ldebug_loc1                    @ DW_AT_location
 	.long	.Linfo_string294                @ DW_AT_name
 	.byte	1                               @ DW_AT_decl_file
 	.byte	142                             @ DW_AT_decl_line
-	.long	2725                            @ DW_AT_type
-	.byte	33                              @ Abbrev [33] 0xb63:0xe DW_TAG_variable
+	.long	2724                            @ DW_AT_type
+	.byte	32                              @ Abbrev [32] 0xb62:0xe DW_TAG_variable
 	.byte	2                               @ DW_AT_location
 	.byte	145
 	.byte	0
 	.long	.Linfo_string309                @ DW_AT_name
 	.byte	1                               @ DW_AT_decl_file
 	.byte	148                             @ DW_AT_decl_line
-	.long	3211                            @ DW_AT_type
-	.byte	34                              @ Abbrev [34] 0xb71:0xf DW_TAG_variable
+	.long	3210                            @ DW_AT_type
+	.byte	33                              @ Abbrev [33] 0xb70:0xf DW_TAG_variable
 	.long	.Ldebug_loc2                    @ DW_AT_location
 	.long	.Linfo_string323                @ DW_AT_name
 	.byte	1                               @ DW_AT_decl_file
 	.byte	146                             @ DW_AT_decl_line
 	.long	1700                            @ DW_AT_type
-	.byte	35                              @ Abbrev [35] 0xb80:0x3a DW_TAG_inlined_subroutine
+	.byte	34                              @ Abbrev [34] 0xb7f:0x3a DW_TAG_inlined_subroutine
 	.long	2639                            @ DW_AT_abstract_origin
 	.long	.Ldebug_ranges0                 @ DW_AT_ranges
 	.byte	1                               @ DW_AT_call_file
 	.byte	152                             @ DW_AT_call_line
 	.byte	9                               @ DW_AT_call_column
-	.byte	36                              @ Abbrev [36] 0xb8c:0x9 DW_TAG_formal_parameter
-	.long	.Ldebug_loc6                    @ DW_AT_location
-	.long	2652                            @ DW_AT_abstract_origin
-	.byte	36                              @ Abbrev [36] 0xb95:0x9 DW_TAG_formal_parameter
+	.byte	35                              @ Abbrev [35] 0xb8b:0x9 DW_TAG_formal_parameter
 	.long	.Ldebug_loc5                    @ DW_AT_location
-	.long	2663                            @ DW_AT_abstract_origin
-	.byte	36                              @ Abbrev [36] 0xb9e:0x9 DW_TAG_formal_parameter
-	.long	.Ldebug_loc4                    @ DW_AT_location
-	.long	2674                            @ DW_AT_abstract_origin
-	.byte	36                              @ Abbrev [36] 0xba7:0x9 DW_TAG_formal_parameter
-	.long	.Ldebug_loc3                    @ DW_AT_location
-	.long	2685                            @ DW_AT_abstract_origin
-	.byte	37                              @ Abbrev [37] 0xbb0:0x9 DW_TAG_variable
+	.long	2651                            @ DW_AT_abstract_origin
+	.byte	35                              @ Abbrev [35] 0xb94:0x9 DW_TAG_formal_parameter
+	.long	.Ldebug_loc6                    @ DW_AT_location
+	.long	2662                            @ DW_AT_abstract_origin
+	.byte	35                              @ Abbrev [35] 0xb9d:0x9 DW_TAG_formal_parameter
 	.long	.Ldebug_loc7                    @ DW_AT_location
-	.long	2696                            @ DW_AT_abstract_origin
+	.long	2673                            @ DW_AT_abstract_origin
+	.byte	35                              @ Abbrev [35] 0xba6:0x9 DW_TAG_formal_parameter
+	.long	.Ldebug_loc3                    @ DW_AT_location
+	.long	2684                            @ DW_AT_abstract_origin
+	.byte	36                              @ Abbrev [36] 0xbaf:0x9 DW_TAG_variable
+	.long	.Ldebug_loc4                    @ DW_AT_location
+	.long	2695                            @ DW_AT_abstract_origin
 	.byte	0                               @ End Of Children Mark
-	.byte	35                              @ Abbrev [35] 0xbba:0x3a DW_TAG_inlined_subroutine
+	.byte	34                              @ Abbrev [34] 0xbb9:0x3a DW_TAG_inlined_subroutine
 	.long	2639                            @ DW_AT_abstract_origin
 	.long	.Ldebug_ranges1                 @ DW_AT_ranges
 	.byte	1                               @ DW_AT_call_file
 	.byte	161                             @ DW_AT_call_line
 	.byte	9                               @ DW_AT_call_column
-	.byte	36                              @ Abbrev [36] 0xbc6:0x9 DW_TAG_formal_parameter
+	.byte	35                              @ Abbrev [35] 0xbc5:0x9 DW_TAG_formal_parameter
 	.long	.Ldebug_loc8                    @ DW_AT_location
-	.long	2652                            @ DW_AT_abstract_origin
-	.byte	36                              @ Abbrev [36] 0xbcf:0x9 DW_TAG_formal_parameter
+	.long	2651                            @ DW_AT_abstract_origin
+	.byte	35                              @ Abbrev [35] 0xbce:0x9 DW_TAG_formal_parameter
 	.long	.Ldebug_loc9                    @ DW_AT_location
-	.long	2663                            @ DW_AT_abstract_origin
-	.byte	36                              @ Abbrev [36] 0xbd8:0x9 DW_TAG_formal_parameter
+	.long	2662                            @ DW_AT_abstract_origin
+	.byte	35                              @ Abbrev [35] 0xbd7:0x9 DW_TAG_formal_parameter
 	.long	.Ldebug_loc10                   @ DW_AT_location
-	.long	2674                            @ DW_AT_abstract_origin
-	.byte	36                              @ Abbrev [36] 0xbe1:0x9 DW_TAG_formal_parameter
+	.long	2673                            @ DW_AT_abstract_origin
+	.byte	35                              @ Abbrev [35] 0xbe0:0x9 DW_TAG_formal_parameter
 	.long	.Ldebug_loc11                   @ DW_AT_location
-	.long	2685                            @ DW_AT_abstract_origin
-	.byte	37                              @ Abbrev [37] 0xbea:0x9 DW_TAG_variable
+	.long	2684                            @ DW_AT_abstract_origin
+	.byte	36                              @ Abbrev [36] 0xbe9:0x9 DW_TAG_variable
 	.long	.Ldebug_loc12                   @ DW_AT_location
-	.long	2696                            @ DW_AT_abstract_origin
+	.long	2695                            @ DW_AT_abstract_origin
 	.byte	0                               @ End Of Children Mark
-	.byte	35                              @ Abbrev [35] 0xbf4:0x28 DW_TAG_inlined_subroutine
+	.byte	34                              @ Abbrev [34] 0xbf3:0x28 DW_TAG_inlined_subroutine
 	.long	2639                            @ DW_AT_abstract_origin
 	.long	.Ldebug_ranges2                 @ DW_AT_ranges
 	.byte	1                               @ DW_AT_call_file
 	.byte	168                             @ DW_AT_call_line
 	.byte	5                               @ DW_AT_call_column
-	.byte	36                              @ Abbrev [36] 0xc00:0x9 DW_TAG_formal_parameter
+	.byte	35                              @ Abbrev [35] 0xbff:0x9 DW_TAG_formal_parameter
 	.long	.Ldebug_loc13                   @ DW_AT_location
-	.long	2652                            @ DW_AT_abstract_origin
-	.byte	36                              @ Abbrev [36] 0xc09:0x9 DW_TAG_formal_parameter
+	.long	2651                            @ DW_AT_abstract_origin
+	.byte	35                              @ Abbrev [35] 0xc08:0x9 DW_TAG_formal_parameter
 	.long	.Ldebug_loc14                   @ DW_AT_location
-	.long	2685                            @ DW_AT_abstract_origin
-	.byte	37                              @ Abbrev [37] 0xc12:0x9 DW_TAG_variable
+	.long	2684                            @ DW_AT_abstract_origin
+	.byte	36                              @ Abbrev [36] 0xc11:0x9 DW_TAG_variable
 	.long	.Ldebug_loc15                   @ DW_AT_location
-	.long	2696                            @ DW_AT_abstract_origin
+	.long	2695                            @ DW_AT_abstract_origin
 	.byte	0                               @ End Of Children Mark
-	.byte	35                              @ Abbrev [35] 0xc1c:0x28 DW_TAG_inlined_subroutine
+	.byte	34                              @ Abbrev [34] 0xc1b:0x28 DW_TAG_inlined_subroutine
 	.long	2639                            @ DW_AT_abstract_origin
 	.long	.Ldebug_ranges3                 @ DW_AT_ranges
 	.byte	1                               @ DW_AT_call_file
 	.byte	177                             @ DW_AT_call_line
 	.byte	5                               @ DW_AT_call_column
-	.byte	36                              @ Abbrev [36] 0xc28:0x9 DW_TAG_formal_parameter
+	.byte	35                              @ Abbrev [35] 0xc27:0x9 DW_TAG_formal_parameter
 	.long	.Ldebug_loc19                   @ DW_AT_location
-	.long	2652                            @ DW_AT_abstract_origin
-	.byte	36                              @ Abbrev [36] 0xc31:0x9 DW_TAG_formal_parameter
+	.long	2651                            @ DW_AT_abstract_origin
+	.byte	35                              @ Abbrev [35] 0xc30:0x9 DW_TAG_formal_parameter
 	.long	.Ldebug_loc18                   @ DW_AT_location
-	.long	2685                            @ DW_AT_abstract_origin
-	.byte	37                              @ Abbrev [37] 0xc3a:0x9 DW_TAG_variable
+	.long	2684                            @ DW_AT_abstract_origin
+	.byte	36                              @ Abbrev [36] 0xc39:0x9 DW_TAG_variable
 	.long	.Ldebug_loc17                   @ DW_AT_location
-	.long	2696                            @ DW_AT_abstract_origin
+	.long	2695                            @ DW_AT_abstract_origin
 	.byte	0                               @ End Of Children Mark
-	.byte	35                              @ Abbrev [35] 0xc44:0x16 DW_TAG_inlined_subroutine
-	.long	2859                            @ DW_AT_abstract_origin
+	.byte	34                              @ Abbrev [34] 0xc43:0x16 DW_TAG_inlined_subroutine
+	.long	2858                            @ DW_AT_abstract_origin
 	.long	.Ldebug_ranges4                 @ DW_AT_ranges
 	.byte	1                               @ DW_AT_call_file
 	.byte	178                             @ DW_AT_call_line
 	.byte	9                               @ DW_AT_call_column
-	.byte	37                              @ Abbrev [37] 0xc50:0x9 DW_TAG_variable
+	.byte	36                              @ Abbrev [36] 0xc4f:0x9 DW_TAG_variable
 	.long	.Ldebug_loc16                   @ DW_AT_location
-	.long	2871                            @ DW_AT_abstract_origin
+	.long	2870                            @ DW_AT_abstract_origin
 	.byte	0                               @ End Of Children Mark
 	.byte	0                               @ End Of Children Mark
-	.byte	38                              @ Abbrev [38] 0xc5b:0x30 DW_TAG_subprogram
+	.byte	37                              @ Abbrev [37] 0xc5a:0x30 DW_TAG_subprogram
 	.long	.Lfunc_begin3                   @ DW_AT_low_pc
 	.long	.Lfunc_end3-.Lfunc_begin3       @ DW_AT_high_pc
 	.byte	1                               @ DW_AT_frame_base
@@ -3115,133 +3092,133 @@ s_u64CPUCycleCount:
                                         @ DW_AT_prototyped
 	.long	176                             @ DW_AT_type
                                         @ DW_AT_external
-	.byte	39                              @ Abbrev [39] 0xc70:0x1a DW_TAG_inlined_subroutine
-	.long	2859                            @ DW_AT_abstract_origin
+	.byte	38                              @ Abbrev [38] 0xc6f:0x1a DW_TAG_inlined_subroutine
+	.long	2858                            @ DW_AT_abstract_origin
 	.long	.Ltmp96                         @ DW_AT_low_pc
 	.long	.Ltmp98-.Ltmp96                 @ DW_AT_high_pc
 	.byte	1                               @ DW_AT_call_file
 	.byte	193                             @ DW_AT_call_line
 	.byte	13                              @ DW_AT_call_column
-	.byte	37                              @ Abbrev [37] 0xc80:0x9 DW_TAG_variable
+	.byte	36                              @ Abbrev [36] 0xc7f:0x9 DW_TAG_variable
 	.long	.Ldebug_loc20                   @ DW_AT_location
-	.long	2871                            @ DW_AT_abstract_origin
+	.long	2870                            @ DW_AT_abstract_origin
 	.byte	0                               @ End Of Children Mark
 	.byte	0                               @ End Of Children Mark
-	.byte	9                               @ Abbrev [9] 0xc8b:0xb DW_TAG_typedef
-	.long	3222                            @ DW_AT_type
+	.byte	9                               @ Abbrev [9] 0xc8a:0xb DW_TAG_typedef
+	.long	3221                            @ DW_AT_type
 	.long	.Linfo_string322                @ DW_AT_name
 	.byte	7                               @ DW_AT_decl_file
 	.byte	50                              @ DW_AT_decl_line
-	.byte	30                              @ Abbrev [30] 0xc96:0x39 DW_TAG_structure_type
+	.byte	30                              @ Abbrev [30] 0xc95:0x39 DW_TAG_structure_type
 	.long	.Linfo_string321                @ DW_AT_name
 	.byte	104                             @ DW_AT_byte_size
 	.byte	7                               @ DW_AT_decl_file
 	.byte	44                              @ DW_AT_decl_line
-	.byte	31                              @ Abbrev [31] 0xc9e:0xc DW_TAG_member
+	.byte	31                              @ Abbrev [31] 0xc9d:0xc DW_TAG_member
 	.long	.Linfo_string310                @ DW_AT_name
 	.long	176                             @ DW_AT_type
 	.byte	7                               @ DW_AT_decl_file
 	.byte	46                              @ DW_AT_decl_line
 	.byte	0                               @ DW_AT_data_member_location
-	.byte	31                              @ Abbrev [31] 0xcaa:0xc DW_TAG_member
+	.byte	31                              @ Abbrev [31] 0xca9:0xc DW_TAG_member
 	.long	.Linfo_string311                @ DW_AT_name
-	.long	3279                            @ DW_AT_type
+	.long	3278                            @ DW_AT_type
 	.byte	7                               @ DW_AT_decl_file
 	.byte	47                              @ DW_AT_decl_line
 	.byte	8                               @ DW_AT_data_member_location
-	.byte	31                              @ Abbrev [31] 0xcb6:0xc DW_TAG_member
+	.byte	31                              @ Abbrev [31] 0xcb5:0xc DW_TAG_member
 	.long	.Linfo_string317                @ DW_AT_name
-	.long	3376                            @ DW_AT_type
+	.long	3375                            @ DW_AT_type
 	.byte	7                               @ DW_AT_decl_file
 	.byte	48                              @ DW_AT_decl_line
 	.byte	88                              @ DW_AT_data_member_location
-	.byte	31                              @ Abbrev [31] 0xcc2:0xc DW_TAG_member
+	.byte	31                              @ Abbrev [31] 0xcc1:0xc DW_TAG_member
 	.long	.Linfo_string320                @ DW_AT_name
 	.long	1700                            @ DW_AT_type
 	.byte	7                               @ DW_AT_decl_file
 	.byte	49                              @ DW_AT_decl_line
 	.byte	100                             @ DW_AT_data_member_location
 	.byte	0                               @ End Of Children Mark
-	.byte	3                               @ Abbrev [3] 0xccf:0xc DW_TAG_array_type
-	.long	3291                            @ DW_AT_type
-	.byte	4                               @ Abbrev [4] 0xcd4:0x6 DW_TAG_subrange_type
+	.byte	3                               @ Abbrev [3] 0xcce:0xc DW_TAG_array_type
+	.long	3290                            @ DW_AT_type
+	.byte	4                               @ Abbrev [4] 0xcd3:0x6 DW_TAG_subrange_type
 	.long	70                              @ DW_AT_type
 	.byte	4                               @ DW_AT_count
 	.byte	0                               @ End Of Children Mark
-	.byte	9                               @ Abbrev [9] 0xcdb:0xb DW_TAG_typedef
-	.long	3302                            @ DW_AT_type
+	.byte	9                               @ Abbrev [9] 0xcda:0xb DW_TAG_typedef
+	.long	3301                            @ DW_AT_type
 	.long	.Linfo_string316                @ DW_AT_name
 	.byte	7                               @ DW_AT_decl_file
 	.byte	35                              @ DW_AT_decl_line
-	.byte	30                              @ Abbrev [30] 0xce6:0x45 DW_TAG_structure_type
+	.byte	30                              @ Abbrev [30] 0xce5:0x45 DW_TAG_structure_type
 	.long	.Linfo_string315                @ DW_AT_name
 	.byte	20                              @ DW_AT_byte_size
 	.byte	7                               @ DW_AT_decl_file
 	.byte	28                              @ DW_AT_decl_line
-	.byte	31                              @ Abbrev [31] 0xcee:0xc DW_TAG_member
+	.byte	31                              @ Abbrev [31] 0xced:0xc DW_TAG_member
 	.long	.Linfo_string312                @ DW_AT_name
 	.long	213                             @ DW_AT_type
 	.byte	7                               @ DW_AT_decl_file
 	.byte	30                              @ DW_AT_decl_line
 	.byte	0                               @ DW_AT_data_member_location
-	.byte	31                              @ Abbrev [31] 0xcfa:0xc DW_TAG_member
+	.byte	31                              @ Abbrev [31] 0xcf9:0xc DW_TAG_member
 	.long	.Linfo_string313                @ DW_AT_name
 	.long	1700                            @ DW_AT_type
 	.byte	7                               @ DW_AT_decl_file
 	.byte	31                              @ DW_AT_decl_line
 	.byte	4                               @ DW_AT_data_member_location
-	.byte	31                              @ Abbrev [31] 0xd06:0xc DW_TAG_member
+	.byte	31                              @ Abbrev [31] 0xd05:0xc DW_TAG_member
 	.long	.Linfo_string314                @ DW_AT_name
 	.long	1700                            @ DW_AT_type
 	.byte	7                               @ DW_AT_decl_file
 	.byte	32                              @ DW_AT_decl_line
 	.byte	8                               @ DW_AT_data_member_location
-	.byte	31                              @ Abbrev [31] 0xd12:0xc DW_TAG_member
+	.byte	31                              @ Abbrev [31] 0xd11:0xc DW_TAG_member
 	.long	.Linfo_string293                @ DW_AT_name
-	.long	3371                            @ DW_AT_type
+	.long	3370                            @ DW_AT_type
 	.byte	7                               @ DW_AT_decl_file
 	.byte	33                              @ DW_AT_decl_line
 	.byte	12                              @ DW_AT_data_member_location
-	.byte	31                              @ Abbrev [31] 0xd1e:0xc DW_TAG_member
+	.byte	31                              @ Abbrev [31] 0xd1d:0xc DW_TAG_member
 	.long	.Linfo_string292                @ DW_AT_name
-	.long	3371                            @ DW_AT_type
+	.long	3370                            @ DW_AT_type
 	.byte	7                               @ DW_AT_decl_file
 	.byte	34                              @ DW_AT_decl_line
 	.byte	16                              @ DW_AT_data_member_location
 	.byte	0                               @ End Of Children Mark
-	.byte	13                              @ Abbrev [13] 0xd2b:0x5 DW_TAG_pointer_type
+	.byte	13                              @ Abbrev [13] 0xd2a:0x5 DW_TAG_pointer_type
 	.long	63                              @ DW_AT_type
-	.byte	3                               @ Abbrev [3] 0xd30:0xc DW_TAG_array_type
-	.long	3388                            @ DW_AT_type
-	.byte	4                               @ Abbrev [4] 0xd35:0x6 DW_TAG_subrange_type
+	.byte	3                               @ Abbrev [3] 0xd2f:0xc DW_TAG_array_type
+	.long	3387                            @ DW_AT_type
+	.byte	4                               @ Abbrev [4] 0xd34:0x6 DW_TAG_subrange_type
 	.long	70                              @ DW_AT_type
 	.byte	1                               @ DW_AT_count
 	.byte	0                               @ End Of Children Mark
-	.byte	9                               @ Abbrev [9] 0xd3c:0xb DW_TAG_typedef
-	.long	3399                            @ DW_AT_type
+	.byte	9                               @ Abbrev [9] 0xd3b:0xb DW_TAG_typedef
+	.long	3398                            @ DW_AT_type
 	.long	.Linfo_string319                @ DW_AT_name
 	.byte	7                               @ DW_AT_decl_file
 	.byte	42                              @ DW_AT_decl_line
-	.byte	30                              @ Abbrev [30] 0xd47:0x2d DW_TAG_structure_type
+	.byte	30                              @ Abbrev [30] 0xd46:0x2d DW_TAG_structure_type
 	.long	.Linfo_string318                @ DW_AT_name
 	.byte	12                              @ DW_AT_byte_size
 	.byte	7                               @ DW_AT_decl_file
 	.byte	37                              @ DW_AT_decl_line
-	.byte	31                              @ Abbrev [31] 0xd4f:0xc DW_TAG_member
+	.byte	31                              @ Abbrev [31] 0xd4e:0xc DW_TAG_member
 	.long	.Linfo_string314                @ DW_AT_name
 	.long	1700                            @ DW_AT_type
 	.byte	7                               @ DW_AT_decl_file
 	.byte	39                              @ DW_AT_decl_line
 	.byte	0                               @ DW_AT_data_member_location
-	.byte	31                              @ Abbrev [31] 0xd5b:0xc DW_TAG_member
+	.byte	31                              @ Abbrev [31] 0xd5a:0xc DW_TAG_member
 	.long	.Linfo_string293                @ DW_AT_name
-	.long	3371                            @ DW_AT_type
+	.long	3370                            @ DW_AT_type
 	.byte	7                               @ DW_AT_decl_file
 	.byte	40                              @ DW_AT_decl_line
 	.byte	4                               @ DW_AT_data_member_location
-	.byte	31                              @ Abbrev [31] 0xd67:0xc DW_TAG_member
+	.byte	31                              @ Abbrev [31] 0xd66:0xc DW_TAG_member
 	.long	.Linfo_string292                @ DW_AT_name
-	.long	3371                            @ DW_AT_type
+	.long	3370                            @ DW_AT_type
 	.byte	7                               @ DW_AT_decl_file
 	.byte	41                              @ DW_AT_decl_line
 	.byte	8                               @ DW_AT_data_member_location
@@ -3327,654 +3304,654 @@ s_u64CPUCycleCount:
 	.long	0
 	.section	.debug_str,"MS",%progbits,1
 .Linfo_string0:
-	.asciz	"Component: Arm Compiler for Embedded 6.19 Tool: armclang [5e73cb00]" @ string offset=0
+	.asciz	"Component: Arm Compiler for Embedded 6.22 Tool: armclang [5ee92100]" @ string offset=0
 .Linfo_string1:
 	.asciz	"../ProfilerCounter\\pmu_counter.c" @ string offset=68
 .Linfo_string2:
-	.asciz	"C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" @ string offset=101
+	.asciz	"D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" @ string offset=101
 .Linfo_string3:
-	.asciz	"char"                          @ string offset=200
+	.asciz	"char"                          @ string offset=218
 .Linfo_string4:
-	.asciz	"__ARRAY_SIZE_TYPE__"           @ string offset=205
+	.asciz	"__ARRAY_SIZE_TYPE__"           @ string offset=223
 .Linfo_string5:
-	.asciz	"s_u64CPUCycleCount"            @ string offset=225
+	.asciz	"s_u64CPUCycleCount"            @ string offset=243
 .Linfo_string6:
-	.asciz	"unsigned long long"            @ string offset=244
+	.asciz	"unsigned long long"            @ string offset=262
 .Linfo_string7:
-	.asciz	"uint64_t"                      @ string offset=263
+	.asciz	"uint64_t"                      @ string offset=281
 .Linfo_string8:
-	.asciz	"unsigned char"                 @ string offset=272
+	.asciz	"unsigned char"                 @ string offset=290
 .Linfo_string9:
-	.asciz	"ETHOSU_PMU_NO_EVENT"           @ string offset=286
+	.asciz	"ETHOSU_PMU_NO_EVENT"           @ string offset=304
 .Linfo_string10:
-	.asciz	"ETHOSU_PMU_CYCLE"              @ string offset=306
+	.asciz	"ETHOSU_PMU_CYCLE"              @ string offset=324
 .Linfo_string11:
-	.asciz	"ETHOSU_PMU_NPU_IDLE"           @ string offset=323
+	.asciz	"ETHOSU_PMU_NPU_IDLE"           @ string offset=341
 .Linfo_string12:
-	.asciz	"ETHOSU_PMU_CC_STALLED_ON_BLOCKDEP" @ string offset=343
+	.asciz	"ETHOSU_PMU_CC_STALLED_ON_BLOCKDEP" @ string offset=361
 .Linfo_string13:
-	.asciz	"ETHOSU_PMU_CC_STALLED_ON_SHRAM_RECONFIG" @ string offset=377
+	.asciz	"ETHOSU_PMU_CC_STALLED_ON_SHRAM_RECONFIG" @ string offset=395
 .Linfo_string14:
-	.asciz	"ETHOSU_PMU_NPU_ACTIVE"         @ string offset=417
+	.asciz	"ETHOSU_PMU_NPU_ACTIVE"         @ string offset=435
 .Linfo_string15:
-	.asciz	"ETHOSU_PMU_MAC_ACTIVE"         @ string offset=439
+	.asciz	"ETHOSU_PMU_MAC_ACTIVE"         @ string offset=457
 .Linfo_string16:
-	.asciz	"ETHOSU_PMU_MAC_ACTIVE_8BIT"    @ string offset=461
+	.asciz	"ETHOSU_PMU_MAC_ACTIVE_8BIT"    @ string offset=479
 .Linfo_string17:
-	.asciz	"ETHOSU_PMU_MAC_ACTIVE_16BIT"   @ string offset=488
+	.asciz	"ETHOSU_PMU_MAC_ACTIVE_16BIT"   @ string offset=506
 .Linfo_string18:
-	.asciz	"ETHOSU_PMU_MAC_DPU_ACTIVE"     @ string offset=516
+	.asciz	"ETHOSU_PMU_MAC_DPU_ACTIVE"     @ string offset=534
 .Linfo_string19:
-	.asciz	"ETHOSU_PMU_MAC_STALLED_BY_WD_ACC" @ string offset=542
+	.asciz	"ETHOSU_PMU_MAC_STALLED_BY_WD_ACC" @ string offset=560
 .Linfo_string20:
-	.asciz	"ETHOSU_PMU_MAC_STALLED_BY_WD"  @ string offset=575
+	.asciz	"ETHOSU_PMU_MAC_STALLED_BY_WD"  @ string offset=593
 .Linfo_string21:
-	.asciz	"ETHOSU_PMU_MAC_STALLED_BY_ACC" @ string offset=604
+	.asciz	"ETHOSU_PMU_MAC_STALLED_BY_ACC" @ string offset=622
 .Linfo_string22:
-	.asciz	"ETHOSU_PMU_MAC_STALLED_BY_IB"  @ string offset=634
+	.asciz	"ETHOSU_PMU_MAC_STALLED_BY_IB"  @ string offset=652
 .Linfo_string23:
-	.asciz	"ETHOSU_PMU_MAC_ACTIVE_32BIT"   @ string offset=663
+	.asciz	"ETHOSU_PMU_MAC_ACTIVE_32BIT"   @ string offset=681
 .Linfo_string24:
-	.asciz	"ETHOSU_PMU_MAC_STALLED_BY_INT_W" @ string offset=691
+	.asciz	"ETHOSU_PMU_MAC_STALLED_BY_INT_W" @ string offset=709
 .Linfo_string25:
-	.asciz	"ETHOSU_PMU_MAC_STALLED_BY_INT_ACC" @ string offset=723
+	.asciz	"ETHOSU_PMU_MAC_STALLED_BY_INT_ACC" @ string offset=741
 .Linfo_string26:
-	.asciz	"ETHOSU_PMU_AO_ACTIVE"          @ string offset=757
+	.asciz	"ETHOSU_PMU_AO_ACTIVE"          @ string offset=775
 .Linfo_string27:
-	.asciz	"ETHOSU_PMU_AO_ACTIVE_8BIT"     @ string offset=778
+	.asciz	"ETHOSU_PMU_AO_ACTIVE_8BIT"     @ string offset=796
 .Linfo_string28:
-	.asciz	"ETHOSU_PMU_AO_ACTIVE_16BIT"    @ string offset=804
+	.asciz	"ETHOSU_PMU_AO_ACTIVE_16BIT"    @ string offset=822
 .Linfo_string29:
-	.asciz	"ETHOSU_PMU_AO_STALLED_BY_OFMP_OB" @ string offset=831
+	.asciz	"ETHOSU_PMU_AO_STALLED_BY_OFMP_OB" @ string offset=849
 .Linfo_string30:
-	.asciz	"ETHOSU_PMU_AO_STALLED_BY_OFMP" @ string offset=864
+	.asciz	"ETHOSU_PMU_AO_STALLED_BY_OFMP" @ string offset=882
 .Linfo_string31:
-	.asciz	"ETHOSU_PMU_AO_STALLED_BY_OB"   @ string offset=894
+	.asciz	"ETHOSU_PMU_AO_STALLED_BY_OB"   @ string offset=912
 .Linfo_string32:
-	.asciz	"ETHOSU_PMU_AO_STALLED_BY_ACC_IB" @ string offset=922
+	.asciz	"ETHOSU_PMU_AO_STALLED_BY_ACC_IB" @ string offset=940
 .Linfo_string33:
-	.asciz	"ETHOSU_PMU_AO_STALLED_BY_ACC"  @ string offset=954
+	.asciz	"ETHOSU_PMU_AO_STALLED_BY_ACC"  @ string offset=972
 .Linfo_string34:
-	.asciz	"ETHOSU_PMU_AO_STALLED_BY_IB"   @ string offset=983
+	.asciz	"ETHOSU_PMU_AO_STALLED_BY_IB"   @ string offset=1001
 .Linfo_string35:
-	.asciz	"ETHOSU_PMU_WD_ACTIVE"          @ string offset=1011
+	.asciz	"ETHOSU_PMU_WD_ACTIVE"          @ string offset=1029
 .Linfo_string36:
-	.asciz	"ETHOSU_PMU_WD_STALLED"         @ string offset=1032
+	.asciz	"ETHOSU_PMU_WD_STALLED"         @ string offset=1050
 .Linfo_string37:
-	.asciz	"ETHOSU_PMU_WD_STALLED_BY_WS"   @ string offset=1054
+	.asciz	"ETHOSU_PMU_WD_STALLED_BY_WS"   @ string offset=1072
 .Linfo_string38:
-	.asciz	"ETHOSU_PMU_WD_STALLED_BY_WD_BUF" @ string offset=1082
+	.asciz	"ETHOSU_PMU_WD_STALLED_BY_WD_BUF" @ string offset=1100
 .Linfo_string39:
-	.asciz	"ETHOSU_PMU_WD_PARSE_ACTIVE"    @ string offset=1114
+	.asciz	"ETHOSU_PMU_WD_PARSE_ACTIVE"    @ string offset=1132
 .Linfo_string40:
-	.asciz	"ETHOSU_PMU_WD_PARSE_STALLED"   @ string offset=1141
+	.asciz	"ETHOSU_PMU_WD_PARSE_STALLED"   @ string offset=1159
 .Linfo_string41:
-	.asciz	"ETHOSU_PMU_WD_PARSE_STALLED_IN" @ string offset=1169
+	.asciz	"ETHOSU_PMU_WD_PARSE_STALLED_IN" @ string offset=1187
 .Linfo_string42:
-	.asciz	"ETHOSU_PMU_WD_PARSE_STALLED_OUT" @ string offset=1200
+	.asciz	"ETHOSU_PMU_WD_PARSE_STALLED_OUT" @ string offset=1218
 .Linfo_string43:
-	.asciz	"ETHOSU_PMU_WD_TRANS_WS"        @ string offset=1232
+	.asciz	"ETHOSU_PMU_WD_TRANS_WS"        @ string offset=1250
 .Linfo_string44:
-	.asciz	"ETHOSU_PMU_WD_TRANS_WB"        @ string offset=1255
+	.asciz	"ETHOSU_PMU_WD_TRANS_WB"        @ string offset=1273
 .Linfo_string45:
-	.asciz	"ETHOSU_PMU_WD_TRANS_DW0"       @ string offset=1278
+	.asciz	"ETHOSU_PMU_WD_TRANS_DW0"       @ string offset=1296
 .Linfo_string46:
-	.asciz	"ETHOSU_PMU_WD_TRANS_DW1"       @ string offset=1302
+	.asciz	"ETHOSU_PMU_WD_TRANS_DW1"       @ string offset=1320
 .Linfo_string47:
-	.asciz	"ETHOSU_PMU_AXI0_RD_TRANS_ACCEPTED" @ string offset=1326
+	.asciz	"ETHOSU_PMU_AXI0_RD_TRANS_ACCEPTED" @ string offset=1344
 .Linfo_string48:
-	.asciz	"ETHOSU_PMU_AXI0_RD_TRANS_COMPLETED" @ string offset=1360
+	.asciz	"ETHOSU_PMU_AXI0_RD_TRANS_COMPLETED" @ string offset=1378
 .Linfo_string49:
-	.asciz	"ETHOSU_PMU_AXI0_RD_DATA_BEAT_RECEIVED" @ string offset=1395
+	.asciz	"ETHOSU_PMU_AXI0_RD_DATA_BEAT_RECEIVED" @ string offset=1413
 .Linfo_string50:
-	.asciz	"ETHOSU_PMU_AXI0_RD_TRAN_REQ_STALLED" @ string offset=1433
+	.asciz	"ETHOSU_PMU_AXI0_RD_TRAN_REQ_STALLED" @ string offset=1451
 .Linfo_string51:
-	.asciz	"ETHOSU_PMU_AXI0_WR_TRANS_ACCEPTED" @ string offset=1469
+	.asciz	"ETHOSU_PMU_AXI0_WR_TRANS_ACCEPTED" @ string offset=1487
 .Linfo_string52:
-	.asciz	"ETHOSU_PMU_AXI0_WR_TRANS_COMPLETED_M" @ string offset=1503
+	.asciz	"ETHOSU_PMU_AXI0_WR_TRANS_COMPLETED_M" @ string offset=1521
 .Linfo_string53:
-	.asciz	"ETHOSU_PMU_AXI0_WR_TRANS_COMPLETED_S" @ string offset=1540
+	.asciz	"ETHOSU_PMU_AXI0_WR_TRANS_COMPLETED_S" @ string offset=1558
 .Linfo_string54:
-	.asciz	"ETHOSU_PMU_AXI0_WR_DATA_BEAT_WRITTEN" @ string offset=1577
+	.asciz	"ETHOSU_PMU_AXI0_WR_DATA_BEAT_WRITTEN" @ string offset=1595
 .Linfo_string55:
-	.asciz	"ETHOSU_PMU_AXI0_WR_TRAN_REQ_STALLED" @ string offset=1614
+	.asciz	"ETHOSU_PMU_AXI0_WR_TRAN_REQ_STALLED" @ string offset=1632
 .Linfo_string56:
-	.asciz	"ETHOSU_PMU_AXI0_WR_DATA_BEAT_STALLED" @ string offset=1650
+	.asciz	"ETHOSU_PMU_AXI0_WR_DATA_BEAT_STALLED" @ string offset=1668
 .Linfo_string57:
-	.asciz	"ETHOSU_PMU_AXI0_ENABLED_CYCLES" @ string offset=1687
+	.asciz	"ETHOSU_PMU_AXI0_ENABLED_CYCLES" @ string offset=1705
 .Linfo_string58:
-	.asciz	"ETHOSU_PMU_AXI0_RD_STALL_LIMIT" @ string offset=1718
+	.asciz	"ETHOSU_PMU_AXI0_RD_STALL_LIMIT" @ string offset=1736
 .Linfo_string59:
-	.asciz	"ETHOSU_PMU_AXI0_WR_STALL_LIMIT" @ string offset=1749
+	.asciz	"ETHOSU_PMU_AXI0_WR_STALL_LIMIT" @ string offset=1767
 .Linfo_string60:
-	.asciz	"ETHOSU_PMU_AXI_LATENCY_ANY"    @ string offset=1780
+	.asciz	"ETHOSU_PMU_AXI_LATENCY_ANY"    @ string offset=1798
 .Linfo_string61:
-	.asciz	"ETHOSU_PMU_AXI_LATENCY_32"     @ string offset=1807
+	.asciz	"ETHOSU_PMU_AXI_LATENCY_32"     @ string offset=1825
 .Linfo_string62:
-	.asciz	"ETHOSU_PMU_AXI_LATENCY_64"     @ string offset=1833
+	.asciz	"ETHOSU_PMU_AXI_LATENCY_64"     @ string offset=1851
 .Linfo_string63:
-	.asciz	"ETHOSU_PMU_AXI_LATENCY_128"    @ string offset=1859
+	.asciz	"ETHOSU_PMU_AXI_LATENCY_128"    @ string offset=1877
 .Linfo_string64:
-	.asciz	"ETHOSU_PMU_AXI_LATENCY_256"    @ string offset=1886
+	.asciz	"ETHOSU_PMU_AXI_LATENCY_256"    @ string offset=1904
 .Linfo_string65:
-	.asciz	"ETHOSU_PMU_AXI_LATENCY_512"    @ string offset=1913
+	.asciz	"ETHOSU_PMU_AXI_LATENCY_512"    @ string offset=1931
 .Linfo_string66:
-	.asciz	"ETHOSU_PMU_AXI_LATENCY_1024"   @ string offset=1940
+	.asciz	"ETHOSU_PMU_AXI_LATENCY_1024"   @ string offset=1958
 .Linfo_string67:
-	.asciz	"ETHOSU_PMU_ECC_DMA"            @ string offset=1968
+	.asciz	"ETHOSU_PMU_ECC_DMA"            @ string offset=1986
 .Linfo_string68:
-	.asciz	"ETHOSU_PMU_ECC_SB0"            @ string offset=1987
+	.asciz	"ETHOSU_PMU_ECC_SB0"            @ string offset=2005
 .Linfo_string69:
-	.asciz	"ETHOSU_PMU_AXI1_RD_TRANS_ACCEPTED" @ string offset=2006
+	.asciz	"ETHOSU_PMU_AXI1_RD_TRANS_ACCEPTED" @ string offset=2024
 .Linfo_string70:
-	.asciz	"ETHOSU_PMU_AXI1_RD_TRANS_COMPLETED" @ string offset=2040
+	.asciz	"ETHOSU_PMU_AXI1_RD_TRANS_COMPLETED" @ string offset=2058
 .Linfo_string71:
-	.asciz	"ETHOSU_PMU_AXI1_RD_DATA_BEAT_RECEIVED" @ string offset=2075
+	.asciz	"ETHOSU_PMU_AXI1_RD_DATA_BEAT_RECEIVED" @ string offset=2093
 .Linfo_string72:
-	.asciz	"ETHOSU_PMU_AXI1_RD_TRAN_REQ_STALLED" @ string offset=2113
+	.asciz	"ETHOSU_PMU_AXI1_RD_TRAN_REQ_STALLED" @ string offset=2131
 .Linfo_string73:
-	.asciz	"ETHOSU_PMU_AXI1_WR_TRANS_ACCEPTED" @ string offset=2149
+	.asciz	"ETHOSU_PMU_AXI1_WR_TRANS_ACCEPTED" @ string offset=2167
 .Linfo_string74:
-	.asciz	"ETHOSU_PMU_AXI1_WR_TRANS_COMPLETED_M" @ string offset=2183
+	.asciz	"ETHOSU_PMU_AXI1_WR_TRANS_COMPLETED_M" @ string offset=2201
 .Linfo_string75:
-	.asciz	"ETHOSU_PMU_AXI1_WR_TRANS_COMPLETED_S" @ string offset=2220
+	.asciz	"ETHOSU_PMU_AXI1_WR_TRANS_COMPLETED_S" @ string offset=2238
 .Linfo_string76:
-	.asciz	"ETHOSU_PMU_AXI1_WR_DATA_BEAT_WRITTEN" @ string offset=2257
+	.asciz	"ETHOSU_PMU_AXI1_WR_DATA_BEAT_WRITTEN" @ string offset=2275
 .Linfo_string77:
-	.asciz	"ETHOSU_PMU_AXI1_WR_TRAN_REQ_STALLED" @ string offset=2294
+	.asciz	"ETHOSU_PMU_AXI1_WR_TRAN_REQ_STALLED" @ string offset=2312
 .Linfo_string78:
-	.asciz	"ETHOSU_PMU_AXI1_WR_DATA_BEAT_STALLED" @ string offset=2330
+	.asciz	"ETHOSU_PMU_AXI1_WR_DATA_BEAT_STALLED" @ string offset=2348
 .Linfo_string79:
-	.asciz	"ETHOSU_PMU_AXI1_ENABLED_CYCLES" @ string offset=2367
+	.asciz	"ETHOSU_PMU_AXI1_ENABLED_CYCLES" @ string offset=2385
 .Linfo_string80:
-	.asciz	"ETHOSU_PMU_AXI1_RD_STALL_LIMIT" @ string offset=2398
+	.asciz	"ETHOSU_PMU_AXI1_RD_STALL_LIMIT" @ string offset=2416
 .Linfo_string81:
-	.asciz	"ETHOSU_PMU_AXI1_WR_STALL_LIMIT" @ string offset=2429
+	.asciz	"ETHOSU_PMU_AXI1_WR_STALL_LIMIT" @ string offset=2447
 .Linfo_string82:
-	.asciz	"ETHOSU_PMU_ECC_SB1"            @ string offset=2460
+	.asciz	"ETHOSU_PMU_ECC_SB1"            @ string offset=2478
 .Linfo_string83:
-	.asciz	"ETHOSU_PMU_SENTINEL"           @ string offset=2479
+	.asciz	"ETHOSU_PMU_SENTINEL"           @ string offset=2497
 .Linfo_string84:
-	.asciz	"ethosu_pmu_event_type"         @ string offset=2499
+	.asciz	"ethosu_pmu_event_type"         @ string offset=2517
 .Linfo_string85:
-	.asciz	"short"                         @ string offset=2521
+	.asciz	"short"                         @ string offset=2539
 .Linfo_string86:
-	.asciz	"NonMaskableInt_IRQn"           @ string offset=2527
+	.asciz	"NonMaskableInt_IRQn"           @ string offset=2545
 .Linfo_string87:
-	.asciz	"HardFault_IRQn"                @ string offset=2547
+	.asciz	"HardFault_IRQn"                @ string offset=2565
 .Linfo_string88:
-	.asciz	"MemoryManagement_IRQn"         @ string offset=2562
+	.asciz	"MemoryManagement_IRQn"         @ string offset=2580
 .Linfo_string89:
-	.asciz	"BusFault_IRQn"                 @ string offset=2584
+	.asciz	"BusFault_IRQn"                 @ string offset=2602
 .Linfo_string90:
-	.asciz	"UsageFault_IRQn"               @ string offset=2598
+	.asciz	"UsageFault_IRQn"               @ string offset=2616
 .Linfo_string91:
-	.asciz	"SecureFault_IRQn"              @ string offset=2614
+	.asciz	"SecureFault_IRQn"              @ string offset=2632
 .Linfo_string92:
-	.asciz	"SVCall_IRQn"                   @ string offset=2631
+	.asciz	"SVCall_IRQn"                   @ string offset=2649
 .Linfo_string93:
-	.asciz	"DebugMonitor_IRQn"             @ string offset=2643
+	.asciz	"DebugMonitor_IRQn"             @ string offset=2661
 .Linfo_string94:
-	.asciz	"PendSV_IRQn"                   @ string offset=2661
+	.asciz	"PendSV_IRQn"                   @ string offset=2679
 .Linfo_string95:
-	.asciz	"SysTick_IRQn"                  @ string offset=2673
+	.asciz	"SysTick_IRQn"                  @ string offset=2691
 .Linfo_string96:
-	.asciz	"BODOUT_IRQn"                   @ string offset=2686
+	.asciz	"BODOUT_IRQn"                   @ string offset=2704
 .Linfo_string97:
-	.asciz	"IRC_IRQn"                      @ string offset=2698
+	.asciz	"IRC_IRQn"                      @ string offset=2716
 .Linfo_string98:
-	.asciz	"PMC_IRQn"                      @ string offset=2707
+	.asciz	"PMC_IRQn"                      @ string offset=2725
 .Linfo_string99:
-	.asciz	"SRAMPERR_IRQn"                 @ string offset=2716
+	.asciz	"SRAMPERR_IRQn"                 @ string offset=2734
 .Linfo_string100:
-	.asciz	"CKFAIL_IRQn"                   @ string offset=2730
+	.asciz	"CKFAIL_IRQn"                   @ string offset=2748
 .Linfo_string101:
-	.asciz	"ISP_IRQn"                      @ string offset=2742
+	.asciz	"ISP_IRQn"                      @ string offset=2760
 .Linfo_string102:
-	.asciz	"RTC_IRQn"                      @ string offset=2751
+	.asciz	"RTC_IRQn"                      @ string offset=2769
 .Linfo_string103:
-	.asciz	"RTCTAMPER_IRQn"                @ string offset=2760
+	.asciz	"RTCTAMPER_IRQn"                @ string offset=2778
 .Linfo_string104:
-	.asciz	"WDT0_IRQn"                     @ string offset=2775
+	.asciz	"WDT0_IRQn"                     @ string offset=2793
 .Linfo_string105:
-	.asciz	"WWDT0_IRQn"                    @ string offset=2785
+	.asciz	"WWDT0_IRQn"                    @ string offset=2803
 .Linfo_string106:
-	.asciz	"WDT1_IRQn"                     @ string offset=2796
+	.asciz	"WDT1_IRQn"                     @ string offset=2814
 .Linfo_string107:
-	.asciz	"WWDT1_IRQn"                    @ string offset=2806
+	.asciz	"WWDT1_IRQn"                    @ string offset=2824
 .Linfo_string108:
-	.asciz	"NPU_IRQn"                      @ string offset=2817
+	.asciz	"NPU_IRQn"                      @ string offset=2835
 .Linfo_string109:
-	.asciz	"EINT0_IRQn"                    @ string offset=2826
+	.asciz	"EINT0_IRQn"                    @ string offset=2844
 .Linfo_string110:
-	.asciz	"EINT1_IRQn"                    @ string offset=2837
+	.asciz	"EINT1_IRQn"                    @ string offset=2855
 .Linfo_string111:
-	.asciz	"EINT2_IRQn"                    @ string offset=2848
+	.asciz	"EINT2_IRQn"                    @ string offset=2866
 .Linfo_string112:
-	.asciz	"EINT3_IRQn"                    @ string offset=2859
+	.asciz	"EINT3_IRQn"                    @ string offset=2877
 .Linfo_string113:
-	.asciz	"EINT4_IRQn"                    @ string offset=2870
+	.asciz	"EINT4_IRQn"                    @ string offset=2888
 .Linfo_string114:
-	.asciz	"EINT5_IRQn"                    @ string offset=2881
+	.asciz	"EINT5_IRQn"                    @ string offset=2899
 .Linfo_string115:
-	.asciz	"GPA_IRQn"                      @ string offset=2892
+	.asciz	"GPA_IRQn"                      @ string offset=2910
 .Linfo_string116:
-	.asciz	"GPB_IRQn"                      @ string offset=2901
+	.asciz	"GPB_IRQn"                      @ string offset=2919
 .Linfo_string117:
-	.asciz	"GPC_IRQn"                      @ string offset=2910
+	.asciz	"GPC_IRQn"                      @ string offset=2928
 .Linfo_string118:
-	.asciz	"GPD_IRQn"                      @ string offset=2919
+	.asciz	"GPD_IRQn"                      @ string offset=2937
 .Linfo_string119:
-	.asciz	"GPE_IRQn"                      @ string offset=2928
+	.asciz	"GPE_IRQn"                      @ string offset=2946
 .Linfo_string120:
-	.asciz	"GPF_IRQn"                      @ string offset=2937
+	.asciz	"GPF_IRQn"                      @ string offset=2955
 .Linfo_string121:
-	.asciz	"GPG_IRQn"                      @ string offset=2946
+	.asciz	"GPG_IRQn"                      @ string offset=2964
 .Linfo_string122:
-	.asciz	"GPH_IRQn"                      @ string offset=2955
+	.asciz	"GPH_IRQn"                      @ string offset=2973
 .Linfo_string123:
-	.asciz	"GPI_IRQn"                      @ string offset=2964
+	.asciz	"GPI_IRQn"                      @ string offset=2982
 .Linfo_string124:
-	.asciz	"GPJ_IRQn"                      @ string offset=2973
+	.asciz	"GPJ_IRQn"                      @ string offset=2991
 .Linfo_string125:
-	.asciz	"BRAKE0_IRQn"                   @ string offset=2982
+	.asciz	"BRAKE0_IRQn"                   @ string offset=3000
 .Linfo_string126:
-	.asciz	"EPWM0P0_IRQn"                  @ string offset=2994
+	.asciz	"EPWM0P0_IRQn"                  @ string offset=3012
 .Linfo_string127:
-	.asciz	"EPWM0P1_IRQn"                  @ string offset=3007
+	.asciz	"EPWM0P1_IRQn"                  @ string offset=3025
 .Linfo_string128:
-	.asciz	"EPWM0P2_IRQn"                  @ string offset=3020
+	.asciz	"EPWM0P2_IRQn"                  @ string offset=3038
 .Linfo_string129:
-	.asciz	"BRAKE1_IRQn"                   @ string offset=3033
+	.asciz	"BRAKE1_IRQn"                   @ string offset=3051
 .Linfo_string130:
-	.asciz	"EPWM1P0_IRQn"                  @ string offset=3045
+	.asciz	"EPWM1P0_IRQn"                  @ string offset=3063
 .Linfo_string131:
-	.asciz	"EPWM1P1_IRQn"                  @ string offset=3058
+	.asciz	"EPWM1P1_IRQn"                  @ string offset=3076
 .Linfo_string132:
-	.asciz	"EPWM1P2_IRQn"                  @ string offset=3071
+	.asciz	"EPWM1P2_IRQn"                  @ string offset=3089
 .Linfo_string133:
-	.asciz	"BPWM0_IRQn"                    @ string offset=3084
+	.asciz	"BPWM0_IRQn"                    @ string offset=3102
 .Linfo_string134:
-	.asciz	"BPWM1_IRQn"                    @ string offset=3095
+	.asciz	"BPWM1_IRQn"                    @ string offset=3113
 .Linfo_string135:
-	.asciz	"PDMA0_IRQn"                    @ string offset=3106
+	.asciz	"PDMA0_IRQn"                    @ string offset=3124
 .Linfo_string136:
-	.asciz	"PDMA1_IRQn"                    @ string offset=3117
+	.asciz	"PDMA1_IRQn"                    @ string offset=3135
 .Linfo_string137:
-	.asciz	"LPPDMA_IRQn"                   @ string offset=3128
+	.asciz	"LPPDMA_IRQn"                   @ string offset=3146
 .Linfo_string138:
-	.asciz	"SCU_IRQn"                      @ string offset=3140
+	.asciz	"SCU_IRQn"                      @ string offset=3158
 .Linfo_string139:
-	.asciz	"KS_IRQn"                       @ string offset=3149
+	.asciz	"KS_IRQn"                       @ string offset=3167
 .Linfo_string140:
-	.asciz	"TIMER0_IRQn"                   @ string offset=3157
+	.asciz	"TIMER0_IRQn"                   @ string offset=3175
 .Linfo_string141:
-	.asciz	"TIMER1_IRQn"                   @ string offset=3169
+	.asciz	"TIMER1_IRQn"                   @ string offset=3187
 .Linfo_string142:
-	.asciz	"TIMER2_IRQn"                   @ string offset=3181
+	.asciz	"TIMER2_IRQn"                   @ string offset=3199
 .Linfo_string143:
-	.asciz	"TIMER3_IRQn"                   @ string offset=3193
+	.asciz	"TIMER3_IRQn"                   @ string offset=3211
 .Linfo_string144:
-	.asciz	"LPTMR0_IRQn"                   @ string offset=3205
+	.asciz	"LPTMR0_IRQn"                   @ string offset=3223
 .Linfo_string145:
-	.asciz	"LPTMR1_IRQn"                   @ string offset=3217
+	.asciz	"LPTMR1_IRQn"                   @ string offset=3235
 .Linfo_string146:
-	.asciz	"TTMR0_IRQn"                    @ string offset=3229
+	.asciz	"TTMR0_IRQn"                    @ string offset=3247
 .Linfo_string147:
-	.asciz	"TTMR1_IRQn"                    @ string offset=3240
+	.asciz	"TTMR1_IRQn"                    @ string offset=3258
 .Linfo_string148:
-	.asciz	"USBH0_IRQn"                    @ string offset=3251
+	.asciz	"USBH0_IRQn"                    @ string offset=3269
 .Linfo_string149:
-	.asciz	"USBH1_IRQn"                    @ string offset=3262
+	.asciz	"USBH1_IRQn"                    @ string offset=3280
 .Linfo_string150:
-	.asciz	"USBD_IRQn"                     @ string offset=3273
+	.asciz	"USBD_IRQn"                     @ string offset=3291
 .Linfo_string151:
-	.asciz	"USBOTG_IRQn"                   @ string offset=3283
+	.asciz	"USBOTG_IRQn"                   @ string offset=3301
 .Linfo_string152:
-	.asciz	"HSUSBH_IRQn"                   @ string offset=3295
+	.asciz	"HSUSBH_IRQn"                   @ string offset=3313
 .Linfo_string153:
-	.asciz	"HSUSBD_IRQn"                   @ string offset=3307
+	.asciz	"HSUSBD_IRQn"                   @ string offset=3325
 .Linfo_string154:
-	.asciz	"HSOTG_IRQn"                    @ string offset=3319
+	.asciz	"HSOTG_IRQn"                    @ string offset=3337
 .Linfo_string155:
-	.asciz	"EMAC0_IRQn"                    @ string offset=3330
+	.asciz	"EMAC0_IRQn"                    @ string offset=3348
 .Linfo_string156:
-	.asciz	"QSPI0_IRQn"                    @ string offset=3341
+	.asciz	"QSPI0_IRQn"                    @ string offset=3359
 .Linfo_string157:
-	.asciz	"QSPI1_IRQn"                    @ string offset=3352
+	.asciz	"QSPI1_IRQn"                    @ string offset=3370
 .Linfo_string158:
-	.asciz	"SPI0_IRQn"                     @ string offset=3363
+	.asciz	"SPI0_IRQn"                     @ string offset=3381
 .Linfo_string159:
-	.asciz	"SPI1_IRQn"                     @ string offset=3373
+	.asciz	"SPI1_IRQn"                     @ string offset=3391
 .Linfo_string160:
-	.asciz	"SPI2_IRQn"                     @ string offset=3383
+	.asciz	"SPI2_IRQn"                     @ string offset=3401
 .Linfo_string161:
-	.asciz	"SPI3_IRQn"                     @ string offset=3393
+	.asciz	"SPI3_IRQn"                     @ string offset=3411
 .Linfo_string162:
-	.asciz	"LPSPI0_IRQn"                   @ string offset=3403
+	.asciz	"LPSPI0_IRQn"                   @ string offset=3421
 .Linfo_string163:
-	.asciz	"SPIM0_IRQn"                    @ string offset=3415
+	.asciz	"SPIM0_IRQn"                    @ string offset=3433
 .Linfo_string164:
-	.asciz	"SPIM1_IRQn"                    @ string offset=3426
+	.asciz	"SPIM1_IRQn"                    @ string offset=3444
 .Linfo_string165:
-	.asciz	"UART0_IRQn"                    @ string offset=3437
+	.asciz	"UART0_IRQn"                    @ string offset=3455
 .Linfo_string166:
-	.asciz	"UART1_IRQn"                    @ string offset=3448
+	.asciz	"UART1_IRQn"                    @ string offset=3466
 .Linfo_string167:
-	.asciz	"UART2_IRQn"                    @ string offset=3459
+	.asciz	"UART2_IRQn"                    @ string offset=3477
 .Linfo_string168:
-	.asciz	"UART3_IRQn"                    @ string offset=3470
+	.asciz	"UART3_IRQn"                    @ string offset=3488
 .Linfo_string169:
-	.asciz	"UART4_IRQn"                    @ string offset=3481
+	.asciz	"UART4_IRQn"                    @ string offset=3499
 .Linfo_string170:
-	.asciz	"UART5_IRQn"                    @ string offset=3492
+	.asciz	"UART5_IRQn"                    @ string offset=3510
 .Linfo_string171:
-	.asciz	"UART6_IRQn"                    @ string offset=3503
+	.asciz	"UART6_IRQn"                    @ string offset=3521
 .Linfo_string172:
-	.asciz	"UART7_IRQn"                    @ string offset=3514
+	.asciz	"UART7_IRQn"                    @ string offset=3532
 .Linfo_string173:
-	.asciz	"UART8_IRQn"                    @ string offset=3525
+	.asciz	"UART8_IRQn"                    @ string offset=3543
 .Linfo_string174:
-	.asciz	"UART9_IRQn"                    @ string offset=3536
+	.asciz	"UART9_IRQn"                    @ string offset=3554
 .Linfo_string175:
-	.asciz	"EINT6_IRQn"                    @ string offset=3547
+	.asciz	"EINT6_IRQn"                    @ string offset=3565
 .Linfo_string176:
-	.asciz	"EINT7_IRQn"                    @ string offset=3558
+	.asciz	"EINT7_IRQn"                    @ string offset=3576
 .Linfo_string177:
-	.asciz	"LPUART0_IRQn"                  @ string offset=3569
+	.asciz	"LPUART0_IRQn"                  @ string offset=3587
 .Linfo_string178:
-	.asciz	"I2C0_IRQn"                     @ string offset=3582
+	.asciz	"I2C0_IRQn"                     @ string offset=3600
 .Linfo_string179:
-	.asciz	"I2C1_IRQn"                     @ string offset=3592
+	.asciz	"I2C1_IRQn"                     @ string offset=3610
 .Linfo_string180:
-	.asciz	"I2C2_IRQn"                     @ string offset=3602
+	.asciz	"I2C2_IRQn"                     @ string offset=3620
 .Linfo_string181:
-	.asciz	"I2C3_IRQn"                     @ string offset=3612
+	.asciz	"I2C3_IRQn"                     @ string offset=3630
 .Linfo_string182:
-	.asciz	"LPI2C0_IRQn"                   @ string offset=3622
+	.asciz	"LPI2C0_IRQn"                   @ string offset=3640
 .Linfo_string183:
-	.asciz	"USCI0_IRQn"                    @ string offset=3634
+	.asciz	"USCI0_IRQn"                    @ string offset=3652
 .Linfo_string184:
-	.asciz	"SC0_IRQn"                      @ string offset=3645
+	.asciz	"SC0_IRQn"                      @ string offset=3663
 .Linfo_string185:
-	.asciz	"SC1_IRQn"                      @ string offset=3654
+	.asciz	"SC1_IRQn"                      @ string offset=3672
 .Linfo_string186:
-	.asciz	"SC2_IRQn"                      @ string offset=3663
+	.asciz	"SC2_IRQn"                      @ string offset=3681
 .Linfo_string187:
-	.asciz	"PSIO_IRQn"                     @ string offset=3672
+	.asciz	"PSIO_IRQn"                     @ string offset=3690
 .Linfo_string188:
-	.asciz	"DMIC0_IRQn"                    @ string offset=3682
+	.asciz	"DMIC0_IRQn"                    @ string offset=3700
 .Linfo_string189:
-	.asciz	"DMIC0VAD_IRQn"                 @ string offset=3693
+	.asciz	"DMIC0VAD_IRQn"                 @ string offset=3711
 .Linfo_string190:
-	.asciz	"I2S0_IRQn"                     @ string offset=3707
+	.asciz	"I2S0_IRQn"                     @ string offset=3725
 .Linfo_string191:
-	.asciz	"I2S1_IRQn"                     @ string offset=3717
+	.asciz	"I2S1_IRQn"                     @ string offset=3735
 .Linfo_string192:
-	.asciz	"TRNG_IRQn"                     @ string offset=3727
+	.asciz	"TRNG_IRQn"                     @ string offset=3745
 .Linfo_string193:
-	.asciz	"I3C0_IRQn"                     @ string offset=3737
+	.asciz	"I3C0_IRQn"                     @ string offset=3755
 .Linfo_string194:
-	.asciz	"OTFC0_IRQn"                    @ string offset=3747
+	.asciz	"OTFC0_IRQn"                    @ string offset=3765
 .Linfo_string195:
-	.asciz	"OTFC1_IRQn"                    @ string offset=3758
+	.asciz	"OTFC1_IRQn"                    @ string offset=3776
 .Linfo_string196:
-	.asciz	"KPI_IRQn"                      @ string offset=3769
+	.asciz	"KPI_IRQn"                      @ string offset=3787
 .Linfo_string197:
-	.asciz	"SDH0_IRQn"                     @ string offset=3778
+	.asciz	"SDH0_IRQn"                     @ string offset=3796
 .Linfo_string198:
-	.asciz	"SDH1_IRQn"                     @ string offset=3788
+	.asciz	"SDH1_IRQn"                     @ string offset=3806
 .Linfo_string199:
-	.asciz	"CCAP_IRQn"                     @ string offset=3798
+	.asciz	"CCAP_IRQn"                     @ string offset=3816
 .Linfo_string200:
-	.asciz	"CRYPTO_IRQn"                   @ string offset=3808
+	.asciz	"CRYPTO_IRQn"                   @ string offset=3826
 .Linfo_string201:
-	.asciz	"CANFD00_IRQn"                  @ string offset=3820
+	.asciz	"CANFD00_IRQn"                  @ string offset=3838
 .Linfo_string202:
-	.asciz	"CANFD01_IRQn"                  @ string offset=3833
+	.asciz	"CANFD01_IRQn"                  @ string offset=3851
 .Linfo_string203:
-	.asciz	"CANFD10_IRQn"                  @ string offset=3846
+	.asciz	"CANFD10_IRQn"                  @ string offset=3864
 .Linfo_string204:
-	.asciz	"CANFD11_IRQn"                  @ string offset=3859
+	.asciz	"CANFD11_IRQn"                  @ string offset=3877
 .Linfo_string205:
-	.asciz	"ACMP01_IRQn"                   @ string offset=3872
+	.asciz	"ACMP01_IRQn"                   @ string offset=3890
 .Linfo_string206:
-	.asciz	"ACMP23_IRQn"                   @ string offset=3884
+	.asciz	"ACMP23_IRQn"                   @ string offset=3902
 .Linfo_string207:
-	.asciz	"CRC_IRQn"                      @ string offset=3896
+	.asciz	"CRC_IRQn"                      @ string offset=3914
 .Linfo_string208:
-	.asciz	"EADC00_IRQn"                   @ string offset=3905
+	.asciz	"EADC00_IRQn"                   @ string offset=3923
 .Linfo_string209:
-	.asciz	"EADC01_IRQn"                   @ string offset=3917
+	.asciz	"EADC01_IRQn"                   @ string offset=3935
 .Linfo_string210:
-	.asciz	"EADC02_IRQn"                   @ string offset=3929
+	.asciz	"EADC02_IRQn"                   @ string offset=3947
 .Linfo_string211:
-	.asciz	"EADC03_IRQn"                   @ string offset=3941
+	.asciz	"EADC03_IRQn"                   @ string offset=3959
 .Linfo_string212:
-	.asciz	"LPADC0_IRQn"                   @ string offset=3953
+	.asciz	"LPADC0_IRQn"                   @ string offset=3971
 .Linfo_string213:
-	.asciz	"DAC01_IRQn"                    @ string offset=3965
+	.asciz	"DAC01_IRQn"                    @ string offset=3983
 .Linfo_string214:
-	.asciz	"EQEI0_IRQn"                    @ string offset=3976
+	.asciz	"EQEI0_IRQn"                    @ string offset=3994
 .Linfo_string215:
-	.asciz	"EQEI1_IRQn"                    @ string offset=3987
+	.asciz	"EQEI1_IRQn"                    @ string offset=4005
 .Linfo_string216:
-	.asciz	"EQEI2_IRQn"                    @ string offset=3998
+	.asciz	"EQEI2_IRQn"                    @ string offset=4016
 .Linfo_string217:
-	.asciz	"EQEI3_IRQn"                    @ string offset=4009
+	.asciz	"EQEI3_IRQn"                    @ string offset=4027
 .Linfo_string218:
-	.asciz	"ECAP0_IRQn"                    @ string offset=4020
+	.asciz	"ECAP0_IRQn"                    @ string offset=4038
 .Linfo_string219:
-	.asciz	"ECAP1_IRQn"                    @ string offset=4031
+	.asciz	"ECAP1_IRQn"                    @ string offset=4049
 .Linfo_string220:
-	.asciz	"ECAP2_IRQn"                    @ string offset=4042
+	.asciz	"ECAP2_IRQn"                    @ string offset=4060
 .Linfo_string221:
-	.asciz	"ECAP3_IRQn"                    @ string offset=4053
+	.asciz	"ECAP3_IRQn"                    @ string offset=4071
 .Linfo_string222:
-	.asciz	"AWF_IRQn"                      @ string offset=4064
+	.asciz	"AWF_IRQn"                      @ string offset=4082
 .Linfo_string223:
-	.asciz	"UTCPD_IRQn"                    @ string offset=4073
+	.asciz	"UTCPD_IRQn"                    @ string offset=4091
 .Linfo_string224:
-	.asciz	"GDMACH0_IRQn"                  @ string offset=4084
+	.asciz	"GDMACH0_IRQn"                  @ string offset=4102
 .Linfo_string225:
-	.asciz	"GDMACH1_IRQn"                  @ string offset=4097
+	.asciz	"GDMACH1_IRQn"                  @ string offset=4115
 .Linfo_string226:
-	.asciz	"TOTAL_IRQn_CNT"                @ string offset=4110
+	.asciz	"TOTAL_IRQn_CNT"                @ string offset=4128
 .Linfo_string227:
-	.asciz	"IRQn"                          @ string offset=4125
+	.asciz	"IRQn"                          @ string offset=4143
 .Linfo_string228:
-	.asciz	"CTRL"                          @ string offset=4130
+	.asciz	"CTRL"                          @ string offset=4148
 .Linfo_string229:
-	.asciz	"unsigned int"                  @ string offset=4135
+	.asciz	"unsigned int"                  @ string offset=4153
 .Linfo_string230:
-	.asciz	"uint32_t"                      @ string offset=4148
+	.asciz	"uint32_t"                      @ string offset=4166
 .Linfo_string231:
-	.asciz	"LOAD"                          @ string offset=4157
+	.asciz	"LOAD"                          @ string offset=4175
 .Linfo_string232:
-	.asciz	"VAL"                           @ string offset=4162
+	.asciz	"VAL"                           @ string offset=4180
 .Linfo_string233:
-	.asciz	"CALIB"                         @ string offset=4166
+	.asciz	"CALIB"                         @ string offset=4184
 .Linfo_string234:
-	.asciz	"SysTick_Type"                  @ string offset=4172
+	.asciz	"SysTick_Type"                  @ string offset=4190
 .Linfo_string235:
-	.asciz	"CTL"                           @ string offset=4185
+	.asciz	"CTL"                           @ string offset=4203
 .Linfo_string236:
-	.asciz	"PAR"                           @ string offset=4189
+	.asciz	"PAR"                           @ string offset=4207
 .Linfo_string237:
-	.asciz	"INTEN"                         @ string offset=4193
+	.asciz	"INTEN"                         @ string offset=4211
 .Linfo_string238:
-	.asciz	"INTSTS"                        @ string offset=4199
+	.asciz	"INTSTS"                        @ string offset=4217
 .Linfo_string239:
-	.asciz	"PARM"                          @ string offset=4206
+	.asciz	"PARM"                          @ string offset=4224
 .Linfo_string240:
-	.asciz	"RESERVE0"                      @ string offset=4211
+	.asciz	"RESERVE0"                      @ string offset=4229
 .Linfo_string241:
-	.asciz	"CWSP"                          @ string offset=4220
+	.asciz	"CWSP"                          @ string offset=4238
 .Linfo_string242:
-	.asciz	"CWS"                           @ string offset=4225
+	.asciz	"CWS"                           @ string offset=4243
 .Linfo_string243:
-	.asciz	"PKTSL"                         @ string offset=4229
+	.asciz	"PKTSL"                         @ string offset=4247
 .Linfo_string244:
-	.asciz	"RESERVE1"                      @ string offset=4235
+	.asciz	"RESERVE1"                      @ string offset=4253
 .Linfo_string245:
-	.asciz	"FRCTL"                         @ string offset=4244
+	.asciz	"FRCTL"                         @ string offset=4262
 .Linfo_string246:
-	.asciz	"STRIDE"                        @ string offset=4250
+	.asciz	"STRIDE"                        @ string offset=4268
 .Linfo_string247:
-	.asciz	"RESERVE2"                      @ string offset=4257
+	.asciz	"RESERVE2"                      @ string offset=4275
 .Linfo_string248:
-	.asciz	"FIFOTH"                        @ string offset=4266
+	.asciz	"FIFOTH"                        @ string offset=4284
 .Linfo_string249:
-	.asciz	"CMPADDR"                       @ string offset=4273
+	.asciz	"CMPADDR"                       @ string offset=4291
 .Linfo_string250:
-	.asciz	"LUMA_Y1_THD"                   @ string offset=4281
+	.asciz	"LUMA_Y1_THD"                   @ string offset=4299
 .Linfo_string251:
-	.asciz	"PKTSM"                         @ string offset=4293
+	.asciz	"PKTSM"                         @ string offset=4311
 .Linfo_string252:
-	.asciz	"RESERVE3"                      @ string offset=4299
+	.asciz	"RESERVE3"                      @ string offset=4317
 .Linfo_string253:
-	.asciz	"CURADDRP"                      @ string offset=4308
+	.asciz	"CURADDRP"                      @ string offset=4326
 .Linfo_string254:
-	.asciz	"RESERVE4"                      @ string offset=4317
+	.asciz	"RESERVE4"                      @ string offset=4335
 .Linfo_string255:
-	.asciz	"PKTBA0"                        @ string offset=4326
+	.asciz	"PKTBA0"                        @ string offset=4344
 .Linfo_string256:
-	.asciz	"RESERVE5"                      @ string offset=4333
+	.asciz	"RESERVE5"                      @ string offset=4351
 .Linfo_string257:
-	.asciz	"MDCTL"                         @ string offset=4342
+	.asciz	"MDCTL"                         @ string offset=4360
 .Linfo_string258:
-	.asciz	"MDTRG_WK"                      @ string offset=4348
+	.asciz	"MDTRG_WK"                      @ string offset=4366
 .Linfo_string259:
-	.asciz	"RESERVE6"                      @ string offset=4357
+	.asciz	"RESERVE6"                      @ string offset=4375
 .Linfo_string260:
-	.asciz	"MDTTH"                         @ string offset=4366
+	.asciz	"MDTTH"                         @ string offset=4384
 .Linfo_string261:
-	.asciz	"MDTSAD"                        @ string offset=4372
+	.asciz	"MDTSAD"                        @ string offset=4390
 .Linfo_string262:
-	.asciz	"RESERVE7"                      @ string offset=4379
+	.asciz	"RESERVE7"                      @ string offset=4397
 .Linfo_string263:
-	.asciz	"MDWOCTH"                       @ string offset=4388
+	.asciz	"MDWOCTH"                       @ string offset=4406
 .Linfo_string264:
-	.asciz	"MDWOC"                         @ string offset=4396
+	.asciz	"MDWOC"                         @ string offset=4414
 .Linfo_string265:
-	.asciz	"RESERVE8"                      @ string offset=4402
+	.asciz	"RESERVE8"                      @ string offset=4420
 .Linfo_string266:
-	.asciz	"MDWTH"                         @ string offset=4411
+	.asciz	"MDWTH"                         @ string offset=4429
 .Linfo_string267:
-	.asciz	"MDWSAD"                        @ string offset=4417
+	.asciz	"MDWSAD"                        @ string offset=4435
 .Linfo_string268:
-	.asciz	"CCAP_T"                        @ string offset=4424
+	.asciz	"CCAP_T"                        @ string offset=4442
 .Linfo_string269:
-	.asciz	"int"                           @ string offset=4431
+	.asciz	"int"                           @ string offset=4449
 .Linfo_string270:
-	.asciz	"int32_t"                       @ string offset=4435
+	.asciz	"int32_t"                       @ string offset=4453
 .Linfo_string271:
-	.asciz	"ISER"                          @ string offset=4443
+	.asciz	"ISER"                          @ string offset=4461
 .Linfo_string272:
-	.asciz	"RESERVED0"                     @ string offset=4448
+	.asciz	"RESERVED0"                     @ string offset=4466
 .Linfo_string273:
-	.asciz	"ICER"                          @ string offset=4458
+	.asciz	"ICER"                          @ string offset=4476
 .Linfo_string274:
-	.asciz	"RSERVED1"                      @ string offset=4463
+	.asciz	"RSERVED1"                      @ string offset=4481
 .Linfo_string275:
-	.asciz	"ISPR"                          @ string offset=4472
+	.asciz	"ISPR"                          @ string offset=4490
 .Linfo_string276:
-	.asciz	"RESERVED2"                     @ string offset=4477
+	.asciz	"RESERVED2"                     @ string offset=4495
 .Linfo_string277:
-	.asciz	"ICPR"                          @ string offset=4487
+	.asciz	"ICPR"                          @ string offset=4505
 .Linfo_string278:
-	.asciz	"RESERVED3"                     @ string offset=4492
+	.asciz	"RESERVED3"                     @ string offset=4510
 .Linfo_string279:
-	.asciz	"IABR"                          @ string offset=4502
+	.asciz	"IABR"                          @ string offset=4520
 .Linfo_string280:
-	.asciz	"RESERVED4"                     @ string offset=4507
+	.asciz	"RESERVED4"                     @ string offset=4525
 .Linfo_string281:
-	.asciz	"ITNS"                          @ string offset=4517
+	.asciz	"ITNS"                          @ string offset=4535
 .Linfo_string282:
-	.asciz	"RESERVED5"                     @ string offset=4522
+	.asciz	"RESERVED5"                     @ string offset=4540
 .Linfo_string283:
-	.asciz	"IPR"                           @ string offset=4532
+	.asciz	"IPR"                           @ string offset=4550
 .Linfo_string284:
-	.asciz	"uint8_t"                       @ string offset=4536
+	.asciz	"uint8_t"                       @ string offset=4554
 .Linfo_string285:
-	.asciz	"RESERVED6"                     @ string offset=4544
+	.asciz	"RESERVED6"                     @ string offset=4562
 .Linfo_string286:
-	.asciz	"STIR"                          @ string offset=4554
+	.asciz	"STIR"                          @ string offset=4572
 .Linfo_string287:
-	.asciz	"NVIC_Type"                     @ string offset=4559
+	.asciz	"NVIC_Type"                     @ string offset=4577
 .Linfo_string288:
-	.asciz	"ethosu_pmu_init"               @ string offset=4569
+	.asciz	"ethosu_pmu_init"               @ string offset=4587
 .Linfo_string289:
-	.asciz	"add_pmu_counter"               @ string offset=4585
+	.asciz	"add_pmu_counter"               @ string offset=4603
 .Linfo_string290:
-	.asciz	"_Bool"                         @ string offset=4601
+	.asciz	"_Bool"                         @ string offset=4619
 .Linfo_string291:
-	.asciz	"value"                         @ string offset=4607
+	.asciz	"value"                         @ string offset=4625
 .Linfo_string292:
-	.asciz	"name"                          @ string offset=4613
+	.asciz	"name"                          @ string offset=4631
 .Linfo_string293:
-	.asciz	"unit"                          @ string offset=4618
+	.asciz	"unit"                          @ string offset=4636
 .Linfo_string294:
-	.asciz	"counters"                      @ string offset=4623
+	.asciz	"counters"                      @ string offset=4641
 .Linfo_string295:
-	.asciz	"_pmu_counter_unit"             @ string offset=4632
+	.asciz	"_pmu_counter_unit"             @ string offset=4650
 .Linfo_string296:
-	.asciz	"pmu_counter_unit"              @ string offset=4650
+	.asciz	"pmu_counter_unit"              @ string offset=4668
 .Linfo_string297:
-	.asciz	"num_counters"                  @ string offset=4667
+	.asciz	"num_counters"                  @ string offset=4685
 .Linfo_string298:
-	.asciz	"initialised"                   @ string offset=4680
+	.asciz	"initialised"                   @ string offset=4698
 .Linfo_string299:
-	.asciz	"_pmu_counters"                 @ string offset=4692
+	.asciz	"_pmu_counters"                 @ string offset=4710
 .Linfo_string300:
-	.asciz	"pmu_counters"                  @ string offset=4706
+	.asciz	"pmu_counters"                  @ string offset=4724
 .Linfo_string301:
-	.asciz	"idx"                           @ string offset=4719
+	.asciz	"idx"                           @ string offset=4737
 .Linfo_string302:
-	.asciz	"Get_SysTick_Cycle_Count"       @ string offset=4723
+	.asciz	"Get_SysTick_Cycle_Count"       @ string offset=4741
 .Linfo_string303:
-	.asciz	"systick_val"                   @ string offset=4747
+	.asciz	"systick_val"                   @ string offset=4765
 .Linfo_string304:
-	.asciz	"FreeRTOS_TickHook"             @ string offset=4759
+	.asciz	"FreeRTOS_TickHook"             @ string offset=4777
 .Linfo_string305:
-	.asciz	"pmu_reset_counters"            @ string offset=4777
+	.asciz	"pmu_reset_counters"            @ string offset=4795
 .Linfo_string306:
-	.asciz	"pmu_get_counters"              @ string offset=4796
+	.asciz	"pmu_get_counters"              @ string offset=4814
 .Linfo_string307:
-	.asciz	"pmu_get_systick_Count"         @ string offset=4813
+	.asciz	"pmu_get_systick_Count"         @ string offset=4831
 .Linfo_string308:
-	.asciz	"u32CurrentTickCnt"             @ string offset=4835
+	.asciz	"u32CurrentTickCnt"             @ string offset=4853
 .Linfo_string309:
-	.asciz	"npu_counters"                  @ string offset=4853
+	.asciz	"npu_counters"                  @ string offset=4871
 .Linfo_string310:
-	.asciz	"npu_total_ccnt"                @ string offset=4866
+	.asciz	"npu_total_ccnt"                @ string offset=4884
 .Linfo_string311:
-	.asciz	"npu_evt_counters"              @ string offset=4881
+	.asciz	"npu_evt_counters"              @ string offset=4899
 .Linfo_string312:
-	.asciz	"event_type"                    @ string offset=4898
+	.asciz	"event_type"                    @ string offset=4916
 .Linfo_string313:
-	.asciz	"event_mask"                    @ string offset=4909
+	.asciz	"event_mask"                    @ string offset=4927
 .Linfo_string314:
-	.asciz	"counter_value"                 @ string offset=4920
+	.asciz	"counter_value"                 @ string offset=4938
 .Linfo_string315:
-	.asciz	"npu_event_counter_"            @ string offset=4934
+	.asciz	"npu_event_counter_"            @ string offset=4952
 .Linfo_string316:
-	.asciz	"npu_evt_counter"               @ string offset=4953
+	.asciz	"npu_evt_counter"               @ string offset=4971
 .Linfo_string317:
-	.asciz	"npu_derived_counters"          @ string offset=4969
+	.asciz	"npu_derived_counters"          @ string offset=4987
 .Linfo_string318:
-	.asciz	"npu_derived_counter_"          @ string offset=4990
+	.asciz	"npu_derived_counter_"          @ string offset=5008
 .Linfo_string319:
-	.asciz	"npu_derived_counter"           @ string offset=5011
+	.asciz	"npu_derived_counter"           @ string offset=5029
 .Linfo_string320:
-	.asciz	"num_total_counters"            @ string offset=5031
+	.asciz	"num_total_counters"            @ string offset=5049
 .Linfo_string321:
-	.asciz	"ethosu_pmu_counters_"          @ string offset=5050
+	.asciz	"ethosu_pmu_counters_"          @ string offset=5068
 .Linfo_string322:
-	.asciz	"ethosu_pmu_counters"           @ string offset=5071
+	.asciz	"ethosu_pmu_counters"           @ string offset=5089
 .Linfo_string323:
-	.asciz	"i"                             @ string offset=5091
-	.ident	"Component: Arm Compiler for Embedded 6.19 Tool: armclang [5e73cb00]"
+	.asciz	"i"                             @ string offset=5109
+	.ident	"Component: Arm Compiler for Embedded 6.22 Tool: armclang [5ee92100]"
 	.section	".note.GNU-stack","",%progbits
 	.eabi_attribute	30, 1	@ Tag_ABI_optimization_goals
 	.ARM_attribute	16, 1	@ Tag_AV_eba

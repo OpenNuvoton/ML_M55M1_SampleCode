@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     main.cpp
  * @version  V1.00
- * @brief    Pose landmark network sample. Demonstrate hand landmark detect.
+ * @brief    Pose landmark network sample. Demonstrate pose landmark detect.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.

@@ -1,4 +1,4 @@
-# HandLandmark
+# PoseLandmark
 A demonstration sample for pose landmark
 ## Requirement
 1. Keil uVision5

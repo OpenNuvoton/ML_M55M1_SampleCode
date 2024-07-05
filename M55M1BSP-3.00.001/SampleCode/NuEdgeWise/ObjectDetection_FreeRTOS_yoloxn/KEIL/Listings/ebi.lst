@@ -7,6 +7,7 @@
 	.eabi_attribute	8, 0	@ Tag_ARM_ISA_use
 	.eabi_attribute	9, 3	@ Tag_THUMB_ISA_use
 	.fpu	fpv5-d16
+	.arch_extension	mve.fp
 	.eabi_attribute	36, 1	@ Tag_FP_HP_extension
 	.eabi_attribute	48, 2	@ Tag_MVE_arch
 	.eabi_attribute	46, 1	@ Tag_DSP_extension
@@ -23,9 +24,9 @@
 	.eabi_attribute	26, 1	@ Tag_ABI_enum_size
 	.eabi_attribute	14, 0	@ Tag_ABI_PCS_R9_use
 	.file	"ebi.c"
-	.file	1 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include" "stdint.h"
-	.file	2 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include/ebi_reg.h"
-	.file	3 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include/ccap_reg.h"
+	.file	1 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include" "stdint.h"
+	.file	2 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include\\ebi_reg.h"
+	.file	3 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/Device/Nuvoton/M55M1/Include\\ccap_reg.h"
 	.section	.text.EBI_Open,"ax",%progbits
 	.hidden	EBI_Open                        @ -- Begin function EBI_Open
 	.globl	EBI_Open
@@ -35,7 +36,7 @@
 	.thumb_func
 EBI_Open:
 .Lfunc_begin0:
-	.file	4 "C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/StdDriver/src/ebi.c"
+	.file	4 "D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" "../../../../Library/StdDriver/src/ebi.c"
 	.loc	4 57 0                          @ ../../../../Library/StdDriver/src/ebi.c:57:0
 	.fnstart
 	.cfi_sections .debug_frame
@@ -45,26 +46,26 @@ EBI_Open:
 	@DEBUG_VALUE: EBI_Open:u32DataWidth <- $r1
 	@DEBUG_VALUE: EBI_Open:u32TimingClass <- $r2
 	@DEBUG_VALUE: EBI_Open:u32BusMode <- $r3
-	.save	{r7, lr}
-	push	{r7, lr}
+	.save	{r4, lr}
+	push	{r4, lr}
 	.cfi_def_cfa_offset 8
 	.cfi_offset lr, -4
-	.cfi_offset r7, -8
+	.cfi_offset r4, -8
 .Ltmp0:
 	@DEBUG_VALUE: EBI_Open:u32CSActiveLevel <- [DW_OP_plus_uconst 8] [$sp+0]
 	movw	r12, #0
 .Ltmp1:
 	.loc	4 58 68 prologue_end            @ ../../../../Library/StdDriver/src/ebi.c:58:68
-	lsl.w	lr, r0, #4
+	lsls	r4, r0, #4
 .Ltmp2:
-	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
+	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
 	@DEBUG_VALUE: EBI_Open:pu32EBITCTL <- [DW_OP_LLVM_arg 0, DW_OP_LLVM_arg 0, DW_OP_plus, DW_OP_stack_value] undef
 	@DEBUG_VALUE: EBI_Open:u32Index1 <- [DW_OP_LLVM_arg 0, DW_OP_LLVM_arg 0, DW_OP_plus, DW_OP_stack_value] undef
-	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
+	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
 	.loc	4 0 68 is_stmt 0                @ ../../../../Library/StdDriver/src/ebi.c:0:68
 	movt	r12, #16419
 .Ltmp3:
-	ldr.w	r0, [r12, lr]
+	ldr.w	r0, [r12, r4]
 .Ltmp4:
 	@DEBUG_VALUE: EBI_Open:u32Bank <- [DW_OP_LLVM_entry_value 1] $r0
 	.loc	4 63 9 is_stmt 1                @ ../../../../Library/StdDriver/src/ebi.c:63:9
@@ -74,287 +75,272 @@ EBI_Open:
 	addne	r0, #2
 .Ltmp5:
 	.loc	4 0 0 is_stmt 0                 @ ../../../../Library/StdDriver/src/ebi.c:0:0
-	str.w	r0, [r12, lr]
+	str.w	r0, [r12, r4]
 .Ltmp6:
 	.loc	4 72 17 is_stmt 1               @ ../../../../Library/StdDriver/src/ebi.c:72:17
-	ldr.w	r0, [r12, lr]
+	ldr.w	r0, [r12, r4]
 	.loc	4 74 5                          @ ../../../../Library/StdDriver/src/ebi.c:74:5
 	cmp	r2, #6
 	.loc	4 72 17                         @ ../../../../Library/StdDriver/src/ebi.c:72:17
 	orr.w	r0, r0, r3
-	str.w	r0, [r12, lr]
-	.loc	4 74 5                          @ ../../../../Library/StdDriver/src/ebi.c:74:5
-	bhi	.LBB0_4
+	str.w	r0, [r12, r4]
 .Ltmp7:
+	.loc	4 0 0 is_stmt 0                 @ ../../../../Library/StdDriver/src/ebi.c:0:0
+	ldr.w	r3, [r12, r4]
+.Ltmp8:
+	@DEBUG_VALUE: EBI_Open:u32BusMode <- [DW_OP_LLVM_entry_value 1] $r3
+	.loc	4 74 5 is_stmt 1                @ ../../../../Library/StdDriver/src/ebi.c:74:5
+	bhi	.LBB0_8
+.Ltmp9:
 @ %bb.1:
+	@DEBUG_VALUE: EBI_Open:u32BusMode <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: EBI_Open:u32Bank <- [DW_OP_LLVM_entry_value 1] $r0
-	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
-	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
+	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
+	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
 	@DEBUG_VALUE: EBI_Open:u32CSActiveLevel <- [DW_OP_plus_uconst 8] [$sp+0]
-	@DEBUG_VALUE: EBI_Open:u32BusMode <- $r3
 	@DEBUG_VALUE: EBI_Open:u32TimingClass <- $r2
 	@DEBUG_VALUE: EBI_Open:u32DataWidth <- $r1
-	.loc	4 0 5 is_stmt 0                 @ ../../../../Library/StdDriver/src/ebi.c:0:5
+	.loc	4 0 0 is_stmt 0                 @ ../../../../Library/StdDriver/src/ebi.c:0:0
 	add.w	r1, r12, #4
-.Ltmp8:
+.Ltmp10:
 	@DEBUG_VALUE: EBI_Open:u32DataWidth <- [DW_OP_LLVM_entry_value 1] $r1
 	@DEBUG_VALUE: EBI_Open:pu32EBITCTL <- [DW_OP_LLVM_arg 0, DW_OP_LLVM_arg 0, DW_OP_plus, DW_OP_stack_value] undef
 	@DEBUG_VALUE: EBI_Open:u32Index1 <- [DW_OP_LLVM_arg 0, DW_OP_LLVM_arg 0, DW_OP_plus, DW_OP_stack_value] undef
-	ldr	r3, [sp, #8]
-.Ltmp9:
-	@DEBUG_VALUE: EBI_Open:u32BusMode <- [DW_OP_LLVM_entry_value 1] $r3
+	ldr.w	lr, [sp, #8]
+	.loc	4 74 5                          @ ../../../../Library/StdDriver/src/ebi.c:74:5
 .LCPI0_0:
 	tbb	[pc, r2]
-.Ltmp10:
+.Ltmp11:
 @ %bb.2:
+	.loc	4 0 5                           @ ../../../../Library/StdDriver/src/ebi.c:0:5
 .LJTI0_0:
 	.byte	(.LBB0_3-(.LCPI0_0+4))/2
+	.byte	(.LBB0_9-(.LCPI0_0+4))/2
 	.byte	(.LBB0_5-(.LCPI0_0+4))/2
-	.byte	(.LBB0_6-(.LCPI0_0+4))/2
-	.byte	(.LBB0_8-(.LCPI0_0+4))/2
-	.byte	(.LBB0_10-(.LCPI0_0+4))/2
+	.byte	(.LBB0_7-(.LCPI0_0+4))/2
+	.byte	(.LBB0_4-(.LCPI0_0+4))/2
 	.byte	(.LBB0_11-(.LCPI0_0+4))/2
 	.byte	(.LBB0_13-(.LCPI0_0+4))/2
 	.p2align	1
 .LBB0_3:
-.Ltmp11:
-	@DEBUG_VALUE: EBI_Open:u32BusMode <- [DW_OP_LLVM_entry_value 1] $r3
-	@DEBUG_VALUE: EBI_Open:u32DataWidth <- [DW_OP_LLVM_entry_value 1] $r1
-	@DEBUG_VALUE: EBI_Open:u32Bank <- [DW_OP_LLVM_entry_value 1] $r0
-	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
-	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
-	@DEBUG_VALUE: EBI_Open:u32CSActiveLevel <- [DW_OP_plus_uconst 8] [$sp+0]
-	@DEBUG_VALUE: EBI_Open:u32TimingClass <- $r2
-	.loc	4 77 28 is_stmt 1               @ ../../../../Library/StdDriver/src/ebi.c:77:28
-	ldr.w	r0, [r12, lr]
-	movw	r2, #63742
 .Ltmp12:
-	@DEBUG_VALUE: EBI_Open:u32TimingClass <- [DW_OP_LLVM_entry_value 1] $r2
-	.loc	4 0 28 is_stmt 0                @ ../../../../Library/StdDriver/src/ebi.c:0:28
-	movt	r2, #65528
-	.loc	4 77 40                         @ ../../../../Library/StdDriver/src/ebi.c:77:40
-	ands	r0, r2
-	.loc	4 79 70 is_stmt 1               @ ../../../../Library/StdDriver/src/ebi.c:79:70
-	orr.w	r0, r0, r3, lsl #2
-	adds	r0, #1
-	b	.LBB0_7
+	@DEBUG_VALUE: EBI_Open:u32DataWidth <- [DW_OP_LLVM_entry_value 1] $r1
+	@DEBUG_VALUE: EBI_Open:u32BusMode <- [DW_OP_LLVM_entry_value 1] $r3
+	@DEBUG_VALUE: EBI_Open:u32Bank <- [DW_OP_LLVM_entry_value 1] $r0
+	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
+	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
+	@DEBUG_VALUE: EBI_Open:u32CSActiveLevel <- [DW_OP_plus_uconst 8] [$sp+0]
+	@DEBUG_VALUE: EBI_Open:u32TimingClass <- $r2
+	movw	r0, #63742
+	movt	r0, #65528
 .Ltmp13:
-.LBB0_4:
-	@DEBUG_VALUE: EBI_Open:u32Bank <- [DW_OP_LLVM_entry_value 1] $r0
-	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
-	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
-	@DEBUG_VALUE: EBI_Open:u32CSActiveLevel <- [DW_OP_plus_uconst 8] [$sp+0]
-	@DEBUG_VALUE: EBI_Open:u32BusMode <- $r3
-	@DEBUG_VALUE: EBI_Open:u32TimingClass <- $r2
-	@DEBUG_VALUE: EBI_Open:u32DataWidth <- $r1
-	.loc	4 131 25                        @ ../../../../Library/StdDriver/src/ebi.c:131:25
-	ldr.w	r0, [r12, lr]
-	bic	r0, r0, #1
-	str.w	r0, [r12, lr]
+	.loc	4 77 40 is_stmt 1               @ ../../../../Library/StdDriver/src/ebi.c:77:40
+	ands	r0, r3
+	.loc	4 79 70                         @ ../../../../Library/StdDriver/src/ebi.c:79:70
+	orr.w	r0, r0, lr, lsl #2
+	adds	r0, #1
+	b	.LBB0_6
 .Ltmp14:
-	.loc	4 134 1                         @ ../../../../Library/StdDriver/src/ebi.c:134:1
-	pop	{r7, pc}
-.Ltmp15:
-.LBB0_5:
-	@DEBUG_VALUE: EBI_Open:u32BusMode <- [DW_OP_LLVM_entry_value 1] $r3
+.LBB0_4:
 	@DEBUG_VALUE: EBI_Open:u32DataWidth <- [DW_OP_LLVM_entry_value 1] $r1
+	@DEBUG_VALUE: EBI_Open:u32BusMode <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: EBI_Open:u32Bank <- [DW_OP_LLVM_entry_value 1] $r0
-	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
-	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
+	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
+	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
 	@DEBUG_VALUE: EBI_Open:u32CSActiveLevel <- [DW_OP_plus_uconst 8] [$sp+0]
 	@DEBUG_VALUE: EBI_Open:u32TimingClass <- $r2
-	.loc	4 84 28                         @ ../../../../Library/StdDriver/src/ebi.c:84:28
-	ldr.w	r0, [r12, lr]
-	movw	r2, #63742
-.Ltmp16:
-	@DEBUG_VALUE: EBI_Open:u32TimingClass <- [DW_OP_LLVM_entry_value 1] $r2
-	.loc	4 0 28 is_stmt 0                @ ../../../../Library/StdDriver/src/ebi.c:0:28
-	movt	r2, #65528
-	.loc	4 84 40                         @ ../../../../Library/StdDriver/src/ebi.c:84:40
-	ands	r0, r2
-	.loc	4 86 87 is_stmt 1               @ ../../../../Library/StdDriver/src/ebi.c:86:87
-	orr.w	r0, r0, r3, lsl #2
-	orr	r0, r0, #196608
-	orr	r0, r0, #1
-	b	.LBB0_9
-.Ltmp17:
-.LBB0_6:
-	@DEBUG_VALUE: EBI_Open:u32BusMode <- [DW_OP_LLVM_entry_value 1] $r3
-	@DEBUG_VALUE: EBI_Open:u32DataWidth <- [DW_OP_LLVM_entry_value 1] $r1
-	@DEBUG_VALUE: EBI_Open:u32Bank <- [DW_OP_LLVM_entry_value 1] $r0
-	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
-	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
-	@DEBUG_VALUE: EBI_Open:u32CSActiveLevel <- [DW_OP_plus_uconst 8] [$sp+0]
-	@DEBUG_VALUE: EBI_Open:u32TimingClass <- $r2
-	.loc	4 92 28                         @ ../../../../Library/StdDriver/src/ebi.c:92:28
-	ldr.w	r0, [r12, lr]
-	movw	r2, #63742
-.Ltmp18:
-	@DEBUG_VALUE: EBI_Open:u32TimingClass <- [DW_OP_LLVM_entry_value 1] $r2
-	.loc	4 0 28 is_stmt 0                @ ../../../../Library/StdDriver/src/ebi.c:0:28
-	movt	r2, #65528
-	.loc	4 92 40                         @ ../../../../Library/StdDriver/src/ebi.c:92:40
-	ands	r0, r2
+	.loc	4 0 70 is_stmt 0                @ ../../../../Library/StdDriver/src/ebi.c:0:70
+	movw	r0, #63742
 	movw	r2, #257
-	.loc	4 94 70 is_stmt 1               @ ../../../../Library/StdDriver/src/ebi.c:94:70
-	orr.w	r0, r0, r3, lsl #2
-	orrs	r0, r2
-.Ltmp19:
-.LBB0_7:
+.Ltmp15:
 	@DEBUG_VALUE: EBI_Open:u32TimingClass <- [DW_OP_LLVM_entry_value 1] $r2
-	@DEBUG_VALUE: EBI_Open:u32BusMode <- [DW_OP_LLVM_entry_value 1] $r3
+	movt	r0, #65528
+	.loc	4 107 40 is_stmt 1              @ ../../../../Library/StdDriver/src/ebi.c:107:40
+	ands	r0, r3
+	.loc	4 109 87                        @ ../../../../Library/StdDriver/src/ebi.c:109:87
+	orr.w	r0, r0, lr, lsl #2
+	movt	r2, #7
+	b	.LBB0_12
+.Ltmp16:
+.LBB0_5:
 	@DEBUG_VALUE: EBI_Open:u32DataWidth <- [DW_OP_LLVM_entry_value 1] $r1
+	@DEBUG_VALUE: EBI_Open:u32BusMode <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: EBI_Open:u32Bank <- [DW_OP_LLVM_entry_value 1] $r0
-	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
-	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
+	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
+	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
+	@DEBUG_VALUE: EBI_Open:u32CSActiveLevel <- [DW_OP_plus_uconst 8] [$sp+0]
+	@DEBUG_VALUE: EBI_Open:u32TimingClass <- $r2
+	.loc	4 0 87 is_stmt 0                @ ../../../../Library/StdDriver/src/ebi.c:0:87
+	movw	r0, #63742
+	movw	r2, #257
+.Ltmp17:
+	@DEBUG_VALUE: EBI_Open:u32TimingClass <- [DW_OP_LLVM_entry_value 1] $r2
+	movt	r0, #65528
+	.loc	4 92 40 is_stmt 1               @ ../../../../Library/StdDriver/src/ebi.c:92:40
+	ands	r0, r3
+	.loc	4 94 70                         @ ../../../../Library/StdDriver/src/ebi.c:94:70
+	orr.w	r0, r0, lr, lsl #2
+	orrs	r0, r2
+.Ltmp18:
+.LBB0_6:
+	@DEBUG_VALUE: EBI_Open:u32DataWidth <- [DW_OP_LLVM_entry_value 1] $r1
+	@DEBUG_VALUE: EBI_Open:u32BusMode <- [DW_OP_LLVM_entry_value 1] $r3
+	@DEBUG_VALUE: EBI_Open:u32Bank <- [DW_OP_LLVM_entry_value 1] $r0
+	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
+	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
 	@DEBUG_VALUE: EBI_Open:u32CSActiveLevel <- [DW_OP_plus_uconst 8] [$sp+0]
 	.loc	4 0 0 is_stmt 0                 @ ../../../../Library/StdDriver/src/ebi.c:0:0
-	str.w	r0, [r12, lr]
+	str.w	r0, [r4, r12]
 	movs	r0, #0
-	str.w	r0, [lr, r1]
+	str	r0, [r4, r1]
+.Ltmp19:
+	.loc	4 134 1 epilogue_begin is_stmt 1 @ ../../../../Library/StdDriver/src/ebi.c:134:1
+	pop	{r4, pc}
 .Ltmp20:
-	.loc	4 134 1 is_stmt 1               @ ../../../../Library/StdDriver/src/ebi.c:134:1
-	pop	{r7, pc}
-.Ltmp21:
-.LBB0_8:
-	@DEBUG_VALUE: EBI_Open:u32BusMode <- [DW_OP_LLVM_entry_value 1] $r3
+.LBB0_7:
 	@DEBUG_VALUE: EBI_Open:u32DataWidth <- [DW_OP_LLVM_entry_value 1] $r1
+	@DEBUG_VALUE: EBI_Open:u32BusMode <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: EBI_Open:u32Bank <- [DW_OP_LLVM_entry_value 1] $r0
-	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
-	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
+	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
+	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
 	@DEBUG_VALUE: EBI_Open:u32CSActiveLevel <- [DW_OP_plus_uconst 8] [$sp+0]
 	@DEBUG_VALUE: EBI_Open:u32TimingClass <- $r2
-	.loc	4 99 28                         @ ../../../../Library/StdDriver/src/ebi.c:99:28
-	ldr.w	r0, [r12, lr]
-	movw	r2, #63742
-.Ltmp22:
-	@DEBUG_VALUE: EBI_Open:u32TimingClass <- [DW_OP_LLVM_entry_value 1] $r2
-	.loc	4 0 28 is_stmt 0                @ ../../../../Library/StdDriver/src/ebi.c:0:28
-	movt	r2, #65528
-	.loc	4 99 40                         @ ../../../../Library/StdDriver/src/ebi.c:99:40
-	ands	r0, r2
-	.loc	4 101 87 is_stmt 1              @ ../../../../Library/StdDriver/src/ebi.c:101:87
-	orr.w	r0, r0, r3, lsl #2
+	.loc	4 0 1 is_stmt 0                 @ ../../../../Library/StdDriver/src/ebi.c:0:1
+	movw	r0, #63742
+	movt	r0, #65528
+.Ltmp21:
+	.loc	4 99 40 is_stmt 1               @ ../../../../Library/StdDriver/src/ebi.c:99:40
+	ands	r0, r3
+	.loc	4 101 87                        @ ../../../../Library/StdDriver/src/ebi.c:101:87
+	orr.w	r0, r0, lr, lsl #2
 	orr	r0, r0, #196608
 	orr	r0, r0, #1
 	orr	r0, r0, #256
-.Ltmp23:
-.LBB0_9:
-	@DEBUG_VALUE: EBI_Open:u32TimingClass <- [DW_OP_LLVM_entry_value 1] $r2
+	b	.LBB0_10
+.Ltmp22:
+.LBB0_8:
 	@DEBUG_VALUE: EBI_Open:u32BusMode <- [DW_OP_LLVM_entry_value 1] $r3
-	@DEBUG_VALUE: EBI_Open:u32DataWidth <- [DW_OP_LLVM_entry_value 1] $r1
 	@DEBUG_VALUE: EBI_Open:u32Bank <- [DW_OP_LLVM_entry_value 1] $r0
-	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
-	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
+	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
+	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
 	@DEBUG_VALUE: EBI_Open:u32CSActiveLevel <- [DW_OP_plus_uconst 8] [$sp+0]
+	@DEBUG_VALUE: EBI_Open:u32TimingClass <- $r2
+	@DEBUG_VALUE: EBI_Open:u32DataWidth <- $r1
+	.loc	4 131 25                        @ ../../../../Library/StdDriver/src/ebi.c:131:25
+	bic	r0, r3, #1
+	str.w	r0, [r4, r12]
+.Ltmp23:
+	.loc	4 134 1 epilogue_begin          @ ../../../../Library/StdDriver/src/ebi.c:134:1
+	pop	{r4, pc}
+.Ltmp24:
+.LBB0_9:
+	@DEBUG_VALUE: EBI_Open:u32DataWidth <- [DW_OP_LLVM_entry_value 1] $r1
+	@DEBUG_VALUE: EBI_Open:u32BusMode <- [DW_OP_LLVM_entry_value 1] $r3
+	@DEBUG_VALUE: EBI_Open:u32Bank <- [DW_OP_LLVM_entry_value 1] $r0
+	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
+	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
+	@DEBUG_VALUE: EBI_Open:u32CSActiveLevel <- [DW_OP_plus_uconst 8] [$sp+0]
+	@DEBUG_VALUE: EBI_Open:u32TimingClass <- $r2
+	.loc	4 0 1 is_stmt 0                 @ ../../../../Library/StdDriver/src/ebi.c:0:1
+	movw	r0, #63742
+	movt	r0, #65528
+.Ltmp25:
+	.loc	4 84 40 is_stmt 1               @ ../../../../Library/StdDriver/src/ebi.c:84:40
+	ands	r0, r3
+	.loc	4 86 87                         @ ../../../../Library/StdDriver/src/ebi.c:86:87
+	orr.w	r0, r0, lr, lsl #2
+	orr	r0, r0, #196608
+	orr	r0, r0, #1
+.Ltmp26:
+.LBB0_10:
+	@DEBUG_VALUE: EBI_Open:u32DataWidth <- [DW_OP_LLVM_entry_value 1] $r1
+	@DEBUG_VALUE: EBI_Open:u32BusMode <- [DW_OP_LLVM_entry_value 1] $r3
+	@DEBUG_VALUE: EBI_Open:u32Bank <- [DW_OP_LLVM_entry_value 1] $r0
+	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
+	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
+	@DEBUG_VALUE: EBI_Open:u32CSActiveLevel <- [DW_OP_plus_uconst 8] [$sp+0]
+	@DEBUG_VALUE: EBI_Open:u32TimingClass <- $r2
 	.loc	4 0 0 is_stmt 0                 @ ../../../../Library/StdDriver/src/ebi.c:0:0
-	str.w	r0, [r12, lr]
+	str.w	r0, [r4, r12]
 	movw	r0, #13080
 	movt	r0, #768
-	str.w	r0, [lr, r1]
-.Ltmp24:
-	.loc	4 134 1 is_stmt 1               @ ../../../../Library/StdDriver/src/ebi.c:134:1
-	pop	{r7, pc}
-.Ltmp25:
-.LBB0_10:
-	@DEBUG_VALUE: EBI_Open:u32BusMode <- [DW_OP_LLVM_entry_value 1] $r3
-	@DEBUG_VALUE: EBI_Open:u32DataWidth <- [DW_OP_LLVM_entry_value 1] $r1
-	@DEBUG_VALUE: EBI_Open:u32Bank <- [DW_OP_LLVM_entry_value 1] $r0
-	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
-	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
-	@DEBUG_VALUE: EBI_Open:u32CSActiveLevel <- [DW_OP_plus_uconst 8] [$sp+0]
-	@DEBUG_VALUE: EBI_Open:u32TimingClass <- $r2
-	.loc	4 107 28                        @ ../../../../Library/StdDriver/src/ebi.c:107:28
-	ldr.w	r0, [r12, lr]
-	movw	r2, #63742
-.Ltmp26:
-	@DEBUG_VALUE: EBI_Open:u32TimingClass <- [DW_OP_LLVM_entry_value 1] $r2
-	.loc	4 0 28 is_stmt 0                @ ../../../../Library/StdDriver/src/ebi.c:0:28
-	movt	r2, #65528
-	.loc	4 107 40                        @ ../../../../Library/StdDriver/src/ebi.c:107:40
-	ands	r0, r2
-	movw	r2, #257
-	.loc	4 109 87 is_stmt 1              @ ../../../../Library/StdDriver/src/ebi.c:109:87
-	orr.w	r0, r0, r3, lsl #2
-	movt	r2, #7
-	b	.LBB0_12
+	str	r0, [r4, r1]
 .Ltmp27:
+	.loc	4 134 1 epilogue_begin is_stmt 1 @ ../../../../Library/StdDriver/src/ebi.c:134:1
+	pop	{r4, pc}
+.Ltmp28:
 .LBB0_11:
-	@DEBUG_VALUE: EBI_Open:u32BusMode <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: EBI_Open:u32DataWidth <- [DW_OP_LLVM_entry_value 1] $r1
+	@DEBUG_VALUE: EBI_Open:u32BusMode <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: EBI_Open:u32Bank <- [DW_OP_LLVM_entry_value 1] $r0
-	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
-	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
+	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
+	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
 	@DEBUG_VALUE: EBI_Open:u32CSActiveLevel <- [DW_OP_plus_uconst 8] [$sp+0]
 	@DEBUG_VALUE: EBI_Open:u32TimingClass <- $r2
-	.loc	4 115 28                        @ ../../../../Library/StdDriver/src/ebi.c:115:28
-	ldr.w	r0, [r12, lr]
-	movw	r2, #63742
-.Ltmp28:
-	@DEBUG_VALUE: EBI_Open:u32TimingClass <- [DW_OP_LLVM_entry_value 1] $r2
-	.loc	4 0 28 is_stmt 0                @ ../../../../Library/StdDriver/src/ebi.c:0:28
-	movt	r2, #65528
-	.loc	4 115 40                        @ ../../../../Library/StdDriver/src/ebi.c:115:40
-	ands	r0, r2
+	.loc	4 0 1 is_stmt 0                 @ ../../../../Library/StdDriver/src/ebi.c:0:1
+	movw	r0, #63742
 	movw	r2, #257
-	movt	r2, #7
-	.loc	4 117 87 is_stmt 1              @ ../../../../Library/StdDriver/src/ebi.c:117:87
-	orr.w	r0, r0, r3, lsl #2
-	add.w	r2, r2, #256
 .Ltmp29:
+	@DEBUG_VALUE: EBI_Open:u32TimingClass <- [DW_OP_LLVM_entry_value 1] $r2
+	movt	r0, #65528
+.Ltmp30:
+	.loc	4 115 40 is_stmt 1              @ ../../../../Library/StdDriver/src/ebi.c:115:40
+	ands	r0, r3
+	movt	r2, #7
+	.loc	4 117 87                        @ ../../../../Library/StdDriver/src/ebi.c:117:87
+	orr.w	r0, r0, lr, lsl #2
+	add.w	r2, r2, #256
+.Ltmp31:
 .LBB0_12:
 	@DEBUG_VALUE: EBI_Open:u32TimingClass <- [DW_OP_LLVM_entry_value 1] $r2
-	@DEBUG_VALUE: EBI_Open:u32BusMode <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: EBI_Open:u32DataWidth <- [DW_OP_LLVM_entry_value 1] $r1
+	@DEBUG_VALUE: EBI_Open:u32BusMode <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: EBI_Open:u32Bank <- [DW_OP_LLVM_entry_value 1] $r0
-	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
-	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
+	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
+	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
 	@DEBUG_VALUE: EBI_Open:u32CSActiveLevel <- [DW_OP_plus_uconst 8] [$sp+0]
 	.loc	4 0 0 is_stmt 0                 @ ../../../../Library/StdDriver/src/ebi.c:0:0
 	orrs	r0, r2
 	b	.LBB0_14
-.Ltmp30:
+.Ltmp32:
 .LBB0_13:
-	@DEBUG_VALUE: EBI_Open:u32BusMode <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: EBI_Open:u32DataWidth <- [DW_OP_LLVM_entry_value 1] $r1
+	@DEBUG_VALUE: EBI_Open:u32BusMode <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: EBI_Open:u32Bank <- [DW_OP_LLVM_entry_value 1] $r0
-	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
-	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
+	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
+	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
 	@DEBUG_VALUE: EBI_Open:u32CSActiveLevel <- [DW_OP_plus_uconst 8] [$sp+0]
 	@DEBUG_VALUE: EBI_Open:u32TimingClass <- $r2
-	.loc	4 123 28 is_stmt 1              @ ../../../../Library/StdDriver/src/ebi.c:123:28
-	ldr.w	r0, [r12, lr]
-	movw	r2, #63742
-.Ltmp31:
-	@DEBUG_VALUE: EBI_Open:u32TimingClass <- [DW_OP_LLVM_entry_value 1] $r2
-	.loc	4 0 28 is_stmt 0                @ ../../../../Library/StdDriver/src/ebi.c:0:28
-	movt	r2, #65528
-	.loc	4 123 40                        @ ../../../../Library/StdDriver/src/ebi.c:123:40
-	ands	r0, r2
+	movw	r0, #63742
 	movw	r2, #257
-	.loc	4 125 87 is_stmt 1              @ ../../../../Library/StdDriver/src/ebi.c:125:87
-	orr.w	r0, r0, r3, lsl #2
+.Ltmp33:
+	@DEBUG_VALUE: EBI_Open:u32TimingClass <- [DW_OP_LLVM_entry_value 1] $r2
+	movt	r0, #65528
+	.loc	4 123 40 is_stmt 1              @ ../../../../Library/StdDriver/src/ebi.c:123:40
+	ands	r0, r3
+	.loc	4 125 87                        @ ../../../../Library/StdDriver/src/ebi.c:125:87
+	orr.w	r0, r0, lr, lsl #2
 	movt	r2, #7
 	orrs	r0, r2
 	orr	r0, r0, #512
-.Ltmp32:
+.Ltmp34:
 .LBB0_14:
 	@DEBUG_VALUE: EBI_Open:u32TimingClass <- [DW_OP_LLVM_entry_value 1] $r2
-	@DEBUG_VALUE: EBI_Open:u32BusMode <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: EBI_Open:u32DataWidth <- [DW_OP_LLVM_entry_value 1] $r1
+	@DEBUG_VALUE: EBI_Open:u32BusMode <- [DW_OP_LLVM_entry_value 1] $r3
 	@DEBUG_VALUE: EBI_Open:u32Bank <- [DW_OP_LLVM_entry_value 1] $r0
-	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
-	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $lr
+	@DEBUG_VALUE: EBI_Open:u32Index0 <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
+	@DEBUG_VALUE: EBI_Open:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r4
 	@DEBUG_VALUE: EBI_Open:u32CSActiveLevel <- [DW_OP_plus_uconst 8] [$sp+0]
 	.loc	4 0 0 is_stmt 0                 @ ../../../../Library/StdDriver/src/ebi.c:0:0
-	str.w	r0, [r12, lr]
+	str.w	r0, [r4, r12]
 	movw	r0, #30520
 	movt	r0, #1792
-	str.w	r0, [lr, r1]
-.Ltmp33:
-	.loc	4 134 1 is_stmt 1               @ ../../../../Library/StdDriver/src/ebi.c:134:1
-	pop	{r7, pc}
-.Ltmp34:
+	str	r0, [r4, r1]
+.Ltmp35:
+	.loc	4 134 1 epilogue_begin is_stmt 1 @ ../../../../Library/StdDriver/src/ebi.c:134:1
+	pop	{r4, pc}
+.Ltmp36:
 .Lfunc_end0:
 	.size	EBI_Open, .Lfunc_end0-EBI_Open
 	.cfi_endproc
@@ -376,14 +362,14 @@ EBI_Close:
 @ %bb.0:
 	@DEBUG_VALUE: EBI_Close:u32Bank <- $r0
 	movs	r1, #0
-.Ltmp35:
+.Ltmp37:
 	.loc	4 150 57 prologue_end           @ ../../../../Library/StdDriver/src/ebi.c:150:57
 	lsls	r0, r0, #4
-.Ltmp36:
+.Ltmp38:
 	@DEBUG_VALUE: EBI_Close:u32Bank <- [DW_OP_LLVM_entry_value 1] $r0
 	.loc	4 0 57 is_stmt 0                @ ../../../../Library/StdDriver/src/ebi.c:0:57
 	movt	r1, #16419
-.Ltmp37:
+.Ltmp39:
 	@DEBUG_VALUE: EBI_Close:pu32EBICTL <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r0
 	@DEBUG_VALUE: EBI_Close:u32Index <- [DW_OP_plus_uconst 1076035584, DW_OP_stack_value] $r0
 	.loc	4 153 17 is_stmt 1              @ ../../../../Library/StdDriver/src/ebi.c:153:17
@@ -392,7 +378,7 @@ EBI_Close:
 	str	r2, [r1, r0]
 	.loc	4 154 1                         @ ../../../../Library/StdDriver/src/ebi.c:154:1
 	bx	lr
-.Ltmp38:
+.Ltmp40:
 .Lfunc_end1:
 	.size	EBI_Close, .Lfunc_end1-EBI_Close
 	.cfi_endproc
@@ -421,7 +407,7 @@ EBI_SetBusTiming:
 	.cfi_offset lr, -4
 	.cfi_offset r4, -8
 	movw	r12, #0
-.Ltmp39:
+.Ltmp41:
 	.loc	4 180 58 prologue_end           @ ../../../../Library/StdDriver/src/ebi.c:180:58
 	lsls	r4, r0, #4
 	movt	r12, #16419
@@ -429,7 +415,7 @@ EBI_SetBusTiming:
 	ldr.w	lr, [r12, r4]
 	.loc	4 180 47                        @ ../../../../Library/StdDriver/src/ebi.c:180:47
 	add.w	r0, r12, r0, lsl #4
-.Ltmp40:
+.Ltmp42:
 	@DEBUG_VALUE: EBI_SetBusTiming:u32Bank <- [DW_OP_LLVM_entry_value 1] $r0
 	@DEBUG_VALUE: EBI_SetBusTiming:pu32EBITCTL <- undef
 	@DEBUG_VALUE: EBI_SetBusTiming:pu32EBICTL <- $r0
@@ -439,15 +425,15 @@ EBI_SetBusTiming:
 	bic	r3, lr, #1792
 	.loc	4 185 56 is_stmt 0              @ ../../../../Library/StdDriver/src/ebi.c:185:56
 	orr.w	r2, r3, r2, lsl #8
-.Ltmp41:
+.Ltmp43:
 	@DEBUG_VALUE: EBI_SetBusTiming:u32MclkDiv <- [DW_OP_LLVM_entry_value 1] $r2
 	.loc	4 185 17                        @ ../../../../Library/StdDriver/src/ebi.c:185:17
 	str.w	r2, [r12, r4]
 	.loc	4 186 18 is_stmt 1              @ ../../../../Library/StdDriver/src/ebi.c:186:18
 	str	r1, [r0, #4]
-	.loc	4 187 1                         @ ../../../../Library/StdDriver/src/ebi.c:187:1
+	.loc	4 187 1 epilogue_begin          @ ../../../../Library/StdDriver/src/ebi.c:187:1
 	pop	{r4, pc}
-.Ltmp42:
+.Ltmp44:
 .Lfunc_end2:
 	.size	EBI_SetBusTiming, .Lfunc_end2-EBI_SetBusTiming
 	.cfi_endproc
@@ -463,13 +449,13 @@ EBI_SetBusTiming:
 	.short	1                               @ Loc expr size
 	.byte	80                              @ DW_OP_reg0
 	.long	.Ltmp4-.Lfunc_begin0
-	.long	.Ltmp10-.Lfunc_begin0
+	.long	.Ltmp11-.Lfunc_begin0
 	.short	4                               @ Loc expr size
 	.byte	243                             @ DW_OP_GNU_entry_value
 	.byte	1                               @ 1
 	.byte	80                              @ DW_OP_reg0
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp11-.Lfunc_begin0
+	.long	.Ltmp12-.Lfunc_begin0
 	.long	.Lfunc_end0-.Lfunc_begin0
 	.short	4                               @ Loc expr size
 	.byte	243                             @ DW_OP_GNU_entry_value
@@ -482,28 +468,28 @@ EBI_SetBusTiming:
 	.long	-1
 	.long	.Lfunc_begin0                   @   base address
 	.long	.Lfunc_begin0-.Lfunc_begin0
-	.long	.Ltmp8-.Lfunc_begin0
-	.short	1                               @ Loc expr size
-	.byte	81                              @ DW_OP_reg1
-	.long	.Ltmp8-.Lfunc_begin0
 	.long	.Ltmp10-.Lfunc_begin0
-	.short	4                               @ Loc expr size
-	.byte	243                             @ DW_OP_GNU_entry_value
-	.byte	1                               @ 1
-	.byte	81                              @ DW_OP_reg1
-	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp11-.Lfunc_begin0
-	.long	.Ltmp13-.Lfunc_begin0
-	.short	4                               @ Loc expr size
-	.byte	243                             @ DW_OP_GNU_entry_value
-	.byte	1                               @ 1
-	.byte	81                              @ DW_OP_reg1
-	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp13-.Lfunc_begin0
-	.long	.Ltmp15-.Lfunc_begin0
 	.short	1                               @ Loc expr size
 	.byte	81                              @ DW_OP_reg1
-	.long	.Ltmp15-.Lfunc_begin0
+	.long	.Ltmp10-.Lfunc_begin0
+	.long	.Ltmp11-.Lfunc_begin0
+	.short	4                               @ Loc expr size
+	.byte	243                             @ DW_OP_GNU_entry_value
+	.byte	1                               @ 1
+	.byte	81                              @ DW_OP_reg1
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp12-.Lfunc_begin0
+	.long	.Ltmp22-.Lfunc_begin0
+	.short	4                               @ Loc expr size
+	.byte	243                             @ DW_OP_GNU_entry_value
+	.byte	1                               @ 1
+	.byte	81                              @ DW_OP_reg1
+	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp22-.Lfunc_begin0
+	.long	.Ltmp24-.Lfunc_begin0
+	.short	1                               @ Loc expr size
+	.byte	81                              @ DW_OP_reg1
+	.long	.Ltmp24-.Lfunc_begin0
 	.long	.Lfunc_end0-.Lfunc_begin0
 	.short	4                               @ Loc expr size
 	.byte	243                             @ DW_OP_GNU_entry_value
@@ -516,80 +502,47 @@ EBI_SetBusTiming:
 	.long	-1
 	.long	.Lfunc_begin0                   @   base address
 	.long	.Lfunc_begin0-.Lfunc_begin0
-	.long	.Ltmp10-.Lfunc_begin0
-	.short	1                               @ Loc expr size
-	.byte	82                              @ DW_OP_reg2
 	.long	.Ltmp11-.Lfunc_begin0
-	.long	.Ltmp12-.Lfunc_begin0
 	.short	1                               @ Loc expr size
 	.byte	82                              @ DW_OP_reg2
 	.long	.Ltmp12-.Lfunc_begin0
-	.long	.Ltmp13-.Lfunc_begin0
+	.long	.Ltmp15-.Lfunc_begin0
+	.short	1                               @ Loc expr size
+	.byte	82                              @ DW_OP_reg2
+	.long	.Ltmp15-.Lfunc_begin0
+	.long	.Ltmp16-.Lfunc_begin0
 	.short	4                               @ Loc expr size
 	.byte	243                             @ DW_OP_GNU_entry_value
 	.byte	1                               @ 1
 	.byte	82                              @ DW_OP_reg2
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp13-.Lfunc_begin0
-	.long	.Ltmp16-.Lfunc_begin0
-	.short	1                               @ Loc expr size
-	.byte	82                              @ DW_OP_reg2
 	.long	.Ltmp16-.Lfunc_begin0
 	.long	.Ltmp17-.Lfunc_begin0
-	.short	4                               @ Loc expr size
-	.byte	243                             @ DW_OP_GNU_entry_value
-	.byte	1                               @ 1
+	.short	1                               @ Loc expr size
 	.byte	82                              @ DW_OP_reg2
-	.byte	159                             @ DW_OP_stack_value
 	.long	.Ltmp17-.Lfunc_begin0
 	.long	.Ltmp18-.Lfunc_begin0
-	.short	1                               @ Loc expr size
-	.byte	82                              @ DW_OP_reg2
-	.long	.Ltmp18-.Lfunc_begin0
-	.long	.Ltmp21-.Lfunc_begin0
 	.short	4                               @ Loc expr size
 	.byte	243                             @ DW_OP_GNU_entry_value
 	.byte	1                               @ 1
 	.byte	82                              @ DW_OP_reg2
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp21-.Lfunc_begin0
-	.long	.Ltmp22-.Lfunc_begin0
+	.long	.Ltmp20-.Lfunc_begin0
+	.long	.Ltmp29-.Lfunc_begin0
 	.short	1                               @ Loc expr size
 	.byte	82                              @ DW_OP_reg2
-	.long	.Ltmp22-.Lfunc_begin0
-	.long	.Ltmp25-.Lfunc_begin0
+	.long	.Ltmp29-.Lfunc_begin0
+	.long	.Ltmp32-.Lfunc_begin0
 	.short	4                               @ Loc expr size
 	.byte	243                             @ DW_OP_GNU_entry_value
 	.byte	1                               @ 1
 	.byte	82                              @ DW_OP_reg2
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp25-.Lfunc_begin0
-	.long	.Ltmp26-.Lfunc_begin0
+	.long	.Ltmp32-.Lfunc_begin0
+	.long	.Ltmp33-.Lfunc_begin0
 	.short	1                               @ Loc expr size
 	.byte	82                              @ DW_OP_reg2
-	.long	.Ltmp26-.Lfunc_begin0
-	.long	.Ltmp27-.Lfunc_begin0
-	.short	4                               @ Loc expr size
-	.byte	243                             @ DW_OP_GNU_entry_value
-	.byte	1                               @ 1
-	.byte	82                              @ DW_OP_reg2
-	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp27-.Lfunc_begin0
-	.long	.Ltmp28-.Lfunc_begin0
-	.short	1                               @ Loc expr size
-	.byte	82                              @ DW_OP_reg2
-	.long	.Ltmp28-.Lfunc_begin0
-	.long	.Ltmp30-.Lfunc_begin0
-	.short	4                               @ Loc expr size
-	.byte	243                             @ DW_OP_GNU_entry_value
-	.byte	1                               @ 1
-	.byte	82                              @ DW_OP_reg2
-	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp30-.Lfunc_begin0
-	.long	.Ltmp31-.Lfunc_begin0
-	.short	1                               @ Loc expr size
-	.byte	82                              @ DW_OP_reg2
-	.long	.Ltmp31-.Lfunc_begin0
+	.long	.Ltmp33-.Lfunc_begin0
 	.long	.Lfunc_end0-.Lfunc_begin0
 	.short	4                               @ Loc expr size
 	.byte	243                             @ DW_OP_GNU_entry_value
@@ -602,28 +555,17 @@ EBI_SetBusTiming:
 	.long	-1
 	.long	.Lfunc_begin0                   @   base address
 	.long	.Lfunc_begin0-.Lfunc_begin0
-	.long	.Ltmp9-.Lfunc_begin0
+	.long	.Ltmp8-.Lfunc_begin0
 	.short	1                               @ Loc expr size
 	.byte	83                              @ DW_OP_reg3
-	.long	.Ltmp9-.Lfunc_begin0
-	.long	.Ltmp10-.Lfunc_begin0
-	.short	4                               @ Loc expr size
-	.byte	243                             @ DW_OP_GNU_entry_value
-	.byte	1                               @ 1
-	.byte	83                              @ DW_OP_reg3
-	.byte	159                             @ DW_OP_stack_value
+	.long	.Ltmp8-.Lfunc_begin0
 	.long	.Ltmp11-.Lfunc_begin0
-	.long	.Ltmp13-.Lfunc_begin0
 	.short	4                               @ Loc expr size
 	.byte	243                             @ DW_OP_GNU_entry_value
 	.byte	1                               @ 1
 	.byte	83                              @ DW_OP_reg3
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp13-.Lfunc_begin0
-	.long	.Ltmp15-.Lfunc_begin0
-	.short	1                               @ Loc expr size
-	.byte	83                              @ DW_OP_reg3
-	.long	.Ltmp15-.Lfunc_begin0
+	.long	.Ltmp12-.Lfunc_begin0
 	.long	.Lfunc_end0-.Lfunc_begin0
 	.short	4                               @ Loc expr size
 	.byte	243                             @ DW_OP_GNU_entry_value
@@ -636,11 +578,11 @@ EBI_SetBusTiming:
 	.long	-1
 	.long	.Lfunc_begin0                   @   base address
 	.long	.Ltmp0-.Lfunc_begin0
-	.long	.Ltmp10-.Lfunc_begin0
+	.long	.Ltmp11-.Lfunc_begin0
 	.short	2                               @ Loc expr size
 	.byte	125                             @ DW_OP_breg13
 	.byte	8                               @ 8
-	.long	.Ltmp11-.Lfunc_begin0
+	.long	.Ltmp12-.Lfunc_begin0
 	.long	.Lfunc_end0-.Lfunc_begin0
 	.short	2                               @ Loc expr size
 	.byte	125                             @ DW_OP_breg13
@@ -651,19 +593,19 @@ EBI_SetBusTiming:
 	.long	-1
 	.long	.Lfunc_begin0                   @   base address
 	.long	.Ltmp2-.Lfunc_begin0
-	.long	.Ltmp10-.Lfunc_begin0
+	.long	.Ltmp11-.Lfunc_begin0
 	.short	7                               @ Loc expr size
-	.byte	126                             @ DW_OP_breg14
+	.byte	116                             @ DW_OP_breg4
 	.byte	128                             @ 1076035584
 	.byte	128                             @ 
 	.byte	140                             @ 
 	.byte	129                             @ 
 	.byte	4                               @ 
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp11-.Lfunc_begin0
-	.long	.Lfunc_end0-.Lfunc_begin0
+	.long	.Ltmp12-.Lfunc_begin0
+	.long	.Ltmp36-.Lfunc_begin0
 	.short	7                               @ Loc expr size
-	.byte	126                             @ DW_OP_breg14
+	.byte	116                             @ DW_OP_breg4
 	.byte	128                             @ 1076035584
 	.byte	128                             @ 
 	.byte	140                             @ 
@@ -676,19 +618,19 @@ EBI_SetBusTiming:
 	.long	-1
 	.long	.Lfunc_begin0                   @   base address
 	.long	.Ltmp2-.Lfunc_begin0
-	.long	.Ltmp10-.Lfunc_begin0
+	.long	.Ltmp11-.Lfunc_begin0
 	.short	7                               @ Loc expr size
-	.byte	126                             @ DW_OP_breg14
+	.byte	116                             @ DW_OP_breg4
 	.byte	128                             @ 1076035584
 	.byte	128                             @ 
 	.byte	140                             @ 
 	.byte	129                             @ 
 	.byte	4                               @ 
 	.byte	159                             @ DW_OP_stack_value
-	.long	.Ltmp11-.Lfunc_begin0
-	.long	.Lfunc_end0-.Lfunc_begin0
+	.long	.Ltmp12-.Lfunc_begin0
+	.long	.Ltmp36-.Lfunc_begin0
 	.short	7                               @ Loc expr size
-	.byte	126                             @ DW_OP_breg14
+	.byte	116                             @ DW_OP_breg4
 	.byte	128                             @ 1076035584
 	.byte	128                             @ 
 	.byte	140                             @ 
@@ -701,10 +643,10 @@ EBI_SetBusTiming:
 	.long	-1
 	.long	.Lfunc_begin1                   @   base address
 	.long	.Lfunc_begin1-.Lfunc_begin1
-	.long	.Ltmp36-.Lfunc_begin1
+	.long	.Ltmp38-.Lfunc_begin1
 	.short	1                               @ Loc expr size
 	.byte	80                              @ DW_OP_reg0
-	.long	.Ltmp36-.Lfunc_begin1
+	.long	.Ltmp38-.Lfunc_begin1
 	.long	.Lfunc_end1-.Lfunc_begin1
 	.short	4                               @ Loc expr size
 	.byte	243                             @ DW_OP_GNU_entry_value
@@ -716,7 +658,7 @@ EBI_SetBusTiming:
 .Ldebug_loc8:
 	.long	-1
 	.long	.Lfunc_begin1                   @   base address
-	.long	.Ltmp37-.Lfunc_begin1
+	.long	.Ltmp39-.Lfunc_begin1
 	.long	.Lfunc_end1-.Lfunc_begin1
 	.short	7                               @ Loc expr size
 	.byte	112                             @ DW_OP_breg0
@@ -731,7 +673,7 @@ EBI_SetBusTiming:
 .Ldebug_loc9:
 	.long	-1
 	.long	.Lfunc_begin1                   @   base address
-	.long	.Ltmp37-.Lfunc_begin1
+	.long	.Ltmp39-.Lfunc_begin1
 	.long	.Lfunc_end1-.Lfunc_begin1
 	.short	7                               @ Loc expr size
 	.byte	112                             @ DW_OP_breg0
@@ -747,10 +689,10 @@ EBI_SetBusTiming:
 	.long	-1
 	.long	.Lfunc_begin2                   @   base address
 	.long	.Lfunc_begin2-.Lfunc_begin2
-	.long	.Ltmp40-.Lfunc_begin2
+	.long	.Ltmp42-.Lfunc_begin2
 	.short	1                               @ Loc expr size
 	.byte	80                              @ DW_OP_reg0
-	.long	.Ltmp40-.Lfunc_begin2
+	.long	.Ltmp42-.Lfunc_begin2
 	.long	.Lfunc_end2-.Lfunc_begin2
 	.short	4                               @ Loc expr size
 	.byte	243                             @ DW_OP_GNU_entry_value
@@ -763,10 +705,10 @@ EBI_SetBusTiming:
 	.long	-1
 	.long	.Lfunc_begin2                   @   base address
 	.long	.Lfunc_begin2-.Lfunc_begin2
-	.long	.Ltmp41-.Lfunc_begin2
+	.long	.Ltmp43-.Lfunc_begin2
 	.short	1                               @ Loc expr size
 	.byte	82                              @ DW_OP_reg2
-	.long	.Ltmp41-.Lfunc_begin2
+	.long	.Ltmp43-.Lfunc_begin2
 	.long	.Lfunc_end2-.Lfunc_begin2
 	.short	4                               @ Loc expr size
 	.byte	243                             @ DW_OP_GNU_entry_value
@@ -778,7 +720,7 @@ EBI_SetBusTiming:
 .Ldebug_loc12:
 	.long	-1
 	.long	.Lfunc_begin2                   @   base address
-	.long	.Ltmp40-.Lfunc_begin2
+	.long	.Ltmp42-.Lfunc_begin2
 	.long	.Lfunc_end2-.Lfunc_begin2
 	.short	1                               @ Loc expr size
 	.byte	80                              @ DW_OP_reg0
@@ -787,7 +729,7 @@ EBI_SetBusTiming:
 .Ldebug_loc13:
 	.long	-1
 	.long	.Lfunc_begin2                   @   base address
-	.long	.Ltmp40-.Lfunc_begin2
+	.long	.Ltmp42-.Lfunc_begin2
 	.long	.Lfunc_end2-.Lfunc_begin2
 	.short	1                               @ Loc expr size
 	.byte	80                              @ DW_OP_reg0
@@ -1056,7 +998,7 @@ EBI_SetBusTiming:
 	.byte	4                               @ Address Size (in bytes)
 	.byte	1                               @ Abbrev [1] 0xb:0x422 DW_TAG_compile_unit
 	.long	.Linfo_string0                  @ DW_AT_producer
-	.short	12                              @ DW_AT_language
+	.short	29                              @ DW_AT_language
 	.long	.Linfo_string1                  @ DW_AT_name
 	.long	.Lline_table_start0             @ DW_AT_stmt_list
 	.long	.Linfo_string2                  @ DW_AT_comp_dir
@@ -1440,22 +1382,22 @@ EBI_SetBusTiming:
 	.byte	4                               @ DW_AT_decl_file
 	.byte	60                              @ DW_AT_decl_line
 	.long	1063                            @ DW_AT_type
-	.byte	19                              @ Abbrev [19] 0x351:0xb DW_TAG_variable
+	.byte	18                              @ Abbrev [18] 0x351:0xf DW_TAG_variable
+	.long	.Ldebug_loc6                    @ DW_AT_location
 	.long	.Linfo_string56                 @ DW_AT_name
 	.byte	4                               @ DW_AT_decl_file
-	.byte	61                              @ DW_AT_decl_line
-	.long	1063                            @ DW_AT_type
-	.byte	19                              @ Abbrev [19] 0x35c:0xb DW_TAG_variable
+	.byte	58                              @ DW_AT_decl_line
+	.long	38                              @ DW_AT_type
+	.byte	19                              @ Abbrev [19] 0x360:0xb DW_TAG_variable
 	.long	.Linfo_string57                 @ DW_AT_name
 	.byte	4                               @ DW_AT_decl_file
 	.byte	59                              @ DW_AT_decl_line
 	.long	38                              @ DW_AT_type
-	.byte	18                              @ Abbrev [18] 0x367:0xf DW_TAG_variable
-	.long	.Ldebug_loc6                    @ DW_AT_location
+	.byte	19                              @ Abbrev [19] 0x36b:0xb DW_TAG_variable
 	.long	.Linfo_string58                 @ DW_AT_name
 	.byte	4                               @ DW_AT_decl_file
-	.byte	58                              @ DW_AT_decl_line
-	.long	38                              @ DW_AT_type
+	.byte	61                              @ DW_AT_decl_line
+	.long	1063                            @ DW_AT_type
 	.byte	0                               @ End Of Children Mark
 	.byte	16                              @ Abbrev [16] 0x377:0x3f DW_TAG_subprogram
 	.long	.Lfunc_begin1                   @ DW_AT_low_pc
@@ -1525,7 +1467,7 @@ EBI_SetBusTiming:
 	.long	1063                            @ DW_AT_type
 	.byte	18                              @ Abbrev [18] 0x401:0xf DW_TAG_variable
 	.long	.Ldebug_loc13                   @ DW_AT_location
-	.long	.Linfo_string58                 @ DW_AT_name
+	.long	.Linfo_string56                 @ DW_AT_name
 	.byte	4                               @ DW_AT_decl_file
 	.byte	180                             @ DW_AT_decl_line
 	.long	38                              @ DW_AT_type
@@ -1535,7 +1477,7 @@ EBI_SetBusTiming:
 	.byte	181                             @ DW_AT_decl_line
 	.long	38                              @ DW_AT_type
 	.byte	19                              @ Abbrev [19] 0x41b:0xb DW_TAG_variable
-	.long	.Linfo_string56                 @ DW_AT_name
+	.long	.Linfo_string58                 @ DW_AT_name
 	.byte	4                               @ DW_AT_decl_file
 	.byte	183                             @ DW_AT_decl_line
 	.long	1063                            @ DW_AT_type
@@ -1556,130 +1498,130 @@ EBI_SetBusTiming:
 	.long	0
 	.section	.debug_str,"MS",%progbits,1
 .Linfo_string0:
-	.asciz	"Component: Arm Compiler for Embedded 6.19 Tool: armclang [5e73cb00]" @ string offset=0
+	.asciz	"Component: Arm Compiler for Embedded 6.22 Tool: armclang [5ee92100]" @ string offset=0
 .Linfo_string1:
 	.asciz	"../../../../Library/StdDriver/src\\ebi.c" @ string offset=68
 .Linfo_string2:
-	.asciz	"C:\\Users\\cychen38\\Desktop\\M55M1BSP\\SampleCode\\MachineLearning\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" @ string offset=108
+	.asciz	"D:\\M55M1_NuEdgeWise\\ML_M55M1_SampleCode\\M55M1BSP-3.00.001\\SampleCode\\NuEdgeWise\\ObjectDetection_FreeRTOS_yoloxn\\KEIL" @ string offset=108
 .Linfo_string3:
-	.asciz	"unsigned int"                  @ string offset=207
+	.asciz	"unsigned int"                  @ string offset=225
 .Linfo_string4:
-	.asciz	"uint32_t"                      @ string offset=220
+	.asciz	"uint32_t"                      @ string offset=238
 .Linfo_string5:
-	.asciz	"CTL0"                          @ string offset=229
+	.asciz	"CTL0"                          @ string offset=247
 .Linfo_string6:
-	.asciz	"TCTL0"                         @ string offset=234
+	.asciz	"TCTL0"                         @ string offset=252
 .Linfo_string7:
-	.asciz	"RESERVE0"                      @ string offset=240
+	.asciz	"RESERVE0"                      @ string offset=258
 .Linfo_string8:
-	.asciz	"__ARRAY_SIZE_TYPE__"           @ string offset=249
+	.asciz	"__ARRAY_SIZE_TYPE__"           @ string offset=267
 .Linfo_string9:
-	.asciz	"CTL1"                          @ string offset=269
+	.asciz	"CTL1"                          @ string offset=287
 .Linfo_string10:
-	.asciz	"TCTL1"                         @ string offset=274
+	.asciz	"TCTL1"                         @ string offset=292
 .Linfo_string11:
-	.asciz	"RESERVE1"                      @ string offset=280
+	.asciz	"RESERVE1"                      @ string offset=298
 .Linfo_string12:
-	.asciz	"CTL2"                          @ string offset=289
+	.asciz	"CTL2"                          @ string offset=307
 .Linfo_string13:
-	.asciz	"TCTL2"                         @ string offset=294
+	.asciz	"TCTL2"                         @ string offset=312
 .Linfo_string14:
-	.asciz	"EBI_T"                         @ string offset=300
+	.asciz	"EBI_T"                         @ string offset=318
 .Linfo_string15:
-	.asciz	"CTL"                           @ string offset=306
+	.asciz	"CTL"                           @ string offset=324
 .Linfo_string16:
-	.asciz	"PAR"                           @ string offset=310
+	.asciz	"PAR"                           @ string offset=328
 .Linfo_string17:
-	.asciz	"INTEN"                         @ string offset=314
+	.asciz	"INTEN"                         @ string offset=332
 .Linfo_string18:
-	.asciz	"INTSTS"                        @ string offset=320
+	.asciz	"INTSTS"                        @ string offset=338
 .Linfo_string19:
-	.asciz	"PARM"                          @ string offset=327
+	.asciz	"PARM"                          @ string offset=345
 .Linfo_string20:
-	.asciz	"CWSP"                          @ string offset=332
+	.asciz	"CWSP"                          @ string offset=350
 .Linfo_string21:
-	.asciz	"CWS"                           @ string offset=337
+	.asciz	"CWS"                           @ string offset=355
 .Linfo_string22:
-	.asciz	"PKTSL"                         @ string offset=341
+	.asciz	"PKTSL"                         @ string offset=359
 .Linfo_string23:
-	.asciz	"FRCTL"                         @ string offset=347
+	.asciz	"FRCTL"                         @ string offset=365
 .Linfo_string24:
-	.asciz	"STRIDE"                        @ string offset=353
+	.asciz	"STRIDE"                        @ string offset=371
 .Linfo_string25:
-	.asciz	"RESERVE2"                      @ string offset=360
+	.asciz	"RESERVE2"                      @ string offset=378
 .Linfo_string26:
-	.asciz	"FIFOTH"                        @ string offset=369
+	.asciz	"FIFOTH"                        @ string offset=387
 .Linfo_string27:
-	.asciz	"CMPADDR"                       @ string offset=376
+	.asciz	"CMPADDR"                       @ string offset=394
 .Linfo_string28:
-	.asciz	"LUMA_Y1_THD"                   @ string offset=384
+	.asciz	"LUMA_Y1_THD"                   @ string offset=402
 .Linfo_string29:
-	.asciz	"PKTSM"                         @ string offset=396
+	.asciz	"PKTSM"                         @ string offset=414
 .Linfo_string30:
-	.asciz	"RESERVE3"                      @ string offset=402
+	.asciz	"RESERVE3"                      @ string offset=420
 .Linfo_string31:
-	.asciz	"CURADDRP"                      @ string offset=411
+	.asciz	"CURADDRP"                      @ string offset=429
 .Linfo_string32:
-	.asciz	"RESERVE4"                      @ string offset=420
+	.asciz	"RESERVE4"                      @ string offset=438
 .Linfo_string33:
-	.asciz	"PKTBA0"                        @ string offset=429
+	.asciz	"PKTBA0"                        @ string offset=447
 .Linfo_string34:
-	.asciz	"RESERVE5"                      @ string offset=436
+	.asciz	"RESERVE5"                      @ string offset=454
 .Linfo_string35:
-	.asciz	"MDCTL"                         @ string offset=445
+	.asciz	"MDCTL"                         @ string offset=463
 .Linfo_string36:
-	.asciz	"MDTRG_WK"                      @ string offset=451
+	.asciz	"MDTRG_WK"                      @ string offset=469
 .Linfo_string37:
-	.asciz	"RESERVE6"                      @ string offset=460
+	.asciz	"RESERVE6"                      @ string offset=478
 .Linfo_string38:
-	.asciz	"MDTTH"                         @ string offset=469
+	.asciz	"MDTTH"                         @ string offset=487
 .Linfo_string39:
-	.asciz	"MDTSAD"                        @ string offset=475
+	.asciz	"MDTSAD"                        @ string offset=493
 .Linfo_string40:
-	.asciz	"RESERVE7"                      @ string offset=482
+	.asciz	"RESERVE7"                      @ string offset=500
 .Linfo_string41:
-	.asciz	"MDWOCTH"                       @ string offset=491
+	.asciz	"MDWOCTH"                       @ string offset=509
 .Linfo_string42:
-	.asciz	"MDWOC"                         @ string offset=499
+	.asciz	"MDWOC"                         @ string offset=517
 .Linfo_string43:
-	.asciz	"RESERVE8"                      @ string offset=505
+	.asciz	"RESERVE8"                      @ string offset=523
 .Linfo_string44:
-	.asciz	"MDWTH"                         @ string offset=514
+	.asciz	"MDWTH"                         @ string offset=532
 .Linfo_string45:
-	.asciz	"MDWSAD"                        @ string offset=520
+	.asciz	"MDWSAD"                        @ string offset=538
 .Linfo_string46:
-	.asciz	"CCAP_T"                        @ string offset=527
+	.asciz	"CCAP_T"                        @ string offset=545
 .Linfo_string47:
-	.asciz	"EBI_Open"                      @ string offset=534
+	.asciz	"EBI_Open"                      @ string offset=552
 .Linfo_string48:
-	.asciz	"EBI_Close"                     @ string offset=543
+	.asciz	"EBI_Close"                     @ string offset=561
 .Linfo_string49:
-	.asciz	"EBI_SetBusTiming"              @ string offset=553
+	.asciz	"EBI_SetBusTiming"              @ string offset=571
 .Linfo_string50:
-	.asciz	"u32Bank"                       @ string offset=570
+	.asciz	"u32Bank"                       @ string offset=588
 .Linfo_string51:
-	.asciz	"u32DataWidth"                  @ string offset=578
+	.asciz	"u32DataWidth"                  @ string offset=596
 .Linfo_string52:
-	.asciz	"u32TimingClass"                @ string offset=591
+	.asciz	"u32TimingClass"                @ string offset=609
 .Linfo_string53:
-	.asciz	"u32BusMode"                    @ string offset=606
+	.asciz	"u32BusMode"                    @ string offset=624
 .Linfo_string54:
-	.asciz	"u32CSActiveLevel"              @ string offset=617
+	.asciz	"u32CSActiveLevel"              @ string offset=635
 .Linfo_string55:
-	.asciz	"pu32EBICTL"                    @ string offset=634
+	.asciz	"pu32EBICTL"                    @ string offset=652
 .Linfo_string56:
-	.asciz	"pu32EBITCTL"                   @ string offset=645
+	.asciz	"u32Index0"                     @ string offset=663
 .Linfo_string57:
-	.asciz	"u32Index1"                     @ string offset=657
+	.asciz	"u32Index1"                     @ string offset=673
 .Linfo_string58:
-	.asciz	"u32Index0"                     @ string offset=667
+	.asciz	"pu32EBITCTL"                   @ string offset=683
 .Linfo_string59:
-	.asciz	"u32Index"                      @ string offset=677
+	.asciz	"u32Index"                      @ string offset=695
 .Linfo_string60:
-	.asciz	"u32TimingConfig"               @ string offset=686
+	.asciz	"u32TimingConfig"               @ string offset=704
 .Linfo_string61:
-	.asciz	"u32MclkDiv"                    @ string offset=702
-	.ident	"Component: Arm Compiler for Embedded 6.19 Tool: armclang [5e73cb00]"
+	.asciz	"u32MclkDiv"                    @ string offset=720
+	.ident	"Component: Arm Compiler for Embedded 6.22 Tool: armclang [5ee92100]"
 	.section	".note.GNU-stack","",%progbits
 	.eabi_attribute	30, 1	@ Tag_ABI_optimization_goals
 	.ARM_attribute	16, 1	@ Tag_AV_eba

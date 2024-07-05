@@ -1,17 +1,17 @@
 # 1 "../../../../Library/StdDriver/src/npu/ethosu_pmu.c"
 # 1 "<built-in>" 1
 # 1 "<built-in>" 3
-# 391 "<built-in>" 3
+# 407 "<built-in>" 3
 # 1 "<command line>" 1
 # 1 "<built-in>" 2
 # 1 "../../../../Library/StdDriver/src/npu/ethosu_pmu.c" 2
 # 23 "../../../../Library/StdDriver/src/npu/ethosu_pmu.c"
-# 1 "../../../../Library/StdDriver/src/npu/ethosu_device.h" 1
-# 25 "../../../../Library/StdDriver/src/npu/ethosu_device.h"
+# 1 "../../../../Library/StdDriver/src/npu\\ethosu_device.h" 1
+# 25 "../../../../Library/StdDriver/src/npu\\ethosu_device.h"
 # 1 "../../../../Library/StdDriver/inc/npu\\ethosu_types.h" 1
 # 26 "../../../../Library/StdDriver/inc/npu\\ethosu_types.h"
-# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdint.h" 1 3
-# 56 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdint.h" 3
+# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdint.h" 1 3
+# 56 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdint.h" 3
 typedef signed char int8_t;
 typedef signed short int int16_t;
 typedef signed int int32_t;
@@ -114,11 +114,11 @@ struct ethosu_hw_info
     struct ethosu_id version;
     struct ethosu_config cfg;
 };
-# 26 "../../../../Library/StdDriver/src/npu/ethosu_device.h" 2
+# 26 "../../../../Library/StdDriver/src/npu\\ethosu_device.h" 2
 
-# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdbool.h" 1 3
-# 28 "../../../../Library/StdDriver/src/npu/ethosu_device.h" 2
-# 48 "../../../../Library/StdDriver/src/npu/ethosu_device.h"
+# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdbool.h" 1 3
+# 28 "../../../../Library/StdDriver/src/npu\\ethosu_device.h" 2
+# 48 "../../../../Library/StdDriver/src/npu\\ethosu_device.h"
 struct NPU_REG;
 
 struct ethosu_device
@@ -127,7 +127,7 @@ struct ethosu_device
     uint32_t secure;
     uint32_t privileged;
 };
-# 64 "../../../../Library/StdDriver/src/npu/ethosu_device.h"
+# 64 "../../../../Library/StdDriver/src/npu\\ethosu_device.h"
 struct ethosu_device *ethosu_dev_init(const void *base_address, uint32_t secure_enable, uint32_t privilege_enable);
 
 
@@ -139,7 +139,7 @@ void ethosu_dev_deinit(struct ethosu_device *dev);
 
 
 enum ethosu_error_codes ethosu_dev_axi_init(struct ethosu_device *dev);
-# 87 "../../../../Library/StdDriver/src/npu/ethosu_device.h"
+# 87 "../../../../Library/StdDriver/src/npu\\ethosu_device.h"
 void ethosu_dev_run_command_stream(struct ethosu_device *dev,
                                    const uint8_t *cmd_stream_ptr,
                                    uint32_t cms_length,
@@ -195,14 +195,14 @@ _Bool ethosu_dev_verify_optimizer_config(struct ethosu_device *dev, uint32_t cfg
 # 24 "../../../../Library/StdDriver/src/npu/ethosu_pmu.c" 2
 # 1 "../../../../Library/StdDriver/inc/npu\\ethosu_driver.h" 1
 # 29 "../../../../Library/StdDriver/inc/npu\\ethosu_driver.h"
-# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stddef.h" 1 3
-# 38 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stddef.h" 3
+# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stddef.h" 1 3
+# 38 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stddef.h" 3
   typedef signed int ptrdiff_t;
-# 53 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stddef.h" 3
+# 53 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stddef.h" 3
     typedef unsigned int size_t;
-# 71 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stddef.h" 3
+# 71 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stddef.h" 3
       typedef unsigned short wchar_t;
-# 95 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stddef.h" 3
+# 95 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stddef.h" 3
   typedef long double max_align_t;
 # 30 "../../../../Library/StdDriver/inc/npu\\ethosu_driver.h" 2
 # 49 "../../../../Library/StdDriver/inc/npu\\ethosu_driver.h"
@@ -421,10 +421,10 @@ static inline int ethosu_invoke_v2(const void *custom_data_ptr,
     return result;
 }
 # 25 "../../../../Library/StdDriver/src/npu/ethosu_pmu.c" 2
-# 1 "../../../../Library/StdDriver/src/npu/ethosu_interface.h" 1
-# 31 "../../../../Library/StdDriver/src/npu/ethosu_interface.h"
-# 1 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h" 1
-# 808 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 1 "../../../../Library/StdDriver/src/npu\\ethosu_interface.h" 1
+# 31 "../../../../Library/StdDriver/src/npu\\ethosu_interface.h"
+# 1 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h" 1
+# 808 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 enum acc_format
 {
     ACC_FORMAT_I32 = 0,
@@ -852,7 +852,7 @@ enum weight_order
     WEIGHT_ORDER_DEPTH_FIRST = 0,
     WEIGHT_ORDER_PART_KERNEL_FIRST = 1,
 };
-# 2520 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 2520 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 struct id_r
 {
 
@@ -872,7 +872,7 @@ struct id_r
         };
         uint32_t word;
     };
-# 2707 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 2707 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -909,7 +909,7 @@ struct status_r
         };
         uint32_t word;
     };
-# 3011 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 3011 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -933,7 +933,7 @@ struct cmd_r
         };
         uint32_t word;
     };
-# 3182 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 3182 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -950,7 +950,7 @@ struct reset_r
         };
         uint32_t word;
     };
-# 3270 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 3270 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -966,7 +966,7 @@ struct qbase_r
         };
         uint32_t word[2];
     };
-# 3320 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 3320 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -981,7 +981,7 @@ struct qread_r
         };
         uint32_t word;
     };
-# 3382 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 3382 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -997,7 +997,7 @@ struct qconfig_r
         };
         uint32_t word;
     };
-# 3445 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 3445 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1012,7 +1012,7 @@ struct qsize_r
         };
         uint32_t word;
     };
-# 3507 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 3507 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1029,7 +1029,7 @@ struct prot_r
         };
         uint32_t word;
     };
-# 3595 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 3595 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1050,7 +1050,7 @@ struct config_r
         };
         uint32_t word;
     };
-# 3765 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 3765 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1065,7 +1065,7 @@ struct lock_r
         };
         uint32_t word;
     };
-# 3827 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 3827 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1088,7 +1088,7 @@ struct regioncfg_r
         };
         uint32_t word;
     };
-# 4037 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 4037 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1112,7 +1112,7 @@ struct axi_limit0_r
         };
         uint32_t word;
     };
-# 4170 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 4170 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1136,7 +1136,7 @@ struct axi_limit1_r
         };
         uint32_t word;
     };
-# 4303 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 4303 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1160,7 +1160,7 @@ struct axi_limit2_r
         };
         uint32_t word;
     };
-# 4436 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 4436 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1184,7 +1184,7 @@ struct axi_limit3_r
         };
         uint32_t word;
     };
-# 4569 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 4569 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1201,7 +1201,7 @@ struct basep_r
         };
         uint32_t word[2];
     };
-# 4620 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 4620 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1227,7 +1227,7 @@ struct wd_status_r
         };
         uint32_t word;
     };
-# 4895 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 4895 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1259,7 +1259,7 @@ struct mac_status_r
         };
         uint32_t word;
     };
-# 5274 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 5274 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1284,7 +1284,7 @@ struct ao_status_r
         };
         uint32_t word;
     };
-# 5506 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 5506 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1333,7 +1333,7 @@ struct dma_status0_r
         };
         uint32_t word;
     };
-# 6222 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 6222 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1374,7 +1374,7 @@ struct dma_status1_r
         };
         uint32_t word;
     };
-# 6770 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 6770 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1395,7 +1395,7 @@ struct clkforce_r
         };
         uint32_t word;
     };
-# 6938 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 6938 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1410,7 +1410,7 @@ struct debug_address_r
         };
         uint32_t word;
     };
-# 7000 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 7000 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1425,7 +1425,7 @@ struct debug_misc_r
         };
         uint32_t word;
     };
-# 7062 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 7062 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1441,7 +1441,7 @@ struct debug_block_r
         };
         uint32_t word;
     };
-# 7125 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 7125 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1462,7 +1462,7 @@ struct pmcr_r
         };
         uint32_t word;
     };
-# 7273 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 7273 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1482,7 +1482,7 @@ struct pmcntenset_r
         };
         uint32_t word;
     };
-# 7420 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 7420 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1502,7 +1502,7 @@ struct pmcntenclr_r
         };
         uint32_t word;
     };
-# 7567 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 7567 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1522,7 +1522,7 @@ struct pmovsset_r
         };
         uint32_t word;
     };
-# 7714 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 7714 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1542,7 +1542,7 @@ struct pmovsclr_r
         };
         uint32_t word;
     };
-# 7861 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 7861 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1562,7 +1562,7 @@ struct pmintset_r
         };
         uint32_t word;
     };
-# 8008 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 8008 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1582,7 +1582,7 @@ struct pmintclr_r
         };
         uint32_t word;
     };
-# 8155 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 8155 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1599,7 +1599,7 @@ struct pmccntr_r
         };
         uint32_t word[2];
     };
-# 8206 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 8206 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1617,7 +1617,7 @@ struct pmccntr_cfg_r
         };
         uint32_t word;
     };
-# 8291 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 8291 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1636,7 +1636,7 @@ struct pmcaxi_chan_r
         };
         uint32_t word;
     };
-# 8399 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 8399 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1651,7 +1651,7 @@ struct kernel_x_r
         };
         uint32_t word;
     };
-# 8461 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 8461 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1666,7 +1666,7 @@ struct kernel_y_r
         };
         uint32_t word;
     };
-# 8523 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 8523 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1681,7 +1681,7 @@ struct kernel_w_m1_r
         };
         uint32_t word;
     };
-# 8585 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 8585 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1696,7 +1696,7 @@ struct kernel_h_m1_r
         };
         uint32_t word;
     };
-# 8647 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 8647 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1711,7 +1711,7 @@ struct ofm_cblk_width_m1_r
         };
         uint32_t word;
     };
-# 8709 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 8709 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1726,7 +1726,7 @@ struct ofm_cblk_height_m1_r
         };
         uint32_t word;
     };
-# 8771 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 8771 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1741,7 +1741,7 @@ struct ofm_cblk_depth_m1_r
         };
         uint32_t word;
     };
-# 8833 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 8833 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1756,7 +1756,7 @@ struct ifm_cblk_depth_m1_r
         };
         uint32_t word;
     };
-# 8895 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 8895 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1771,7 +1771,7 @@ struct ofm_x_r
         };
         uint32_t word;
     };
-# 8957 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 8957 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1786,7 +1786,7 @@ struct ofm_y_r
         };
         uint32_t word;
     };
-# 9019 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 9019 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1801,7 +1801,7 @@ struct ofm_z_r
         };
         uint32_t word;
     };
-# 9081 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 9081 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1816,7 +1816,7 @@ struct ifm_z_r
         };
         uint32_t word;
     };
-# 9143 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 9143 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1831,7 +1831,7 @@ struct pad_top_r
         };
         uint32_t word;
     };
-# 9205 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 9205 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1846,7 +1846,7 @@ struct pad_left_r
         };
         uint32_t word;
     };
-# 9267 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 9267 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1861,7 +1861,7 @@ struct ifm_cblk_width_r
         };
         uint32_t word;
     };
-# 9329 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 9329 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1876,7 +1876,7 @@ struct ifm_cblk_height_r
         };
         uint32_t word;
     };
-# 9391 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 9391 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1892,7 +1892,7 @@ struct dma_ifm_src_r
         };
         uint32_t word[2];
     };
-# 9441 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 9441 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1907,7 +1907,7 @@ struct dma_ifm_dst_r
         };
         uint32_t word;
     };
-# 9503 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 9503 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1922,7 +1922,7 @@ struct dma_ofm_src_r
         };
         uint32_t word;
     };
-# 9565 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 9565 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1938,7 +1938,7 @@ struct dma_ofm_dst_r
         };
         uint32_t word[2];
     };
-# 9615 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 9615 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1954,7 +1954,7 @@ struct dma_weight_src_r
         };
         uint32_t word[2];
     };
-# 9665 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 9665 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1970,7 +1970,7 @@ struct dma_cmd_src_r
         };
         uint32_t word[2];
     };
-# 9715 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 9715 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -1985,7 +1985,7 @@ struct dma_cmd_size_r
         };
         uint32_t word;
     };
-# 9777 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 9777 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2001,7 +2001,7 @@ struct dma_m2m_src_r
         };
         uint32_t word[2];
     };
-# 9827 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 9827 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2017,7 +2017,7 @@ struct dma_m2m_dst_r
         };
         uint32_t word[2];
     };
-# 9877 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 9877 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2032,7 +2032,7 @@ struct current_qread_r
         };
         uint32_t word;
     };
-# 9939 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 9939 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2048,7 +2048,7 @@ struct dma_scale_src_r
         };
         uint32_t word[2];
     };
-# 9989 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 9989 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2063,7 +2063,7 @@ struct current_block_r
         };
         uint32_t word;
     };
-# 10051 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 10051 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2078,7 +2078,7 @@ struct current_op_r
         };
         uint32_t word;
     };
-# 10113 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 10113 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2093,7 +2093,7 @@ struct current_cmd_r
         };
         uint32_t word;
     };
-# 10175 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 10175 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2108,7 +2108,7 @@ struct pmevcntr_r
         };
         uint32_t word;
     };
-# 10237 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 10237 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2124,7 +2124,7 @@ struct pmevtyper_r
         };
         uint32_t word;
     };
-# 10300 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 10300 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2139,7 +2139,7 @@ struct shared_buffer_r
         };
         uint32_t word;
     };
-# 10362 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 10362 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2154,7 +2154,7 @@ struct ifm_pad_top_r
         };
         uint32_t word;
     };
-# 10424 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 10424 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2169,7 +2169,7 @@ struct ifm_pad_left_r
         };
         uint32_t word;
     };
-# 10486 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 10486 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2184,7 +2184,7 @@ struct ifm_pad_right_r
         };
         uint32_t word;
     };
-# 10548 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 10548 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2199,7 +2199,7 @@ struct ifm_pad_bottom_r
         };
         uint32_t word;
     };
-# 10610 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 10610 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2214,7 +2214,7 @@ struct ifm_depth_m1_r
         };
         uint32_t word;
     };
-# 10672 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 10672 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2229,7 +2229,7 @@ struct ifm_precision_r
         };
         uint32_t word;
     };
-# 10734 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 10734 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2244,7 +2244,7 @@ struct ifm_upscale_r
         };
         uint32_t word;
     };
-# 10796 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 10796 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2259,7 +2259,7 @@ struct ifm_zero_point_r
         };
         uint32_t word;
     };
-# 10858 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 10858 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2274,7 +2274,7 @@ struct ifm_width0_m1_r
         };
         uint32_t word;
     };
-# 10920 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 10920 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2289,7 +2289,7 @@ struct ifm_height0_m1_r
         };
         uint32_t word;
     };
-# 10982 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 10982 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2304,7 +2304,7 @@ struct ifm_height1_m1_r
         };
         uint32_t word;
     };
-# 11044 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 11044 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2319,7 +2319,7 @@ struct ifm_ib_end_r
         };
         uint32_t word;
     };
-# 11106 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 11106 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2334,7 +2334,7 @@ struct ifm_region_r
         };
         uint32_t word;
     };
-# 11168 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 11168 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2349,7 +2349,7 @@ struct ofm_width_m1_r
         };
         uint32_t word;
     };
-# 11230 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 11230 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2364,7 +2364,7 @@ struct ofm_height_m1_r
         };
         uint32_t word;
     };
-# 11292 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 11292 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2379,7 +2379,7 @@ struct ofm_depth_m1_r
         };
         uint32_t word;
     };
-# 11354 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 11354 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2394,7 +2394,7 @@ struct ofm_precision_r
         };
         uint32_t word;
     };
-# 11416 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 11416 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2409,7 +2409,7 @@ struct ofm_blk_width_m1_r
         };
         uint32_t word;
     };
-# 11478 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 11478 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2424,7 +2424,7 @@ struct ofm_blk_height_m1_r
         };
         uint32_t word;
     };
-# 11540 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 11540 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2439,7 +2439,7 @@ struct ofm_blk_depth_m1_r
         };
         uint32_t word;
     };
-# 11602 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 11602 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2454,7 +2454,7 @@ struct ofm_zero_point_r
         };
         uint32_t word;
     };
-# 11664 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 11664 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2469,7 +2469,7 @@ struct ofm_width0_m1_r
         };
         uint32_t word;
     };
-# 11726 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 11726 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2484,7 +2484,7 @@ struct ofm_height0_m1_r
         };
         uint32_t word;
     };
-# 11788 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 11788 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2499,7 +2499,7 @@ struct ofm_height1_m1_r
         };
         uint32_t word;
     };
-# 11850 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 11850 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2514,7 +2514,7 @@ struct ofm_region_r
         };
         uint32_t word;
     };
-# 11912 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 11912 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2529,7 +2529,7 @@ struct kernel_width_m1_r
         };
         uint32_t word;
     };
-# 11974 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 11974 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2544,7 +2544,7 @@ struct kernel_height_m1_r
         };
         uint32_t word;
     };
-# 12036 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 12036 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2559,7 +2559,7 @@ struct kernel_stride_r
         };
         uint32_t word;
     };
-# 12098 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 12098 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2574,7 +2574,7 @@ struct acc_format_r
         };
         uint32_t word;
     };
-# 12160 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 12160 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2589,7 +2589,7 @@ struct activation_r
         };
         uint32_t word;
     };
-# 12222 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 12222 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2604,7 +2604,7 @@ struct activation_min_r
         };
         uint32_t word;
     };
-# 12284 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 12284 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2619,7 +2619,7 @@ struct activation_max_r
         };
         uint32_t word;
     };
-# 12346 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 12346 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2634,7 +2634,7 @@ struct weight_region_r
         };
         uint32_t word;
     };
-# 12408 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 12408 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2649,7 +2649,7 @@ struct scale_region_r
         };
         uint32_t word;
     };
-# 12470 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 12470 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2664,7 +2664,7 @@ struct ab_start_r
         };
         uint32_t word;
     };
-# 12532 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 12532 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2679,7 +2679,7 @@ struct blockdep_r
         };
         uint32_t word;
     };
-# 12594 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 12594 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2694,7 +2694,7 @@ struct dma0_src_region_r
         };
         uint32_t word;
     };
-# 12656 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 12656 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2709,7 +2709,7 @@ struct dma0_dst_region_r
         };
         uint32_t word;
     };
-# 12718 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 12718 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2724,7 +2724,7 @@ struct dma0_size0_r
         };
         uint32_t word;
     };
-# 12780 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 12780 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2739,7 +2739,7 @@ struct dma0_size1_r
         };
         uint32_t word;
     };
-# 12842 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 12842 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2754,7 +2754,7 @@ struct ifm2_broadcast_r
         };
         uint32_t word;
     };
-# 12904 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 12904 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2769,7 +2769,7 @@ struct ifm2_scalar_r
         };
         uint32_t word;
     };
-# 12966 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 12966 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2784,7 +2784,7 @@ struct ifm2_precision_r
         };
         uint32_t word;
     };
-# 13028 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 13028 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2799,7 +2799,7 @@ struct ifm2_zero_point_r
         };
         uint32_t word;
     };
-# 13090 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 13090 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2814,7 +2814,7 @@ struct ifm2_width0_m1_r
         };
         uint32_t word;
     };
-# 13152 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 13152 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2829,7 +2829,7 @@ struct ifm2_height0_m1_r
         };
         uint32_t word;
     };
-# 13214 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 13214 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2844,7 +2844,7 @@ struct ifm2_height1_m1_r
         };
         uint32_t word;
     };
-# 13276 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 13276 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2859,7 +2859,7 @@ struct ifm2_ib_start_r
         };
         uint32_t word;
     };
-# 13338 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 13338 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2874,7 +2874,7 @@ struct ifm2_region_r
         };
         uint32_t word;
     };
-# 13400 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 13400 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2890,7 +2890,7 @@ struct ifm_base0_r
         };
         uint32_t word[2];
     };
-# 13450 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 13450 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2906,7 +2906,7 @@ struct ifm_base1_r
         };
         uint32_t word[2];
     };
-# 13500 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 13500 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2922,7 +2922,7 @@ struct ifm_base2_r
         };
         uint32_t word[2];
     };
-# 13550 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 13550 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2938,7 +2938,7 @@ struct ifm_base3_r
         };
         uint32_t word[2];
     };
-# 13600 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 13600 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2954,7 +2954,7 @@ struct ifm_stride_x_r
         };
         uint32_t word[2];
     };
-# 13650 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 13650 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2970,7 +2970,7 @@ struct ifm_stride_y_r
         };
         uint32_t word[2];
     };
-# 13700 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 13700 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -2986,7 +2986,7 @@ struct ifm_stride_c_r
         };
         uint32_t word[2];
     };
-# 13750 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 13750 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3002,7 +3002,7 @@ struct ofm_base0_r
         };
         uint32_t word[2];
     };
-# 13800 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 13800 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3018,7 +3018,7 @@ struct ofm_base1_r
         };
         uint32_t word[2];
     };
-# 13850 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 13850 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3034,7 +3034,7 @@ struct ofm_base2_r
         };
         uint32_t word[2];
     };
-# 13900 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 13900 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3050,7 +3050,7 @@ struct ofm_base3_r
         };
         uint32_t word[2];
     };
-# 13950 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 13950 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3066,7 +3066,7 @@ struct ofm_stride_x_r
         };
         uint32_t word[2];
     };
-# 14000 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 14000 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3082,7 +3082,7 @@ struct ofm_stride_y_r
         };
         uint32_t word[2];
     };
-# 14050 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 14050 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3098,7 +3098,7 @@ struct ofm_stride_c_r
         };
         uint32_t word[2];
     };
-# 14100 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 14100 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3114,7 +3114,7 @@ struct weight_base_r
         };
         uint32_t word[2];
     };
-# 14150 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 14150 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3130,7 +3130,7 @@ struct weight_length_r
         };
         uint32_t word[2];
     };
-# 14200 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 14200 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3146,7 +3146,7 @@ struct scale_base_r
         };
         uint32_t word[2];
     };
-# 14250 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 14250 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3162,7 +3162,7 @@ struct scale_length_r
         };
         uint32_t word[2];
     };
-# 14300 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 14300 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3177,7 +3177,7 @@ struct ofm_scale_r
         };
         uint32_t word;
     };
-# 14362 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 14362 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3192,7 +3192,7 @@ struct ofm_scale_shift_r
         };
         uint32_t word;
     };
-# 14424 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 14424 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3207,7 +3207,7 @@ struct opa_scale_r
         };
         uint32_t word;
     };
-# 14486 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 14486 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3222,7 +3222,7 @@ struct opa_scale_shift_r
         };
         uint32_t word;
     };
-# 14548 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 14548 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3237,7 +3237,7 @@ struct opb_scale_r
         };
         uint32_t word;
     };
-# 14610 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 14610 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3253,7 +3253,7 @@ struct dma0_src_r
         };
         uint32_t word[2];
     };
-# 14660 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 14660 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3269,7 +3269,7 @@ struct dma0_dst_r
         };
         uint32_t word[2];
     };
-# 14710 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 14710 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3285,7 +3285,7 @@ struct dma0_len_r
         };
         uint32_t word[2];
     };
-# 14760 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 14760 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3301,7 +3301,7 @@ struct ifm2_base0_r
         };
         uint32_t word[2];
     };
-# 14810 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 14810 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3317,7 +3317,7 @@ struct ifm2_base1_r
         };
         uint32_t word[2];
     };
-# 14860 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 14860 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3333,7 +3333,7 @@ struct ifm2_base2_r
         };
         uint32_t word[2];
     };
-# 14910 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 14910 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3349,7 +3349,7 @@ struct ifm2_base3_r
         };
         uint32_t word[2];
     };
-# 14960 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 14960 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3365,7 +3365,7 @@ struct ifm2_stride_x_r
         };
         uint32_t word[2];
     };
-# 15010 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 15010 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3381,7 +3381,7 @@ struct ifm2_stride_y_r
         };
         uint32_t word[2];
     };
-# 15060 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 15060 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3397,7 +3397,7 @@ struct ifm2_stride_c_r
         };
         uint32_t word[2];
     };
-# 15110 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 15110 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3412,7 +3412,7 @@ struct revision_r
         };
         uint32_t word;
     };
-# 15172 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 15172 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3427,7 +3427,7 @@ struct pid4_r
         };
         uint32_t word;
     };
-# 15234 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 15234 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3442,7 +3442,7 @@ struct pid5_r
         };
         uint32_t word;
     };
-# 15296 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 15296 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3457,7 +3457,7 @@ struct pid6_r
         };
         uint32_t word;
     };
-# 15358 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 15358 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3472,7 +3472,7 @@ struct pid7_r
         };
         uint32_t word;
     };
-# 15420 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 15420 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3487,7 +3487,7 @@ struct pid0_r
         };
         uint32_t word;
     };
-# 15482 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 15482 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3503,7 +3503,7 @@ struct pid1_r
         };
         uint32_t word;
     };
-# 15545 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 15545 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3518,7 +3518,7 @@ struct pid2_r
         };
         uint32_t word;
     };
-# 15607 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 15607 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3533,7 +3533,7 @@ struct pid3_r
         };
         uint32_t word;
     };
-# 15669 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 15669 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3548,7 +3548,7 @@ struct cid0_r
         };
         uint32_t word;
     };
-# 15731 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 15731 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3563,7 +3563,7 @@ struct cid1_r
         };
         uint32_t word;
     };
-# 15793 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 15793 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3578,7 +3578,7 @@ struct cid2_r
         };
         uint32_t word;
     };
-# 15855 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 15855 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 
@@ -3593,7 +3593,7 @@ struct cid3_r
         };
         uint32_t word;
     };
-# 15917 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 15917 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
 
 struct NPU_REG
@@ -3797,9 +3797,9 @@ struct NPU_REG
     struct cid1_r CID1;
     struct cid2_r CID2;
     struct cid3_r CID3;
-# 17646 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 17646 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
 };
-# 18546 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 18546 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     struct npu_op_stop_t
     {
 
@@ -3809,7 +3809,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t mask : 16;
-# 18617 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 18617 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_op_irq_t
@@ -3821,7 +3821,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t mask : 16;
-# 18690 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 18690 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_op_conv_t
@@ -3833,7 +3833,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t reserved1 : 16;
-# 18746 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 18746 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_op_depthwise_t
@@ -3845,7 +3845,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t reserved1 : 16;
-# 18802 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 18802 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_op_pool_t
@@ -3858,7 +3858,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t pooling_mode : 3;
         uint32_t reserved1 : 13;
-# 18881 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 18881 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_op_elementwise_t
@@ -3871,7 +3871,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t elementwise_mode : 6;
         uint32_t reserved1 : 10;
-# 18960 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 18960 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_op_dma_start_t
@@ -3883,7 +3883,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t reserved1 : 16;
-# 19016 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 19016 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_op_dma_wait_t
@@ -3896,7 +3896,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t k : 4;
         uint32_t reserved1 : 12;
-# 19090 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 19090 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_op_kernel_wait_t
@@ -3909,7 +3909,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t n : 2;
         uint32_t reserved1 : 14;
-# 19164 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 19164 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_op_pmu_mask_t
@@ -3922,7 +3922,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t enable : 1;
         uint32_t reserved1 : 15;
-# 19239 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 19239 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm_pad_top_t
@@ -3935,7 +3935,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t pad : 7;
         uint32_t reserved1 : 9;
-# 19313 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 19313 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm_pad_left_t
@@ -3948,7 +3948,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t pad : 7;
         uint32_t reserved1 : 9;
-# 19387 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 19387 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm_pad_right_t
@@ -3961,7 +3961,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t pad : 8;
         uint32_t reserved1 : 8;
-# 19461 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 19461 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm_pad_bottom_t
@@ -3974,7 +3974,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t pad : 8;
         uint32_t reserved1 : 8;
-# 19535 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 19535 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm_depth_m1_t
@@ -3986,7 +3986,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t depth_m1 : 16;
-# 19608 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 19608 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm_precision_t
@@ -4005,7 +4005,7 @@ struct NPU_REG
         uint32_t scale_mode : 2;
         uint32_t reserved3 : 4;
         uint32_t round_mode : 2;
-# 19757 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 19757 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm_upscale_t
@@ -4018,7 +4018,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t mode : 2;
         uint32_t reserved1 : 14;
-# 19835 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 19835 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm_zero_point_t
@@ -4030,7 +4030,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t zero_point : 16;
-# 19909 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 19909 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm_width0_m1_t
@@ -4042,7 +4042,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t width_m1 : 16;
-# 19982 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 19982 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm_height0_m1_t
@@ -4054,7 +4054,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t height_m1 : 16;
-# 20055 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 20055 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm_height1_m1_t
@@ -4066,7 +4066,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t height_m1 : 16;
-# 20128 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 20128 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm_ib_end_t
@@ -4079,7 +4079,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t ib_end : 6;
         uint32_t reserved1 : 10;
-# 20203 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 20203 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm_region_t
@@ -4093,7 +4093,7 @@ struct NPU_REG
         uint32_t region : 3;
         uint32_t reserved1 : 12;
         uint32_t custom_dma_cs : 1;
-# 20293 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 20293 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ofm_width_m1_t
@@ -4105,7 +4105,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t width_m1 : 16;
-# 20366 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 20366 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ofm_height_m1_t
@@ -4117,7 +4117,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t height_m1 : 16;
-# 20439 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 20439 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ofm_depth_m1_t
@@ -4129,7 +4129,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t depth_m1 : 16;
-# 20512 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 20512 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ofm_precision_t
@@ -4147,7 +4147,7 @@ struct NPU_REG
         uint32_t scale_mode : 1;
         uint32_t reserved2 : 5;
         uint32_t round_mode : 2;
-# 20660 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 20660 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ofm_blk_width_m1_t
@@ -4160,7 +4160,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t width_m1 : 6;
         uint32_t reserved1 : 10;
-# 20735 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 20735 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ofm_blk_height_m1_t
@@ -4173,7 +4173,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t height_m1 : 5;
         uint32_t reserved1 : 11;
-# 20810 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 20810 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ofm_blk_depth_m1_t
@@ -4186,7 +4186,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t depth_m1 : 7;
         uint32_t reserved1 : 9;
-# 20885 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 20885 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ofm_zero_point_t
@@ -4198,7 +4198,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t zero_point : 16;
-# 20959 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 20959 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ofm_width0_m1_t
@@ -4210,7 +4210,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t width_m1 : 16;
-# 21032 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 21032 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ofm_height0_m1_t
@@ -4222,7 +4222,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t height_m1 : 16;
-# 21105 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 21105 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ofm_height1_m1_t
@@ -4234,7 +4234,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t height_m1 : 16;
-# 21178 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 21178 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ofm_region_t
@@ -4248,7 +4248,7 @@ struct NPU_REG
         uint32_t region : 3;
         uint32_t reserved1 : 12;
         uint32_t custom_dma_cs : 1;
-# 21268 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 21268 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_kernel_width_m1_t
@@ -4260,7 +4260,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t width_m1 : 16;
-# 21341 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 21341 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_kernel_height_m1_t
@@ -4272,7 +4272,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t height_m1 : 16;
-# 21414 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 21414 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_kernel_stride_t
@@ -4293,7 +4293,7 @@ struct NPU_REG
         uint32_t reserved1 : 2;
         uint32_t stride_y_msb : 1;
         uint32_t reserved2 : 6;
-# 21598 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 21598 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_acc_format_t
@@ -4306,7 +4306,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t acc_format : 2;
         uint32_t reserved1 : 14;
-# 21676 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 21676 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_activation_t
@@ -4321,7 +4321,7 @@ struct NPU_REG
         uint32_t reserved1 : 7;
         uint32_t activation_clip_range : 3;
         uint32_t reserved2 : 1;
-# 21774 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 21774 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_activation_min_t
@@ -4333,7 +4333,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t clip_boundary : 16;
-# 21848 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 21848 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_activation_max_t
@@ -4345,7 +4345,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t clip_boundary : 16;
-# 21922 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 21922 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_weight_region_t
@@ -4359,7 +4359,7 @@ struct NPU_REG
         uint32_t region : 3;
         uint32_t reserved1 : 12;
         uint32_t custom_dma_cs : 1;
-# 22012 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 22012 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_scale_region_t
@@ -4373,7 +4373,7 @@ struct NPU_REG
         uint32_t region : 3;
         uint32_t reserved1 : 12;
         uint32_t custom_dma_cs : 1;
-# 22102 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 22102 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ab_start_t
@@ -4386,7 +4386,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t ab_start : 6;
         uint32_t reserved1 : 10;
-# 22177 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 22177 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_blockdep_t
@@ -4399,7 +4399,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t blockdep : 2;
         uint32_t reserved1 : 14;
-# 22252 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 22252 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_dma0_src_region_t
@@ -4416,7 +4416,7 @@ struct NPU_REG
         uint32_t stride_mode : 2;
         uint32_t reserved2 : 4;
         uint32_t custom_dma_cs : 1;
-# 22380 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 22380 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_dma0_dst_region_t
@@ -4434,7 +4434,7 @@ struct NPU_REG
         uint32_t stride_mode : 2;
         uint32_t reserved2 : 4;
         uint32_t custom_dma_cs : 1;
-# 22509 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 22509 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_dma0_size0_t
@@ -4446,7 +4446,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t size : 16;
-# 22582 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 22582 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_dma0_size1_t
@@ -4458,7 +4458,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t size : 16;
-# 22655 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 22655 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm2_broadcast_t
@@ -4477,7 +4477,7 @@ struct NPU_REG
         uint32_t operand_order : 1;
         uint32_t broadcast_constant : 1;
         uint32_t reserved2 : 8;
-# 22805 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 22805 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm2_scalar_t
@@ -4489,7 +4489,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t scalar : 16;
-# 22878 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 22878 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm2_precision_t
@@ -4506,7 +4506,7 @@ struct NPU_REG
         uint32_t reserved2 : 2;
         uint32_t activation_format : 2;
         uint32_t reserved3 : 8;
-# 22994 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 22994 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm2_zero_point_t
@@ -4518,7 +4518,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t zero_point : 16;
-# 23068 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 23068 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm2_width0_m1_t
@@ -4530,7 +4530,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t width_m1 : 16;
-# 23141 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 23141 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm2_height0_m1_t
@@ -4542,7 +4542,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t height_m1 : 16;
-# 23214 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 23214 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm2_height1_m1_t
@@ -4554,7 +4554,7 @@ struct NPU_REG
         uint32_t reserved0 : 4;
         uint32_t control : 2;
         uint32_t height_m1 : 16;
-# 23287 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 23287 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm2_ib_start_t
@@ -4567,7 +4567,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t ib_start : 6;
         uint32_t reserved1 : 10;
-# 23362 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 23362 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm2_region_t
@@ -4580,7 +4580,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t region : 3;
         uint32_t reserved1 : 13;
-# 23437 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 23437 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm_base0_t
@@ -4593,7 +4593,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 23513 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 23513 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm_base1_t
@@ -4606,7 +4606,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 23589 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 23589 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm_base2_t
@@ -4619,7 +4619,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 23665 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 23665 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm_base3_t
@@ -4632,7 +4632,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 23741 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 23741 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm_stride_x_t
@@ -4645,7 +4645,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 23817 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 23817 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm_stride_y_t
@@ -4658,7 +4658,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 23893 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 23893 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm_stride_c_t
@@ -4671,7 +4671,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 23969 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 23969 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ofm_base0_t
@@ -4684,7 +4684,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 24045 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 24045 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ofm_base1_t
@@ -4697,7 +4697,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 24121 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 24121 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ofm_base2_t
@@ -4710,7 +4710,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 24197 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 24197 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ofm_base3_t
@@ -4723,7 +4723,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 24273 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 24273 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ofm_stride_x_t
@@ -4736,7 +4736,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 24349 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 24349 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ofm_stride_y_t
@@ -4749,7 +4749,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 24425 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 24425 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ofm_stride_c_t
@@ -4762,7 +4762,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 24501 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 24501 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_weight_base_t
@@ -4775,7 +4775,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 24577 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 24577 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_weight_length_t
@@ -4788,7 +4788,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t length : 32;
-# 24651 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 24651 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_scale_base_t
@@ -4801,7 +4801,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 24727 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 24727 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_scale_length_t
@@ -4815,7 +4815,7 @@ struct NPU_REG
         uint32_t reserved1 : 16;
         uint32_t length : 20;
         uint32_t reserved2 : 12;
-# 24803 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 24803 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ofm_scale_t
@@ -4829,7 +4829,7 @@ struct NPU_REG
         uint32_t shift : 6;
         uint32_t reserved1 : 10;
         uint32_t scale : 32;
-# 24889 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 24889 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_opa_scale_t
@@ -4843,7 +4843,7 @@ struct NPU_REG
         uint32_t shift : 6;
         uint32_t reserved1 : 10;
         uint32_t scale : 32;
-# 24975 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 24975 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_opb_scale_t
@@ -4857,7 +4857,7 @@ struct NPU_REG
         uint32_t reserved1 : 16;
         uint32_t scale : 16;
         uint32_t reserved2 : 16;
-# 25051 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 25051 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_dma0_src_t
@@ -4870,7 +4870,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 25127 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 25127 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_dma0_dst_t
@@ -4883,7 +4883,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 25203 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 25203 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_dma0_len_t
@@ -4896,7 +4896,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 25279 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 25279 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm2_base0_t
@@ -4909,7 +4909,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 25355 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 25355 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm2_base1_t
@@ -4922,7 +4922,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 25431 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 25431 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm2_base2_t
@@ -4935,7 +4935,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 25507 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 25507 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm2_base3_t
@@ -4948,7 +4948,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 25583 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 25583 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm2_stride_x_t
@@ -4961,7 +4961,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 25659 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 25659 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm2_stride_y_t
@@ -4974,7 +4974,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 25735 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 25735 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_ifm2_stride_c_t
@@ -4987,7 +4987,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t addr : 32;
-# 25811 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 25811 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_user_defined0_t
@@ -5000,7 +5000,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t user_reg : 32;
-# 25885 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 25885 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_user_defined1_t
@@ -5013,7 +5013,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t user_reg : 32;
-# 25959 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 25959 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_user_defined2_t
@@ -5026,7 +5026,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t user_reg : 32;
-# 26033 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 26033 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_user_defined3_t
@@ -5039,7 +5039,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t user_reg : 32;
-# 26107 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 26107 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_user_defined4_t
@@ -5052,7 +5052,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t user_reg : 32;
-# 26181 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 26181 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_user_defined5_t
@@ -5065,7 +5065,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t user_reg : 32;
-# 26255 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 26255 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_user_defined6_t
@@ -5078,7 +5078,7 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t user_reg : 32;
-# 26329 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 26329 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
 
     struct npu_set_user_defined7_t
@@ -5091,16 +5091,16 @@ struct NPU_REG
         uint32_t control : 2;
         uint32_t reserved1 : 16;
         uint32_t user_reg : 32;
-# 26403 "../../../../Library/StdDriver/src/npu/ethosu55_interface.h"
+# 26403 "../../../../Library/StdDriver/src/npu\\ethosu55_interface.h"
     };
-# 32 "../../../../Library/StdDriver/src/npu/ethosu_interface.h" 2
+# 32 "../../../../Library/StdDriver/src/npu\\ethosu_interface.h" 2
 # 26 "../../../../Library/StdDriver/src/npu/ethosu_pmu.c" 2
-# 1 "../../../../Library/StdDriver/src/npu/ethosu_log.h" 1
-# 26 "../../../../Library/StdDriver/src/npu/ethosu_log.h"
-# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 1 3
-# 68 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 1 "../../../../Library/StdDriver/src/npu\\ethosu_log.h" 1
+# 26 "../../../../Library/StdDriver/src/npu\\ethosu_log.h"
+# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 1 3
+# 68 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
     typedef __builtin_va_list __va_list;
-# 87 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 87 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 typedef struct __fpos_t_struct {
     unsigned long long int __pos;
 
@@ -5112,9 +5112,9 @@ typedef struct __fpos_t_struct {
         unsigned int __state1, __state2;
     } __mbstate;
 } fpos_t;
-# 108 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 108 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 typedef struct __FILE FILE;
-# 119 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 119 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 struct __FILE {
     union {
         long __FILE_alignment;
@@ -5125,10 +5125,10 @@ struct __FILE {
 
     } __FILE_opaque;
 };
-# 138 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 138 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern FILE __stdin, __stdout, __stderr;
 extern FILE *__aeabi_stdin, *__aeabi_stdout, *__aeabi_stderr;
-# 224 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 224 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) int remove(const char * ) __attribute__((__nonnull__(1)));
 
 
@@ -5138,7 +5138,7 @@ extern __attribute__((__nothrow__)) int remove(const char * ) __attribute__((__n
 
 
 extern __attribute__((__nothrow__)) int rename(const char * , const char * ) __attribute__((__nonnull__(1,2)));
-# 243 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 243 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) FILE *tmpfile(void);
 
 
@@ -5147,18 +5147,18 @@ extern __attribute__((__nothrow__)) FILE *tmpfile(void);
 
 
 extern __attribute__((__nothrow__)) char *tmpnam(char * );
-# 265 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 265 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) int fclose(FILE * ) __attribute__((__nonnull__(1)));
-# 275 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 275 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) int fflush(FILE * );
-# 285 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 285 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) FILE *fopen(const char * __restrict ,
                            const char * __restrict ) __attribute__((__nonnull__(1,2)));
-# 329 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 329 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) FILE *freopen(const char * __restrict ,
                     const char * __restrict ,
                     FILE * __restrict ) __attribute__((__nonnull__(2,3)));
-# 342 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 342 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) void setbuf(FILE * __restrict ,
                     char * __restrict ) __attribute__((__nonnull__(1)));
 
@@ -5170,11 +5170,11 @@ extern __attribute__((__nothrow__)) void setbuf(FILE * __restrict ,
 extern __attribute__((__nothrow__)) int setvbuf(FILE * __restrict ,
                    char * __restrict ,
                    int , size_t ) __attribute__((__nonnull__(1)));
-# 370 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 370 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 #pragma __printf_args
 extern __attribute__((__nothrow__)) int fprintf(FILE * __restrict ,
                     const char * __restrict , ...) __attribute__((__nonnull__(1,2)));
-# 393 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 393 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 #pragma __printf_args
 extern __attribute__((__nothrow__)) int _fprintf(FILE * __restrict ,
                      const char * __restrict , ...) __attribute__((__nonnull__(1,2)));
@@ -5224,7 +5224,7 @@ extern __attribute__((__nothrow__)) int __ARM_snprintf(char * __restrict , size_
 #pragma __printf_args
 extern __attribute__((__nothrow__)) int snprintf(char * __restrict , size_t ,
                      const char * __restrict , ...) __attribute__((__nonnull__(3)));
-# 460 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 460 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 #pragma __printf_args
 extern __attribute__((__nothrow__)) int _snprintf(char * __restrict , size_t ,
                       const char * __restrict , ...) __attribute__((__nonnull__(3)));
@@ -5236,7 +5236,7 @@ extern __attribute__((__nothrow__)) int _snprintf(char * __restrict , size_t ,
 #pragma __scanf_args
 extern __attribute__((__nothrow__)) int fscanf(FILE * __restrict ,
                     const char * __restrict , ...) __attribute__((__nonnull__(1,2)));
-# 503 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 503 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 #pragma __scanf_args
 extern __attribute__((__nothrow__)) int _fscanf(FILE * __restrict ,
                      const char * __restrict , ...) __attribute__((__nonnull__(1,2)));
@@ -5265,7 +5265,7 @@ extern __attribute__((__nothrow__)) int _scanf(const char * __restrict , ...) __
 #pragma __scanf_args
 extern __attribute__((__nothrow__)) int sscanf(const char * __restrict ,
                     const char * __restrict , ...) __attribute__((__nonnull__(1,2)));
-# 541 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 541 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 #pragma __scanf_args
 extern __attribute__((__nothrow__)) int _sscanf(const char * __restrict ,
                      const char * __restrict , ...) __attribute__((__nonnull__(1,2)));
@@ -5301,16 +5301,16 @@ extern __attribute__((__nothrow__)) int _vprintf(const char * __restrict , __va_
 
 extern __attribute__((__nothrow__)) int vfprintf(FILE * __restrict ,
                     const char * __restrict , __va_list ) __attribute__((__nonnull__(1,2)));
-# 584 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 584 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) int vsprintf(char * __restrict ,
                      const char * __restrict , __va_list ) __attribute__((__nonnull__(1,2)));
-# 594 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 594 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) int __ARM_vsnprintf(char * __restrict , size_t ,
                      const char * __restrict , __va_list ) __attribute__((__nonnull__(3)));
 
 extern __attribute__((__nothrow__)) int vsnprintf(char * __restrict , size_t ,
                      const char * __restrict , __va_list ) __attribute__((__nonnull__(3)));
-# 609 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 609 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) int _vsprintf(char * __restrict ,
                       const char * __restrict , __va_list ) __attribute__((__nonnull__(1,2)));
 
@@ -5327,18 +5327,18 @@ extern __attribute__((__nothrow__)) int _vfprintf(FILE * __restrict ,
 
 extern __attribute__((__nothrow__)) int _vsnprintf(char * __restrict , size_t ,
                       const char * __restrict , __va_list ) __attribute__((__nonnull__(3)));
-# 635 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 635 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 #pragma __printf_args
 extern __attribute__((__nothrow__)) int __ARM_asprintf(char ** , const char * __restrict , ...) __attribute__((__nonnull__(2)));
 extern __attribute__((__nothrow__)) int __ARM_vasprintf(char ** , const char * __restrict , __va_list ) __attribute__((__nonnull__(2)));
-# 649 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 649 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) int fgetc(FILE * ) __attribute__((__nonnull__(1)));
-# 659 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 659 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) char *fgets(char * __restrict , int ,
                     FILE * __restrict ) __attribute__((__nonnull__(1,3)));
-# 673 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 673 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) int fputc(int , FILE * ) __attribute__((__nonnull__(2)));
-# 683 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 683 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) int fputs(const char * __restrict , FILE * __restrict ) __attribute__((__nonnull__(1,2)));
 
 
@@ -5347,13 +5347,13 @@ extern __attribute__((__nothrow__)) int fputs(const char * __restrict , FILE * _
 
 
 extern __attribute__((__nothrow__)) int getc(FILE * ) __attribute__((__nonnull__(1)));
-# 704 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 704 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
     extern __attribute__((__nothrow__)) int (getchar)(void);
-# 713 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 713 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) char *gets(char * ) __attribute__((__nonnull__(1)));
-# 725 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 725 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) int putc(int , FILE * ) __attribute__((__nonnull__(2)));
-# 737 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 737 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
     extern __attribute__((__nothrow__)) int (putchar)(int );
 
 
@@ -5370,26 +5370,26 @@ extern __attribute__((__nothrow__)) int puts(const char * ) __attribute__((__non
 
 
 extern __attribute__((__nothrow__)) int ungetc(int , FILE * ) __attribute__((__nonnull__(2)));
-# 778 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 778 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) size_t fread(void * __restrict ,
                     size_t , size_t , FILE * __restrict ) __attribute__((__nonnull__(1,4)));
-# 794 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 794 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) size_t __fread_bytes_avail(void * __restrict ,
                     size_t , FILE * __restrict ) __attribute__((__nonnull__(1,3)));
-# 810 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 810 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) size_t fwrite(const void * __restrict ,
                     size_t , size_t , FILE * __restrict ) __attribute__((__nonnull__(1,4)));
-# 822 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 822 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) int fgetpos(FILE * __restrict , fpos_t * __restrict ) __attribute__((__nonnull__(1,2)));
-# 833 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 833 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) int fseek(FILE * , long int , int ) __attribute__((__nonnull__(1)));
-# 850 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 850 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) int fsetpos(FILE * __restrict , const fpos_t * __restrict ) __attribute__((__nonnull__(1,2)));
-# 863 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 863 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) long int ftell(FILE * ) __attribute__((__nonnull__(1)));
-# 877 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 877 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) void rewind(FILE * ) __attribute__((__nonnull__(1)));
-# 886 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 886 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) void clearerr(FILE * ) __attribute__((__nonnull__(1)));
 
 
@@ -5409,16 +5409,16 @@ extern __attribute__((__nothrow__)) int ferror(FILE * ) __attribute__((__nonnull
 
 
 extern __attribute__((__nothrow__)) void perror(const char * );
-# 917 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\stdio.h" 3
+# 917 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\stdio.h" 3
 extern __attribute__((__nothrow__)) int _fisatty(FILE * ) __attribute__((__nonnull__(1)));
 
 
 
 extern __attribute__((__nothrow__)) void __use_no_semihosting_swi(void);
 extern __attribute__((__nothrow__)) void __use_no_semihosting(void);
-# 27 "../../../../Library/StdDriver/src/npu/ethosu_log.h" 2
-# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\string.h" 1 3
-# 58 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\string.h" 3
+# 27 "../../../../Library/StdDriver/src/npu\\ethosu_log.h" 2
+# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\string.h" 1 3
+# 58 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\string.h" 3
 extern __attribute__((__nothrow__)) void *memcpy(void * __restrict ,
                     const void * __restrict , size_t ) __attribute__((__nonnull__(1,2)));
 
@@ -5429,7 +5429,7 @@ extern __attribute__((__nothrow__)) void *memcpy(void * __restrict ,
 
 extern __attribute__((__nothrow__)) void *memmove(void * ,
                     const void * , size_t ) __attribute__((__nonnull__(1,2)));
-# 77 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\string.h" 3
+# 77 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\string.h" 3
 extern __attribute__((__nothrow__)) char *strcpy(char * __restrict , const char * __restrict ) __attribute__((__nonnull__(1,2)));
 
 
@@ -5438,7 +5438,7 @@ extern __attribute__((__nothrow__)) char *strcpy(char * __restrict , const char 
 
 
 extern __attribute__((__nothrow__)) char *strncpy(char * __restrict , const char * __restrict , size_t ) __attribute__((__nonnull__(1,2)));
-# 93 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\string.h" 3
+# 93 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\string.h" 3
 extern __attribute__((__nothrow__)) char *strcat(char * __restrict , const char * __restrict ) __attribute__((__nonnull__(1,2)));
 
 
@@ -5447,7 +5447,7 @@ extern __attribute__((__nothrow__)) char *strcat(char * __restrict , const char 
 
 
 extern __attribute__((__nothrow__)) char *strncat(char * __restrict , const char * __restrict , size_t ) __attribute__((__nonnull__(1,2)));
-# 117 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\string.h" 3
+# 117 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\string.h" 3
 extern __attribute__((__nothrow__)) int memcmp(const void * , const void * , size_t ) __attribute__((__nonnull__(1,2)));
 
 
@@ -5464,7 +5464,7 @@ extern __attribute__((__nothrow__)) int strcmp(const char * , const char * ) __a
 
 
 extern __attribute__((__nothrow__)) int strncmp(const char * , const char * , size_t ) __attribute__((__nonnull__(1,2)));
-# 141 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\string.h" 3
+# 141 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\string.h" 3
 extern __attribute__((__nothrow__)) int strcasecmp(const char * , const char * ) __attribute__((__nonnull__(1,2)));
 
 
@@ -5474,28 +5474,28 @@ extern __attribute__((__nothrow__)) int strcasecmp(const char * , const char * )
 
 
 extern __attribute__((__nothrow__)) int strncasecmp(const char * , const char * , size_t ) __attribute__((__nonnull__(1,2)));
-# 158 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\string.h" 3
+# 158 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\string.h" 3
 extern __attribute__((__nothrow__)) int strcoll(const char * , const char * ) __attribute__((__nonnull__(1,2)));
-# 169 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\string.h" 3
+# 169 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\string.h" 3
 extern __attribute__((__nothrow__)) size_t strxfrm(char * __restrict , const char * __restrict , size_t ) __attribute__((__nonnull__(2)));
-# 193 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\string.h" 3
+# 193 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\string.h" 3
 extern __attribute__((__nothrow__)) void *memchr(const void * , int , size_t ) __attribute__((__nonnull__(1)));
-# 209 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\string.h" 3
+# 209 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\string.h" 3
 extern __attribute__((__nothrow__)) char *strchr(const char * , int ) __attribute__((__nonnull__(1)));
-# 218 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\string.h" 3
+# 218 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\string.h" 3
 extern __attribute__((__nothrow__)) size_t strcspn(const char * , const char * ) __attribute__((__nonnull__(1,2)));
-# 232 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\string.h" 3
+# 232 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\string.h" 3
 extern __attribute__((__nothrow__)) char *strpbrk(const char * , const char * ) __attribute__((__nonnull__(1,2)));
-# 247 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\string.h" 3
+# 247 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\string.h" 3
 extern __attribute__((__nothrow__)) char *strrchr(const char * , int ) __attribute__((__nonnull__(1)));
-# 257 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\string.h" 3
+# 257 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\string.h" 3
 extern __attribute__((__nothrow__)) size_t strspn(const char * , const char * ) __attribute__((__nonnull__(1,2)));
-# 270 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\string.h" 3
+# 270 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\string.h" 3
 extern __attribute__((__nothrow__)) char *strstr(const char * , const char * ) __attribute__((__nonnull__(1,2)));
-# 280 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\string.h" 3
+# 280 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\string.h" 3
 extern __attribute__((__nothrow__)) char *strtok(char * __restrict , const char * __restrict ) __attribute__((__nonnull__(2)));
 extern __attribute__((__nothrow__)) char *_strtok_r(char * , const char * , char ** ) __attribute__((__nonnull__(2,3)));
-# 321 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\string.h" 3
+# 321 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\string.h" 3
 extern __attribute__((__nothrow__)) void *memset(void * , int , size_t ) __attribute__((__nonnull__(1)));
 
 
@@ -5516,11 +5516,18 @@ extern __attribute__((__nothrow__)) size_t strlen(const char * ) __attribute__((
 
 
 
+extern __attribute__((__nothrow__)) size_t strnlen(const char * , size_t ) __attribute__((__nonnull__(1)));
+
+
+
+
+
+
 
 extern __attribute__((__nothrow__)) size_t strlcpy(char * , const char * , size_t ) __attribute__((__nonnull__(1,2)));
-# 362 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\string.h" 3
+# 369 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\string.h" 3
 extern __attribute__((__nothrow__)) size_t strlcat(char * , const char * , size_t ) __attribute__((__nonnull__(1,2)));
-# 388 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\string.h" 3
+# 395 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\string.h" 3
 extern __attribute__((__nothrow__)) void _membitcpybl(void * , const void * , int , int , size_t ) __attribute__((__nonnull__(1,2)));
 extern __attribute__((__nothrow__)) void _membitcpybb(void * , const void * , int , int , size_t ) __attribute__((__nonnull__(1,2)));
 extern __attribute__((__nothrow__)) void _membitcpyhl(void * , const void * , int , int , size_t ) __attribute__((__nonnull__(1,2)));
@@ -5533,7 +5540,7 @@ extern __attribute__((__nothrow__)) void _membitmovehl(void * , const void * , i
 extern __attribute__((__nothrow__)) void _membitmovehb(void * , const void * , int , int , size_t ) __attribute__((__nonnull__(1,2)));
 extern __attribute__((__nothrow__)) void _membitmovewl(void * , const void * , int , int , size_t ) __attribute__((__nonnull__(1,2)));
 extern __attribute__((__nothrow__)) void _membitmovewb(void * , const void * , int , int , size_t ) __attribute__((__nonnull__(1,2)));
-# 28 "../../../../Library/StdDriver/src/npu/ethosu_log.h" 2
+# 28 "../../../../Library/StdDriver/src/npu\\ethosu_log.h" 2
 # 27 "../../../../Library/StdDriver/src/npu/ethosu_pmu.c" 2
 # 1 "../../../../Library/StdDriver/inc/npu\\pmu_ethosu.h" 1
 # 55 "../../../../Library/StdDriver/inc/npu\\pmu_ethosu.h"
@@ -5722,13 +5729,13 @@ uint32_t ETHOSU_PMU_Get_QREAD(struct ethosu_driver *drv);
 uint32_t ETHOSU_PMU_Get_STATUS(struct ethosu_driver *drv);
 # 28 "../../../../Library/StdDriver/src/npu/ethosu_pmu.c" 2
 
-# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\assert.h" 1 3
-# 43 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\assert.h" 3
+# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\assert.h" 1 3
+# 43 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\assert.h" 3
     extern __attribute__((__nothrow__)) __attribute__((__noreturn__)) void abort(void);
     extern __attribute__((__nothrow__)) __attribute__((__noreturn__)) void __aeabi_assert(const char *, const char *, int) __attribute__((__nonnull__(1,2)));
 # 30 "../../../../Library/StdDriver/src/npu/ethosu_pmu.c" 2
-# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\inttypes.h" 1 3
-# 222 "C:\\Keil_v5\\ARM\\ARMCLANG\\Bin\\..\\include\\inttypes.h" 3
+# 1 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\inttypes.h" 1 3
+# 218 "C:\\Keil_v5\\ARM\\ARMCLANG\\bin\\..\\include\\inttypes.h" 3
 typedef struct imaxdiv_t { intmax_t quot, rem; } imaxdiv_t;
 
 
