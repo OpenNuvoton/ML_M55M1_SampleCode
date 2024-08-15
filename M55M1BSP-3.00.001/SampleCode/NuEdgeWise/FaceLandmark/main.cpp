@@ -492,8 +492,19 @@ int main()
         {
 			//post process
 			TfLiteTensor *modelOutput0 = model.GetOutputTensor(FACE_LANDMARK_MESH_TENSOR_INDEX);
-			TfLiteTensor *modelOutput1 = model.GetOutputTensor(FACE_LANDMARK_LEFT_IRIS_TENSOR_INDEX);
-			TfLiteTensor *modelOutput2 = model.GetOutputTensor(FACE_LANDMARK_RIGHT_IRIS_TENSOR_INDEX);			
+
+			#if defined(FACE_LANDMARK_LEFT_IRIS_TENSOR_INDEX)
+				TfLiteTensor *modelOutput1 = model.GetOutputTensor(FACE_LANDMARK_LEFT_IRIS_TENSOR_INDEX);
+			#else
+				TfLiteTensor *modelOutput1 = NULL;
+			#endif
+
+			#if defined(FACE_LANDMARK_RIGHT_IRIS_TENSOR_INDEX)
+				TfLiteTensor *modelOutput2 = model.GetOutputTensor(FACE_LANDMARK_RIGHT_IRIS_TENSOR_INDEX);			
+			#else
+				TfLiteTensor *modelOutput2 = NULL;
+			#endif
+
 			TfLiteTensor *modelOutput3 = model.GetOutputTensor(FACE_LANDMARK_FACE_FLAG_TENSOR_INDEX);
 
 #if defined(__PROFILE__)

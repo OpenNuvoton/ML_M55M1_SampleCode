@@ -221,17 +221,21 @@ void FaceLandmarkPostProcessing::RunPostProcessing(uint32_t imgNetRows,
 	{
 		GetMeshLandmark(fXScale, fYScale, fZScale, meshTensor, resultsOut);
 
-		GetLeftIrisLandmark(fXScale, fYScale, fZScale, leftIrisTensor, resultsOut, leftIrisResult);
-		GetRightIrisLandmark(fXScale, fYScale, fZScale, rightIrisTensor, resultsOut, rightIrisResult);
+		//Iris landmark was used by face landmark with attention model
+		if(leftIrisTensor)
+			GetLeftIrisLandmark(fXScale, fYScale, fZScale, leftIrisTensor, resultsOut, leftIrisResult);
+
+		if(rightIrisTensor)
+			GetRightIrisLandmark(fXScale, fYScale, fZScale, rightIrisTensor, resultsOut, rightIrisResult);
 
 		for(size_t i = 0; i < leftIrisResult.size(); i ++)
 		{
-				resultsOut.push_back(leftIrisResult[i]);
+			resultsOut.push_back(leftIrisResult[i]);
 		}
 
 		for(size_t j = 0; j < rightIrisResult.size(); j ++)
 		{
-				resultsOut.push_back(rightIrisResult[j]);
+			resultsOut.push_back(rightIrisResult[j]);
 		}
 	}
 }

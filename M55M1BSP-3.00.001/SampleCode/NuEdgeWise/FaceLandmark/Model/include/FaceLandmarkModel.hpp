@@ -11,7 +11,10 @@
 
 #include "Model.hpp"
 
-//For face landmark int8 model
+//#define FACE_LANDMARK_ATTENTION_MODEL
+
+#if defined(FACE_LANDMARK_ATTENTION_MODEL)
+//For face landmark attention int8 model
 #define FACE_LANDMARK_MESH_TENSOR_INDEX                         3               //[1,1,1,1404]
 #define FACE_LANDMARK_LIPS_TENSOR_INDEX                         5               //[1,1,1,160]
 #define FACE_LANDMARK_LEFT_EYE_TENSOR_INDEX                     0               //[1,1,1,142]
@@ -19,6 +22,11 @@
 #define FACE_LANDMARK_LEFT_IRIS_TENSOR_INDEX            4               //[1,1,1,10]
 #define FACE_LANDMARK_RIGHT_IRIS_TENSOR_INDEX           6               //[1,1,1,10]
 #define FACE_LANDMARK_FACE_FLAG_TENSOR_INDEX            2               //[1,1,1,1]
+
+#else
+#define FACE_LANDMARK_FACE_FLAG_TENSOR_INDEX            1               //[1,1,1,1]
+#define FACE_LANDMARK_MESH_TENSOR_INDEX                 0               //[1,1,1,1404]
+#endif
 
 namespace arm
 {
