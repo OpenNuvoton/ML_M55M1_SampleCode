@@ -12,7 +12,9 @@
 
 #include "BufAttributes.hpp" /* Buffer attributes to be applied */
 #include "FaceLandmarkModel.hpp"       /* Model API */
+#include "FaceDetectionModel.hpp"       /* Model API */
 #include "FaceLandmarkPostProcessing.hpp"
+#include "FaceDetectorPostProcessing.hpp"
 
 #include "imlib.h"          /* Image processing */
 #include "framebuffer.h"
@@ -24,7 +26,10 @@
 
 //#define __PROFILE__
 #define __USE_DISPLAY__
-//#define __LOAD_MODEL_FROM_SD__
+
+#if defined (FACE_LANDMARK_ATTENTION_MODEL)
+#define __LOAD_MODEL_FROM_SD__
+#endif
 
 #include "Profiler.hpp"
 
@@ -49,7 +54,8 @@ typedef struct
 {
     E_FRAMEBUF_STATE eState;
     image_t frameImage;
-    std::vector<arm::app::face_landmark::KeypointResult> results;
+    std::vector<arm::app::face_landmark::KeypointResult> results_KP;
+    std::vector<arm::app::face_detection::DetectionResult> results_FD;	
 } S_FRAMEBUF;
 
 
@@ -60,7 +66,15 @@ namespace arm
 namespace app
 {
 /* Tensor arena buffer */
-static uint8_t tensorArena[ACTIVATION_BUF_SZ] ACTIVATION_BUF_ATTRIBUTE;
+#undef ACTIVATION_BUF_SZ
+#if defined(FACE_LANDMARK_ATTENTION_MODEL)
+#define FACE_LANDMARK_ACTIVATION_BUF_SZ	 (500000)
+#else
+#define FACE_LANDMARK_ACTIVATION_BUF_SZ	 (460000)
+#endif
+#define FACE_DETECTION_ACTIVATION_BUF_SZ (460000)
+static uint8_t tensorArena_FaceLandmark[FACE_LANDMARK_ACTIVATION_BUF_SZ] ACTIVATION_BUF_ATTRIBUTE;
+static uint8_t tensorArena_FaceDetection[FACE_DETECTION_ACTIVATION_BUF_SZ] ACTIVATION_BUF_ATTRIBUTE;
 
 #if !defined(__LOAD_MODEL_FROM_SD__)
 /* Optional getter function for the model pointer and its size. */
@@ -68,7 +82,14 @@ namespace face_landmark
 {
 extern uint8_t *GetModelPointer();
 extern size_t GetModelLen();
-} /* namespace hand_landmark */
+} /* namespace face_landmark */
+
+namespace face_detection
+{
+extern uint8_t *GetModelPointer();
+extern size_t GetModelLen();
+} /* namespace face_detection */
+
 #endif
 
 } /* namespace app */
@@ -175,6 +196,8 @@ static void omv_init()
 
 static void DrawFaceLandmark(
     const std::vector<arm::app::face_landmark::KeypointResult> &results,
+	int posOffsetX,
+	int posOffsetY,		
     image_t *drawImg
 )
 {
@@ -188,15 +211,303 @@ static void DrawFaceLandmark(
 		//draw points
 		if(i < 468)
 		{
-			imlib_draw_circle(drawImg, keyPoint.m_x, keyPoint.m_y, 1, COLOR_R5_G6_B5_TO_RGB565(0, COLOR_G6_MAX, 0), 1, true);	
+			imlib_draw_circle(drawImg, posOffsetX + keyPoint.m_x, posOffsetY + keyPoint.m_y, 1, COLOR_R5_G6_B5_TO_RGB565(0, COLOR_G6_MAX, 0), 1, true);	
 		}
 		else
 		{	
-			imlib_draw_circle(drawImg, keyPoint.m_x, keyPoint.m_y, 1, COLOR_R5_G6_B5_TO_RGB565(0, 0, COLOR_B5_MAX), 1, true);	
+			imlib_draw_circle(drawImg, posOffsetX + keyPoint.m_x, posOffsetY + keyPoint.m_y, 1, COLOR_R5_G6_B5_TO_RGB565(0, 0, COLOR_B5_MAX), 1, true);	
 		}
 	}
 }
 
+static void DrawDetectFace(
+    std::vector<arm::app::face_detection::DetectionResult> &results,
+    image_t *drawImg
+)
+{
+	arm::app::face_detection::DetectionResult faceBox;
+	int faceBoxSize = results.size();
+	
+	for(int i = 0; i < faceBoxSize; i ++)
+	{
+		faceBox = results[i];
+		imlib_draw_rectangle(drawImg, faceBox.m_x0, faceBox.m_y0, faceBox.m_w, faceBox.m_h, COLOR_B5_MAX, 2, false);
+	}
+}
+
+static void DetectFaceRegion(
+    S_FRAMEBUF *infFramebuf,
+    arm::app::FaceDetectionModel *faceDetectionModel,	
+	arm::app::FaceDetectorPostProcess *postProcess,
+	arm::app::Profiler *profiler
+)
+{
+    TfLiteIntArray *inputShape = faceDetectionModel->GetInputShape(0);
+    TfLiteTensor *inputTensor   = faceDetectionModel->GetInputTensor(0);
+    rectangle_t roi;
+
+    const int inputImgCols = inputShape->data[arm::app::FaceDetectionModel::ms_inputColsIdx];
+    const int inputImgRows = inputShape->data[arm::app::FaceDetectionModel::ms_inputRowsIdx];
+
+	uint64_t u64StartCycle;
+	uint64_t u64EndCycle;
+
+	auto *req_data = static_cast<uint8_t *>(inputTensor->data.data);
+	auto *signed_req_data = static_cast<int8_t *>(inputTensor->data.data);
+
+    arm::app::QuantParams inQuantParams = arm::app::GetTensorQuantParams(inputTensor);
+	
+	//resize full image to input tensor
+	image_t resizeImg;
+
+	roi.x = 0;
+	roi.y = 0;
+	roi.w = infFramebuf->frameImage.w;
+	roi.h = infFramebuf->frameImage.h;
+
+	resizeImg.w = inputImgCols;
+	resizeImg.h = inputImgRows;
+	resizeImg.data = (uint8_t *)inputTensor->data.data; //direct resize to input tensor buffer
+	resizeImg.pixfmt = PIXFORMAT_GRAYSCALE;
+
+	if(profiler)
+		u64StartCycle = pmu_get_systick_Count();
+
+	imlib_nvt_scale(&infFramebuf->frameImage, &resizeImg, &roi);
+
+	if(profiler){
+		u64EndCycle = pmu_get_systick_Count();
+		info("face detect resize cycles %llu \n", (u64EndCycle - u64StartCycle));
+	}
+
+	if(profiler){
+		u64StartCycle = pmu_get_systick_Count();
+	}
+		
+    /* face landmark/detection model preprocessing is image conversion from uint8 to [0,1] float values,
+     * then quantize them with input quantization info. */
+	for (size_t i = 0; i < inputTensor->bytes; i++)
+	{
+//		auto i_data_int8 = static_cast<int8_t>(((static_cast<float>(req_data[i]) / 255.0f) / inQuantParams.scale) + inQuantParams.offset);
+//		signed_req_data[i] = std::min<int8_t>(INT8_MAX, std::max<int8_t>(i_data_int8, INT8_MIN));
+		signed_req_data[i] = static_cast<int8_t>(req_data[i]) - 128;
+	}
+
+	if(profiler){
+		u64EndCycle = pmu_get_systick_Count();
+		info("face detect quantize cycles %llu \n", (u64EndCycle - u64StartCycle));
+	}
+
+	if(profiler){
+		profiler->StartProfiling("Inference");
+	}
+
+	faceDetectionModel->RunInference();
+
+	if(profiler){
+		profiler->StopProfiling();
+		profiler->PrintProfilingResult();
+	}
+
+	if(profiler){
+		u64StartCycle = pmu_get_systick_Count();
+	}
+	
+	postProcess->RunPostProcess(infFramebuf->results_FD);
+
+	if(profiler){
+		u64EndCycle = pmu_get_systick_Count();
+		info("face detect post processing cycles %llu \n", (u64EndCycle - u64StartCycle));
+	}
+
+	float scaleFactoryW = 1.4;
+	float scaleFactoryH = 1.4;
+	arm::app::face_detection::DetectionResult *faceBox;
+	//fine tune face region
+	for(int i = 0 ; i < infFramebuf->results_FD.size(); i ++)
+	{
+		float scaleW;
+		float scaleH;
+		int newX;
+		int newY;
+		
+		int newW;
+		int newH;
+
+		faceBox = &(infFramebuf->results_FD[i]);
+	
+		scaleH = scaleFactoryH * faceBox->m_h;
+//		scaleW = scaleFactoryW * faceBox->m_w;
+		scaleW = scaleH;
+		newW = scaleW;
+		newH = scaleH;
+
+		newX = faceBox->m_x0 - ((scaleW - faceBox->m_w) / 2);
+		newY = faceBox->m_y0 - ((scaleH - faceBox->m_h) / 2);
+		
+		if(newX < 0)
+			newX = 0;
+		
+		if(newY < 0)
+			newY = 0;
+
+		if(newX + newW >= infFramebuf->frameImage.w)
+			newW = infFramebuf->frameImage.w - newX;
+		
+		if(newY + newH >= infFramebuf->frameImage.h)
+			newH = infFramebuf->frameImage.h - newY;
+
+		faceBox->m_x0 = newX;
+		faceBox->m_y0 = newY;
+		faceBox->m_w = newW;
+		faceBox->m_h = newH;
+	}
+}
+
+static void DetectFaceLandmark_DrawResult(
+    S_FRAMEBUF *infFramebuf,
+    arm::app::FaceLandmarkModel *faceLandmarkModel,	
+	arm::app::face_landmark::FaceLandmarkPostProcessing *postProcess,
+	arm::app::Profiler *profiler
+)
+{
+	int i;
+	arm::app::face_detection::DetectionResult faceBox;
+    rectangle_t roi;
+    TfLiteIntArray *inputShape = faceLandmarkModel->GetInputShape(0);
+    TfLiteTensor *inputTensor   = faceLandmarkModel->GetInputTensor(0);
+
+    const int inputImgCols = inputShape->data[arm::app::FaceLandmarkModel::ms_inputColsIdx];
+    const int inputImgRows = inputShape->data[arm::app::FaceLandmarkModel::ms_inputRowsIdx];
+
+	uint64_t u64StartCycle;
+	uint64_t u64EndCycle;
+
+	//Quantize input tensor data
+	auto *req_data = static_cast<uint8_t *>(inputTensor->data.data);
+	auto *signed_req_data = static_cast<int8_t *>(inputTensor->data.data);
+
+    arm::app::QuantParams inQuantParams = arm::app::GetTensorQuantParams(inputTensor);
+
+	TfLiteTensor *modelOutput0 = faceLandmarkModel->GetOutputTensor(FACE_LANDMARK_MESH_TENSOR_INDEX);
+
+	#if defined(FACE_LANDMARK_LEFT_IRIS_TENSOR_INDEX)
+		TfLiteTensor *modelOutput1 = faceLandmarkModel->GetOutputTensor(FACE_LANDMARK_LEFT_IRIS_TENSOR_INDEX);
+	#else
+		TfLiteTensor *modelOutput1 = NULL;
+	#endif
+
+	#if defined(FACE_LANDMARK_RIGHT_IRIS_TENSOR_INDEX)
+		TfLiteTensor *modelOutput2 = faceLandmarkModel->GetOutputTensor(FACE_LANDMARK_RIGHT_IRIS_TENSOR_INDEX);			
+	#else
+		TfLiteTensor *modelOutput2 = NULL;
+	#endif
+
+	TfLiteTensor *modelOutput3 = faceLandmarkModel->GetOutputTensor(FACE_LANDMARK_FACE_FLAG_TENSOR_INDEX);
+	
+	for(i = 0 ; i < infFramebuf->results_FD.size(); i ++)
+	{
+		faceBox = infFramebuf->results_FD[i];
+
+		//resize face region image to input tensor
+		image_t resizeImg;
+
+		roi.x = faceBox.m_x0;
+		roi.y = faceBox.m_y0;
+		roi.w = faceBox.m_w;
+		roi.h = faceBox.m_h;
+
+		resizeImg.w = inputImgCols;
+		resizeImg.h = inputImgRows;
+		resizeImg.data = (uint8_t *)inputTensor->data.data; //direct resize to input tensor buffer
+		resizeImg.pixfmt = PIXFORMAT_RGB888;
+
+		if(profiler)
+			u64StartCycle = pmu_get_systick_Count();
+
+        imlib_nvt_scale(&infFramebuf->frameImage, &resizeImg, &roi);
+
+		if(profiler){
+			u64EndCycle = pmu_get_systick_Count();
+			info("face landmark resize cycles %llu \n", (u64EndCycle - u64StartCycle));
+		}
+			
+		if(profiler){
+			u64StartCycle = pmu_get_systick_Count();
+		}
+			
+		/* face landmark/detection model preprocessing is image conversion from uint8 to [0,1] float values,
+		* then quantize them with input quantization info. */
+		for (size_t i = 0; i < inputTensor->bytes; i++)
+		{
+//			auto i_data_int8 = static_cast<int8_t>(((static_cast<float>(req_data[i]) / 255.0f) / inQuantParams.scale) + inQuantParams.offset);
+//			signed_req_data[i] = std::min<int8_t>(INT8_MAX, std::max<int8_t>(i_data_int8, INT8_MIN));
+			signed_req_data[i] = static_cast<int8_t>(req_data[i]) - 128;
+		}
+
+		if(profiler){
+			u64EndCycle = pmu_get_systick_Count();
+			info("face landmark quantize cycles %llu \n", (u64EndCycle - u64StartCycle));
+		}
+
+		if(profiler){
+			profiler->StartProfiling("Inference");
+		}
+
+		faceLandmarkModel->RunInference();
+
+		if(profiler){
+			profiler->StopProfiling();
+			profiler->PrintProfilingResult();
+		}
+
+		if(profiler){
+			u64StartCycle = pmu_get_systick_Count();
+		}
+
+		postProcess->RunPostProcessing(
+			inputImgCols,
+			inputImgRows,
+			roi.w,
+			roi.h,
+			modelOutput0,
+			modelOutput1,
+			modelOutput2,
+			modelOutput3,
+			infFramebuf->results_KP);
+
+		if(profiler){
+			u64EndCycle = pmu_get_systick_Count();
+			info("face landmark post processing cycles %llu \n", (u64EndCycle - u64StartCycle));
+		}
+
+		//Draw face landmark keypoint
+		if(infFramebuf->results_KP.size())
+		{
+			if(profiler){
+				u64StartCycle = pmu_get_systick_Count();
+			}
+
+			DrawFaceLandmark(infFramebuf->results_KP, roi.x, roi.y, &infFramebuf->frameImage);
+
+			if(profiler){
+				u64EndCycle = pmu_get_systick_Count();
+				info("draw face landmark cycles %llu \n", (u64EndCycle - u64StartCycle));
+			}
+		}
+	}
+
+	if(profiler){
+		u64StartCycle = pmu_get_systick_Count();
+	}
+
+	DrawDetectFace(infFramebuf->results_FD, &infFramebuf->frameImage);
+
+	if(profiler){
+		u64EndCycle = pmu_get_systick_Count();
+		info("draw face region cycles %llu \n", (u64EndCycle - u64StartCycle));
+	}
+}
 
 static int32_t PrepareModelToHyperRAM(void)
 {
@@ -278,10 +589,10 @@ int main()
 	}
 
     /* Model object creation and initialisation. */
-    arm::app::FaceLandmarkModel model;
+    arm::app::FaceLandmarkModel faceLandmarkModel;
 
-    if (!model.Init(arm::app::tensorArena,
-                    sizeof(arm::app::tensorArena),
+    if (!faceLandmarkModel.Init(arm::app::tensorArena_FaceLandmark,
+                    sizeof(arm::app::tensorArena_FaceLandmark),
                     (unsigned char *)MODEL_AT_HYPERRAM_ADDR,
                     i32ModelSize))
     {
@@ -291,30 +602,55 @@ int main()
 
 #else
     /* Model object creation and initialisation. */
-    arm::app::FaceLandmarkModel model;
+    arm::app::FaceLandmarkModel faceLandmarkModel;
 
-    if (!model.Init(arm::app::tensorArena,
-                    sizeof(arm::app::tensorArena),
+    if (!faceLandmarkModel.Init(arm::app::tensorArena_FaceLandmark,
+                    sizeof(arm::app::tensorArena_FaceLandmark),
 					arm::app::face_landmark::GetModelPointer(),
                     arm::app::face_landmark::GetModelLen()))
     {
         printf_err("Failed to initialise model\n");
         return 1;
     }
-#endif
 	
+#endif
+
+    /* Model object creation and initialisation. */
+    arm::app::FaceDetectionModel faceDetectionModel;
+
+    if (!faceDetectionModel.Init(arm::app::tensorArena_FaceDetection,
+                    sizeof(arm::app::tensorArena_FaceDetection),
+					arm::app::face_detection::GetModelPointer(),
+                    arm::app::face_detection::GetModelLen()))
+    {
+        printf_err("Failed to initialise model\n");
+        return 1;
+    }
+
+
+
     /* Setup cache poicy of tensor arean buffer */
     info("Set tesnor arena cache policy to WTRA \n");
     const std::vector<ARM_MPU_Region_t> mpuConfig =
     {
         {
             // SRAM for tensor arena
-            ARM_MPU_RBAR(((unsigned int)arm::app::tensorArena),        // Base
+            ARM_MPU_RBAR(((unsigned int)arm::app::tensorArena_FaceLandmark),        // Base
                          ARM_MPU_SH_NON,    // Non-shareable
                          0,                 // Read-only
                          1,                 // Non-Privileged
                          1),                // eXecute Never enabled
-            ARM_MPU_RLAR((((unsigned int)arm::app::tensorArena) + ACTIVATION_BUF_SZ - 1),        // Limit
+            ARM_MPU_RLAR((((unsigned int)arm::app::tensorArena_FaceLandmark) + FACE_LANDMARK_ACTIVATION_BUF_SZ - 1),        // Limit
+                         eMPU_ATTR_CACHEABLE_WTRA) // Attribute index - Write-Through, Read-allocate
+        },
+        {
+            // SRAM for tensor arena
+            ARM_MPU_RBAR(((unsigned int)arm::app::tensorArena_FaceDetection),        // Base
+                         ARM_MPU_SH_NON,    // Non-shareable
+                         0,                 // Read-only
+                         1,                 // Non-Privileged
+                         1),                // eXecute Never enabled
+            ARM_MPU_RLAR((((unsigned int)arm::app::tensorArena_FaceDetection) + FACE_DETECTION_ACTIVATION_BUF_SZ - 1),        // Limit
                          eMPU_ATTR_CACHEABLE_WTRA) // Attribute index - Write-Through, Read-allocate
         },
         {
@@ -344,31 +680,13 @@ int main()
     // Setup MPU configuration
     InitPreDefMPURegion(&mpuConfig[0], mpuConfig.size());
 
-    TfLiteTensor *inputTensor   = model.GetInputTensor(0);
+    TfLiteIntArray *inputShape_FD = faceDetectionModel.GetInputShape(0);
 
-    if (!inputTensor->dims)
-    {
-        printf_err("Invalid input tensor dims\n");
-        return 2;
-    }
-    else if (inputTensor->dims->size < 3)
-    {
-        printf_err("Input tensor dimension should be >= 3\n");
-        return 3;
-    }
+    const int inputImgCols_FD = inputShape_FD->data[arm::app::FaceDetectionModel::ms_inputColsIdx];
+    const int inputImgRows_FD = inputShape_FD->data[arm::app::FaceDetectionModel::ms_inputRowsIdx];
 
-    TfLiteIntArray *inputShape = model.GetInputShape(0);
-
-    const int inputImgCols = inputShape->data[arm::app::FaceLandmarkModel::ms_inputColsIdx];
-    const int inputImgRows = inputShape->data[arm::app::FaceLandmarkModel::ms_inputRowsIdx];
-    const uint32_t nChannels = inputShape->data[arm::app::FaceLandmarkModel::ms_inputChannelsIdx];
-
-    /* Hand landmark model preprocessing is image conversion from uint8 to [0,1] float values,
-     * then quantize them with input quantization info. */
-    arm::app::QuantParams inQuantParams = arm::app::GetTensorQuantParams(inputTensor);
-
-    // postProcess
-    arm::app::face_landmark::FaceLandmarkPostProcessing postProcess(FACE_PRESENCE_THRESHOLD);
+    TfLiteTensor* outputTensor0_FD = faceDetectionModel.GetOutputTensor(0);
+    TfLiteTensor* outputTensor1_FD = faceDetectionModel.GetOutputTensor(1);
 	
     //display framebuffer
     image_t frameBuffer;
@@ -377,6 +695,20 @@ int main()
     //omv library init
     omv_init();
     framebuffer_init_image(&frameBuffer);
+
+    // postProcess
+    arm::app::face_landmark::FaceLandmarkPostProcessing postProcess_FL(FACE_PRESENCE_THRESHOLD);
+
+    const arm::app::face_detection::PostProcessParams postProcessParams{
+            inputImgRows_FD,
+            inputImgCols_FD,
+            (int)s_asFramebuf[0].frameImage.h,
+            (int)s_asFramebuf[0].frameImage.w,
+            anchor1,
+            anchor2};
+
+	arm::app::FaceDetectorPostProcess postProcess_FD =
+            arm::app::FaceDetectorPostProcess(outputTensor0_FD, outputTensor1_FD, s_asFramebuf[0].results_FD, postProcessParams);
 
 #if defined(__PROFILE__)
 
@@ -411,6 +743,7 @@ int main()
     Display_Init();
     Display_ClearLCD(C_WHITE);
 #endif
+	bool bDoFaceLandmark = false;
 
     while(1)
     {
@@ -430,115 +763,42 @@ int main()
 
         if (fullFramebuf)
         {
-            //resize full image to input tensor
-            image_t resizeImg;
-
-            roi.x = 0;
-            roi.y = 0;
-            roi.w = fullFramebuf->frameImage.w;
-            roi.h = fullFramebuf->frameImage.h;
-
-            resizeImg.w = inputImgCols;
-            resizeImg.h = inputImgRows;
-            resizeImg.data = (uint8_t *)inputTensor->data.data; //direct resize to input tensor buffer
-            resizeImg.pixfmt = PIXFORMAT_RGB888;
-
 #if defined(__PROFILE__)
-            u64StartCycle = pmu_get_systick_Count();
+			DetectFaceRegion(
+					fullFramebuf,
+					&faceDetectionModel,
+					&postProcess_FD,
+					&profiler);
+#else
+			DetectFaceRegion(
+					fullFramebuf,
+					&faceDetectionModel,
+					&postProcess_FD,
+					nullptr);
 #endif
-            imlib_nvt_scale(&fullFramebuf->frameImage, &resizeImg, &roi);
-
-#if defined(__PROFILE__)
-            u64EndCycle = pmu_get_systick_Count();
-            info("resize cycles %llu \n", (u64EndCycle - u64StartCycle));
-#endif
-
-#if defined(__PROFILE__)
-            u64StartCycle = pmu_get_systick_Count();
-#endif
-			//Quantize input tensor data
-			auto *req_data = static_cast<uint8_t *>(inputTensor->data.data);
-			auto *signed_req_data = static_cast<int8_t *>(inputTensor->data.data);
-
-			for (size_t i = 0; i < inputTensor->bytes; i++)
-			{
-//				auto i_data_int8 = static_cast<int8_t>(((static_cast<float>(req_data[i]) / 255.0f) / inQuantParams.scale) + inQuantParams.offset);
-//				signed_req_data[i] = std::min<int8_t>(INT8_MAX, std::max<int8_t>(i_data_int8, INT8_MIN));
-				signed_req_data[i] = static_cast<int8_t>(req_data[i]) - 128;
-			}
-
-#if defined(__PROFILE__)
-            u64EndCycle = pmu_get_systick_Count();
-            info("quantize cycles %llu \n", (u64EndCycle - u64StartCycle));
-#endif
-
-#if defined(__PROFILE__)
-			profiler.StartProfiling("Inference");
-#endif
-
-			model.RunInference();
-
-#if defined(__PROFILE__)
-			profiler.StopProfiling();
-			profiler.PrintProfilingResult();
-#endif
-
-            fullFramebuf->eState = eFRAMEBUF_INF;
+			fullFramebuf->eState = eFRAMEBUF_INF;
         }
 		
         infFramebuf = get_inf_framebuf();
 
         if (infFramebuf)
         {
-			//post process
-			TfLiteTensor *modelOutput0 = model.GetOutputTensor(FACE_LANDMARK_MESH_TENSOR_INDEX);
-
-			#if defined(FACE_LANDMARK_LEFT_IRIS_TENSOR_INDEX)
-				TfLiteTensor *modelOutput1 = model.GetOutputTensor(FACE_LANDMARK_LEFT_IRIS_TENSOR_INDEX);
-			#else
-				TfLiteTensor *modelOutput1 = NULL;
-			#endif
-
-			#if defined(FACE_LANDMARK_RIGHT_IRIS_TENSOR_INDEX)
-				TfLiteTensor *modelOutput2 = model.GetOutputTensor(FACE_LANDMARK_RIGHT_IRIS_TENSOR_INDEX);			
-			#else
-				TfLiteTensor *modelOutput2 = NULL;
-			#endif
-
-			TfLiteTensor *modelOutput3 = model.GetOutputTensor(FACE_LANDMARK_FACE_FLAG_TENSOR_INDEX);
 
 #if defined(__PROFILE__)
-			u64StartCycle = pmu_get_systick_Count();
+			if(infFramebuf->results_FD.size())
+				DetectFaceLandmark_DrawResult(
+						infFramebuf,
+						&faceLandmarkModel,
+						&postProcess_FL,
+						&profiler);
+#else
+			if(infFramebuf->results_FD.size())
+				DetectFaceLandmark_DrawResult(
+						infFramebuf,
+						&faceLandmarkModel,
+						&postProcess_FL,
+						nullptr);
 #endif
-			postProcess.RunPostProcessing(
-				inputImgCols,
-				inputImgRows,
-				infFramebuf->frameImage.w,
-				infFramebuf->frameImage.h,
-				modelOutput0,
-				modelOutput1,
-				modelOutput2,
-				modelOutput3,
-				infFramebuf->results);
-
-#if defined(__PROFILE__)
-			u64EndCycle = pmu_get_systick_Count();
-			info("post processing cycles %llu \n", (u64EndCycle - u64StartCycle));
-#endif
-
-            //draw bbox and render
-            /* Draw boxes. */
-			if(infFramebuf->results.size())
-			{
-#if defined(__PROFILE__)
-				u64StartCycle = pmu_get_systick_Count();
-#endif
-				DrawFaceLandmark(infFramebuf->results, &infFramebuf->frameImage);
-#if defined(__PROFILE__)
-				u64EndCycle = pmu_get_systick_Count();
-				info("draw hand landmark cycles %llu \n", (u64EndCycle - u64StartCycle));
-#endif
-			}
 
             //display result image
 #if defined (__USE_DISPLAY__)

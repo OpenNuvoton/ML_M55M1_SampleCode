@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>NVT_DCACHE_ON,  NVT_VECTOR_ON_FLASH, TF_LITE_STATIC_MEMORY, ARM_MATH_DSP, ARM_NPU, ACTIVATION_BUF_SZ=0x00100000</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\CMSIS\DSP\Include;..\..\..\..\Library\StdDriver\inc;..\..\..\..\Library\StdDriver\inc\npu;..\..\..\..\ThirdParty\openmv\omv\imlib;..\..\..\..\ThirdParty\openmv\omv\alloc;..\..\..\..\ThirdParty\openmv\omv\common;..\..\..\..\ThirdParty\openmv\omv\Lib;..\..\..\..\ThirdParty\tflite_micro;..\..\..\..\ThirdParty\tflite_micro\_deps\tensorflow-flatbuffers-src\include;..\..\..\..\ThirdParty\tflite_micro\_deps\tensorflow-gemlowp-src;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\api\common\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\log\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\math\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\main\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\profiler\include;..\Device\include;..\Model\include;..\NPU\include;..\Pattern\include;..\ProfilerCounter\include;..;..\..\..\..\ThirdParty\FatFs\source</IncludePath>
+              <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\CMSIS\DSP\Include;..\..\..\..\Library\StdDriver\inc;..\..\..\..\Library\StdDriver\inc\npu;..\..\..\..\ThirdParty\openmv\omv\imlib;..\..\..\..\ThirdParty\openmv\omv\alloc;..\..\..\..\ThirdParty\openmv\omv\common;..\..\..\..\ThirdParty\openmv\omv\Lib;..\..\..\..\ThirdParty\tflite_micro;..\..\..\..\ThirdParty\tflite_micro\_deps\tensorflow-flatbuffers-src\include;..\..\..\..\ThirdParty\tflite_micro\_deps\tensorflow-gemlowp-src;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\api\common\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\log\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\math\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\main\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\profiler\include;..\Device\include;..\Model\include;..\NPU\include;..\Pattern\include;..\ProfilerCounter\include;..\..\..\..\ThirdParty\FatFs\source;..\..\FaceLandmark_Plus</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -489,6 +489,11 @@
               <FileType>1</FileType>
               <FilePath>..\ModelFileReader.c</FilePath>
             </File>
+            <File>
+              <FileName>FaceDetectorPostProcessing.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\FaceDetectorPostProcessing.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -525,6 +530,16 @@
               <FilePath>..\Model\FaceLandmarkModel.cpp</FilePath>
             </File>
             <File>
+              <FileName>face_detection_int8_vela_H256.tflite.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Model\face_detection_int8_vela_H256.tflite.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>FaceDetectionModel.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Model\FaceDetectionModel.cpp</FilePath>
+            </File>
+            <File>
               <FileName>face_landmark_int8_vela_H256.tflite.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\Model\face_landmark_int8_vela_H256.tflite.cpp</FilePath>
@@ -553,6 +568,11 @@
               <FileName>Profiler.cc</FileName>
               <FileType>8</FileType>
               <FilePath>..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\profiler\Profiler.cc</FilePath>
+            </File>
+            <File>
+              <FileName>ImageUtils.cc</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\api\common\source\ImageUtils.cc</FilePath>
             </File>
           </Files>
         </Group>

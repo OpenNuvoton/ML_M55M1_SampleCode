@@ -9,5 +9,5 @@ Collect sample codes related to machine learning on M55M1.
 |_NN_ExecuTorch||executorch|| Template sample for executorch Arm backend |Experimental|
 |HandPoseRecognition|Hand posture recogniton|TFLM|HandLandmark and PointHistoryClassifier|Classify the current hand posture is stopped, moving, clockwise or counter clockwise||
 |PoseLandmark|Pose detection|TFLM|PoseLandmark|Detect landmarks of human body||
-|FaceLandmark|Face landmark|TFLM|Face landmark|Detect face landmarks||
+|FaceLandmark|Face landmark|TFLM|Yolo fastest and FaceLandmark|Detect face landmarks||
 |FaceDetection|Face detection|TFLM|Yolo fastest|Detect face region|| 
