@@ -10,4 +10,5 @@ Collect sample codes related to machine learning on M55M1.
 |HandPoseRecognition|Hand posture recogniton|TFLM|HandLandmark and PointHistoryClassifier|Classify the current hand posture is stopped, moving, clockwise or counter clockwise||
 |PoseLandmark|Pose detection|TFLM|PoseLandmark|Detect landmarks of human body||
 |FaceLandmark|Face landmark|TFLM|Yolo fastest and FaceLandmark|Detect face landmarks||
-|FaceDetection|Face detection|TFLM|Yolo fastest|Detect face region|| 
+|FaceDetection|Face detection|TFLM|Yolo fastest|Detect face region||
+|PoseLandmark_YOLOv8n|Pose detection|TFLM|YOLOv8n-pose|Detect landmarks of human body||
