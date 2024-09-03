@@ -8,4 +8,12 @@ The hand pose recognition sample is reference to Kazuhito's [hand-gesture-recogn
 2. Copy Model/hand_landmark.tflite file to SD card root directory.
 3. Insert SD card to NUMAKER-M55M1 board
 4. Run
+## Performance
+System clock: 180MHz
+| Model |Input Dimension |ROM (KB) | RAM (KB) | Inference Rate (inf/sec) |  
+|:------|:---------------|:--------|:--------|:-------------------------|
+|HandLandmark|224x224x3|2216|1011|32|
+|PointHistoryClassifier|32|74|0.7|2500|
+
+Total frame rate: 11 fps
 
