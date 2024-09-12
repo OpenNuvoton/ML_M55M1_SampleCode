@@ -7,10 +7,13 @@
  ******************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
+#include "Display.h"
 #include "LCD.h"
 
 #include "pmu_counter.h"
 
+
+#if defined(__EBI_LCD_PANEL__)
 S_LCD_INFO *s_psLCD = &g_s_WQVGA_FSA506;
 
 static void Configure_EBI_16BIT_Pins(void)
@@ -39,24 +42,6 @@ static void Configure_EBI_16BIT_Pins(void)
 
     /* EBI nCS1 pin on PD.11 */
     SET_EBI_nCS0_PD14();
-}
-
-
-int Display_Init(void)
-{
-    pmu_reset_counters();
-
-    //TODO: EBI bus init
-    /* Unlock protected registers */
-    SYS_UnlockReg();
-
-    /* Enable EBI clock */
-    CLK_EnableModuleClock(EBI0_MODULE);
-
-
-    /* Configure multi-function pins for EBI 16-bit application */
-    Configure_EBI_16BIT_Pins();
-
 
     GPIO_SetSlewCtl(PC, (BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5), GPIO_SLEWCTL_HIGH);
     GPIO_SetSlewCtl(PD, (BIT8 | BIT9), GPIO_SLEWCTL_HIGH);
@@ -69,9 +54,75 @@ int Display_Init(void)
     GPIO_SetMode(CONFIG_LCD_BACKLIGHT_PORT, 1 << CONFIG_LCD_BACKLIGHT_PIN, GPIO_MODE_OUTPUT);
     GPIO_SetMode(CONFIG_LCD_DC_PORT, 1 << CONFIG_LCD_DC_PIN, GPIO_MODE_OUTPUT);
     GPIO_SetMode(CONFIG_LCD_RESET_PORT, 1 << CONFIG_LCD_RESET_PIN, GPIO_MODE_OUTPUT);
+}
 
+static void InitEBI(void)
+{
     /* Initialize EBI bank1 to access external nor */
     EBI_Open(CONFIG_LCD_EBI, EBI_BUSWIDTH_16BIT, EBI_TIMING_NORMAL, 0, EBI_CS_ACTIVE_LOW);
+
+}
+#endif
+
+#if defined(__SPI_LCD_PANEL__)
+
+S_LCD_INFO *s_psLCD = &g_s_QVGA_ILI9341;
+
+static void Configure_SPI_Pins(void)
+{
+    CLR_RS;
+    GPIO_SetMode(CONFIG_LCD_BACKLIGHT_PORT, 1 << CONFIG_LCD_BACKLIGHT_PIN, GPIO_MODE_OUTPUT);
+    GPIO_SetMode(CONFIG_LCD_DC_PORT, 1 << CONFIG_LCD_DC_PIN, GPIO_MODE_OUTPUT);
+    GPIO_SetMode(CONFIG_LCD_RESET_PORT, 1 << CONFIG_LCD_RESET_PIN, GPIO_MODE_OUTPUT);
+    GPIO_SetMode(CONFIG_LCD_SPI_SS_PORT, 1 << CONFIG_LCD_SPI_SS_PIN, GPIO_MODE_OUTPUT);
+
+    SET_SPI2_MOSI_PA8();
+    SET_SPI2_MISO_PA9();
+    SET_SPI2_CLK_PA10();
+
+    /* Enable SPI2 clock pin (PA10) schmitt trigger */   //因為高速訊號要讓GPIO這樣設定schmitt trigger，影響GPIO input
+    PA->SMTEN |= GPIO_SMTEN_SMTEN10_Msk;
+
+    /* Enable SPI2 I/O high slew rate */                //因為高速訊號要讓GPIO這樣設定high slew rate，影響GPIO output
+    GPIO_SetSlewCtl(PA, (BIT8 | BIT9 | BIT10), GPIO_SLEWCTL_HIGH);
+}
+
+static void InitSPI(void)
+{
+
+    SPI_Open(CONFIG_LCD_SPI_PORT, SPI_MASTER, SPI_MODE_0, 8, CONFIG_LCD_SPI_FREQ);
+    SPI_DisableAutoSS(CONFIG_LCD_SPI_PORT);
+    SPI_ENABLE(CONFIG_LCD_SPI_PORT);
+}
+
+#endif
+
+int Display_Init(void)
+{
+    pmu_reset_counters();
+
+    //TODO: EBI bus init
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
+#if defined(__EBI_LCD_PANEL__)
+    /* Enable EBI clock */
+    CLK_EnableModuleClock(CONFIG_LCD_EBI_CLK_MODULE);
+
+    /* Configure multi-function pins for EBI 16-bit application */
+    Configure_EBI_16BIT_Pins();
+    InitEBI();
+#else
+    //SPI CLK
+    /* Enable module clock */
+    CLK_EnableModuleClock(CONFIG_LCD_SPI_CLK_MODULE);
+    /* Set module clock */
+    CLK_SetModuleClock(CONFIG_LCD_SPI_CLK_MODULE, CLK_SPISEL_SPI2SEL_PCLK0, MODULE_NoMsk);
+
+    /* Configure multi-function pins for SPI LCD panel */
+	Configure_SPI_Pins();
+	InitSPI();
+#endif
 
     /* lock protected registers */
     SYS_LockReg();

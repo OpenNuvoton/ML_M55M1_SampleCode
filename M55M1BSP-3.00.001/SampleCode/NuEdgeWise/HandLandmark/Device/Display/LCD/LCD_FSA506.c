@@ -9,6 +9,8 @@
 #include "NuMicro.h"
 #include "../LCD.h"
 
+#if defined(__EBI_LCD_PANEL__)
+
 #define FSA506_ADDR_CMD  0x0
 #define FSA506_ADDR_DATA 0x0
 
@@ -221,6 +223,8 @@ S_LCD_INFO g_s_WQVGA_FSA506 =
     .m_pfnSentPixel = fsa506_send_pixels,
     .m_pfnPutChar   = fsa506_put_char8x16,
 };
+
+#endif
 
 
 

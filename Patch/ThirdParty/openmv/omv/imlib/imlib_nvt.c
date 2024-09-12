@@ -583,6 +583,60 @@ static void RGB565toRGB888_SW(
 	}	
 }
 
+static void RGB565toYUYV_SW(
+	image_t *src,
+	image_t *dst,
+	uint8_t *pu8SrcData,
+	uint8_t *pu8DstData,
+	uint16_t au16RepeatePos[],
+	uint16_t u32RepetePosCnt,
+	uint32_t u32YRepeateCnt
+)
+{
+	uint16_t *pu16SrcData = (uint16_t *)pu8SrcData;
+
+	int32_t u8Y;
+	int32_t u8U;
+	int32_t u8V;
+	int32_t u8UV;
+
+
+	for(int i = 0; i < u32RepetePosCnt; i ++)
+	{
+		uint8_t u8Temp;
+		uint16_t u16RGB565Data;
+
+		u8Temp = au16RepeatePos[i];
+		pu16SrcData = (uint16_t *)(pu8SrcData + (u8Temp * src->bpp));
+		u16RGB565Data = *pu16SrcData;
+
+		int R = COLOR_RGB565_TO_R8(u16RGB565Data);
+		int G = COLOR_RGB565_TO_G8(u16RGB565Data);
+		int B = COLOR_RGB565_TO_B8(u16RGB565Data);
+
+
+		u8Y = ((66 * R + 129 * G + 25 * B + 128) >> 8) + 16;
+
+		if(i & 0x1L)
+			u8UV = u8V;
+		else
+		{
+			u8U = ((-38 * R - 74 * G + 112 * B + 128) >> 8) + 128;
+			u8V = ((112 * R - 94 * G - 18 * B + 128) >> 8) + 128;
+			
+			u8UV = u8U;
+		}
+		
+		for(int j = 0 ; j < u32YRepeateCnt; j ++)
+		{
+			int pos = j * dst->w * dst->bpp;
+			pu8DstData[pos] = u8Y;
+			pu8DstData[pos + 1] = u8UV;
+		}
+
+		pu8DstData += 2;
+	}
+}
 
 
 static void RGB888toRGB888_SW(
@@ -786,6 +840,17 @@ void imlib_nvt_scale(image_t *src, image_t *dst, rectangle_t *roi)
 							PIXELS_LOOP,
 							u32RepeatCntY);						
 					}
+					else if((src->pixfmt == PIXFORMAT_RGB565) && (dst->pixfmt == PIXFORMAT_YUV422))
+					{
+						RGB565toYUYV_SW(
+							src,
+							dst,
+							pu8CurSrcRowPos + (u16RepeatPosX * src->bpp),
+							pu8CurDstRowPos + (u16DestWinXPos * dst->bpp),
+							au16RepeatPosOffset,
+							PIXELS_LOOP,
+							u32RepeatCntY);
+					}
 					else
 					{
 						//scaling only
@@ -850,6 +915,17 @@ void imlib_nvt_scale(image_t *src, image_t *dst, rectangle_t *roi)
 			else if((src->pixfmt == PIXFORMAT_GRAYSCALE) && (dst->pixfmt == PIXFORMAT_RGB565))
 			{
 				GRAYSCALEtoRGB565_SW(
+							src,
+							dst,
+							pu8CurSrcRowPos + (u16RepeatPosX * src->bpp),
+							pu8CurDstRowPos + (u16DestWinXPos * dst->bpp),
+							au16RepeatPosOffset,
+							u16RepeatIndex,
+							u32RepeatCntY);
+			}
+			else if((src->pixfmt == PIXFORMAT_RGB565) && (dst->pixfmt == PIXFORMAT_YUV422))
+			{
+				RGB565toYUYV_SW(
 							src,
 							dst,
 							pu8CurSrcRowPos + (u16RepeatPosX * src->bpp),

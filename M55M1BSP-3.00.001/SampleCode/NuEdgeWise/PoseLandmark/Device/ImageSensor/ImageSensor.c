@@ -177,8 +177,8 @@ int ImageSensor_Init(void)
 
     /* Init sensor */
     //s_psSensorInfo = &g_sSensorRGB565_640x480;    //rgb565 vga sensor
-    s_psSensorInfo = &g_sSensorHM1055_VGA_YUV422;
-    //s_psSensorInfo = &g_sSensorHM1055_QVGA_YUV422;
+    //s_psSensorInfo = &g_sSensorHM1055_VGA_YUV422;
+    s_psSensorInfo = &g_sSensorHM1055_QVGA_YUV422;
     //i32RetCode = s_psSensorInfo->m_pfnInitFunc(8);
 
     /* Initialize sensor and set sensor output format as YUV422 */

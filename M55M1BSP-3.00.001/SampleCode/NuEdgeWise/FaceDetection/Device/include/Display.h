@@ -14,9 +14,22 @@
 extern "C" {
 #endif
 
-#define CONFIG_LCD_EBI              EBI_BANK0
-//#define CONFIG_LCD_EBI_USE_PDMA     1
-#define CONFIG_LCD_EBI_ADDR         (EBI_BANK0_BASE_ADDR+(CONFIG_LCD_EBI*EBI_MAX_SIZE))
+#if __has_include("board_config.h")
+#include "board_config.h"
+#else	
+#define __EBI_LCD_PANEL__
+//#define __SPI_LCD_PANEL__
+
+#define CONFIG_LCD_EBI                  EBI_BANK0
+#define CONFIG_LCD_EBI_ADDR             (EBI_BANK0_BASE_ADDR+(CONFIG_LCD_EBI*EBI_MAX_SIZE))
+#define CONFIG_LCD_EBI_CLK_MODULE       EBI0_MODULE
+	
+#define CONFIG_LCD_SPI_PORT             SPI2
+#define CONFIG_LCD_SPI_CLK_MODULE       SPI2_MODULE
+#define CONFIG_LCD_SPI_CLK_SEL          CLK_SPISEL_SPI2SEL_PCLK0
+#endif
+	
+#define CONFIG_LCD_SPI_FREQ	         60000000
 
 #define C_WHITE     0xFFFF
 #define C_BLACK     0x0000

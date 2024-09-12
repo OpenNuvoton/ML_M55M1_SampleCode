@@ -12,21 +12,47 @@
 #include "NuMicro.h"
 #include "Display.h"
 
-
+#if defined(__EBI_LCD_PANEL__)
 /* LCD EBI */
 
-#define CONFIG_LCD_BACKLIGHT_PORT   PG//NU_GET_PININDEX(evGG, 5)   //101
-#define CONFIG_LCD_BACKLIGHT_PIN    5//NU_GET_PININDEX(evGG, 5)   //101
+#define CONFIG_LCD_BACKLIGHT_PORT   PG
+#define CONFIG_LCD_BACKLIGHT_PIN    5
 
-#define CONFIG_LCD_DC_PORT          PH//NU_GET_PININDEX(evGG, 5)   //101
-#define CONFIG_LCD_DC_PIN           7//NU_GET_PININDEX(evGG, 5)   //101
+#define CONFIG_LCD_DC_PORT          PH
+#define CONFIG_LCD_DC_PIN           7
 
-#define CONFIG_LCD_RESET_PORT       PH//NU_GET_PININDEX(evGG, 5)   //101
-#define CONFIG_LCD_RESET_PIN        6//NU_GET_PININDEX(evGG, 5)   //101
+#define CONFIG_LCD_RESET_PORT       PH
+#define CONFIG_LCD_RESET_PIN        6
 
-#define CONFIG_LCD_PIN_BACKLIGHT    PG5//NU_GET_PININDEX(evGG, 5)   //101
-#define CONFIG_LCD_PIN_DC           PH7//NU_GET_PININDEX(evGH, 7)   //119
-#define CONFIG_LCD_PIN_RESET        PH6//NU_GET_PININDEX(evGG, 7)   //103
+#define CONFIG_LCD_PIN_BACKLIGHT    PG5
+#define CONFIG_LCD_PIN_DC           PH7
+#define CONFIG_LCD_PIN_RESET        PH6
+
+#endif
+
+
+#if defined(__SPI_LCD_PANEL__)
+
+#define CONFIG_LCD_BACKLIGHT_PORT   PB
+#define CONFIG_LCD_BACKLIGHT_PIN    5
+
+#define CONFIG_LCD_DC_PORT          PB
+#define CONFIG_LCD_DC_PIN           2
+
+#define CONFIG_LCD_RESET_PORT       PB
+#define CONFIG_LCD_RESET_PIN        3
+
+#define CONFIG_LCD_SPI_SS_PORT      PA
+#define CONFIG_LCD_SPI_SS_PIN       11
+
+#define CONFIG_LCD_PIN_BACKLIGHT    PB5
+#define CONFIG_LCD_PIN_DC           PB2
+#define CONFIG_LCD_PIN_RESET        PB3
+#define CONFIG_LCD_PIN_SPI_SS       PA11
+
+#define SET_SS                   CONFIG_LCD_PIN_SPI_SS = 1
+#define CLR_SS                   CONFIG_LCD_PIN_SPI_SS = 0
+#endif
 
 #define SET_RS                   CONFIG_LCD_PIN_DC = 1
 #define CLR_RS                   CONFIG_LCD_PIN_DC = 0
@@ -65,5 +91,6 @@ typedef struct s_lcd_info
 } S_LCD_INFO;
 
 extern S_LCD_INFO g_s_WQVGA_FSA506;
+extern S_LCD_INFO g_s_QVGA_ILI9341;
 
 #endif

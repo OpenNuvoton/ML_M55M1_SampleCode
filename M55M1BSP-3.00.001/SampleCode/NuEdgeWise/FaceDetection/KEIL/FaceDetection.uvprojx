@@ -459,6 +459,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\sdh.c</FilePath>
             </File>
+            <File>
+              <FileName>spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\spi.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -638,6 +643,11 @@
               <FileName>sdglue.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Device\SDCard\sdglue.c</FilePath>
+            </File>
+            <File>
+              <FileName>LCD_ILI9341.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Device\Display\LCD\LCD_ILI9341.c</FilePath>
             </File>
           </Files>
         </Group>
