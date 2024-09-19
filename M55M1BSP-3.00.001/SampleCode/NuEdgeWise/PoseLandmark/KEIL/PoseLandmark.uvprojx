@@ -464,6 +464,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\spi.c</FilePath>
             </File>
+            <File>
+              <FileName>hsusbd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\hsusbd.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -628,6 +633,16 @@
               <FileName>LCD_ILI9341.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Device\Display\LCD\LCD_ILI9341.c</FilePath>
+            </File>
+            <File>
+              <FileName>descriptors.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Device\UVC\descriptors.c</FilePath>
+            </File>
+            <File>
+              <FileName>UVC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Device\UVC\UVC.c</FilePath>
             </File>
           </Files>
         </Group>

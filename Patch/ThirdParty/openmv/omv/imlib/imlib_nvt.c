@@ -942,3 +942,38 @@ void imlib_nvt_scale(image_t *src, image_t *dst, rectangle_t *roi)
 	}
 }
 
+void imlib_nvt_vflip(image_t *src, image_t *dst)
+{
+	int32_t i32Loops = src->h / 2;
+	int32_t i32Line0;
+	int32_t i32Col;
+	int32_t i32Line1 = src->h - 1;
+	uint32_t *pu32Line0SrcData;
+	uint32_t *pu32Line1SrcData;
+	uint32_t *pu32Line0DstData;
+	uint32_t *pu32Line1DstData;
+	uint32_t u32Temp;
+	uint32_t u32LineBytes = src->w * src->bpp;
+	
+	for( i32Line0 = 0; i32Line0 < i32Loops; i32Line0 ++)
+	{
+		pu32Line0SrcData = (uint32_t *)(src->data + (i32Line0 * u32LineBytes));
+		pu32Line0DstData = (uint32_t *)(dst->data + (i32Line0 * u32LineBytes));
+		pu32Line1SrcData = (uint32_t *)(src->data + (i32Line1 * u32LineBytes));
+		pu32Line1DstData = (uint32_t *)(dst->data + (i32Line1 * u32LineBytes));
+
+		for(i32Col = 0; i32Col < u32LineBytes; i32Col += 4)
+		{
+			u32Temp = *pu32Line1SrcData;
+			*pu32Line1DstData = *pu32Line0SrcData;
+			*pu32Line0DstData = u32Temp;
+			pu32Line0SrcData++;
+			pu32Line0DstData++;
+			pu32Line1SrcData++;
+			pu32Line1DstData++;
+		}
+		
+		i32Line1 --;
+	}
+}
+

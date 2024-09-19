@@ -33,6 +33,7 @@
 //#define __PROFILE__
 #define __USE_CCAP__
 #define __USE_DISPLAY__
+//#define __USE_UVC__
 
 #if defined (FACE_LANDMARK_ATTENTION_MODEL)
 #define __LOAD_MODEL_FROM_SD__
@@ -46,6 +47,10 @@
 
 #if defined (__USE_DISPLAY__)
     #include "Display.h"
+#endif
+
+#if defined (__USE_UVC__)
+    #include "UVC.h"
 #endif
 
 #define NUM_FRAMEBUF 2  //1 or 2
@@ -134,21 +139,30 @@ static S_FRAMEBUF *get_inf_framebuf()
 /* Image processing initiate function */
 //Used by omv library
 #if defined (__USE_CCAP__)
+#if defined(__USE_UVC__)
+//UVC only support QVGA, QQVGA
+#define GLCD_WIDTH	320
+#define GLCD_HEIGHT	240
+#else
 #define GLCD_WIDTH	224
 #define GLCD_HEIGHT	224
+#endif
 #else
 #define GLCD_WIDTH	IMAGE_WIDTH
 #define GLCD_HEIGHT	IMAGE_HEIGHT
 #endif
 
+//RGB565
+#define IMAGE_FB_SIZE	(GLCD_WIDTH * GLCD_HEIGHT * 2)
+
 #undef OMV_FB_SIZE
-#define OMV_FB_SIZE ((GLCD_WIDTH * GLCD_HEIGHT * 2) + 1024)
+#define OMV_FB_SIZE (IMAGE_FB_SIZE + 1024)
 
 #undef OMV_FB_ALLOC_SIZE
 #define OMV_FB_ALLOC_SIZE	(1*1024)
 
-__attribute__((section(".bss.sram.data"), aligned(16))) static char fb_array[OMV_FB_SIZE + OMV_FB_ALLOC_SIZE];
-__attribute__((section(".bss.sram.data"), aligned(16))) static char jpeg_array[OMV_JPEG_BUF_SIZE];
+__attribute__((section(".bss.sram.data"), aligned(32))) static char fb_array[OMV_FB_SIZE + OMV_FB_ALLOC_SIZE];
+__attribute__((section(".bss.sram.data"), aligned(32))) static char jpeg_array[OMV_JPEG_BUF_SIZE];
 
 #if (NUM_FRAMEBUF == 2)
     __attribute__((section(".bss.sram.data"), aligned(32))) static char frame_buf1[OMV_FB_SIZE];
@@ -443,7 +457,7 @@ static void DetectFaceRegion(
 
 static int32_t PrepareModelToHyperRAM(void)
 {
-#define MODEL_FILE "0:\\face_recognition.tflite"
+#define MODEL_FILE "0:\\face_mobilenet.tflite"
 #define EACH_READ_SIZE 512
 	
     TCHAR sd_path[] = { '0', ':', 0 };    /* SD drive started from 0 */	
@@ -672,6 +686,11 @@ int main()
     Display_ClearLCD(C_WHITE);
 #endif
 
+#if defined (__USE_UVC__)
+	UVC_Init();
+    HSUSBD_Start();
+#endif
+
     std::string predictLabelInfo;
 
     while(1)
@@ -800,6 +819,52 @@ int main()
 #endif
 
 #endif
+
+#if defined (__USE_UVC__)
+			if(UVC_IsConnect())
+			{
+#if (UVC_Color_Format == UVC_Format_YUY2)
+				image_t RGB565Img;
+				image_t YUV422Img;
+
+				RGB565Img.w = infFramebuf->frameImage.w;
+				RGB565Img.h = infFramebuf->frameImage.h;
+				RGB565Img.data = (uint8_t *)infFramebuf->frameImage.data;
+				RGB565Img.pixfmt = PIXFORMAT_RGB565;
+
+				YUV422Img.w = RGB565Img.w;
+				YUV422Img.h = RGB565Img.h;
+				YUV422Img.data = (uint8_t *)infFramebuf->frameImage.data;
+				YUV422Img.pixfmt = PIXFORMAT_YUV422;
+				
+				roi.x = 0;
+				roi.y = 0;
+				roi.w = RGB565Img.w;
+				roi.h = RGB565Img.h;
+				imlib_nvt_scale(&RGB565Img, &YUV422Img, &roi);
+				
+#else
+				image_t origImg;
+				image_t vflipImg;
+
+				origImg.w = infFramebuf->frameImage.w;
+				origImg.h = infFramebuf->frameImage.h;
+				origImg.data = (uint8_t *)infFramebuf->frameImage.data;
+				origImg.pixfmt = PIXFORMAT_RGB565;
+
+				vflipImg.w = origImg.w;
+				vflipImg.h = origImg.h;
+				vflipImg.data = (uint8_t *)infFramebuf->frameImage.data;
+				vflipImg.pixfmt = PIXFORMAT_RGB565;
+
+				imlib_nvt_vflip(&origImg, &vflipImg);
+#endif
+				UVC_SendImage((uint32_t)infFramebuf->frameImage.data, IMAGE_FB_SIZE, uvcStatus.StillImage);				
+
+			}
+
+#endif
+
 			if(infFramebuf->results_FD.size()){
 				if(infFramebuf->result_FR.m_recognize)
 				{
