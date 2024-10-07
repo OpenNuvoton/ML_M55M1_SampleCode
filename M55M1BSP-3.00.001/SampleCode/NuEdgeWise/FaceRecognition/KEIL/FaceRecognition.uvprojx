@@ -509,6 +509,11 @@
               <FileType>8</FileType>
               <FilePath>..\FaceDetectorPostProcessing.cpp</FilePath>
             </File>
+            <File>
+              <FileName>LabelFileReader.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\LabelFileReader.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

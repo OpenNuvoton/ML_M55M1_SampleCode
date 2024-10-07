@@ -32,13 +32,18 @@ typedef struct
     std::vector<float>fParam;
 } S_LABEL_INFO;
 
+
 /**
- * @brief       Gets the label vector corresponding to the model
- * @param[out]  labels   Vector of strings.
+ * @brief       Gets the label vector form file
+ * @param[in]   szFileName   label file name.
+ * @param[out]  LabelInfo    label information
+ * @param[out]  found_label_count    total label items
  * @return      true if successful, false otherwise.
  */
-extern bool GetLabelsVector(std::vector<std::string> &labels);
 
-extern bool ParserLabelVector(std::vector<std::string> &labels, std::vector<S_LABEL_INFO> &LabelInfo, size_t *found_label_count);
+extern bool ParserLabelVectorFromFile(
+	const char *szFileName,
+    std::vector<S_LABEL_INFO> &LabelInfo,
+    size_t *found_label_count);
 
 #endif /* LABELS_HPP */

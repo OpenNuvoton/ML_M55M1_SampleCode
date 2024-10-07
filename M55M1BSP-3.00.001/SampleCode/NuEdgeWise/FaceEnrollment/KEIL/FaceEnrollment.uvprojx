@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>ImageClassification</TargetName>
+      <TargetName>FaceEnrollment</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>6220000::V6.22::ARMCLANG</pCCUsed>
@@ -49,7 +49,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\Objects\</OutputDirectory>
-          <OutputName>ImageClassification</OutputName>
+          <OutputName>FaceEnrollment</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -82,7 +82,7 @@
           <AfterMake>
             <RunUserProg1>1</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
-            <UserProg1Name>fromelf --bin ".\Objects\@L.axf" --output=release</UserProg1Name>
+            <UserProg1Name>fromelf --bin ".\Objects\@L.axf" --output  ".\Objects\@L.bin"</UserProg1Name>
             <UserProg2Name>..\..\..\binToDat.bat ".\Objects\@L.axf"</UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
@@ -138,7 +138,7 @@
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2V8M.DLL</Flash2>
-          <Flash3></Flash3>
+          <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -338,9 +338,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>NVT_VECTOR_ON_FLASH, NVT_DCACHE_ON, TF_LITE_STATIC_MEMORY, ARM_MATH_DSP, ARM_NPU, ACTIVATION_BUF_SZ=0x000D0000</Define>
+              <Define>STDIN_ECHO, NVT_VECTOR_ON_FLASH, NVT_DCACHE_ON, TF_LITE_STATIC_MEMORY, ARM_MATH_DSP, ARM_NPU, ACTIVATION_BUF_SZ=0x00010000</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\CMSIS\DSP\Include;..\..\..\..\Library\StdDriver\inc;..\..\..\..\Library\StdDriver\inc\npu;..\..\..\..\ThirdParty\openmv\omv\imlib;..\..\..\..\ThirdParty\openmv\omv\alloc;..\..\..\..\ThirdParty\openmv\omv\common;..\..\..\..\ThirdParty\openmv\omv\Lib;..\..\..\..\ThirdParty\tflite_micro;..\..\..\..\ThirdParty\tflite_micro\_deps\tensorflow-flatbuffers-src\include;..\..\..\..\ThirdParty\tflite_micro\_deps\tensorflow-gemlowp-src;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\api\common\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\log\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\math\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\main\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\profiler\include;..\Device\include;..\Model\include;..\NPU\include;..\Pattern\include;..\ProfilerCounter\include;..\</IncludePath>
+              <IncludePath>..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\Device\Nuvoton\M55M1\Include;..\..\..\..\Library\CMSIS\DSP\Include;..\..\..\..\Library\StdDriver\inc;..\..\..\..\Library\StdDriver\inc\npu;..\..\..\..\ThirdParty\openmv\omv\imlib;..\..\..\..\ThirdParty\openmv\omv\alloc;..\..\..\..\ThirdParty\openmv\omv\common;..\..\..\..\ThirdParty\openmv\omv\Lib;..\..\..\..\ThirdParty\tflite_micro;..\..\..\..\ThirdParty\tflite_micro\_deps\tensorflow-flatbuffers-src\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\api\common\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\log\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\math\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\main\include;..\..\..\..\ThirdParty\ml-embedded-evaluation-kit\source\profiler\include;..\Device\include;..\Model\include;..\NPU\include;..\Pattern\include;..\ProfilerCounter\include;..\;..\..\..\..\ThirdParty\tflite_micro\_deps\tensorflow-gemlowp-src;..\..\..\..\ThirdParty\FatFs\source</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -455,6 +455,11 @@
               <FilePath>..\..\..\..\Library\StdDriver\src\ebi.c</FilePath>
             </File>
             <File>
+              <FileName>sdh.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\sdh.c</FilePath>
+            </File>
+            <File>
               <FileName>spi.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\spi.c</FilePath>
@@ -480,14 +485,34 @@
               <FilePath>..\main.cpp</FilePath>
             </File>
             <File>
-              <FileName>ImgClassProcessing.cpp</FileName>
+              <FileName>FaceRecognProcessing.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\ImgClassProcessing.cpp</FilePath>
+              <FilePath>..\FaceRecognProcessing.cpp</FilePath>
             </File>
             <File>
               <FileName>mpu_config_M55M1.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\mpu_config_M55M1.h</FilePath>
+            </File>
+            <File>
+              <FileName>ModelFileReader.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ModelFileReader.c</FilePath>
+            </File>
+            <File>
+              <FileName>FaceDetectorPostProcessing.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\FaceDetectorPostProcessing.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Embedding.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Embedding.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>LabelFileWriter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\LabelFileWriter.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -520,19 +545,19 @@
           <GroupName>Model</GroupName>
           <Files>
             <File>
-              <FileName>Labels.cpp</FileName>
+              <FileName>face_detection_int8_vela_H256.tflite.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\Model\Labels.cpp</FilePath>
+              <FilePath>..\Model\face_detection_int8_vela_H256.tflite.cpp</FilePath>
             </File>
             <File>
-              <FileName>MobileNetModel.cpp</FileName>
+              <FileName>FaceDetectionModel.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\Model\MobileNetModel.cpp</FilePath>
+              <FilePath>..\Model\FaceDetectionModel.cpp</FilePath>
             </File>
             <File>
-              <FileName>mobilenet_v2_224_035_int8quant_vela_H256.tflite.cpp</FileName>
+              <FileName>FaceMobileNetModel.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\Model\mobilenet_v2_224_035_int8quant_vela_H256.tflite.cpp</FilePath>
+              <FilePath>..\Model\FaceMobileNetModel.cpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -545,24 +570,54 @@
               <FilePath>..\Pattern\InputFiles.cpp</FilePath>
             </File>
             <File>
-              <FileName>cat.cpp</FileName>
+              <FileName>test1_qvga.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\Pattern\cat.cpp</FilePath>
+              <FilePath>..\Pattern\test1_qvga.cpp</FilePath>
             </File>
             <File>
-              <FileName>dog.cpp</FileName>
+              <FileName>test2_qvga.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\Pattern\dog.cpp</FilePath>
+              <FilePath>..\Pattern\test2_qvga.cpp</FilePath>
             </File>
             <File>
-              <FileName>kimono.cpp</FileName>
+              <FileName>test3_qvga.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\Pattern\kimono.cpp</FilePath>
+              <FilePath>..\Pattern\test3_qvga.cpp</FilePath>
             </File>
             <File>
-              <FileName>tiger.cpp</FileName>
+              <FileName>test4_qvga.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\Pattern\tiger.cpp</FilePath>
+              <FilePath>..\Pattern\test4_qvga.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>test5_qvga.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Pattern\test5_qvga.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>test6_qvga.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Pattern\test6_qvga.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>test7_qvga.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Pattern\test7_qvga.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>test8_qvga.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Pattern\test8_qvga.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>test9_qvga.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Pattern\test9_qvga.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>test10_qvga.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Pattern\test10_qvga.cpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -635,11 +690,6 @@
           <GroupName>Device</GroupName>
           <Files>
             <File>
-              <FileName>hyperflash_code.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Device\HyperFlash\hyperflash_code.c</FilePath>
-            </File>
-            <File>
               <FileName>ImageSensor.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Device\ImageSensor\ImageSensor.c</FilePath>
@@ -655,19 +705,34 @@
               <FilePath>..\Device\ImageSensor\Sensor\SWI2C.c</FilePath>
             </File>
             <File>
-              <FileName>Display.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Device\Display\Display.c</FilePath>
-            </File>
-            <File>
               <FileName>Font8_16.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Device\Display\Font8_16.c</FilePath>
             </File>
             <File>
+              <FileName>Display.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Device\Display\Display.c</FilePath>
+            </File>
+            <File>
               <FileName>LCD_FSA506.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Device\Display\LCD\LCD_FSA506.c</FilePath>
+            </File>
+            <File>
+              <FileName>hyperram_code.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Device\HyperRAM\hyperram_code.c</FilePath>
+            </File>
+            <File>
+              <FileName>diskio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Device\SDCard\diskio.c</FilePath>
+            </File>
+            <File>
+              <FileName>sdglue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Device\SDCard\sdglue.c</FilePath>
             </File>
             <File>
               <FileName>LCD_ILI9341.c</FileName>
@@ -683,6 +748,21 @@
               <FileName>UVC.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Device\UVC\UVC.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>FatFS</GroupName>
+          <Files>
+            <File>
+              <FileName>ff.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\FatFs\source\ff.c</FilePath>
+            </File>
+            <File>
+              <FileName>ffunicode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\FatFs\source\ffunicode.c</FilePath>
             </File>
           </Files>
         </Group>

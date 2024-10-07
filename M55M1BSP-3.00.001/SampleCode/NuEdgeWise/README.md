@@ -12,6 +12,7 @@ Collect sample codes related to machine learning on M55M1.
 |FaceLandmark|Face landmark|TFLM|Yolo fastest and FaceLandmark|Detect face landmarks||
 |FaceDetection|Face detection|TFLM|Yolo fastest|Detect face region||
 |PoseLandmark_YOLOv8n|Pose detection|TFLM|YOLOv8n-pose|Detect landmarks of human body||
+|FaceEnrollment|Face recogniton|TFLM|Yolo fastest and mobilefacenet|Enrollment face features||
 |FaceRecognition|Face recogniton|TFLM|Yolo fastest and mobilefacenet|Face recognition||
 |ImageClassification|Image classification|TFLM|MobileNetV2|Image object classification||
 |ImageClassification_TVM|Image classification|TVM|MobileNetV2|Image object classification||

@@ -1,12 +1,11 @@
 /**************************************************************************//**
  * @file     main.cpp
  * @version  V1.00
- * @brief    MobileFaceNet network sample. Demonstrate face recognition
+ * @brief    MobileFaceNet network sample. Demonstrate face enrollment
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
-
 #include <vector>
 #include <string>
 #include <cinttypes>
@@ -17,14 +16,15 @@
 #include "BufAttributes.hpp" /* Buffer attributes to be applied */
 #include "InputFiles.hpp"             /* Baked-in input (not needed for live data) */
 #include "FaceMobileNetModel.hpp"       /* Model API */
-#include "Labels.hpp"
-#include "Recognizer.hpp"
 #include "FaceRecognProcessing.hpp"
 #include "FaceDetectorPostProcessing.hpp"
+#include "Embedding.hpp"
+
 
 #include "imlib.h"          /* Image processing */
 #include "framebuffer.h"
 #include "ModelFileReader.h"
+#include "LabelFileWriter.h"
 #include "ff.h"
 
 #undef PI /* PI macro conflict with CMSIS/DSP */
@@ -49,10 +49,12 @@
     #include "UVC.h"
 #endif
 
-#define NUM_FRAMEBUF 2  //1 or 2
-#define MODEL_AT_HYPERRAM_ADDR (0x82400000)
-#define FACE_PRESENCE_THRESHOLD  				(0.4)
+#define NUM_FRAMEBUF				2  //1 or 2
+#define MODEL_AT_HYPERRAM_ADDR 		(0x82400000)
+#define FACE_PRESENCE_THRESHOLD		(0.4)
+#define FACE_NAME_LEN				50
 #define FACE_LABEL_FILE				"0:\\face_labels.txt"
+#define COMMAND_LEN					10
 
 typedef enum
 {
@@ -66,7 +68,7 @@ typedef struct
     E_FRAMEBUF_STATE eState;
     image_t frameImage;
     std::vector<arm::app::face_detection::DetectionResult> results_FD;	
-    arm::app::RecognitionResult result_FR;
+    std::vector<float> results_FR;
 } S_FRAMEBUF;
 
 
@@ -145,8 +147,8 @@ static S_FRAMEBUF *get_inf_framebuf()
 #define GLCD_HEIGHT	224
 #endif
 #else
-#define GLCD_WIDTH	IMAGE_WIDTH
-#define GLCD_HEIGHT	IMAGE_HEIGHT
+#define GLCD_WIDTH		IMAGE_WIDTH
+#define GLCD_HEIGHT		IMAGE_HEIGHT
 #endif
 
 //RGB565
@@ -158,8 +160,13 @@ static S_FRAMEBUF *get_inf_framebuf()
 #undef OMV_FB_ALLOC_SIZE
 #define OMV_FB_ALLOC_SIZE	(1*1024)
 
+#define LABEL_INFO_BUF_LEN	(4096)
+
 __attribute__((section(".bss.sram.data"), aligned(32))) static char fb_array[OMV_FB_SIZE + OMV_FB_ALLOC_SIZE];
 __attribute__((section(".bss.sram.data"), aligned(32))) static char jpeg_array[OMV_JPEG_BUF_SIZE];
+__attribute__((section(".bss.sram.data"), aligned(32))) static char labelInfoBuf[LABEL_INFO_BUF_LEN];
+//__attribute__((aligned(32))) static char labelInfoBuf[LABEL_INFO_BUF_LEN];
+
 
 #if (NUM_FRAMEBUF == 2)
     __attribute__((section(".bss.sram.data"), aligned(32))) static char frame_buf1[OMV_FB_SIZE];
@@ -217,7 +224,7 @@ static void DrawDetectFace(
 	for(int i = 0; i < faceBoxSize; i ++)
 	{
 		faceBox = results[i];
-		info("Face detect on image (x,y,w,h) => (%d, %d, %d, %d)\n", faceBox.m_x0, faceBox.m_y0, faceBox.m_w, faceBox.m_h);
+		//info("Face detect on image (x,y,w,h) => (%d, %d, %d, %d)\n", faceBox.m_x0, faceBox.m_y0, faceBox.m_w, faceBox.m_h);
 		imlib_draw_rectangle(drawImg, faceBox.m_x0, faceBox.m_y0, faceBox.m_w, faceBox.m_h, COLOR_B5_MAX, 2, false);
 	}
 }
@@ -304,7 +311,7 @@ static void FaceRecognize(
 		u64StartCycle = pmu_get_systick_Count();
 	}
 
-	postProcess->RunPostProcess(infFramebuf->result_FR);
+	postProcess->RunPostProcess(infFramebuf->results_FR);
 
 	if(profiler){
 		u64EndCycle = pmu_get_systick_Count();
@@ -513,6 +520,34 @@ static int32_t PrepareModelToHyperRAM(void)
 	return i32FileSize;
 }	
 
+static bool GetTermLine(char *user_input, unsigned int size)
+{
+	if(NULL != fgets(user_input, size, stdin)){
+		int len;
+		len = strlen(user_input);
+		user_input[len - 1] = '\0'; //replace '\n' to '\0' 
+		return true;
+	}
+	return false;
+}
+
+static bool kbhit()
+{
+	//Checking terminal kb hit
+	if (((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0U))
+		return true;
+	return false;
+}
+
+static void print_usage()
+{
+	printf("--------------------------------------------------------\n");
+	printf("| Press 's' and enter key to enrollment face.          |\n");
+	printf("| Must press 'q' and enter key to exit program!        |\n");
+	printf("--------------------------------------------------------\n");
+
+}
+
 int main()
 {
     /* Initialise the UART module to allow printf related functions (if using retarget) */
@@ -538,7 +573,7 @@ int main()
                     i32ModelSize))
     {
         printf_err("Failed to initialise model\n");
-        return 1;
+        return 2;
     }
 
     /* Model object creation and initialisation. */
@@ -550,9 +585,16 @@ int main()
                     arm::app::face_detection::GetModelLen()))
     {
         printf_err("Failed to initialise model\n");
-        return 1;
+        return 3;
     }
 
+	/* Open lable file */
+	if(LabelFileWriter_Initialize(FACE_LABEL_FILE) == FALSE)
+	{
+        printf_err("Failed to open label file\n");
+        return 4;
+	}
+	
 	/* Setup cache poicy of tensor arean buffer */
     info("Set tesnor arena cache policy to WTRA \n");
     const std::vector<ARM_MPU_Region_t> mpuConfig =
@@ -585,6 +627,16 @@ int main()
                          1,                 // Non-Privileged
                          1),                // eXecute Never enabled
             ARM_MPU_RLAR((((unsigned int)fb_array) + OMV_FB_SIZE - 1),        // Limit
+                         eMPU_ATTR_NON_CACHEABLE) // NonCache
+        },
+        {
+            // Image data from CCAP DMA, so must set frame buffer to Non-cache attribute
+            ARM_MPU_RBAR(((unsigned int)labelInfoBuf),        // Base
+                         ARM_MPU_SH_NON,    // Non-shareable
+                         0,                 // Read-only
+                         1,                 // Non-Privileged
+                         1),                // eXecute Never enabled
+            ARM_MPU_RLAR((((unsigned int)labelInfoBuf) + LABEL_INFO_BUF_LEN - 1),        // Limit
                          eMPU_ATTR_NON_CACHEABLE) // NonCache
         },
 #if (NUM_FRAMEBUF == 2)
@@ -620,16 +672,6 @@ int main()
     omv_init();
     framebuffer_init_image(&frameBuffer);
 
-    //label information
-    std::vector<std::string> labels;
-    std::vector<S_LABEL_INFO> labelInfo;
-
-#if 0
-    GetLabelsVector(labels);
-    ParserLabelVector(labels, labelInfo, nullptr);
-#else
-	ParserLabelVectorFromFile(FACE_LABEL_FILE, labelInfo, nullptr);
-#endif
 
     // Set up post-Process
     const arm::app::face_detection::PostProcessParams postProcessParams{
@@ -643,8 +685,8 @@ int main()
 	arm::app::FaceDetectorPostProcess postProcess_FD =
             arm::app::FaceDetectorPostProcess(outputTensor0_FD, outputTensor1_FD, s_asFramebuf[0].results_FD, postProcessParams);
 
-	arm::app::Recognizer recognizer;  /* Classifier object. */
-    arm::app::FaceRecognPostProcess postProcess_FR(recognizer, &faceRecognitionModel, labelInfo);
+	arm::app::Embedding embedding;  /* Embedding object. */
+    arm::app::FaceRecognPostProcess postProcess_FR(embedding, &faceRecognitionModel);
 
 #if defined(__PROFILE__)
 
@@ -670,7 +712,6 @@ int main()
 
 #if !defined (__USE_CCAP__)
     uint8_t u8ImgIdx = 0;
-    char chStdIn;
 #endif
 
 #if defined (__USE_CCAP__)
@@ -692,29 +733,41 @@ int main()
     HSUSBD_Start();
 #endif
 
-    std::string predictLabelInfo;
+    std::string labelInfo;
+	char faceName[FACE_NAME_LEN];
+	char command[COMMAND_LEN];
 
-    while(1)
+	print_usage();
+
+	while(1)
     {
+#if defined (__USE_CCAP__)
+		command[0] = '\0';
+		if (kbhit()){
+			//Press 'q' to quit program
+			memset(command, 0x0, COMMAND_LEN);
+			GetTermLine(command, COMMAND_LEN - 1);
+			
+			if(command[0] == 'q')
+				break;
+		}
+#endif
         emptyFramebuf = get_empty_framebuf();
 
         if (emptyFramebuf)
         {
 #if !defined (__USE_CCAP__)
-            info("Press 'n' to run next image inference \n");
+            info("Press 's' to run next image inference \n");
             info("Press 'q' to exit program \n");
 
-            while ((chStdIn = getchar()))
-            {
-                if (chStdIn == 'q')
-                {
-                    goto prog_done;
-                }
-                else if (chStdIn != 'n')
-                {
-                    break;
-                }
-            }
+			command[0] = '\0';
+
+			//Press 'q' to quit program
+			memset(command, 0x0, COMMAND_LEN);
+			GetTermLine(command, COMMAND_LEN - 1);
+			
+			if(command[0] == 'q')
+				break;
 
             const uint8_t *pu8ImgSrc = get_img_array(u8ImgIdx);
 
@@ -782,7 +835,7 @@ int main()
 
         if (infFramebuf)
         {
-
+			infFramebuf->results_FR.clear();
 #if defined(__PROFILE__)
 			if(infFramebuf->results_FD.size())
 				FaceRecognize(
@@ -866,19 +919,55 @@ int main()
 
 #endif
 
-			if(infFramebuf->results_FD.size()){
-				if(infFramebuf->result_FR.m_recognize)
-				{
-					predictLabelInfo =  infFramebuf->result_FR.m_label + std::string(":") + std::to_string(infFramebuf->result_FR.m_predict);
+			if(infFramebuf->results_FR.size()){
+				//TODO write label file
+				if(command[0] == 's'){
+					//Press "enter key" from Tera Term
+					info("Please input your name \n");
+					info(">>>");
+					memset(faceName, 0x0, FACE_NAME_LEN);
+					if((GetTermLine(faceName, FACE_NAME_LEN - 1)) && (faceName[0] != '\0'))
+					{
+						int written;
+						int toWrite;
+						std::string lableInfo(faceName);
+
+						for(int i = 0; i < infFramebuf->results_FR.size(); i++)
+						{
+							lableInfo += ":";
+							lableInfo += std::to_string(infFramebuf->results_FR[i]);
+						}
+						lableInfo += ":";
+						lableInfo += "\n";
+
+						toWrite = lableInfo.length();
+
+						if(toWrite < LABEL_INFO_BUF_LEN)
+						{
+							//copy to label information buffer
+							memcpy(labelInfoBuf, lableInfo.c_str(), toWrite);							
+							labelInfoBuf[toWrite] = '\0';
+							info("The label info is %s \n", labelInfoBuf);
+
+							//Write label information to file
+							written = LabelFileWriter_WriteData((BYTE *)labelInfoBuf, toWrite);
+							
+							if(written != toWrite){
+								info("Write label info to file error %d, %d\n", toWrite, written);
+								info("Please delete %s, and try again \n", FACE_LABEL_FILE);
+								while(1){
+									__NOP();
+								}
+							}
+						}
+						else
+						{
+							info("The label info buffer is too small. it should be large than %d", toWrite);
+						}
+
+						print_usage();
+					}
 				}
-				else
-				{
-					predictLabelInfo = std::string("???") + std::string(":") + std::to_string(infFramebuf->result_FR.m_predict);
-				}
-					
-				//show result
-				info("Final results:\n");
-				info("%s\n", predictLabelInfo.c_str());
 			}
 
 #if defined (__USE_DISPLAY__)
@@ -891,7 +980,7 @@ int main()
 			Display_ClearRect(C_WHITE, &sDispRect);
 
 			if(infFramebuf->results_FD.size()){
-				sprintf(szDisplayText, "%s", predictLabelInfo.c_str());
+				sprintf(szDisplayText, "%s", labelInfo.c_str());
 
 				Display_PutText(
 					szDisplayText,
@@ -952,8 +1041,12 @@ int main()
             emptyFramebuf->eState = eFRAMEBUF_FULL;		
 		}			
 	}
-
+#if !defined (__USE_CCAP__)
 prog_done:
-	
+#endif
+	LabelFileWriter_Finish();
+
+	SDH_Close_Disk(SDH0);
 	return 0;
 }
+
