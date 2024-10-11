@@ -820,6 +820,21 @@ int main()
 #endif
 
 #endif
+			if(infFramebuf->results_FD.size()){
+				if(infFramebuf->result_FR.m_recognize)
+				{
+					predictLabelInfo =  infFramebuf->result_FR.m_label + std::string(":") + std::to_string(infFramebuf->result_FR.m_predict);
+				}
+				else
+				{
+					predictLabelInfo = std::string("???") + std::string(":") + std::to_string(infFramebuf->result_FR.m_predict);
+				}
+					
+				//show result
+				info("Final results:\n");
+				info("%s\n", predictLabelInfo.c_str());
+			}
+
 
 #if defined (__USE_UVC__)
 			if(UVC_IsConnect())
@@ -842,6 +857,11 @@ int main()
 				roi.y = 0;
 				roi.w = RGB565Img.w;
 				roi.h = RGB565Img.h;
+
+				if(infFramebuf->results_FD.size()){
+					imlib_draw_string(&origImg, 0 , 0, predictLabelInfo.c_str(), COLOR_B5_MAX, 1, 0, 0, false, 0, false, false, 0, false, false);
+				}
+
 				imlib_nvt_scale(&RGB565Img, &YUV422Img, &roi);
 				
 #else
@@ -858,28 +878,19 @@ int main()
 				vflipImg.data = (uint8_t *)infFramebuf->frameImage.data;
 				vflipImg.pixfmt = PIXFORMAT_RGB565;
 
+				if(infFramebuf->results_FD.size()){
+					imlib_draw_string(&origImg, 0 , 0, predictLabelInfo.c_str(), COLOR_B5_MAX, 1, 0, 0, false, 0, false, false, 0, false, false);
+				}
+
 				imlib_nvt_vflip(&origImg, &vflipImg);
 #endif
+
 				UVC_SendImage((uint32_t)infFramebuf->frameImage.data, IMAGE_FB_SIZE, uvcStatus.StillImage);				
 
 			}
 
 #endif
 
-			if(infFramebuf->results_FD.size()){
-				if(infFramebuf->result_FR.m_recognize)
-				{
-					predictLabelInfo =  infFramebuf->result_FR.m_label + std::string(":") + std::to_string(infFramebuf->result_FR.m_predict);
-				}
-				else
-				{
-					predictLabelInfo = std::string("???") + std::string(":") + std::to_string(infFramebuf->result_FR.m_predict);
-				}
-					
-				//show result
-				info("Final results:\n");
-				info("%s\n", predictLabelInfo.c_str());
-			}
 
 #if defined (__USE_DISPLAY__)
 

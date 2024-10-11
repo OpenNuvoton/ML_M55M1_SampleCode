@@ -503,9 +503,16 @@ int main()
 				vflipImg.data = (uint8_t *)infFramebuf->frameImage.data;
 				vflipImg.pixfmt = PIXFORMAT_RGB565;
 
+#if defined(__PROFILE__)
+				u64StartCycle = pmu_get_systick_Count();
+#endif
 				imlib_nvt_vflip(&origImg, &vflipImg);
 #endif
 				UVC_SendImage((uint32_t)infFramebuf->frameImage.data, IMAGE_FB_SIZE, uvcStatus.StillImage);				
+#if defined(__PROFILE__)
+				u64EndCycle = pmu_get_systick_Count();
+				info("UVC image cycles %llu \n", (u64EndCycle - u64StartCycle));
+#endif
 
 			}
 
