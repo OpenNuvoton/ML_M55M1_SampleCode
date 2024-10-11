@@ -11,7 +11,7 @@ A demonstration sample for face recognition
 System clock: 180MHz
 | Model |Input Dimension | ROM (KB) | RAM (KB) | Inference Rate (inf/sec) |  
 |:------|:---------------|:--------|:--------|:-------------------------|
-|Yolo fastest|192x192x3|441|443| 109.8|
+|Yolo fastest|192x192x1|441|443| 109.8|
 |MobileFaceNet|112x112x3|3249|305|39.1|
 
 Total frame rate: 12 fps
