@@ -1,4 +1,4 @@
-# ObjectExistence
+# FindKeypoints
 A demonstration of agast Feature-Detection-Keypoints.
 This example showcases the detection of same objects using computer vision methods.
 ## Requirement
@@ -12,6 +12,6 @@ System clock: 180MHz
 Using OpenMV
 Methods: agast Feature-Detection-Keypoints
 Ref: [OpenMV Keypoints MicronPython ver.](https://book.openmv.cc/example/09-Feature-Detection/keypoints.html)
-Total frame rate: ~ 2 fps
+Total frame rate: ~ 10 fps
 
 
