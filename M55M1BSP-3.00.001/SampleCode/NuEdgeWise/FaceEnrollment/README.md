@@ -6,7 +6,10 @@ A demonstration sample for enrollment your face
 1. Build by Keil
 2. Copy Model/face_mobilenet.tflite file to SD card root directory.
 3. Insert SD card to NUMAKER-M55M1 board
-4. Run
+4. Terminal settings  
+    a. New-Line: Select Receive and Transmit to CR(carriage return) only mode  
+    b. Disable "Local echo" 
+5. Run
 ## Performance
 System clock: 180MHz
 | Model |Input Dimension | ROM (KB) | RAM (KB) | Inference Rate (inf/sec) |  

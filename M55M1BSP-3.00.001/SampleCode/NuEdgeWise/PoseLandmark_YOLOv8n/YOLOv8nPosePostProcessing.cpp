@@ -416,7 +416,7 @@ void YOLOv8nPosePostProcessing::RunPostProcessing(
 			poseBox.x = box->bbox.x * fXScale;
 			poseBox.y = box->bbox.y * fYScale;
 			poseBox.w = box->bbox.w * fXScale;
-			poseBox.h = box->bbox.h * fXScale;
+			poseBox.h = box->bbox.h * fYScale;
 
 //			printf("bbox.x: %f \n", box->bbox.x);
 //			printf("bbox.y: %f \n", box->bbox.y);	   

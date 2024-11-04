@@ -78,7 +78,7 @@ bool ParserLabelVectorFromFile(
             else            // Get param
             {
                 sNewLabel.fParam.push_back(stof(token));
-				printf("The param [%d]%s \n", params, token.c_str());
+				//printf("The param [%d]%s \n", params, token.c_str());
 				params++;
 				
             }
