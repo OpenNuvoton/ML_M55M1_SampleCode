@@ -156,7 +156,7 @@ void SDH_Close_Disk(SDH_T *sdh)
     }
 }
 
-unsigned long get_fattime(void)
+DWORD get_fattime(void)
 {
     unsigned long g_u64Tmr;
 

@@ -17,4 +17,5 @@ Collect sample codes related to machine learning on M55M1.
 |ImageClassification|Image classification|TFLM|MobileNetV2|Image object classification||
 |ImageClassification_TVM|Image classification|TVM|MobileNetV2|Image object classification||
 |AnomalyDetection|Anomaly detetcion|TFLM|AutoEncoder|Anomaly detection using IMU sensor||
-|ObjectDetection_YOLOv8n|Object detection| TLFM|YOLOv8n|Eample of YOLOv8n inference||
+|ObjectDetection_YOLOv8n|Object detection| TLFM|YOLOv8n|Example of YOLOv8n inference||
+|AudioDenoise|Audio denoise|TFLM|RNNoise|Audio RNN denoise sample||
