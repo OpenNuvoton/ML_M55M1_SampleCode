@@ -20,11 +20,11 @@ System clock: 180MHz
 |anti-spoof Mobilenet3|128x128x3|2753|323|55.6|
 |anti-spoof CNN|80x80x3|509|525|41.36|
 
-No detect the recognized face frame rate: 12 fps 
-If detect the recognized face frame rate: Mobilenet3: 4 fps, CNN: 7 fps
+- Not detect the recognized face frame rate: 12 fps 
+- If detect the recognized face frame rate: Mobilenet3: 4 fps, CNN: 7 fps
 
 ## Reference
-anti-spoof Mobilenet3: [light-weight-face-anti-spoofing](https://github.com/kprokofi/light-weight-face-anti-spoofing)
-anti-spoof CNN: [CNN Face-AntiSpoofing](https://github.com/hairymax/Face-AntiSpoofing)
+- anti-spoof Mobilenet3: [light-weight-face-anti-spoofing](https://github.com/kprokofi/light-weight-face-anti-spoofing)
+- anti-spoof CNN: [CNN Face-AntiSpoofing](https://github.com/hairymax/Face-AntiSpoofing)
 
 
