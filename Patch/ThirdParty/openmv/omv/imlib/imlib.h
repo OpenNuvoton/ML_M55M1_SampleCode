@@ -1778,6 +1778,7 @@ void imlib_nvt_RGB888toRGB565_SIMD(image_t *src, image_t *dst);
 void imlib_nvt_RGB565toRGB888_SIMD(image_t *src, image_t *dst);
 void imlib_nvt_scale(image_t *src, image_t *dst, rectangle_t *roi);
 void imlib_nvt_vflip(image_t *src, image_t *dst);
+void imlib_nvt_RGB_blend(image_t *src0, image_t *src1, image_t *dst, float alpha);
 
 #ifdef __cplusplus
 }
