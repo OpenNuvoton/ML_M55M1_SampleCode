@@ -1,7 +1,7 @@
 /**************************************************************************//**
- * @file     PoseLandmarkModel.hpp
+ * @file     ImageSegModel.hpp
  * @version  V1.00
- * @brief    Pose landmark model header file
+ * @brief    Image segmentation model header file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2024 Nuvoton Technology Corp. All rights reserved.
@@ -50,4 +50,4 @@ private:
 } /* namespace app */
 } /* namespace arm */
 
-#endif /* HAND_LANDMARK_MODEL_HPP */
+#endif /* IMAGE_SEG_MODEL_HPP */
