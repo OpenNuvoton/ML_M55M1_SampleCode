@@ -1,4 +1,4 @@
-# PoseLandmark
+# ImageSegmentation
 A demonstration sample for image object segmentation
 ## Requirement
 1. Keil uVision5
