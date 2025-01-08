@@ -19,6 +19,6 @@ Collect sample codes related to machine learning on M55M1.
 |AnomalyDetection|Anomaly detetcion|TFLM|AutoEncoder|Anomaly detection using IMU sensor||
 |ObjectDetection_YOLOv8n|Object detection| TLFM|YOLOv8n|Example of YOLOv8n inference||
 |AudioDenoise|Audio denoise|TFLM|RNNoise|Audio RNN denoise sample||
-|SafetyRecognition|Face and fingerprint recognition|TFLM|Yolo fastest, mobilefacenet and anti-spoof|Demonstrate MobileFaceNet recognition with antiSpoofing and fingerprint module together||
+|SafetyRecognition|Face and fingerprint recognition|TFLM|Yolo fastest, mobilefacenet and anti-spoof model|Demonstrate MobileFaceNet recognition with antiSpoofing and fingerprint module together||
 |ImageSegmentation|Image segmentation|TFLM|Deeplab_v3|Image object segmentation||
-|FaceLandmark_PoseCheck|Face pose check |TFLM|Yolo fastest, FaceLandmark, DNN|Detect face landmarks and use them for classification||
+|FaceLandmark_PoseCheck|Face pose check |TFLM|Yolo fastest, FaceLandmark and DNN|Detect face landmarks and use them for classification||

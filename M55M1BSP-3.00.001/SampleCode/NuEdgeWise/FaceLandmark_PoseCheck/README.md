@@ -1,4 +1,4 @@
-# FaceLandmark
+# FaceLandmark_PoseCheck
 A demonstration sample for face landmarks that uses the landmarks to determine whether the head pose is normal or not.
 ## Requirement
 1. Keil uVision5
