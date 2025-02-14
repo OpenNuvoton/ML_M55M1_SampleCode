@@ -1,0 +1,17 @@
+1. copy portable and quantized ops function form linux prebuilt libarary
+    cp linux@executorch/cmake-out/kernels/portable/portable_ops_lib/*  _prebuilt/kernels/portable
+    cp linux@executorch/cmake-out/kernels/quantized/quantized_ops_lib/*  _prebuilt/kernels/quantized
+
+2. Copy flatbuffers header file to third-party flatbuffers folder
+    cp linux@executorch/third-party/flatbuffers/include flatbuffers
+
+3. Rename some header file
+    copy _prebuilt/kernels/portable/NativeFunctions.h to PortableOpsNativeFunctions.h
+    copy _prebuilt/kernels/quantized/NativeFunctions.h to QuantizedOpsNativeFunctions.h
+
+4. Modify some source code
+    a. kernels\portable\cpu\op_expand_copy.cpp
+    b. runtime\core\exec_aten\util\tensor_util.h
+    c. runtime\core\portable_type\tensor.h
+    d. runtime\core\portable_type\tensor_impl.h
+
