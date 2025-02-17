@@ -84,7 +84,7 @@ static void SYS_Init(void)
     CLK_SetModuleClock(SDH0_MODULE, CLK_SDHSEL_SDH0SEL_APLL1_DIV2, CLK_SDHDIV_SDH0DIV(5));
     CLK_EnableModuleClock(SDH0_MODULE);
 
-    /* Select UART6 module clock source as HIRC and UART6 module clock divider as 1 */
+    /* Select UART module clock source and clock divider */
     SetDebugUartCLK();
 
     /*---------------------------------------------------------------------------------------------------------*/
