@@ -22,3 +22,4 @@ Collect sample codes related to machine learning on M55M1.
 |SafetyRecognition|Face and fingerprint recognition|TFLM|Yolo fastest, mobilefacenet and anti-spoof model|Demonstrate MobileFaceNet recognition with antiSpoofing and fingerprint module together||
 |ImageSegmentation|Image segmentation|TFLM|Deeplab_v3|Image object segmentation||
 |FaceLandmark_PoseCheck|Face pose check |TFLM|Yolo fastest, FaceLandmark and DNN|Detect face landmarks and use them for classification||
+|ObjectTracker_YOLOv8n|Object tracking|TFLM|YOLOv8n|Object tracking sample||

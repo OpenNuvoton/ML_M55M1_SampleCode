@@ -42,9 +42,6 @@ void HyperFlash_WriteOPCMD(SPIM_T *spim, uint32_t u32CMD, uint32_t u32Addr)
 
 void HyperFlash_WriteConfigRegister(SPIM_T *spim, uint32_t u32Reg, uint16_t u16WrData)
 {
-#ifdef TC8263_WORK_AROUND
-    HyperFlash_ClearECCError(spim);
-#endif
 
     HyperFlash_WriteOPCMD(spim, HF_CMD_COMMON_555, HF_CMD_COMMON_AA);
     HyperFlash_WriteOPCMD(spim, HF_CMD_COMMON_2AA, HF_CMD_COMMON_55);
@@ -65,9 +62,6 @@ uint16_t HyperFlash_ReadConfigRegister(SPIM_T *spim, uint32_t u32Reg)
 {
     volatile uint16_t u16RdData = 0;
 
-#ifdef TC8263_WORK_AROUND
-    HyperFlash_ClearECCError(spim);
-#endif
     HyperFlash_WriteOPCMD(spim, HF_CMD_COMMON_555, HF_CMD_COMMON_AA);
     HyperFlash_WriteOPCMD(spim, HF_CMD_COMMON_2AA, HF_CMD_COMMON_55);
     HyperFlash_WriteOPCMD(spim, HF_CMD_COMMON_555, u32Reg);
@@ -89,9 +83,6 @@ int32_t HyperFlash_WaitBusBusy(SPIM_T *spim)
 
     while (u32Status != 0x80)
     {
-#ifdef TC8263_WORK_AROUND
-        HyperFlash_ClearECCError(spim);
-#endif
         HyperFlash_WriteOPCMD(spim, HF_CMD_COMMON_555, HF_CMD_70);
 
         u32Status = (SPIM_HYPER_Read1Word(spim, HF_CMD_NOOP_CODE) & 0x80);
@@ -107,10 +98,6 @@ int32_t HyperFlash_WaitBusBusy(SPIM_T *spim)
         //}
     }
 
-#ifdef TC8263_WORK_AROUND
-    HyperFlash_ClearECCError(spim);
-#endif
-
     return SPIM_OK;
 }
 
@@ -125,9 +112,6 @@ void HyperFlash_EraseSector(SPIM_T *spim, uint32_t u32SAddr)
         u32SAddr /= 2;
     }
 
-#ifdef TC8263_WORK_AROUND
-    HyperFlash_ClearECCError(spim);
-#endif
     HyperFlash_WriteOPCMD(spim, HF_CMD_COMMON_555, HF_CMD_COMMON_AA);
     HyperFlash_WriteOPCMD(spim, HF_CMD_COMMON_2AA, HF_CMD_COMMON_55);
     HyperFlash_WriteOPCMD(spim, HF_CMD_COMMON_555, HF_CMD_80);
@@ -143,9 +127,6 @@ void HyperFlash_EraseChip(SPIM_T *spim)
     volatile int32_t i32Timeout = SPIM_TIMEOUT;
     uint32_t u32Status = 0;
 
-#ifdef TC8263_WORK_AROUND
-    HyperFlash_ClearECCError(spim);
-#endif
     HyperFlash_WriteOPCMD(spim, HF_CMD_COMMON_555, HF_CMD_COMMON_AA);
     HyperFlash_WriteOPCMD(spim, HF_CMD_COMMON_2AA, HF_CMD_COMMON_55);
     HyperFlash_WriteOPCMD(spim, HF_CMD_COMMON_555, HF_CMD_80);
@@ -159,9 +140,6 @@ void HyperFlash_EraseChip(SPIM_T *spim)
 void do_dmm_writepage(SPIM_T *spim, uint32_t u32SAddr, uint8_t *pu8WrBuf, uint32_t u32NTx)
 {
     int32_t *pi32Saddr = (int32_t *)u32SAddr;
-#ifdef TC8263_WORK_AROUND
-    HyperFlash_ClearECCError(spim);
-#endif
 
     HyperFlash_WriteOPCMD(spim, HF_CMD_COMMON_555, HF_CMD_COMMON_AA);
     HyperFlash_WriteOPCMD(spim, HF_CMD_COMMON_2AA, HF_CMD_COMMON_55);
@@ -219,9 +197,6 @@ void HyperFlash_DMMWrite(SPIM_T *spim, uint32_t u32SAddr, uint8_t *pu8WrBuf, uin
 
 void HyperFlash_DMA_WriteByPage(SPIM_T *spim, uint32_t u32SAddr, uint8_t *pu8WrBuf, uint32_t u32NTx)
 {
-#ifdef TC8263_WORK_AROUND
-    HyperFlash_ClearECCError(spim);
-#endif
 
     HyperFlash_WriteOPCMD(spim, HF_CMD_COMMON_555, HF_CMD_COMMON_AA);
     HyperFlash_WriteOPCMD(spim, HF_CMD_COMMON_2AA, HF_CMD_COMMON_55);
@@ -278,18 +253,11 @@ void HyperFlash_DMARead(SPIM_T *spim, uint32_t u32SAddr, uint8_t *pu8RdBuf, uint
 {
     SPIM_HYPER_DMARead(spim, u32SAddr, pu8RdBuf, u32NRx);
 
-#ifdef TC8263_WORK_AROUND
-    HyperFlash_ClearECCError(spim);
-#endif
-
     HyperFlash_WaitBusBusy(spim);
 }
 
 void HyperFlash_IO_Write2Byte(SPIM_T *spim, uint32_t u32WrAddr, uint16_t u16WrData)
 {
-#ifdef TC8263_WORK_AROUND
-    HyperFlash_ClearECCError(spim);
-#endif
 
     HyperFlash_WriteOPCMD(spim, HF_CMD_COMMON_555, HF_CMD_COMMON_AA);
     HyperFlash_WriteOPCMD(spim, HF_CMD_COMMON_2AA, HF_CMD_COMMON_55);
@@ -302,9 +270,6 @@ void HyperFlash_IO_Write2Byte(SPIM_T *spim, uint32_t u32WrAddr, uint16_t u16WrDa
 
 void HyperFlash_IO_Write4Byte(SPIM_T *spim, uint32_t u32WrAddr, uint32_t u32WrData)
 {
-#ifdef TC8263_WORK_AROUND
-    HyperFlash_ClearECCError(spim);
-#endif
 
     HyperFlash_WriteOPCMD(spim, HF_CMD_COMMON_555, HF_CMD_COMMON_AA);
     HyperFlash_WriteOPCMD(spim, HF_CMD_COMMON_2AA, HF_CMD_COMMON_55);
@@ -319,10 +284,6 @@ uint16_t HyperFlash_IO_Read2Byte(SPIM_T *spim, uint32_t u32SAddr)
 {
     volatile uint16_t u16RdData = 0;
 
-#ifdef TC8263_WORK_AROUND
-    HyperFlash_ClearECCError(spim);
-#endif
-
     u16RdData = SPIM_HYPER_Read1Word(spim, u32SAddr);
 
     return u16RdData;
@@ -331,10 +292,6 @@ uint16_t HyperFlash_IO_Read2Byte(SPIM_T *spim, uint32_t u32SAddr)
 uint32_t HyperFlash_IO_Read4Byte(SPIM_T *spim, uint32_t u32SAddr)
 {
     volatile uint32_t u32RdData = 0;
-
-#ifdef TC8263_WORK_AROUND
-    HyperFlash_ClearECCError(spim);
-#endif
 
     u32RdData = SPIM_HYPER_Read2Word(spim, u32SAddr);
 
@@ -618,7 +575,7 @@ void InitSPIMPort(SPIM_T *pSPIMx)
 	}
 }
 
-void SPIM_HyperFlash_Init(SPIM_T *pSPIMx, uint32_t u32CacheOn)
+void SPIM_HyperFlash_Init(SPIM_T *pSPIMx)
 {
 
     SPIM_NVIC_Disable(pSPIMx);
@@ -627,22 +584,15 @@ void SPIM_HyperFlash_Init(SPIM_T *pSPIMx, uint32_t u32CacheOn)
 
     SPIM_HYPER_Init(pSPIMx, SPIM_HYPERFLASH_MODE, 1); // Enable HyperBus Mode
 
-    SPIM_DISABLE_CACHE(pSPIMx);
 
     SPIM_HyperFlash_DefaultConfig(pSPIMx, HFLH_MAX_CS_LOW, HFLH_DEFRD_LTCY_NUM, HFLH_WR_LTCY_NUM);
     HyperFlash_ResetModule(pSPIMx);
     SPIM_HYPER_SetDLLDelayNum(pSPIMx, 1);
-		SPIM_HYPER_INIT_DLL(pSPIMx);
+	SPIM_HYPER_INIT_DLL(pSPIMx);
 
 	HyperFlash_SetReadLatency(pSPIMx, 10);
 	//Must set DLL directly, because call HyperFlash_SetReadLatency() will erase hyperflash.
 	//SPIM_HYPER_SetDLLDelayNum(pSPIMx, 5);
-
-    if (u32CacheOn)
-    {
-		printf("Enable SPIM cache \n");
-        SPIM_ENABLE_CACHE(pSPIMx);
-   }
 
     SPIM_HYPER_EnterDirectMapMode(pSPIMx);
 }
