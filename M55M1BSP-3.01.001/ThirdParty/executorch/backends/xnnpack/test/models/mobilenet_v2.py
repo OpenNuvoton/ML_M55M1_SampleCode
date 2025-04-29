@@ -14,6 +14,9 @@ from torchvision.models.mobilenetv2 import MobileNet_V2_Weights
 
 
 class TestMobileNetV2(unittest.TestCase):
+    def setUp(self):
+        torch._dynamo.reset()
+
     mv2 = models.mobilenetv2.mobilenet_v2(weights=MobileNet_V2_Weights)
     mv2 = mv2.eval()
     model_inputs = (torch.randn(1, 3, 224, 224),)
@@ -39,9 +42,7 @@ class TestMobileNetV2(unittest.TestCase):
         (
             Tester(self.mv2, self.model_inputs, dynamic_shapes=dynamic_shapes)
             .export()
-            .to_edge()
-            .check(list(self.all_operators))
-            .partition()
+            .to_edge_transform_and_lower()
             .check(["torch.ops.higher_order.executorch_call_delegate"])
             .check_not(list(self.all_operators))
             .to_executorch()
@@ -67,9 +68,7 @@ class TestMobileNetV2(unittest.TestCase):
             Tester(self.mv2, self.model_inputs, dynamic_shapes=dynamic_shapes)
             .quantize()
             .export()
-            .to_edge()
-            .check(list(ops_after_quantization))
-            .partition()
+            .to_edge_transform_and_lower()
             .check(["torch.ops.higher_order.executorch_call_delegate"])
             .check_not(list(ops_after_quantization))
             .to_executorch()
@@ -95,9 +94,7 @@ class TestMobileNetV2(unittest.TestCase):
             Tester(self.mv2, self.model_inputs, dynamic_shapes=dynamic_shapes)
             .quantize(Quantize(calibrate=False))
             .export()
-            .to_edge()
-            .check(list(ops_after_quantization))
-            .partition()
+            .to_edge_transform_and_lower()
             .check(["torch.ops.higher_order.executorch_call_delegate"])
             .check_not(list(ops_after_quantization))
             .to_executorch()

@@ -1,4 +1,4 @@
-load("@fbsource//xplat/executorch/build:runtime_wrapper.bzl", "runtime")
+load("@fbsource//xplat/executorch/build:runtime_wrapper.bzl", "get_aten_mode_options", "runtime")
 load("@fbsource//xplat/executorch/codegen:codegen.bzl", "et_operator_library", "executorch_generated_lib")
 
 def define_common_targets():
@@ -35,18 +35,6 @@ def define_common_targets():
         name = "executorch_all_ops",
         include_all_operators = True,
         define_static_targets = True,
-    )
-
-    executorch_generated_lib(
-        name = "test_generated_lib_1",
-        deps = [
-            ":executorch_all_ops",
-            "//executorch/kernels/portable:operators",
-        ],
-        functions_yaml_target = "//executorch/kernels/portable:functions.yaml",
-        visibility = [
-            "//executorch/...",
-        ],
     )
 
     runtime.export_file(
@@ -100,7 +88,7 @@ def define_common_targets():
         ],
     )
 
-    for aten_mode in (True, False):
+    for aten_mode in get_aten_mode_options():
         aten_suffix = "_aten" if aten_mode else ""
 
         runtime.cxx_test(
@@ -113,3 +101,16 @@ def define_common_targets():
                 ":specialized_kernel_generated_lib",
             ],
         )
+
+        if aten_mode:
+            # Make sure we can depend on both generated_lib and generated_lib_aten
+            # in the same binary.
+            runtime.cxx_test(
+                name = "test_generated_lib_and_aten",
+                srcs = ["test_generated_lib_and_aten.cpp"],
+                deps = [
+                    "//executorch/kernels/portable:generated_lib",
+                    "//executorch/kernels/portable:generated_lib_aten",
+                    "//executorch/runtime/kernel:operator_registry_aten",
+                ],
+            )

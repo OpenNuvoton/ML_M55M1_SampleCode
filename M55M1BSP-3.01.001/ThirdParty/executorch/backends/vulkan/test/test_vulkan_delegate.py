@@ -4,26 +4,26 @@
 # This source code is licensed under the BSD-style license found in the
 # LICENSE file in the root directory of this source tree.
 
+# pyre-unsafe
+
 import ctypes
 import unittest
-from typing import List, Optional, Tuple
-
-import executorch.backends.vulkan.serialization.vulkan_graph_schema as vk_graph_schema
+from typing import Tuple
 
 import torch
 
-from executorch.backends.transforms.mean_to_sum_div import MeanToSumDiv
+from executorch.backends.transforms.convert_dtype_pass import I64toI32
 
 from executorch.backends.vulkan.partitioner.vulkan_partitioner import VulkanPartitioner
 from executorch.backends.vulkan.vulkan_preprocess import VulkanBackend
 
-from executorch.exir import EdgeCompileConfig, EdgeProgramManager, to_edge
-from executorch.exir.pass_base import ExportPass
+from executorch.exir import EdgeCompileConfig
 from torch.export import Dim, export, ExportedProgram
 
 ctypes.CDLL("libvulkan.so.1")
 
 
+from executorch.exir import to_edge_transform_and_lower
 from executorch.extension.pybindings.portable_lib import (  # @manual
     _load_for_executorch_from_buffer,
 )
@@ -32,7 +32,7 @@ from executorch.extension.pytree import tree_flatten
 
 class TestBackends(unittest.TestCase):
     _edge_compile_config: EdgeCompileConfig = EdgeCompileConfig(
-        _skip_dim_order=True,  # TODO(T182928844): Delegate dim order op to backend.
+        _skip_dim_order=False,  # TODO(T182928844): Delegate dim order op to backend.
     )
 
     def assert_outputs_equal(
@@ -96,9 +96,8 @@ class TestBackends(unittest.TestCase):
         rtol=1e-01,
         dynamic_shapes=None,
         test_inputs=None,
-        memory_layouts=None,
         first_output_only=False,
-        custom_pass: Optional[List[ExportPass]] = None,
+        expect_no_delegates=False,
     ):
         """
         Helper testing function that takes a torch.nn.Module and lowers it to Vulkan with
@@ -106,31 +105,44 @@ class TestBackends(unittest.TestCase):
         outputs with the outputs of the eager module.
         """
 
-        def run_test(memory_layout):
-            compile_options = {
-                "memory_layout_override": memory_layout,
-            }
+        def run_test():
+            compile_options = {}
 
             # At least model should run in eager mode.
             model.eval()
             model(*sample_inputs)
 
             program: ExportedProgram = export(
-                model, sample_inputs, dynamic_shapes=dynamic_shapes
+                model, sample_inputs, dynamic_shapes=dynamic_shapes, strict=True
             )
-            edge_program: EdgeProgramManager = to_edge(program)
 
-            if custom_pass is not None:
-                edge_program = edge_program.transform(custom_pass)
-
-            edge_program = edge_program.to_backend(VulkanPartitioner(compile_options))
-
+            edge_program = to_edge_transform_and_lower(
+                program,
+                compile_config=self._edge_compile_config,
+                transform_passes=[
+                    I64toI32(self._edge_compile_config._skip_dim_order),
+                ],
+                partitioner=[VulkanPartitioner(compile_options)],
+            )
             executorch_program = edge_program.to_executorch()
 
-            self.assertEqual(
-                executorch_program.executorch_program.execution_plan[0].delegates[0].id,
-                VulkanBackend.__name__,
-            )
+            if expect_no_delegates:
+                self.assertEqual(
+                    len(
+                        executorch_program.executorch_program.execution_plan[
+                            0
+                        ].delegates
+                    ),
+                    0,
+                )
+                return
+            else:
+                self.assertEqual(
+                    executorch_program.executorch_program.execution_plan[0]
+                    .delegates[0]
+                    .id,
+                    VulkanBackend.__name__,
+                )
 
             executorch_module = _load_for_executorch_from_buffer(
                 executorch_program.buffer
@@ -166,16 +178,7 @@ class TestBackends(unittest.TestCase):
                         first_output_only=first_output_only,
                     )
 
-        memory_layouts_to_test = [
-            vk_graph_schema.VkMemoryLayout.TENSOR_WIDTH_PACKED,
-            vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED,
-        ]
-
-        if memory_layouts is not None:
-            memory_layouts_to_test = memory_layouts
-
-        for memory_layout in memory_layouts_to_test:
-            run_test(memory_layout)
+        run_test()
 
     def test_vulkan_backend_add(self):
         # This test is the simplest test by manually lowering some submodules, we can use paritioner
@@ -198,6 +201,16 @@ class TestBackends(unittest.TestCase):
             torch.rand(size=(2, 3), dtype=torch.float32),
             torch.rand(size=(2, 3), dtype=torch.float32),
             torch.rand(size=(2, 1), dtype=torch.float32),  # test broadcasting
+        )
+
+        self.lower_module_and_test_output(add_module, sample_inputs)
+
+        sample_inputs = (
+            torch.rand(size=(4, 5, 2, 3), dtype=torch.float32),
+            torch.rand(size=(4, 5, 2, 3), dtype=torch.float32),
+            torch.rand(
+                size=(2, 3), dtype=torch.float32
+            ),  # test broadcasting on packed dim
         )
 
         self.lower_module_and_test_output(add_module, sample_inputs)
@@ -239,11 +252,11 @@ class TestBackends(unittest.TestCase):
                 self.weight = torch.rand(size=(2, 3), dtype=torch.float32)
 
             def forward(self, x, y):
-                z = torch.add(x, y, alpha=2)
-                z = torch.add(x, y, alpha=3.14)
-                z = z + x
-                z = z + self.weight
-                return z
+                inter1 = torch.add(x, y, alpha=2)
+                inter2 = torch.add(x, y, alpha=3.14)
+                inter3 = inter1 * self.weight
+                inter4 = inter2 * self.weight
+                return inter4 - inter3
 
         internal_data_module = InternalDataModule()
         sample_inputs = (
@@ -410,6 +423,20 @@ class TestBackends(unittest.TestCase):
 
         self.lower_module_and_test_output(ClampModule(), sample_inputs)
 
+    def test_vulkan_backend_clamp_int64(self):
+        class ClampModule(torch.nn.Module):
+            def __init__(self):
+                super().__init__()
+
+            def forward(self, x):
+                return torch.clamp(x, min=-3)
+
+        sample_inputs = (
+            torch.randint(low=-100, high=100, size=(5, 5), dtype=torch.int64),
+        )
+
+        self.lower_module_and_test_output(ClampModule(), sample_inputs)
+
     def test_vulkan_backend_cos(self):
         class CosModule(torch.nn.Module):
             def __init__(self):
@@ -523,8 +550,40 @@ class TestBackends(unittest.TestCase):
             sample_inputs,
             dynamic_shapes=dynamic_shapes,
             test_inputs=test_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
             first_output_only=True,
+        )
+
+    def test_vulkan_backend_avg_pool2d(self):
+        class AvgPool2dModule(torch.nn.Module):
+            def __init__(self):
+                super().__init__()
+                self.avg_pool = torch.nn.AvgPool2d(
+                    kernel_size=(4, 4),
+                    stride=(4, 4),
+                    padding=(0, 0),
+                    ceil_mode=True,
+                    count_include_pad=True,
+                    divisor_override=None,
+                )
+
+            def forward(self, x):
+                return self.avg_pool(x)
+
+        avg_pool2d_module = AvgPool2dModule()
+        sample_inputs = (torch.randn(5, 13, 55, 68),)
+
+        batch = Dim("batch", max=8)
+        dynamic_shapes = {"x": {0: batch}}
+        test_inputs = [
+            (torch.randn(3, 14, 15, 9),),
+            (torch.randn(1, 1, 4, 6),),
+            (torch.randn(5, 10, 50, 40),),
+        ]
+        self.lower_module_and_test_output(
+            avg_pool2d_module,
+            sample_inputs,
+            dynamic_shapes=dynamic_shapes,
+            test_inputs=test_inputs,
         )
 
     def test_vulkan_backend_abs(self):
@@ -665,6 +724,9 @@ class TestBackends(unittest.TestCase):
 
         self.lower_module_and_test_output(module, sample_inputs)
 
+    @unittest.skip(
+        "Reduce shader does not support multiple reduction axes at the moment"
+    )
     def test_vulkan_backend_sum_dim_list(self):
         class SumModule(torch.nn.Module):
             def __init__(self):
@@ -681,9 +743,11 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             module,
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
+    @unittest.skip(
+        "Reduce shader does not support multiple reduction axes at the moment"
+    )
     def test_vulkan_backend_sum(self):
         class SumModule(torch.nn.Module):
             def __init__(self):
@@ -700,7 +764,6 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             module,
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
     def test_vulkan_backend_conv2d(self):
@@ -727,7 +790,6 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             conv2d_module,
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
     def test_vulkan_backend_conv_transpose2d(self):
@@ -755,7 +817,6 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             conv_transpose2d_module,
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
     def test_vulkan_backend_conv2d_dw(self):
@@ -780,7 +841,6 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             conv2d_module,
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
     def test_vulkan_backend_conv2d_pw(self):
@@ -805,7 +865,6 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             conv2d_module,
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
     def test_vulkan_backend_conv2d_bias_false(self):
@@ -832,7 +891,6 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             conv2d_module,
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
     def test_vulkan_backend_conv1d(self):
@@ -859,7 +917,6 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             conv1d_module,
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
     def test_vulkan_backend_conv1d_bias_false(self):
@@ -883,25 +940,22 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             conv1d_module,
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
     def test_vulkan_backend_native_layer_norm(self):
         class NativeLayerNormModule(torch.nn.Module):
             def __init__(self):
                 super().__init__()
+                self.layer_norm = torch.nn.LayerNorm(5)
 
             def forward(self, x):
-                return torch.native_layer_norm(
-                    x, [5], torch.ones(5), torch.zeros(5), 1e-5
-                )
+                return self.layer_norm(x)
 
         sample_inputs = (torch.randn(size=(3, 4, 5), dtype=torch.float32),)
 
         self.lower_module_and_test_output(
             NativeLayerNormModule(),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
     def test_vulkan_backend_batch_norm(self):
@@ -918,7 +972,6 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             BatchNormModule(),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
     def test_vulkan_backend_full(self):
@@ -929,12 +982,108 @@ class TestBackends(unittest.TestCase):
             def forward(self, x):
                 return torch.full(x.shape, 42.0)
 
+        class ZerosModule(torch.nn.Module):
+            def __init__(self):
+                super().__init__()
+
+            def forward(self, x):
+                return torch.zeros(x.shape)
+
+        class OnesModule(torch.nn.Module):
+            def __init__(self):
+                super().__init__()
+
+            def forward(self, x):
+                return torch.ones(x.shape)
+
         sample_inputs = (torch.randn(size=(2, 3, 4, 5), dtype=torch.float32),)
 
         self.lower_module_and_test_output(
             FullModule(),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
+        )
+
+        self.lower_module_and_test_output(
+            ZerosModule(),
+            sample_inputs,
+        )
+
+        self.lower_module_and_test_output(
+            OnesModule(),
+            sample_inputs,
+        )
+
+    def test_vulkan_backend_full_like(self):
+        class FullLikeModule(torch.nn.Module):
+            def __init__(self):
+                super().__init__()
+
+            def forward(self, x):
+                return torch.full_like(x, 42.0)
+
+        class ZerosLikeModule(torch.nn.Module):
+            def __init__(self):
+                super().__init__()
+
+            def forward(self, x):
+                return torch.zeros_like(x)
+
+        class OnesLikeModule(torch.nn.Module):
+            def __init__(self):
+                super().__init__()
+
+            def forward(self, x):
+                return torch.ones_like(x)
+
+        sample_inputs = (torch.randn(size=(2, 3, 4, 5), dtype=torch.float32),)
+
+        self.lower_module_and_test_output(
+            FullLikeModule(),
+            sample_inputs,
+        )
+
+        self.lower_module_and_test_output(
+            ZerosLikeModule(),
+            sample_inputs,
+        )
+
+        self.lower_module_and_test_output(
+            OnesLikeModule(),
+            sample_inputs,
+        )
+
+    def test_vulkan_backend_upsample_nearest2d(self):
+        class UpsampleNearest2d(torch.nn.Module):
+            def __init__(self):
+                super().__init__()
+                self.upsample = torch.nn.Upsample(scale_factor=2, mode="nearest")
+
+            def forward(self, x):
+                return self.upsample(x)
+
+        sample_inputs = (torch.arange(1, 5, dtype=torch.float32).view(1, 1, 2, 2),)
+
+        self.lower_module_and_test_output(
+            UpsampleNearest2d(),
+            sample_inputs,
+        )
+
+    def test_vulkan_backend_minimum(self):
+        class MinimumModule(torch.nn.Module):
+            def __init__(self):
+                super().__init__()
+
+            def forward(self, x, y):
+                return torch.minimum(x, y)
+
+        sample_inputs = (
+            torch.rand(size=(3, 5, 6, 4), dtype=torch.float32),
+            torch.rand(size=(6, 4), dtype=torch.float32),
+        )
+
+        self.lower_module_and_test_output(
+            MinimumModule(),
+            sample_inputs,
         )
 
     def test_vulkan_backend_reshape(self):
@@ -950,7 +1099,6 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             ReshapeModule(),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
     def test_vulkan_backend_view(self):
@@ -966,7 +1114,21 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             ViewModule(),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
+        )
+
+    def test_vulkan_backend_view_int(self):
+        class ViewModule(torch.nn.Module):
+            def __init__(self):
+                super().__init__()
+
+            def forward(self, x):
+                return x.view([-1, x.size(-1)])
+
+        sample_inputs = (torch.randint(size=(3, 6, 2, 7), high=100, dtype=torch.int32),)
+
+        self.lower_module_and_test_output(
+            ViewModule(),
+            sample_inputs,
         )
 
     def test_vulkan_backend_unsqueeze(self):
@@ -984,7 +1146,21 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             UnsqueezeModule(),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
+        )
+
+    def test_vulkan_backend_squeeze(self):
+        class SqueezeModule(torch.nn.Module):
+            def __init__(self):
+                super().__init__()
+
+            def forward(self, x):
+                return torch.squeeze(x, 0)
+
+        sample_inputs = (torch.randn(size=(1, 2, 2, 1), dtype=torch.float32),)
+
+        self.lower_module_and_test_output(
+            SqueezeModule(),
+            sample_inputs,
         )
 
     def test_vulkan_backend_select(self):
@@ -1000,7 +1176,6 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             SelectModule(),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
     def test_vulkan_backend_permute_copy(self):
@@ -1016,7 +1191,6 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             PermuteModule(),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
     def test_vulkan_backend_permute_copy_int(self):
@@ -1032,7 +1206,6 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             PermuteModule(),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
     def test_vulkan_backend_cat(self):
@@ -1053,7 +1226,6 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             TestModule(),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
     def test_vulkan_backend_cat_with_zero_size(self):
@@ -1074,7 +1246,6 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             TestModule(),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
     def test_vulkan_backend_slice(self):
@@ -1090,7 +1261,6 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             TestModule(),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
     def test_vulkan_backend_split_with_sizes(self):
@@ -1106,7 +1276,6 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             TestModule(),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
     def test_vulkan_backend_split_tensor(self):
@@ -1122,7 +1291,6 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             TestModule(),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
     def test_vulkan_backend_clone(self):
@@ -1138,7 +1306,21 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             TestModule(),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
+        )
+
+    def test_vulkan_backend_constant_pad_nd(self):
+        class TestModule(torch.nn.Module):
+            def __init__(self):
+                super().__init__()
+
+            def forward(self, x):
+                return torch.nn.functional.pad(x, (1, 2, 3, 4, 5, 6), "constant", 24.2)
+
+        sample_inputs = (torch.randn(size=(3, 7, 5, 11), dtype=torch.float32),)
+
+        self.lower_module_and_test_output(
+            TestModule(),
+            sample_inputs,
         )
 
     def test_vulkan_backend_repeat(self):
@@ -1154,7 +1336,6 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             TestModule(),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
     def test_vulkan_backend_t_default(self):
@@ -1172,9 +1353,11 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             TestModule(),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
+    @unittest.skip(
+        "Softmax shader with shared memory does not work with swiftshader due to potential swiftshader bug"
+    )
     def test_vulkan_backend_softmax(self):
         class SoftmaxModule(torch.nn.Module):
             def __init__(self):
@@ -1191,9 +1374,11 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             SoftmaxModule(),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
+    @unittest.skip(
+        "Softmax shader with shared memory does not work with swiftshader due to potential swiftshader bug"
+    )
     def test_vulkan_backend_logsoftmax(self):
         class LogSoftmaxModule(torch.nn.Module):
             def __init__(self):
@@ -1210,7 +1395,6 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             LogSoftmaxModule(),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
     def test_vulkan_backend_gelu(self):
@@ -1224,6 +1408,9 @@ class TestBackends(unittest.TestCase):
 
         self.lower_unary_module_and_test_output(GeluModule())
 
+    @unittest.skip(
+        "Reduce shader does not support multiple reduction axes at the moment"
+    )
     def test_vulkan_backend_mean(self):
         class MeanModule(torch.nn.Module):
             def __init__(self, dims, keepdim=True):
@@ -1241,36 +1428,26 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             MeanModule(dims=[-1, -2]),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
-            custom_pass=[MeanToSumDiv()],
         )
 
         self.lower_module_and_test_output(
             MeanModule(dims=[1]),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
-            custom_pass=[MeanToSumDiv()],
         )
 
         self.lower_module_and_test_output(
             MeanModule(dims=[0, 1, 2, 3]),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
-            custom_pass=[MeanToSumDiv()],
         )
 
         self.lower_module_and_test_output(
             MeanModule(dims=[-1, -2], keepdim=False),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
-            custom_pass=[MeanToSumDiv()],
         )
 
         self.lower_module_and_test_output(
             MeanModule(dims=[1], keepdim=False),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
-            custom_pass=[MeanToSumDiv()],
         )
 
     def test_vulkan_backend_index_select_int(self):
@@ -1278,17 +1455,16 @@ class TestBackends(unittest.TestCase):
             def __init__(self, dim, indices):
                 super().__init__()
                 self.dim = dim
-                self.index = torch.tensor(indices, dtype=torch.int32)
+                self.index = torch.tensor(indices)
 
             def forward(self, x):
                 return torch.index_select(x, self.dim, self.index)
 
-        sample_inputs = (torch.arange(96).reshape(2, 8, 2, 3).int(),)
+        sample_inputs = (torch.arange(96).reshape(2, 8, 2, 3),)
 
         self.lower_module_and_test_output(
             IndexSelectModule(dim=1, indices=[2, 3, 5, 6, 7]),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
     def test_vulkan_backend_index_select(self):
@@ -1296,7 +1472,7 @@ class TestBackends(unittest.TestCase):
             def __init__(self, dim, indices):
                 super().__init__()
                 self.dim = dim
-                self.index = torch.tensor(indices, dtype=torch.int32)
+                self.index = torch.tensor(indices)
 
             def forward(self, x):
                 return torch.index_select(x, self.dim, self.index)
@@ -1306,7 +1482,6 @@ class TestBackends(unittest.TestCase):
         self.lower_module_and_test_output(
             IndexSelectModule(dim=0, indices=[1, 3, 5, 7, 8, 9, 10, 11, 2, 3]),
             sample_inputs,
-            memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
         )
 
     def test_vulkan_backend_arange_int(self):
@@ -1331,11 +1506,10 @@ class TestBackends(unittest.TestCase):
             [1, 11, 2],
             [12, 1, -2],
         ]
-        for input in inputs:
+        for i in inputs:
             self.lower_module_and_test_output(
-                ArangeModule(input),
+                ArangeModule(i),
                 (torch.randn(size=(1,), dtype=torch.float32),),  # dummy input
-                memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
             )
 
     def test_vulkan_backend_arange_float(self):
@@ -1353,9 +1527,210 @@ class TestBackends(unittest.TestCase):
             [1.0, 11, 2],
             [12, 1, -2.0],
         ]
-        for input in inputs:
+        for i in inputs:
             self.lower_module_and_test_output(
-                ArangeModule(input),
+                ArangeModule(i),
                 (torch.randn(size=(1,), dtype=torch.float32),),  # dummy input
-                memory_layouts=[vk_graph_schema.VkMemoryLayout.TENSOR_CHANNELS_PACKED],
             )
+
+    def test_vulkan_backend_arange_int64(self):
+        class ArangeModule(torch.nn.Module):
+            def __init__(self, input):
+                super().__init__()
+                self.input = input
+
+            def forward(self, x):
+                return torch.arange(*self.input)
+
+        inputs = [
+            [1],
+            [-3, 5],
+            [1, 11, 2],
+            [12, 1, -2],
+            [1.5],
+            [-3, 5.0],
+            [1.0, 11, 2],
+            [12, 1, -2.0],
+        ]
+        for i in inputs:
+            self.lower_module_and_test_output(
+                ArangeModule(i),
+                (torch.randn(size=(1,), dtype=torch.float32),),  # dummy input
+            )
+            self.lower_module_and_test_output(
+                ArangeModule(i),
+                (torch.randint(low=-100, high=100, size=(5, 5)),),  # dummy input
+            )
+
+    def test_vulkan_backend_embedding_1d(self):
+        class EmbeddingModule(torch.nn.Module):
+            def __init__(self, embedding):
+                super().__init__()
+                self.embedding = embedding
+
+            def forward(self, x):
+                return self.embedding(x)
+
+        self.lower_module_and_test_output(
+            EmbeddingModule(torch.nn.Embedding(5, 4)),
+            (torch.tensor([0, 1, 0, 4, 2, 0]),),
+        )
+
+    def test_vulkan_backend_embedding_2d(self):
+        class EmbeddingModule(torch.nn.Module):
+            def __init__(self, embedding):
+                super().__init__()
+                self.embedding = embedding
+
+            def forward(self, x):
+                return self.embedding(x)
+
+        self.lower_module_and_test_output(
+            EmbeddingModule(torch.nn.Embedding(5, 4)),
+            (torch.tensor([[0, 1, 0], [4, 2, 0]]),),
+        )
+
+    def test_vulkan_backend_embedding_3d(self):
+        class EmbeddingModule(torch.nn.Module):
+            def __init__(self, embedding):
+                super().__init__()
+                self.embedding = embedding
+
+            def forward(self, x):
+                return self.embedding(x)
+
+        self.lower_module_and_test_output(
+            EmbeddingModule(torch.nn.Embedding(5, 4)),
+            (torch.tensor([[[0, 1], [0, 1]], [[4, 2], [3, 3]]]),),
+        )
+
+    # def test_vulkan_backend_conv_with_dim_order(self):
+    #     class Conv2dSequential(torch.nn.Module):
+    #         def __init__(self, bias=True, channel_last=False):
+    #             super().__init__()
+    #             self.first = torch.nn.Conv2d(
+    #                 in_channels=1,
+    #                 out_channels=3,
+    #                 kernel_size=(3, 3),
+    #                 padding=1,
+    #                 bias=bias,
+    #             )
+    #             self.second = torch.nn.Conv2d(
+    #                 in_channels=3,
+    #                 out_channels=2,
+    #                 kernel_size=(3, 3),
+    #                 padding=1,
+    #                 bias=bias,
+    #             )
+
+    #         def forward(self, x):
+    #             x = x.to(memory_format=torch.channels_last)
+    #             return self.second(self.first(x))
+
+    #     self.lower_module_and_test_output(
+    #         Conv2dSequential(),
+    #         (torch.rand(size=[1, 1, 3, 3]),),
+    #
+    #     )
+
+    def test_vulkan_backend_flip(self):
+        class FlipModule(torch.nn.Module):
+            def __init__(self):
+                super().__init__()
+
+            def forward(self, x):
+                return torch.flip(x, [0, 1, 2, 3])
+
+        self.lower_module_and_test_output(
+            FlipModule(),
+            (torch.arange(48).reshape(2, 3, 4, 2),),
+        )
+
+    def test_vulkan_backend_conv_with_clamp(self):
+        class ConvWithClampModule(torch.nn.Module):
+            def __init__(self):
+                super().__init__()
+                self.weight = torch.randn(6, 8, 3, 3)
+                self.bias = torch.randn(8)
+                self.stride = (1, 2)
+                self.padding = (2, 3)
+                self.dilation = (1, 1)
+                self.transposed = True
+                self.output_padding = (0, 1)
+                self.groups = 1
+                self.output_min = 0
+                self.output_max = 10
+
+            def forward(self, x):
+                return torch.ops.et_vk.conv_with_clamp(
+                    x,
+                    self.weight,
+                    self.bias,
+                    self.stride,
+                    self.padding,
+                    self.dilation,
+                    self.transposed,
+                    self.output_padding,
+                    self.groups,
+                    self.output_min,
+                    self.output_max,
+                )
+
+        self.lower_module_and_test_output(
+            ConvWithClampModule(),
+            (torch.randn(size=(1, 6, 40, 50), dtype=torch.float32),),
+        )
+
+    def test_vulkan_backend_grid_priors(self):
+        class GridPriorsModule(torch.nn.Module):
+            def __init__(self):
+                super().__init__()
+
+            def forward(self, x):
+                return torch.ops.et_vk.grid_priors(
+                    x,
+                    stride=8,
+                    offset=0.5,
+                )
+
+        self.lower_module_and_test_output(
+            GridPriorsModule(),
+            (torch.rand(size=[1, 5, 2, 3]),),
+        )
+
+    def test_vulkan_backend_high_dim_tensors_fail(self):
+        class UnsqueezeHigherDim(torch.nn.Module):
+            def __init__(self):
+                super().__init__()
+
+            def forward(self, x):
+                return torch.unsqueeze(x, 2)
+
+        self.lower_module_and_test_output(
+            UnsqueezeHigherDim(),
+            (torch.ones(size=[5, 4, 1, 2, 6]),),
+            expect_no_delegates=True,
+        )
+
+    def test_vulkan_backend_large_linear_layer(self):
+        class LinearModel(torch.nn.Module):
+            def __init__(
+                self, n_pca_basis: int, n_sh_basis: int, n_gaussians: int
+            ) -> None:
+                super(LinearModel, self).__init__()
+                self.fc1 = torch.nn.Linear(
+                    n_pca_basis, (n_sh_basis + 3 + 3 + 4) * n_gaussians
+                )
+
+            def forward(self, x: torch.Tensor):
+                out = self.fc1(x)
+                return out
+
+        n_pca_basis = 64
+        n_sh_basis = 6
+        n_gaussians = 2**16
+
+        self.lower_module_and_test_output(
+            LinearModel(n_pca_basis, n_sh_basis, n_gaussians),
+            (torch.ones(n_pca_basis),),
+        )

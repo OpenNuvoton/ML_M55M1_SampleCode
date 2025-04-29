@@ -12,19 +12,15 @@
 
 #define VEC4_T ${texel_type(DTYPE)}
 
+#define POS ${get_pos[NDIM]("pos")}
+
 #include "indexing_utils.h"
 
 layout(std430) buffer;
 
-layout(set = 0, binding = 0, ${IMAGE_FORMAT[DTYPE]}) uniform PRECISION restrict writeonly ${IMAGE_T[NDIM][DTYPE]} image_out;
-
-layout(set = 0, binding = 1) uniform PRECISION restrict Sizes {
-  ivec4 sizes;
-};
-
-layout(set = 0, binding = 2) uniform PRECISION restrict FillVal {
-  float fill_value;
-};
+${layout_declare_tensor(B, "w", "t_out", DTYPE, STORAGE)}
+${layout_declare_ubo(B, "ivec4", "sizes")}
+${layout_declare_ubo(B, "float", "fill_value")}
 
 layout(local_size_x_id = 0, local_size_y_id = 1, local_size_z_id = 2) in;
 
@@ -48,5 +44,5 @@ void main() {
     outtex = outtex * valid_idx;
   }
 
-  imageStore(image_out, ${get_pos[NDIM]("pos")}, outtex);
+  imageStore(t_out, POS, outtex);
 }

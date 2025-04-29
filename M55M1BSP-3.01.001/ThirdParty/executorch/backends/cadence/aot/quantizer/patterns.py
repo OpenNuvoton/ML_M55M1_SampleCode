@@ -4,14 +4,17 @@
 # This source code is licensed under the BSD-style license found in the
 # LICENSE file in the root directory of this source tree.
 
+# pyre-strict
+
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, Callable, List, Optional, Tuple, Type, Union
+from typing import List, Optional, Tuple, Union
 
 import torch
 from executorch.backends.cadence.aot.quantizer.utils import get_bias_qparams
 
 from torch import fx
+from torch._ops import OpOverload
 from torch.ao.quantization.quantizer import (
     DerivedQuantizationSpec,
     SharedQuantizationSpec,
@@ -30,7 +33,17 @@ class PartitionAnchors:
     is used for other types of input values as well as handling default parameters.
     """
 
-    inputs: List[Tuple[fx.Node, int]] = field(default_factory=list)
+    # Inputs can share quantization parameters
+    inputs: List[
+        Union[
+            Tuple[fx.Node, Union[int, Tuple[int, int]]],
+            Tuple[
+                fx.Node,
+                Union[int, Tuple[int, int]],
+                SharedQuantizationSpec,
+            ],
+        ]
+    ] = field(default_factory=list)
     weights: List[Tuple[fx.Node, int]] = field(default_factory=list)
     biases: List[
         Union[Tuple[fx.Node, int], Tuple[fx.Node, int, DerivedQuantizationSpec]]
@@ -40,22 +53,25 @@ class PartitionAnchors:
     output: List[Union[Tuple[fx.Node], Tuple[fx.Node, SharedQuantizationSpec]]] = field(
         default_factory=list
     )
+    empty: bool = False
 
 
 class QuantizationPattern(ABC):
     @abstractmethod
-    def partition_types(self):
+    def partition_types(self) -> list[OpOverload]:
         """
-        List of types to be passed to find_sequential_partitions.
+        List of types to be passed to find_sequential_partitions_aten.
         """
         pass
 
     @abstractmethod
-    def get_anchors(self, gm, fused_partition) -> Optional[PartitionAnchors]:
+    def get_anchors(
+        self, gm: torch.fx.GraphModule, fused_partition: List[fx.GraphModule]
+    ) -> Optional[PartitionAnchors]:
         pass
 
     @abstractmethod
-    def replacement_op(self) -> Callable[..., Any]:
+    def replacement_op(self) -> OpOverload:
         """
         Operator (most likely a custom one) that this partition should be fused into in
         the backend. Refer to the QuantFusion pass for examples.
@@ -64,12 +80,13 @@ class QuantizationPattern(ABC):
 
 
 class AddmmPattern(QuantizationPattern):
-    def partition_types(self) -> List[Type[torch.nn.Module]]:
-        return [torch.addmm]
+    def partition_types(self) -> List[OpOverload]:
+        return [torch.ops.aten.addmm.default]
 
     def get_anchors(
         self, gm: fx.GraphModule, fused_partition: List[fx.GraphModule]
     ) -> PartitionAnchors:
+        # pyre-fixme[29]: `Union[BoundMethod[typing.Callable(torch._C.TensorBase.__ge...
         addmm_node = fused_partition[0].nodes[-1]
 
         bias_qspec = DerivedQuantizationSpec(
@@ -91,17 +108,117 @@ class AddmmPattern(QuantizationPattern):
             output=[(addmm_node,)],
         )
 
-    def replacement_op(self):
+    def replacement_op(self) -> OpOverload:
         return torch.ops.cadence.quantized_linear
 
 
-class Conv1dPattern(QuantizationPattern):
-    def partition_types(self) -> List[Type[torch.nn.Module]]:
-        return [torch.nn.Conv1d]
+class AddPattern(QuantizationPattern):
+    def partition_types(self) -> List[OpOverload]:
+        return [torch.ops.aten.add.Tensor]
 
     def get_anchors(
         self, gm: fx.GraphModule, fused_partition: List[fx.GraphModule]
     ) -> PartitionAnchors:
+        # pyre-fixme[29]: `Union[BoundMethod[typing.Callable(torch._C.TensorBase.__ge...
+        add_node = fused_partition[0].nodes[-1]
+
+        # Bail if:
+        #   - the add node is not a tensor add
+        #   - the add node has kwargs (e.g. alpha)
+        is_tensor_add = isinstance(add_node.args[0], fx.Node) and isinstance(
+            add_node.args[1], fx.Node
+        )
+        if not is_tensor_add or len(add_node.kwargs) > 0:
+            return PartitionAnchors(
+                empty=True,
+            )
+
+        return PartitionAnchors(
+            inputs=[(add_node, 0), (add_node, 1)],
+            weights=[],
+            biases=[],
+            output=[(add_node,)],
+        )
+
+    def replacement_op(self) -> OpOverload:
+        return torch.ops.cadence.quantized_add.default
+
+
+class BmmPattern(QuantizationPattern):
+    def partition_types(self) -> List[OpOverload]:
+        return [torch.ops.aten.bmm.default]
+
+    def get_anchors(
+        self, gm: fx.GraphModule, fused_partition: List[fx.GraphModule]
+    ) -> PartitionAnchors:
+        # pyre-fixme[29]: `Union[BoundMethod[typing.Callable(torch._C.TensorBase.__ge...
+        bmm_node = fused_partition[0].nodes[-1]
+
+        return PartitionAnchors(
+            inputs=[(bmm_node, 0), (bmm_node, 1)],
+            weights=[],
+            biases=[],
+            output=[(bmm_node,)],
+        )
+
+    def replacement_op(self) -> OpOverload:
+        return torch.ops.cadence.quantized_matmul.default
+
+
+class CatPattern(QuantizationPattern):
+    def partition_types(self) -> List[OpOverload]:
+        return [torch.ops.aten.cat.default]
+
+    def get_anchors(
+        self, gm: fx.GraphModule, fused_partition: List[fx.GraphModule]
+    ) -> PartitionAnchors:
+        # pyre-fixme[29]: `Union[BoundMethod[typing.Callable(torch._C.TensorBase.__ge...
+        cat_node = fused_partition[0].nodes[-1]
+
+        # Create args. The first argument does not have quant spec and
+        # will inherit from the overall quant spec. All subsequent args
+        # will share that spec.
+        # Note that outpus also share that spec.
+        args: List[
+            Union[
+                Tuple[fx.Node, Union[int, Tuple[int, int]]],
+                Tuple[
+                    fx.Node,
+                    Union[int, Tuple[int, int]],
+                    SharedQuantizationSpec,
+                ],
+            ]
+        ] = [(cat_node, (0, 0))]
+        for i in range(1, len(cat_node.args[0])):
+            args.append(
+                (
+                    cat_node,
+                    (0, i),
+                    SharedQuantizationSpec((cat_node.args[0][0], cat_node)),
+                )
+            )
+
+        return PartitionAnchors(
+            inputs=args,
+            weights=[],
+            biases=[],
+            output=[
+                (cat_node, SharedQuantizationSpec((cat_node.args[0][0], cat_node)))
+            ],
+        )
+
+    def replacement_op(self) -> OpOverload:
+        return torch.ops.aten.cat.default
+
+
+class Conv1dPattern(QuantizationPattern):
+    def partition_types(self) -> List[OpOverload]:
+        return [torch.ops.aten.conv1d.default]
+
+    def get_anchors(
+        self, gm: fx.GraphModule, fused_partition: List[fx.GraphModule]
+    ) -> PartitionAnchors:
+        # pyre-fixme[29]: `Union[BoundMethod[typing.Callable(torch._C.TensorBase.__ge...
         conv1d_node = fused_partition[0].nodes[-1]
 
         bias_qspec = DerivedQuantizationSpec(
@@ -129,17 +246,18 @@ class Conv1dPattern(QuantizationPattern):
             output=[(conv1d_node,)],
         )
 
-    def replacement_op(self):
+    def replacement_op(self) -> OpOverload:
         return torch.ops.cadence.quantized_conv.default
 
 
 class Conv2dPattern(QuantizationPattern):
-    def partition_types(self) -> List[Type[torch.nn.Module]]:
-        return [torch.nn.Conv2d]
+    def partition_types(self) -> List[OpOverload]:
+        return [torch.ops.aten.conv2d.default]
 
     def get_anchors(
         self, gm: fx.GraphModule, fused_partition: List[fx.GraphModule]
     ) -> PartitionAnchors:
+        # pyre-fixme[29]: `Union[BoundMethod[typing.Callable(torch._C.TensorBase.__ge...
         conv2d_node = fused_partition[0].nodes[-1]
 
         bias_qspec = DerivedQuantizationSpec(
@@ -167,37 +285,18 @@ class Conv2dPattern(QuantizationPattern):
             output=[(conv2d_node,)],
         )
 
-    def replacement_op(self):
+    def replacement_op(self) -> OpOverload:
         return torch.ops.cadence.quantized_conv.default
 
 
 class LayerNormPattern(QuantizationPattern):
-    def partition_types(self):
-        return [torch.nn.LayerNorm]
+    def partition_types(self) -> List[OpOverload]:
+        return [torch.ops.aten.layer_norm.default]
 
-    def get_anchors(self, gm, fused_partition) -> PartitionAnchors:
-        layer_norm_node = fused_partition[0].nodes[-1]
-
-        # Weights and biases are used as fp32 by our kernel, so they are
-        # passed in as others here along with the normalized shape.
-        return PartitionAnchors(
-            inputs=[(layer_norm_node, 0)],
-            weights=[],
-            biases=[],
-            # Ordering: normalized_shape, weights, bias
-            others=[(layer_norm_node, 1), (layer_norm_node, 2), (layer_norm_node, 3)],
-            output=[(layer_norm_node,)],
-        )
-
-    def replacement_op(self):
-        return torch.ops.cadence.quantized_layer_norm.default
-
-
-class LayerNormFunctionalPattern(QuantizationPattern):
-    def partition_types(self):
-        return [torch.nn.functional.layer_norm]
-
-    def get_anchors(self, gm, fused_partition) -> PartitionAnchors:
+    def get_anchors(
+        self, gm: fx.GraphModule, fused_partition: List[fx.GraphModule]
+    ) -> PartitionAnchors:
+        # pyre-fixme[29]: `Union[BoundMethod[typing.Callable(torch._C.TensorBase.__ge...
         layer_norm_node = fused_partition[0].nodes[-1]
 
         others = [(layer_norm_node, 1)]
@@ -221,17 +320,18 @@ class LayerNormFunctionalPattern(QuantizationPattern):
             output=[(layer_norm_node,)],
         )
 
-    def replacement_op(self):
+    def replacement_op(self) -> OpOverload:
         return torch.ops.cadence.quantized_layer_norm.default
 
 
 class LinearPattern(QuantizationPattern):
-    def partition_types(self) -> List[Type[torch.nn.Module]]:
-        return [torch.nn.Linear]
+    def partition_types(self) -> List[OpOverload]:
+        return [torch.ops.aten.linear.default]
 
     def get_anchors(
         self, gm: fx.GraphModule, fused_partition: List[fx.GraphModule]
     ) -> PartitionAnchors:
+        # pyre-fixme[29]: `Union[BoundMethod[typing.Callable(torch._C.TensorBase.__ge...
         linear_node = fused_partition[0].nodes[-1]
 
         bias_qspec = DerivedQuantizationSpec(
@@ -259,55 +359,18 @@ class LinearPattern(QuantizationPattern):
             output=[(linear_node,)],
         )
 
-    def replacement_op(self):
-        return torch.ops.cadence.quantized_linear.default
-
-
-class LinearFunctionalPattern(QuantizationPattern):
-    def partition_types(self):
-        return [torch.nn.functional.linear]
-
-    def get_anchors(
-        self, gm: fx.GraphModule, fused_partition: List[fx.GraphModule]
-    ) -> PartitionAnchors:
-        linear_node = fused_partition[0].nodes[-1]
-
-        bias_qspec = DerivedQuantizationSpec(
-            derived_from=[
-                (linear_node.args[0], linear_node),
-                (linear_node.args[1], linear_node),
-            ],
-            derive_qparams_fn=get_bias_qparams,
-            dtype=torch.int32,
-            quant_min=-(2**31),
-            quant_max=2**31 - 1,
-            qscheme=torch.per_tensor_affine,
-        )
-
-        # Keep bias empty if not supplied
-        bias = []
-        if len(linear_node.args) > 2 and linear_node.args[2] is not None:
-            bias = [(linear_node, 2, bias_qspec)]
-
-        return PartitionAnchors(
-            inputs=[(linear_node, 0)],
-            weights=[(linear_node, 1)],
-            # pyre-fixme[6]: Incompatible parameter type
-            biases=bias,
-            output=[(linear_node,)],
-        )
-
-    def replacement_op(self):
+    def replacement_op(self) -> OpOverload:
         return torch.ops.cadence.quantized_linear.default
 
 
 class MatmulPattern(QuantizationPattern):
-    def partition_types(self):
-        return [torch.matmul]
+    def partition_types(self) -> List[OpOverload]:
+        return [torch.ops.aten.matmul.default]
 
     def get_anchors(
         self, gm: fx.GraphModule, fused_partition: List[fx.GraphModule]
     ) -> PartitionAnchors:
+        # pyre-fixme[29]: `Union[BoundMethod[typing.Callable(torch._C.TensorBase.__ge...
         matmul_node = fused_partition[0].nodes[-1]
 
         return PartitionAnchors(
@@ -317,27 +380,40 @@ class MatmulPattern(QuantizationPattern):
             output=[(matmul_node,)],
         )
 
-    def replacement_op(self):
+    def replacement_op(self) -> OpOverload:
         return torch.ops.cadence.quantized_matmul.default
 
 
-class ReluPattern(QuantizationPattern):
-    def partition_types(self) -> List[Type[torch.nn.Module]]:
-        return [torch.nn.ReLU]
+# This is a base class for ReLU, since it can be used with two different aten ops
+class ReluBasePattern(QuantizationPattern):
+    @abstractmethod
+    def partition_types(self) -> List[OpOverload]:
+        pass
 
     def get_anchors(
         self, gm: fx.GraphModule, fused_partition: List[fx.GraphModule]
     ) -> PartitionAnchors:
+        # pyre-fixme[29]: `Union[BoundMethod[typing.Callable(torch._C.TensorBase.__ge...
         relu_node = fused_partition[0].nodes[-1]
 
         return PartitionAnchors(
             inputs=[(relu_node, 0)],
             weights=[],
             biases=[],
-            output=[
-                (relu_node, SharedQuantizationSpec((relu_node.args[0], relu_node)))
-            ],
+            output=[(relu_node,)],
         )
 
-    def replacement_op(self):
+    def replacement_op(self) -> OpOverload:
         return torch.ops.cadence.quantized_relu.default
+
+
+# Regular relu op
+class ReluPattern0(ReluBasePattern):
+    def partition_types(self) -> List[OpOverload]:
+        return [torch.ops.aten.relu.default]
+
+
+# Alternate relu op
+class ReluPattern1(ReluBasePattern):
+    def partition_types(self) -> List[OpOverload]:
+        return [torch.ops.aten.relu_.default]

@@ -11,24 +11,30 @@
 #include <vector>
 
 #include <executorch/runtime/core/exec_aten/exec_aten.h>
+#include <executorch/runtime/kernel/operator_registry.h>
 
-namespace torch {
-namespace executor {
-void make_kernel_key_string(ArrayRef<TensorMeta> key, char* buf);
+namespace executorch {
+namespace runtime {
 
-inline void make_kernel_key(
-    std::vector<std::pair<ScalarType, std::vector<exec_aten::DimOrderType>>>
-        tensors,
-    char* buf) {
+namespace testing {
+
+inline Error make_kernel_key(
+    const std::vector<std::pair<
+        executorch::aten::ScalarType,
+        std::vector<executorch::aten::DimOrderType>>>& tensors,
+    char* buf,
+    size_t buf_size) {
   std::vector<TensorMeta> meta;
   for (auto& t : tensors) {
-    ArrayRef<exec_aten::DimOrderType> dim_order(
-        t.second.data(), t.second.size());
+    Span<executorch::aten::DimOrderType> dim_order(
+        const_cast<unsigned char*>(t.second.data()), t.second.size());
     meta.emplace_back(t.first, dim_order);
   }
-  auto meatadata = ArrayRef<TensorMeta>(meta.data(), meta.size());
-  make_kernel_key_string(meatadata, buf);
+  Span<const TensorMeta> metadata(meta.data(), meta.size());
+  return internal::make_kernel_key_string(metadata, buf, buf_size);
 }
 
-} // namespace executor
-} // namespace torch
+} // namespace testing
+
+} // namespace runtime
+} // namespace executorch

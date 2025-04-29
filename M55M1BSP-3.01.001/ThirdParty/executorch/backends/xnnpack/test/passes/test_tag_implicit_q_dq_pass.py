@@ -7,7 +7,9 @@
 import unittest
 
 import torch
-from executorch.backends.xnnpack.passes.tag_implicit_q_dq_pass import TagImplicitQDqPass
+from executorch.backends.xnnpack._passes.tag_implicit_q_dq_pass import (
+    TagImplicitQDqPass,
+)
 from executorch.backends.xnnpack.test.tester import RunPasses, Tester
 from executorch.exir.backend.canonical_partitioners.duplicate_dequant_node_pass import (
     DuplicateDequantNodePass,
@@ -17,6 +19,9 @@ from executorch.exir.dialects._ops import ops as exir_ops
 
 class TestTagImplicitQDq(unittest.TestCase):
     PassStage = RunPasses([DuplicateDequantNodePass, TagImplicitQDqPass])
+
+    def setUp(self):
+        torch._dynamo.reset()
 
     class QDqModule(torch.nn.Module):
         def __init__(self):

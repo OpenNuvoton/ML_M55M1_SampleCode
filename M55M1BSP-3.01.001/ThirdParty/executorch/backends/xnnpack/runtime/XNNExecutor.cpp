@@ -8,24 +8,30 @@
 
 #include <executorch/backends/xnnpack/runtime/XNNExecutor.h>
 
-namespace torch {
-namespace executor {
+namespace executorch {
+namespace backends {
 namespace xnnpack {
 namespace delegate {
 
-using Tensor = exec_aten::Tensor;
-using ScalarType = exec_aten::ScalarType;
-using SizesType = exec_aten::SizesType;
+using executorch::aten::ScalarType;
+using executorch::aten::SizesType;
+using executorch::aten::Tensor;
+using executorch::runtime::BackendExecutionContext;
+using executorch::runtime::Error;
+using executorch::runtime::EValue;
+using executorch::runtime::is_contiguous_dim_order;
+using executorch::runtime::kTensorDimensionLimit;
 
 /**
  * Initializes the XNNExecutor with the runtime and given number of
  * inputs/outputs externals_ is resized to the total number of inputs and
  * outputs
  */
-__ET_NODISCARD Error XNNExecutor::initialize(
+ET_NODISCARD Error XNNExecutor::initialize(
     xnn_runtime_t runtime,
     std::vector<uint32_t>&& input_ids,
-    std::vector<uint32_t>&& output_ids) {
+    std::vector<uint32_t>&& output_ids,
+    std::vector<std::string>&& packed_data_names) {
   runtime_ = std::unique_ptr<xnn_runtime, decltype(&xnn_delete_runtime)>(
       runtime, xnn_delete_runtime);
 
@@ -46,6 +52,7 @@ __ET_NODISCARD Error XNNExecutor::initialize(
   std::sort(output_ids_.begin(), output_ids_.end());
 
   externals_.resize(input_ids_.size() + output_ids_.size());
+  packed_data_names_ = std::move(packed_data_names);
 
   return Error::Ok;
 }
@@ -62,7 +69,12 @@ __ET_NODISCARD Error XNNExecutor::initialize(
  * runtime correspond to their index in the list of arg passed into
  * delegate->execute()
  */
-__ET_NODISCARD Error XNNExecutor::prepare_args(EValue** args) {
+ET_NODISCARD Error XNNExecutor::prepare_args(EValue** args) {
+  ET_CHECK_OR_RETURN_ERROR(
+      runtime_ != nullptr,
+      Internal,
+      "XNNPACK Delegate did not compile correctly");
+
   // Create xnn_externals_value from evalue args
   xnn_status status;
   for (uint32_t i = 0; i < externals_.size(); ++i) {
@@ -86,6 +98,11 @@ __ET_NODISCARD Error XNNExecutor::prepare_args(EValue** args) {
     // Reshape runtime inputs
     if (i < input_ids_.size()) {
       size_t num_dims = tensor->dim();
+      ET_CHECK_OR_RETURN_ERROR(
+          is_contiguous_dim_order(tensor->dim_order().data(), tensor->dim()),
+          Internal,
+          "Expecting default dim_order but got a non default dim_order tensor for external input %u",
+          i);
       size_t dims[XNN_MAX_TENSOR_DIMS];
       ET_CHECK_OR_RETURN_ERROR(
           num_dims <= XNN_MAX_TENSOR_DIMS,
@@ -123,7 +140,7 @@ __ET_NODISCARD Error XNNExecutor::prepare_args(EValue** args) {
  * We first setup the runtime by feeding the externals_ to runtime setup.
  * After which we then execute the runtime through invoke_runtime.
  */
-__ET_NODISCARD Error XNNExecutor::forward(BackendExecutionContext& context) {
+ET_NODISCARD Error XNNExecutor::forward(BackendExecutionContext& context) {
   ET_CHECK_OR_RETURN_ERROR(
       runtime_ != nullptr,
       Internal,
@@ -175,7 +192,7 @@ __ET_NODISCARD Error XNNExecutor::forward(BackendExecutionContext& context) {
  * XNNPACK gives the index tensor to us as int32, we need to convert it
  * back to int64 for ExecuTorch.
  */
-__ET_NODISCARD Error XNNExecutor::resize_outputs(EValue** args) const {
+ET_NODISCARD Error XNNExecutor::resize_outputs(EValue** args) const {
   size_t output_idx_start = input_ids_.size();
   for (size_t i = output_idx_start; i < externals_.size(); ++i) {
     uint32_t ext_id = externals_[i].id;
@@ -199,7 +216,7 @@ __ET_NODISCARD Error XNNExecutor::resize_outputs(EValue** args) const {
       expected_output_size[d] = static_cast<SizesType>(dims[d]);
     }
 
-    exec_aten::ArrayRef<SizesType> output_size{
+    executorch::aten::ArrayRef<SizesType> output_size{
         expected_output_size, static_cast<size_t>(num_dim)};
 
     ET_LOG(Debug, "Resizing output tensor to a new shape");
@@ -226,5 +243,5 @@ __ET_NODISCARD Error XNNExecutor::resize_outputs(EValue** args) const {
 
 } // namespace delegate
 } // namespace xnnpack
-} // namespace executor
-} // namespace torch
+} // namespace backends
+} // namespace executorch

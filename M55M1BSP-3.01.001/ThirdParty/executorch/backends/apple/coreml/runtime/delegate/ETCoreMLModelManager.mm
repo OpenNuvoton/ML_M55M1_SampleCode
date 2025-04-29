@@ -5,36 +5,39 @@
 //
 // Please refer to the license found in the LICENSE file in the root directory of the source tree.
 
-#import <ETCoreMLAsset.h>
-#import <ETCoreMLAssetManager.h>
-#import <ETCoreMLDefaultModelExecutor.h>
-#import <ETCoreMLLogging.h>
-#import <ETCoreMLModel.h>
-#import <ETCoreMLModelCompiler.h>
-#import <ETCoreMLModelExecutor.h>
-#import <ETCoreMLModelLoader.h>
-#import <ETCoreMLModelManager.h>
-#import <ETCoreMLStrings.h>
-#import <MLModel_Prewarm.h>
-#import <MLMultiArray_Copy.h>
+#import "ETCoreMLModelManager.h"
+
+#import "ETCoreMLAsset.h"
+#import "ETCoreMLAssetManager.h"
+#import "ETCoreMLDefaultModelExecutor.h"
+#import "ETCoreMLLogging.h"
+#import "ETCoreMLModel.h"
+#import "ETCoreMLModelCompiler.h"
+#import "ETCoreMLModelExecutor.h"
+#import "ETCoreMLModelLoader.h"
+#import "ETCoreMLStrings.h"
+#import "MLModel_Prewarm.h"
+#import "MLMultiArray_Copy.h"
+#import "inmemory_filesystem_utils.hpp"
+#import "model_metadata.h"
+#import "multiarray.h"
+#import "objc_array_util.h"
+#import "serde_json.h"
+
 #import <filesystem>
-#import <inmemory_filesystem_utils.hpp>
 #import <iostream>
 #import <memory>
-#import <model_metadata.h>
-#import <multiarray.h>
-#import <objc_array_util.h>
 #import <optional>
 #import <os/lock.h>
-#import <serde_json.h>
 #import <string>
 #import <system_error>
 #import <vector>
 
 #if ET_EVENT_TRACER_ENABLED
-#import <ETCoreMLModelAnalyzer.h>
-#import <ETCoreMLModelStructurePath.h>
-#import <objc_safe_cast.h>
+#import "ETCoreMLModelAnalyzer.h"
+#import "ETCoreMLModelDebugInfo.h"
+#import "ETCoreMLModelStructurePath.h"
+#import "objc_safe_cast.h"
 #endif
 
 namespace {
@@ -72,11 +75,15 @@ id<MLFeatureProvider> _Nullable get_feature_provider(NSArray<MLMultiArray *> *in
 
 BOOL is_backed_by_same_buffer(MLMultiArray *array1, MLMultiArray *array2) {
     __block BOOL result = NO;
-    [array1 getBytesWithHandler:^(const void *bytes1, NSInteger __unused size1){
-        [array2 getBytesWithHandler:^(const void *bytes2, NSInteger __unused size2) {
-            result = (bytes1 == bytes2);
+    if (@available(macOS 12.3, iOS 15.4, tvOS 15.4, watchOS 8.5, *)) {
+        [array1 getBytesWithHandler:^(const void *bytes1, NSInteger __unused size1){
+            [array2 getBytesWithHandler:^(const void *bytes2, NSInteger __unused size2) {
+                result = (bytes1 == bytes2);
+            }];
         }];
-    }];
+    } else {
+        result = (array1.dataPointer == array2.dataPointer);
+    }
     
     return result;
 }
@@ -85,17 +92,19 @@ MLPredictionOptions *get_prediction_options(NSArray<MLMultiArray *> *outputs,
                                             NSOrderedSet<NSString *> *output_names,
                                             NSError * __autoreleasing *error) {
     MLPredictionOptions *options = [MLPredictionOptions new];
-    NSMutableDictionary<NSString *, id> *output_backings = [NSMutableDictionary new];
-    NSEnumerator<NSString *> *enumerator = [output_names objectEnumerator];
-    for (MLMultiArray *output in outputs) {
-        NSString *output_name = [enumerator nextObject];
-        if (output_name.length == 0) {
-            ETCoreMLLogErrorAndSetNSError(error, 0, "%@: Model is broken.", NSStringFromClass(ETCoreMLModelManager.class));
-            return nil;
+    if (@available(macOS 11.0, iOS 16.0, tvOS 16.0, watchOS 9.0, *)) {
+        NSMutableDictionary<NSString *, id> *output_backings = [NSMutableDictionary dictionary];
+        NSEnumerator<NSString *> *enumerator = [output_names objectEnumerator];
+        for (MLMultiArray *output in outputs) {
+            NSString *output_name = [enumerator nextObject];
+            if (output_name.length == 0) {
+                ETCoreMLLogErrorAndSetNSError(error, ETCoreMLErrorCorruptedModel, "Model is broken.");
+                return nil;
+            }
+            output_backings[output_name] = output;
         }
-        output_backings[output_name] = output;
+        options.outputBackings = output_backings;
     }
-    options.outputBackings = output_backings;
     
     return options;
 }
@@ -137,14 +146,25 @@ std::optional<MultiArray::DataType> get_data_type(MLMultiArrayDataType data_type
 }
 
 void copy(MLMultiArray *src, executorchcoreml::MultiArray& dst) {
-    [src getBytesWithHandler:^(const void * _Nonnull bytes, NSInteger size) {
+    void (^copy_data)(void *) = ^(void *bytes) {
         if (bytes == dst.data()) {
             return;
         }
-        
-        MultiArray::MemoryLayout src_layout(get_data_type(src.dataType).value(), to_vector<size_t>(src.shape), to_vector<ssize_t>(src.strides));
+            
+        MultiArray::MemoryLayout src_layout(
+            get_data_type(src.dataType).value(), 
+            to_vector<size_t>(src.shape), 
+            to_vector<ssize_t>(src.strides)
+        );
         MultiArray(const_cast<void *>(bytes), std::move(src_layout)).copy(dst);
-    }];
+    };
+    if (@available(macOS 12.3, iOS 15.4, tvOS 15.4, watchOS 8.5, *)) {
+        [src getBytesWithHandler:^(const void * _Nonnull bytes, NSInteger size) {
+            copy_data(const_cast<void *>(bytes));
+        }];
+    } else {
+        copy_data(src.dataPointer);
+    }
 }
 
 void set_outputs(std::vector<executorchcoreml::MultiArray>& outputs,
@@ -207,12 +227,11 @@ NSURL * _Nullable write_model_files(NSURL *dst_url,
                                     const inmemoryfs::InMemoryFileSystem *inmemory_fs,
                                     NSError * __autoreleasing *error) {
     NSError *local_error = nil;
-    if (![fm createDirectoryAtURL:dst_url withIntermediateDirectories:NO attributes:@{} error:error]) {
+    if (![fm createDirectoryAtURL:dst_url withIntermediateDirectories:YES attributes:@{} error:error]) {
         ETCoreMLLogUnderlyingErrorAndSetNSError(error,
                                                 ETCoreMLErrorModelSaveFailed,
                                                 local_error,
-                                                "%@: Failed to create directory when saving model with identifier = %@.",
-                                                NSStringFromClass(ETCoreMLModelManager.class),
+                                                "Failed to create directory when saving model with identifier = %@.",
                                                 identifier);
         return nil;
     }
@@ -235,8 +254,7 @@ NSURL * _Nullable write_model_files(NSURL *dst_url,
     if (!inmemory_fs->write_item_to_disk(file_path, model_path, true, ec)) {
         ETCoreMLLogErrorAndSetNSError(error,
                                       ETCoreMLErrorModelSaveFailed,
-                                      "%@: Failed to write model files to disk when saving model with identifier = %@.",
-                                      NSStringFromClass(ETCoreMLModelManager.class),
+                                      "Failed to write model files to disk when saving model with identifier = %@.",
                                       identifier);
         return nil;
     }
@@ -317,31 +335,14 @@ ETCoreMLAsset * _Nullable make_asset(NSURL *url,
     return [[ETCoreMLAsset alloc] initWithBackingAsset:std::move(backingAsset.value())];
 }
 
-NSDictionary<ETCoreMLModelStructurePath *, NSString *> * _Nullable get_operation_path_to_symbol_name_map(const inmemoryfs::InMemoryFileSystem *inMemoryFS,
-                                                                                                         NSError * __autoreleasing *error) {
+ETCoreMLModelDebugInfo * _Nullable get_model_debug_info(const inmemoryfs::InMemoryFileSystem *inMemoryFS,
+                                                        NSError * __autoreleasing *error) {
     NSData *file_data = get_file_data(inMemoryFS, ETCoreMLStrings.debugInfoFileRelativePath);
     if (!file_data) {
         return nil;
     }
-    
-    id object = [NSJSONSerialization JSONObjectWithData:file_data options:(NSJSONReadingOptions)0 error:error];
-    if (!object) {
-        return nil;
-    }
-    
-    NSDictionary<NSString *, id> *json_dict = SAFE_CAST(object, NSDictionary);
-    NSMutableDictionary<ETCoreMLModelStructurePath *, NSString *> *result = [NSMutableDictionary dictionaryWithCapacity:json_dict.count];
-    NSDictionary<NSString *, NSArray<id> *> *debug_symbol_to_operation_path_map = SAFE_CAST(json_dict[ETCoreMLStrings.debugSymbolToOperationPathKeyName], NSDictionary);
-    for (NSString *symbol_name in debug_symbol_to_operation_path_map) {
-        NSArray<NSDictionary<NSString *, id> *> *components = SAFE_CAST(debug_symbol_to_operation_path_map[symbol_name], NSArray);
-        if (components.count == 0) {
-            continue;
-        }
-        ETCoreMLModelStructurePath *path = [[ETCoreMLModelStructurePath alloc] initWithComponents:components];
-        result[path] = symbol_name;
-    }
-    
-    return result;
+
+    return [ETCoreMLModelDebugInfo modelDebugInfoFromData:file_data error:error];
 }
 
 #endif
@@ -352,6 +353,7 @@ NSDictionary<ETCoreMLModelStructurePath *, NSString *> * _Nullable get_operation
 }
 
 @property (nonatomic, readonly, strong) NSFileManager *fileManager;
+@property (strong, readonly, nonatomic) ETCoreMLAssetManager* assetManager;
 @property (nonatomic, readonly, strong) NSMutableDictionary<NSValue *, id<ETCoreMLModelExecutor>> *handleToExecutorMap;
 @property (nonatomic, readonly, strong) NSMapTable<NSString *, dispatch_queue_t> *modelIdentifierToLoadingQueueMap;
 @property (nonatomic, readonly, strong) NSMutableDictionary<NSString *, ETCoreMLAsset *> *modelIdentifierToPrewarmedAssetMap;
@@ -410,8 +412,7 @@ NSDictionary<ETCoreMLModelStructurePath *, NSString *> * _Nullable get_operation
     modelAsset = [self.assetManager assetWithIdentifier:identifier error:&localError];
     if (localError) {
         ETCoreMLLogError(localError,
-                         "%@: Failed to retrieve asset with identifier = %@",
-                         NSStringFromClass(self.assetManager.class),
+                         "Failed to retrieve asset with identifier = %@.",
                          identifier);
     }
     
@@ -426,8 +427,7 @@ NSDictionary<ETCoreMLModelStructurePath *, NSString *> * _Nullable get_operation
     if (!modelAssetType) {
         ETCoreMLLogErrorAndSetNSError(error,
                                       ETCoreMLErrorCorruptedModel,
-                                      "%@: AOT blob is missing model file.",
-                                      NSStringFromClass(ETCoreMLModelManager.class));
+                                      "AOT blob is missing model file.");
         return nil;
     }
     
@@ -435,11 +435,12 @@ NSDictionary<ETCoreMLModelStructurePath *, NSString *> * _Nullable get_operation
     NSURL *modelURL = ::write_model_files(dstURL, self.fileManager, identifier, modelAssetType.value(), inMemoryFS, error);
     switch (modelAssetType.value()) {
         case ModelAssetType::CompiledModel: {
+            // Model is already compiled.
             return modelURL;
         }
             
         case ModelAssetType::Model: {
-            // we need to compiled the model.
+            // Compile the model.
             NSURL *compiledModelURL = [ETCoreMLModelCompiler compileModelAtURL:modelURL
                                                           maxWaitTimeInSeconds:(5 * 60)
                                                                          error:error];
@@ -457,6 +458,12 @@ NSDictionary<ETCoreMLModelStructurePath *, NSString *> * _Nullable get_operation
     NSString *identifier = @(metadata.identifier.c_str());
     // Otherwise try to retrieve the compiled asset.
     ETCoreMLAsset *compiledModelAsset = [self assetWithIdentifier:identifier];
+    if (compiledModelAsset) {
+        ETCoreMLLogInfo("Cache Hit: Successfully retrieved model with identifier=%@ from the models cache.", identifier);
+    } else {
+        ETCoreMLLogInfo("Cache Miss: Model with identifier=%@ was not found in the models cache.", identifier);
+    }
+    
     // Create a unique directory for writing model files.
     NSURL *dstURL = [self.assetManager.trashDirectoryURL URLByAppendingPathComponent:[NSUUID UUID].UUIDString];
     auto modelAssetType = get_model_asset_type(inMemoryFS);
@@ -489,16 +496,16 @@ NSDictionary<ETCoreMLModelStructurePath *, NSString *> * _Nullable get_operation
     }
     
     NSError *localError = nil;
-    NSDictionary<ETCoreMLModelStructurePath *, NSString *> *operation_path_to_symbol_name_map = get_operation_path_to_symbol_name_map(inMemoryFS,
-                                                                                                                                      &localError);
+    ETCoreMLModelDebugInfo *debug_info = get_model_debug_info(inMemoryFS, &localError);
     if (localError) {
         ETCoreMLLogError(localError, "Failed to parse debug info file");
     }
     
+
     return [[ETCoreMLModelAnalyzer alloc] initWithCompiledModelAsset:compiledModelAsset
                                                           modelAsset:modelAsset
+                                                      modelDebugInfo:debug_info
                                                             metadata:metadata
-                                       operationPathToDebugSymbolMap:operation_path_to_symbol_name_map
                                                        configuration:configuration
                                                         assetManager:self.assetManager
                                                                error:error];
@@ -514,9 +521,11 @@ NSDictionary<ETCoreMLModelStructurePath *, NSString *> * _Nullable get_operation
     ETCoreMLAsset *asset = [self assetWithIdentifier:identifier];
     ETCoreMLModel *model = asset ? get_model_from_asset(asset, configuration, metadata, error) : nil;
     if (model) {
+        ETCoreMLLogInfo("Cache Hit: Successfully retrieved model with identifier=%@ from the models cache.", identifier);
         return [[ETCoreMLDefaultModelExecutor alloc] initWithModel:model];
     }
     
+    ETCoreMLLogInfo("Cache Miss: Model with identifier=%@ was not found in the models cache.", identifier);
     // Compile the model.
     NSURL *compiledModelURL = [self compiledModelURLWithIdentifier:identifier
                                                         inMemoryFS:inMemoryFS
@@ -546,8 +555,7 @@ NSDictionary<ETCoreMLModelStructurePath *, NSString *> * _Nullable get_operation
     if (!inMemoryFS) {
         ETCoreMLLogErrorAndSetNSError(error,
                                       ETCoreMLErrorCorruptedModel,
-                                      "%@: Model data is corrupted.",
-                                      NSStringFromClass(ETCoreMLModelManager.class));
+                                      "Model data is corrupted.");
         return nil;
     }
     
@@ -555,8 +563,7 @@ NSDictionary<ETCoreMLModelStructurePath *, NSString *> * _Nullable get_operation
     if (!metadata) {
         ETCoreMLLogErrorAndSetNSError(error,
                                       ETCoreMLErrorCorruptedMetadata,
-                                      "%@: Metadata is invalid or missing.",
-                                      NSStringFromClass(ETCoreMLModelManager.class));
+                                      "Metadata is invalid or missing.");
         return nil;
     }
     
@@ -613,21 +620,8 @@ NSDictionary<ETCoreMLModelStructurePath *, NSString *> * _Nullable get_operation
     if (!model) {
         return NO;
     }
-    
-    NSError *localError = nil;
-    BOOL result = [model.mlModel prewarmAndReturnError:&localError];
-    if (!result) {
-        ETCoreMLLogError(localError,
-                         "%@: Failed to prewarm model with identifier = %@",
-                         NSStringFromClass(self.assetManager.class),
-                         model.identifier);
-    }
-    
-    if (error) {
-        *error = localError;
-    }
-    
-    return result;
+
+    return [model prewarmAndReturnError:error];
 }
 
 - (void)prewarmRecentlyUsedAssetsWithMaxCount:(NSUInteger)maxCount {
@@ -635,9 +629,7 @@ NSDictionary<ETCoreMLModelStructurePath *, NSString *> * _Nullable get_operation
     NSArray<ETCoreMLAsset *> *assets = [self.assetManager mostRecentlyUsedAssetsWithMaxCount:maxCount error:&localError];
     
     if (localError) {
-        ETCoreMLLogError(localError,
-                         "%@: Failed to retrieve recently used assets.",
-                         NSStringFromClass(self.assetManager.class));
+        ETCoreMLLogError(localError, "Failed to retrieve recently used assets.");
     }
     
     if (assets.count == 0) {
@@ -654,9 +646,8 @@ NSDictionary<ETCoreMLModelStructurePath *, NSString *> * _Nullable get_operation
             
             NSError *prewarmError = nil;
             if (![asset prewarmAndReturnError:&prewarmError]) {
-                ETCoreMLLogError(localError,
-                                 "%@: Failed to prewarm asset with identifier = %@",
-                                 NSStringFromClass(strongSelf.assetManager.class),
+                ETCoreMLLogError(prewarmError,
+                                 "Failed to prewarm asset with identifier = %@",
                                  asset.identifier);
                 return;
             }
@@ -692,21 +683,22 @@ NSDictionary<ETCoreMLModelStructurePath *, NSString *> * _Nullable get_operation
     
     NSArray<MLMultiArray *> *modelOutputs = [executor executeModelWithInputs:inputFeatures
                                                            predictionOptions:predictionOptions
-                                                             loggingOptions:loggingOptions
+                                                              loggingOptions:loggingOptions
                                                                  eventLogger:eventLogger
                                                                        error:&localError];
     // Try without output backings.
-    if (!modelOutputs && predictionOptions.outputBackings.count > 0) {
-        localError = nil;
-        executor.ignoreOutputBackings = YES;
+    if (@available(macOS 11.0, iOS 16.0, tvOS 16.0, watchOS 9.0, *)) {
+        if (!modelOutputs && predictionOptions.outputBackings.count > 0) {
+            executor.ignoreOutputBackings = YES;
+            localError = nil;
+            modelOutputs = [executor executeModelWithInputs:inputFeatures
+                                          predictionOptions:predictionOptions
+                                             loggingOptions:loggingOptions
+                                                eventLogger:eventLogger
+                                                      error:&localError];
+        }
     }
-    
-    modelOutputs = [executor executeModelWithInputs:inputFeatures
-                                  predictionOptions:predictionOptions
-                                     loggingOptions:loggingOptions
-                                        eventLogger:eventLogger
-                                              error:&localError];
-    
+
     if (error) {
         *error = localError;
     }
@@ -722,9 +714,8 @@ NSDictionary<ETCoreMLModelStructurePath *, NSString *> * _Nullable get_operation
     id<ETCoreMLModelExecutor> executor = [self executorWithHandle:handle];
     if (!executor) {
         ETCoreMLLogErrorAndSetNSError(error,
-                                      0,
-                                      "%@: Model is already unloaded.",
-                                      NSStringFromClass(self.class));
+                                      ETCoreMLErrorInternalError,
+                                      "Model is already unloaded.");
         return NO;
     }
     
@@ -732,8 +723,7 @@ NSDictionary<ETCoreMLModelStructurePath *, NSString *> * _Nullable get_operation
     if (args.count != model.orderedInputNames.count + model.orderedOutputNames.count) {
         ETCoreMLLogErrorAndSetNSError(error,
                                       ETCoreMLErrorCorruptedModel,
-                                      "%@: Model is invalid, expected args count to be %lu but got %lu.",
-                                      NSStringFromClass(self.class),
+                                      "Model is invalid, expected args count to be %lu but got %lu.",
                                       static_cast<unsigned long>(model.orderedInputNames.count + model.orderedOutputNames.count),
                                       args.count);
         return NO;
@@ -763,16 +753,15 @@ NSDictionary<ETCoreMLModelStructurePath *, NSString *> * _Nullable get_operation
 }
 
 - (BOOL)executeModelWithHandle:(ModelHandle *)handle
-                       argsVec:(const std::vector<executorchcoreml::MultiArray>&)argsVec
+                       argsVec:(std::vector<executorchcoreml::MultiArray>&)argsVec
                 loggingOptions:(const executorchcoreml::ModelLoggingOptions&)loggingOptions
                    eventLogger:(const executorchcoreml::ModelEventLogger* _Nullable)eventLogger
                          error:(NSError * __autoreleasing *)error {
     id<ETCoreMLModelExecutor> executor = [self executorWithHandle:handle];
     if (!executor) {
         ETCoreMLLogErrorAndSetNSError(error,
-                                      0,
-                                      "%@: Model is already unloaded.",
-                                      NSStringFromClass(self.class));
+                                      ETCoreMLErrorInternalError,
+                                      "Model is already unloaded.");
         return NO;
     }
     
@@ -780,8 +769,7 @@ NSDictionary<ETCoreMLModelStructurePath *, NSString *> * _Nullable get_operation
     if (argsVec.size() != model.orderedInputNames.count + model.orderedOutputNames.count) {
         ETCoreMLLogErrorAndSetNSError(error,
                                       ETCoreMLErrorCorruptedModel,
-                                      "%@: Model is invalid, expected args count to be %lu but got %lu.",
-                                      NSStringFromClass(self.class),
+                                      "Model is invalid, expected args count to be %lu but got %lu.",
                                       static_cast<unsigned long>(model.orderedInputNames.count + model.orderedOutputNames.count),
                                       argsVec.size());
         return NO;
@@ -814,6 +802,12 @@ NSDictionary<ETCoreMLModelStructurePath *, NSString *> * _Nullable get_operation
             return NO;
         }
         
+        // Resize for dynamic shapes
+        for (int i = 0; i < outputArgs.size(); i++) {
+            auto new_size = to_vector<size_t>(modelOutputs[i].shape);
+            outputArgs[i].resize(new_size);
+            argsVec[model.orderedInputNames.count + i].resize(new_size);
+        }
         ::set_outputs(outputArgs, modelOutputs);
         return YES;
     }
@@ -830,6 +824,10 @@ NSDictionary<ETCoreMLModelStructurePath *, NSString *> * _Nullable get_operation
     }
     
     return result;
+}
+
+- (BOOL)purgeModelsCacheAndReturnError:(NSError *__autoreleasing *)error {
+    return [self.assetManager purgeAndReturnError:error];
 }
 
 @end

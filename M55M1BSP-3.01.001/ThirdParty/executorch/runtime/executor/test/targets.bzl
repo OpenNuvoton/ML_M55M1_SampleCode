@@ -1,4 +1,4 @@
-load("@fbsource//xplat/executorch/build:runtime_wrapper.bzl", "runtime")
+load("@fbsource//xplat/executorch/build:runtime_wrapper.bzl", "get_aten_mode_options", "runtime")
 
 def define_common_targets(is_fbcode = False):
     """Defines targets that should be shared between fbcode and xplat.
@@ -7,7 +7,7 @@ def define_common_targets(is_fbcode = False):
     TARGETS and BUCK files that call this function.
     """
 
-    for aten_mode in (True, False):
+    for aten_mode in get_aten_mode_options():
         aten_suffix = ("_aten" if aten_mode else "")
 
         runtime.cxx_library(
@@ -19,7 +19,7 @@ def define_common_targets(is_fbcode = False):
                 "//executorch/exir/backend/test/...",
                 "//executorch/runtime/backend/...",
                 "//executorch/extension/pybindings/...",
-                "//executorch/sdk/fb/runners/...",
+                "//executorch/devtools/fb/runners/...",
                 "//executorch/test/...",
                 "//executorch/examples/...",
             ],
@@ -43,7 +43,7 @@ def define_common_targets(is_fbcode = False):
                 "//executorch/exir/backend/test/...",
                 "//executorch/runtime/backend/...",
                 "//executorch/extension/pybindings/...",
-                "//executorch/sdk/fb/runners/...",
+                "//executorch/devtools/fb/runners/...",
                 "//executorch/test/...",
                 "//executorch/examples/...",
             ],
@@ -70,7 +70,7 @@ def define_common_targets(is_fbcode = False):
                 "//executorch/runtime/core/exec_aten:lib" + aten_suffix,
                 "//executorch/runtime/core:evalue" + aten_suffix,
                 "//executorch/runtime/kernel:kernel_runtime_context" + aten_suffix,
-                "//executorch/runtime/kernel:operator_registry",
+                "//executorch/runtime/kernel:operator_registry" + aten_suffix,
                 "//executorch/runtime/platform:platform",
             ],
         )
@@ -92,11 +92,26 @@ def define_common_targets(is_fbcode = False):
         ],
     )
 
+    runtime.cxx_test(
+        name = "pte_data_map_test",
+        srcs = [
+            "pte_data_map_test.cpp",
+        ],
+        deps = [
+            "//executorch/extension/data_loader:file_data_loader",
+            "//executorch/extension/testing_util:temp_file",
+            "//executorch/runtime/executor:pte_data_map",
+            "//executorch/schema:program",
+        ],
+    )
+
     # TODO(dbort): Find a way to make these run for ANDROID/APPLE in xplat. The
     # android and ios test determinators don't like the reference to the model
     # file in fbcode. See https://fburl.com/9esapdmd
     if not runtime.is_oss and is_fbcode:
         modules_env = {
+            # Deprecated model that still works with ExecuTorch runtime.
+            "DEPRECATED_ET_MODULE_LINEAR_CONSTANT_BUFFER_PATH": "$(location fbcode//executorch/test/models/deprecated:ModuleLinear-no-constant-segment.pte)",
             # The tests use this var to find the program file to load. This uses
             # an fbcode target path because the authoring/export tools
             # intentionally don't work in xplat (since they're host-only tools).
@@ -104,9 +119,12 @@ def define_common_targets(is_fbcode = False):
             "ET_MODULE_ADD_PATH": "$(location fbcode//executorch/test/models:exported_programs[ModuleAdd.pte])",
             "ET_MODULE_DYNAMIC_CAT_UNALLOCATED_IO_PATH": "$(location fbcode//executorch/test/models:exported_programs[ModuleDynamicCatUnallocatedIO.pte])",
             "ET_MODULE_INDEX_PATH": "$(location fbcode//executorch/test/models:exported_programs[ModuleIndex.pte])",
-            "ET_MODULE_LINEAR_CONSTANT_BUFFER_PATH": "$(location fbcode//executorch/test/models:exported_programs[ModuleLinear-no-constant-segment.pte])",
-            "ET_MODULE_LINEAR_CONSTANT_SEGMENT_PATH": "$(location fbcode//executorch/test/models:exported_programs[ModuleLinear.pte])",
+            "ET_MODULE_LINEAR_PATH": "$(location fbcode//executorch/test/models:exported_programs[ModuleLinear.pte])",
             "ET_MODULE_MULTI_ENTRY_PATH": "$(location fbcode//executorch/test/models:exported_programs[ModuleMultipleEntry.pte])",
+            "ET_MODULE_SIMPLE_TRAIN_PATH": "$(location fbcode//executorch/test/models:exported_programs[ModuleSimpleTrain.pte])",
+            "ET_MODULE_STATEFUL_PATH": "$(location fbcode//executorch/test/models:exported_programs[ModuleStateful.pte])",
+            "ET_MODULE_LINEAR_PROGRAM_PATH": "$(location fbcode//executorch/test/models:exported_program_and_data[ModuleLinear.pte])",
+            "ET_MODULE_LINEAR_DATA_PATH": "$(location fbcode//executorch/test/models:exported_program_and_data[ModuleLinear.ptd])",
         }
 
         runtime.cxx_test(
@@ -119,7 +137,7 @@ def define_common_targets(is_fbcode = False):
                 "//executorch/runtime/executor:program",
                 "//executorch/kernels/portable:generated_lib",
                 "//executorch/extension/data_loader:file_data_loader",
-                "//executorch/util:util",
+                "//executorch/extension/runner_util:inputs",
             ],
             env = modules_env,
         )
@@ -132,8 +150,9 @@ def define_common_targets(is_fbcode = False):
             deps = [
                 ":managed_memory_manager",
                 "//executorch/runtime/executor:program",
-                "//executorch/util:util",
                 "//executorch/extension/data_loader:file_data_loader",
+                "//executorch/extension/flat_tensor:flat_tensor_data_map",
+                "//executorch/extension/runner_util:inputs",
                 "//executorch/kernels/portable:generated_lib",
             ],
             env = modules_env,
@@ -174,7 +193,6 @@ def define_common_targets(is_fbcode = False):
                 ":managed_memory_manager",
                 "//executorch/runtime/executor:program",
                 "//executorch/runtime/kernel:operator_registry",
-                "//executorch/util:util",
                 "//executorch/extension/data_loader:file_data_loader",
             ],
             env = modules_env,
@@ -188,12 +206,12 @@ def define_common_targets(is_fbcode = False):
             deps = [
                 ":managed_memory_manager",
                 "//executorch/extension/data_loader:file_data_loader",
+                "//executorch/extension/runner_util:inputs",
                 "//executorch/runtime/core:core",
                 "//executorch/runtime/executor:program",
                 "//executorch/runtime/kernel:kernel_runtime_context",
                 "//executorch/runtime/kernel:operator_registry",
                 "//executorch/runtime/platform:platform",
-                "//executorch/util:util",
             ],
             env = modules_env,
         )
@@ -209,16 +227,16 @@ def define_common_targets(is_fbcode = False):
                 "//executorch/runtime/executor:program",
                 "//executorch/extension/data_loader:buffer_data_loader",
                 "//executorch/extension/data_loader:file_data_loader",
-                "//executorch/util:util",
+                "//executorch/extension/runner_util:inputs",
             ],
             env = {
                 # The tests use these vars to find the program files to load.
                 # Uses an fbcode target path because the authoring/export tools
                 # intentionally don't work in xplat (since they're host-only
                 # tools).
-                "ET_MODULE_ADD_MUL_NOSEGMENTS_DA1024_PATH": "$(location fbcode//executorch/test/models:exported_delegated_programs[ModuleAddMul-nosegments-da1024.pte])",
-                "ET_MODULE_ADD_MUL_NOSEGMENTS_PATH": "$(location fbcode//executorch/test/models:exported_delegated_programs[ModuleAddMul-nosegments.pte])",
-                "ET_MODULE_ADD_MUL_PATH": "$(location fbcode//executorch/test/models:exported_delegated_programs[ModuleAddMul.pte])",
+                "ET_MODULE_ADD_MUL_NOSEGMENTS_DA1024_PATH": "$(location fbcode//executorch/test/models:exported_delegated_add_mul[ModuleAddMul-nosegments-da1024.pte])",
+                "ET_MODULE_ADD_MUL_NOSEGMENTS_PATH": "$(location fbcode//executorch/test/models:exported_delegated_add_mul[ModuleAddMul-nosegments.pte])",
+                "ET_MODULE_ADD_MUL_PATH": "$(location fbcode//executorch/test/models:exported_delegated_add_mul[ModuleAddMul.pte])",
             },
         )
 

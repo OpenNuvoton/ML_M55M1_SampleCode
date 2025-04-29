@@ -20,7 +20,7 @@ def define_common_targets():
     runtime.cxx_library(
         name = "executor_cpu_optimized",
         exported_deps = [
-            "//executorch/backends/xnnpack/threadpool:threadpool",
+            "//executorch/extension/threadpool:threadpool",
         ] + get_all_cpu_backend_targets(),
         visibility = [
             "//executorch/test/...",
@@ -28,7 +28,7 @@ def define_common_targets():
         ],
     )
 
-    # Add a commong configuration of cpu optimized operators. This adds a bit of confusion
+    # Add a common configuration of cpu optimized operators. This adds a bit of confusion
     # with the above executorch_cpu_optimized target. Generally it would make sense
     # to just add optimized operators to that target but because executorch_cpu_optimized
     # might be used elsewhere, I dont want to include ops in that target and find out

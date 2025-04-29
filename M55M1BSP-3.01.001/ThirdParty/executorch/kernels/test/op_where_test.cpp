@@ -16,8 +16,8 @@
 #include <gtest/gtest.h>
 
 using namespace ::testing;
-using exec_aten::ScalarType;
-using exec_aten::Tensor;
+using executorch::aten::ScalarType;
+using executorch::aten::Tensor;
 using torch::executor::testing::SupportedFeatures;
 using torch::executor::testing::TensorFactory;
 
@@ -80,7 +80,7 @@ class OpWhereOutTest : public OperatorTest {
 #define ENUMERATE_TEST_ENTRY(ctype, dtype) \
   test_where<DTYPE_A, DTYPE_B, ScalarType::dtype>();
 
-    ET_FORALL_FLOAT_TYPES(ENUMERATE_TEST_ENTRY)
+    ET_FORALL_REALHBF16_TYPES(ENUMERATE_TEST_ENTRY)
 
 #undef ENUMERATE_TEST_ENTRY
   }
@@ -90,7 +90,7 @@ class OpWhereOutTest : public OperatorTest {
 #define ENUMERATE_TEST_ENTRY(ctype, dtype) \
   test_where<DTYPE_A, ScalarType::dtype, DTYPE_A>();
 
-    ET_FORALL_REAL_TYPES(ENUMERATE_TEST_ENTRY)
+    ET_FORALL_REALHBBF16_TYPES(ENUMERATE_TEST_ENTRY)
 
 #undef ENUMERATE_TEST_ENTRY
   }
@@ -148,7 +148,7 @@ class OpWhereOutTest : public OperatorTest {
 #define ENUMERATE_TEST_ENTRY(ctype, dtype) \
   test_where_enumerate_b_types<ScalarType::dtype>();
 
-    ET_FORALL_REAL_TYPES(ENUMERATE_TEST_ENTRY)
+    ET_FORALL_REALHBBF16_TYPES(ENUMERATE_TEST_ENTRY)
 
 #undef ENUMERATE_TEST_ENTRY
   }
@@ -157,7 +157,7 @@ class OpWhereOutTest : public OperatorTest {
 #define ENUMERATE_TEST_ENTRY(ctype, dtype) \
   test_where<ScalarType::dtype, ScalarType::dtype, ScalarType::dtype>();
 
-    ET_FORALL_REAL_TYPES(ENUMERATE_TEST_ENTRY)
+    ET_FORALL_REALHBF16_TYPES(ENUMERATE_TEST_ENTRY)
 
 #undef ENUMERATE_TEST_ENTRY
   }

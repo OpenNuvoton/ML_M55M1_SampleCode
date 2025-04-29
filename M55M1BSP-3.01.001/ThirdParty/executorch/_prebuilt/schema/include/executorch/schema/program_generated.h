@@ -8,9 +8,9 @@
 
 // Ensure the included flatbuffers.h is the same version as when this file was
 // generated, otherwise it may not be compatible.
-static_assert(FLATBUFFERS_VERSION_MAJOR == 23 &&
-              FLATBUFFERS_VERSION_MINOR == 5 &&
-              FLATBUFFERS_VERSION_REVISION == 26,
+static_assert(FLATBUFFERS_VERSION_MAJOR == 24 &&
+              FLATBUFFERS_VERSION_MINOR == 3 &&
+              FLATBUFFERS_VERSION_REVISION == 25,
              "Non-compatible flatbuffers version included");
 
 #include "scalar_type_generated.h"
@@ -25,6 +25,9 @@ struct NullBuilder;
 
 struct AllocationDetails;
 struct AllocationDetailsBuilder;
+
+struct ExtraTensorInfo;
+struct ExtraTensorInfoBuilder;
 
 struct Tensor;
 struct TensorBuilder;
@@ -113,6 +116,9 @@ struct DataSegmentBuilder;
 struct SubsegmentOffsets;
 struct SubsegmentOffsetsBuilder;
 
+struct NamedData;
+struct NamedDataBuilder;
+
 struct Program;
 struct ProgramBuilder;
 
@@ -147,6 +153,36 @@ inline const char *EnumNameTensorShapeDynamism(TensorShapeDynamism e) {
   if (::flatbuffers::IsOutRange(e, TensorShapeDynamism::STATIC, TensorShapeDynamism::DYNAMIC_UNBOUND)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesTensorShapeDynamism()[index];
+}
+
+enum class TensorDataLocation : int8_t {
+  SEGMENT = 0,
+  EXTERNAL = 1,
+  MIN = SEGMENT,
+  MAX = EXTERNAL
+};
+
+inline const TensorDataLocation (&EnumValuesTensorDataLocation())[2] {
+  static const TensorDataLocation values[] = {
+    TensorDataLocation::SEGMENT,
+    TensorDataLocation::EXTERNAL
+  };
+  return values;
+}
+
+inline const char * const *EnumNamesTensorDataLocation() {
+  static const char * const names[3] = {
+    "SEGMENT",
+    "EXTERNAL",
+    nullptr
+  };
+  return names;
+}
+
+inline const char *EnumNameTensorDataLocation(TensorDataLocation e) {
+  if (::flatbuffers::IsOutRange(e, TensorDataLocation::SEGMENT, TensorDataLocation::EXTERNAL)) return "";
+  const size_t index = static_cast<size_t>(e);
+  return EnumNamesTensorDataLocation()[index];
 }
 
 enum class KernelTypes : uint8_t {
@@ -529,6 +565,90 @@ inline ::flatbuffers::Offset<AllocationDetails> CreateAllocationDetails(
   return builder_.Finish();
 }
 
+struct ExtraTensorInfo FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
+  typedef ExtraTensorInfoBuilder Builder;
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_MUTABLE_DATA_SEGMENTS_IDX = 4,
+    VT_FULLY_QUALIFIED_NAME = 6,
+    VT_LOCATION = 8
+  };
+  uint64_t mutable_data_segments_idx() const {
+    return GetField<uint64_t>(VT_MUTABLE_DATA_SEGMENTS_IDX, 0);
+  }
+  bool mutate_mutable_data_segments_idx(uint64_t _mutable_data_segments_idx = 0) {
+    return SetField<uint64_t>(VT_MUTABLE_DATA_SEGMENTS_IDX, _mutable_data_segments_idx, 0);
+  }
+  const ::flatbuffers::String *fully_qualified_name() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_FULLY_QUALIFIED_NAME);
+  }
+  ::flatbuffers::String *mutable_fully_qualified_name() {
+    return GetPointer<::flatbuffers::String *>(VT_FULLY_QUALIFIED_NAME);
+  }
+  executorch_flatbuffer::TensorDataLocation location() const {
+    return static_cast<executorch_flatbuffer::TensorDataLocation>(GetField<int8_t>(VT_LOCATION, 0));
+  }
+  bool mutate_location(executorch_flatbuffer::TensorDataLocation _location = static_cast<executorch_flatbuffer::TensorDataLocation>(0)) {
+    return SetField<int8_t>(VT_LOCATION, static_cast<int8_t>(_location), 0);
+  }
+  bool Verify(::flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<uint64_t>(verifier, VT_MUTABLE_DATA_SEGMENTS_IDX, 8) &&
+           VerifyOffset(verifier, VT_FULLY_QUALIFIED_NAME) &&
+           verifier.VerifyString(fully_qualified_name()) &&
+           VerifyField<int8_t>(verifier, VT_LOCATION, 1) &&
+           verifier.EndTable();
+  }
+};
+
+struct ExtraTensorInfoBuilder {
+  typedef ExtraTensorInfo Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_mutable_data_segments_idx(uint64_t mutable_data_segments_idx) {
+    fbb_.AddElement<uint64_t>(ExtraTensorInfo::VT_MUTABLE_DATA_SEGMENTS_IDX, mutable_data_segments_idx, 0);
+  }
+  void add_fully_qualified_name(::flatbuffers::Offset<::flatbuffers::String> fully_qualified_name) {
+    fbb_.AddOffset(ExtraTensorInfo::VT_FULLY_QUALIFIED_NAME, fully_qualified_name);
+  }
+  void add_location(executorch_flatbuffer::TensorDataLocation location) {
+    fbb_.AddElement<int8_t>(ExtraTensorInfo::VT_LOCATION, static_cast<int8_t>(location), 0);
+  }
+  explicit ExtraTensorInfoBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  ::flatbuffers::Offset<ExtraTensorInfo> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = ::flatbuffers::Offset<ExtraTensorInfo>(end);
+    return o;
+  }
+};
+
+inline ::flatbuffers::Offset<ExtraTensorInfo> CreateExtraTensorInfo(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    uint64_t mutable_data_segments_idx = 0,
+    ::flatbuffers::Offset<::flatbuffers::String> fully_qualified_name = 0,
+    executorch_flatbuffer::TensorDataLocation location = executorch_flatbuffer::TensorDataLocation::SEGMENT) {
+  ExtraTensorInfoBuilder builder_(_fbb);
+  builder_.add_mutable_data_segments_idx(mutable_data_segments_idx);
+  builder_.add_fully_qualified_name(fully_qualified_name);
+  builder_.add_location(location);
+  return builder_.Finish();
+}
+
+inline ::flatbuffers::Offset<ExtraTensorInfo> CreateExtraTensorInfoDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    uint64_t mutable_data_segments_idx = 0,
+    const char *fully_qualified_name = nullptr,
+    executorch_flatbuffer::TensorDataLocation location = executorch_flatbuffer::TensorDataLocation::SEGMENT) {
+  auto fully_qualified_name__ = fully_qualified_name ? _fbb.CreateString(fully_qualified_name) : 0;
+  return executorch_flatbuffer::CreateExtraTensorInfo(
+      _fbb,
+      mutable_data_segments_idx,
+      fully_qualified_name__,
+      location);
+}
+
 struct Tensor FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef TensorBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
@@ -537,10 +657,11 @@ struct Tensor FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
     VT_SIZES = 8,
     VT_DIM_ORDER = 10,
     VT_REQUIRES_GRAD = 12,
-    VT_CONSTANT_BUFFER_IDX = 14,
+    VT_DATA_BUFFER_IDX = 14,
     VT_ALLOCATION_INFO = 16,
     VT_LAYOUT = 18,
-    VT_SHAPE_DYNAMISM = 20
+    VT_SHAPE_DYNAMISM = 20,
+    VT_EXTRA_TENSOR_INFO = 22
   };
   executorch_flatbuffer::ScalarType scalar_type() const {
     return static_cast<executorch_flatbuffer::ScalarType>(GetField<int8_t>(VT_SCALAR_TYPE, 0));
@@ -572,11 +693,11 @@ struct Tensor FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   bool mutate_requires_grad(bool _requires_grad = 0) {
     return SetField<uint8_t>(VT_REQUIRES_GRAD, static_cast<uint8_t>(_requires_grad), 0);
   }
-  uint32_t constant_buffer_idx() const {
-    return GetField<uint32_t>(VT_CONSTANT_BUFFER_IDX, 0);
+  uint32_t data_buffer_idx() const {
+    return GetField<uint32_t>(VT_DATA_BUFFER_IDX, 0);
   }
-  bool mutate_constant_buffer_idx(uint32_t _constant_buffer_idx = 0) {
-    return SetField<uint32_t>(VT_CONSTANT_BUFFER_IDX, _constant_buffer_idx, 0);
+  bool mutate_data_buffer_idx(uint32_t _data_buffer_idx = 0) {
+    return SetField<uint32_t>(VT_DATA_BUFFER_IDX, _data_buffer_idx, 0);
   }
   const executorch_flatbuffer::AllocationDetails *allocation_info() const {
     return GetPointer<const executorch_flatbuffer::AllocationDetails *>(VT_ALLOCATION_INFO);
@@ -596,6 +717,12 @@ struct Tensor FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   bool mutate_shape_dynamism(executorch_flatbuffer::TensorShapeDynamism _shape_dynamism = static_cast<executorch_flatbuffer::TensorShapeDynamism>(0)) {
     return SetField<int8_t>(VT_SHAPE_DYNAMISM, static_cast<int8_t>(_shape_dynamism), 0);
   }
+  const executorch_flatbuffer::ExtraTensorInfo *extra_tensor_info() const {
+    return GetPointer<const executorch_flatbuffer::ExtraTensorInfo *>(VT_EXTRA_TENSOR_INFO);
+  }
+  executorch_flatbuffer::ExtraTensorInfo *mutable_extra_tensor_info() {
+    return GetPointer<executorch_flatbuffer::ExtraTensorInfo *>(VT_EXTRA_TENSOR_INFO);
+  }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<int8_t>(verifier, VT_SCALAR_TYPE, 1) &&
@@ -605,11 +732,13 @@ struct Tensor FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
            VerifyOffset(verifier, VT_DIM_ORDER) &&
            verifier.VerifyVector(dim_order()) &&
            VerifyField<uint8_t>(verifier, VT_REQUIRES_GRAD, 1) &&
-           VerifyField<uint32_t>(verifier, VT_CONSTANT_BUFFER_IDX, 4) &&
+           VerifyField<uint32_t>(verifier, VT_DATA_BUFFER_IDX, 4) &&
            VerifyOffset(verifier, VT_ALLOCATION_INFO) &&
            verifier.VerifyTable(allocation_info()) &&
            VerifyField<int8_t>(verifier, VT_LAYOUT, 1) &&
            VerifyField<int8_t>(verifier, VT_SHAPE_DYNAMISM, 1) &&
+           VerifyOffset(verifier, VT_EXTRA_TENSOR_INFO) &&
+           verifier.VerifyTable(extra_tensor_info()) &&
            verifier.EndTable();
   }
 };
@@ -633,8 +762,8 @@ struct TensorBuilder {
   void add_requires_grad(bool requires_grad) {
     fbb_.AddElement<uint8_t>(Tensor::VT_REQUIRES_GRAD, static_cast<uint8_t>(requires_grad), 0);
   }
-  void add_constant_buffer_idx(uint32_t constant_buffer_idx) {
-    fbb_.AddElement<uint32_t>(Tensor::VT_CONSTANT_BUFFER_IDX, constant_buffer_idx, 0);
+  void add_data_buffer_idx(uint32_t data_buffer_idx) {
+    fbb_.AddElement<uint32_t>(Tensor::VT_DATA_BUFFER_IDX, data_buffer_idx, 0);
   }
   void add_allocation_info(::flatbuffers::Offset<executorch_flatbuffer::AllocationDetails> allocation_info) {
     fbb_.AddOffset(Tensor::VT_ALLOCATION_INFO, allocation_info);
@@ -644,6 +773,9 @@ struct TensorBuilder {
   }
   void add_shape_dynamism(executorch_flatbuffer::TensorShapeDynamism shape_dynamism) {
     fbb_.AddElement<int8_t>(Tensor::VT_SHAPE_DYNAMISM, static_cast<int8_t>(shape_dynamism), 0);
+  }
+  void add_extra_tensor_info(::flatbuffers::Offset<executorch_flatbuffer::ExtraTensorInfo> extra_tensor_info) {
+    fbb_.AddOffset(Tensor::VT_EXTRA_TENSOR_INFO, extra_tensor_info);
   }
   explicit TensorBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -663,13 +795,15 @@ inline ::flatbuffers::Offset<Tensor> CreateTensor(
     ::flatbuffers::Offset<::flatbuffers::Vector<int32_t>> sizes = 0,
     ::flatbuffers::Offset<::flatbuffers::Vector<uint8_t>> dim_order = 0,
     bool requires_grad = false,
-    uint32_t constant_buffer_idx = 0,
+    uint32_t data_buffer_idx = 0,
     ::flatbuffers::Offset<executorch_flatbuffer::AllocationDetails> allocation_info = 0,
     int8_t layout = 0,
-    executorch_flatbuffer::TensorShapeDynamism shape_dynamism = executorch_flatbuffer::TensorShapeDynamism::STATIC) {
+    executorch_flatbuffer::TensorShapeDynamism shape_dynamism = executorch_flatbuffer::TensorShapeDynamism::STATIC,
+    ::flatbuffers::Offset<executorch_flatbuffer::ExtraTensorInfo> extra_tensor_info = 0) {
   TensorBuilder builder_(_fbb);
+  builder_.add_extra_tensor_info(extra_tensor_info);
   builder_.add_allocation_info(allocation_info);
-  builder_.add_constant_buffer_idx(constant_buffer_idx);
+  builder_.add_data_buffer_idx(data_buffer_idx);
   builder_.add_dim_order(dim_order);
   builder_.add_sizes(sizes);
   builder_.add_storage_offset(storage_offset);
@@ -687,10 +821,11 @@ inline ::flatbuffers::Offset<Tensor> CreateTensorDirect(
     const std::vector<int32_t> *sizes = nullptr,
     const std::vector<uint8_t> *dim_order = nullptr,
     bool requires_grad = false,
-    uint32_t constant_buffer_idx = 0,
+    uint32_t data_buffer_idx = 0,
     ::flatbuffers::Offset<executorch_flatbuffer::AllocationDetails> allocation_info = 0,
     int8_t layout = 0,
-    executorch_flatbuffer::TensorShapeDynamism shape_dynamism = executorch_flatbuffer::TensorShapeDynamism::STATIC) {
+    executorch_flatbuffer::TensorShapeDynamism shape_dynamism = executorch_flatbuffer::TensorShapeDynamism::STATIC,
+    ::flatbuffers::Offset<executorch_flatbuffer::ExtraTensorInfo> extra_tensor_info = 0) {
   auto sizes__ = sizes ? _fbb.CreateVector<int32_t>(*sizes) : 0;
   auto dim_order__ = dim_order ? _fbb.CreateVector<uint8_t>(*dim_order) : 0;
   return executorch_flatbuffer::CreateTensor(
@@ -700,10 +835,11 @@ inline ::flatbuffers::Offset<Tensor> CreateTensorDirect(
       sizes__,
       dim_order__,
       requires_grad,
-      constant_buffer_idx,
+      data_buffer_idx,
       allocation_info,
       layout,
-      shape_dynamism);
+      shape_dynamism,
+      extra_tensor_info);
 }
 
 struct Int FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
@@ -2663,6 +2799,75 @@ inline ::flatbuffers::Offset<SubsegmentOffsets> CreateSubsegmentOffsetsDirect(
       offsets__);
 }
 
+struct NamedData FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
+  typedef NamedDataBuilder Builder;
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_KEY = 4,
+    VT_SEGMENT_INDEX = 6
+  };
+  const ::flatbuffers::String *key() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_KEY);
+  }
+  ::flatbuffers::String *mutable_key() {
+    return GetPointer<::flatbuffers::String *>(VT_KEY);
+  }
+  uint32_t segment_index() const {
+    return GetField<uint32_t>(VT_SEGMENT_INDEX, 0);
+  }
+  bool mutate_segment_index(uint32_t _segment_index = 0) {
+    return SetField<uint32_t>(VT_SEGMENT_INDEX, _segment_index, 0);
+  }
+  bool Verify(::flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyOffset(verifier, VT_KEY) &&
+           verifier.VerifyString(key()) &&
+           VerifyField<uint32_t>(verifier, VT_SEGMENT_INDEX, 4) &&
+           verifier.EndTable();
+  }
+};
+
+struct NamedDataBuilder {
+  typedef NamedData Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_key(::flatbuffers::Offset<::flatbuffers::String> key) {
+    fbb_.AddOffset(NamedData::VT_KEY, key);
+  }
+  void add_segment_index(uint32_t segment_index) {
+    fbb_.AddElement<uint32_t>(NamedData::VT_SEGMENT_INDEX, segment_index, 0);
+  }
+  explicit NamedDataBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  ::flatbuffers::Offset<NamedData> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = ::flatbuffers::Offset<NamedData>(end);
+    return o;
+  }
+};
+
+inline ::flatbuffers::Offset<NamedData> CreateNamedData(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> key = 0,
+    uint32_t segment_index = 0) {
+  NamedDataBuilder builder_(_fbb);
+  builder_.add_segment_index(segment_index);
+  builder_.add_key(key);
+  return builder_.Finish();
+}
+
+inline ::flatbuffers::Offset<NamedData> CreateNamedDataDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    const char *key = nullptr,
+    uint32_t segment_index = 0) {
+  auto key__ = key ? _fbb.CreateString(key) : 0;
+  return executorch_flatbuffer::CreateNamedData(
+      _fbb,
+      key__,
+      segment_index);
+}
+
 struct Program FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef ProgramBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
@@ -2671,7 +2876,9 @@ struct Program FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
     VT_CONSTANT_BUFFER = 8,
     VT_BACKEND_DELEGATE_DATA = 10,
     VT_SEGMENTS = 12,
-    VT_CONSTANT_SEGMENT = 14
+    VT_CONSTANT_SEGMENT = 14,
+    VT_MUTABLE_DATA_SEGMENTS = 16,
+    VT_NAMED_DATA = 18
   };
   uint32_t version() const {
     return GetField<uint32_t>(VT_VERSION, 0);
@@ -2709,6 +2916,18 @@ struct Program FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   executorch_flatbuffer::SubsegmentOffsets *mutable_constant_segment() {
     return GetPointer<executorch_flatbuffer::SubsegmentOffsets *>(VT_CONSTANT_SEGMENT);
   }
+  const ::flatbuffers::Vector<::flatbuffers::Offset<executorch_flatbuffer::SubsegmentOffsets>> *mutable_data_segments() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<executorch_flatbuffer::SubsegmentOffsets>> *>(VT_MUTABLE_DATA_SEGMENTS);
+  }
+  ::flatbuffers::Vector<::flatbuffers::Offset<executorch_flatbuffer::SubsegmentOffsets>> *mutable_mutable_data_segments() {
+    return GetPointer<::flatbuffers::Vector<::flatbuffers::Offset<executorch_flatbuffer::SubsegmentOffsets>> *>(VT_MUTABLE_DATA_SEGMENTS);
+  }
+  const ::flatbuffers::Vector<::flatbuffers::Offset<executorch_flatbuffer::NamedData>> *named_data() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<executorch_flatbuffer::NamedData>> *>(VT_NAMED_DATA);
+  }
+  ::flatbuffers::Vector<::flatbuffers::Offset<executorch_flatbuffer::NamedData>> *mutable_named_data() {
+    return GetPointer<::flatbuffers::Vector<::flatbuffers::Offset<executorch_flatbuffer::NamedData>> *>(VT_NAMED_DATA);
+  }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<uint32_t>(verifier, VT_VERSION, 4) &&
@@ -2726,6 +2945,12 @@ struct Program FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
            verifier.VerifyVectorOfTables(segments()) &&
            VerifyOffset(verifier, VT_CONSTANT_SEGMENT) &&
            verifier.VerifyTable(constant_segment()) &&
+           VerifyOffset(verifier, VT_MUTABLE_DATA_SEGMENTS) &&
+           verifier.VerifyVector(mutable_data_segments()) &&
+           verifier.VerifyVectorOfTables(mutable_data_segments()) &&
+           VerifyOffset(verifier, VT_NAMED_DATA) &&
+           verifier.VerifyVector(named_data()) &&
+           verifier.VerifyVectorOfTables(named_data()) &&
            verifier.EndTable();
   }
 };
@@ -2752,6 +2977,12 @@ struct ProgramBuilder {
   void add_constant_segment(::flatbuffers::Offset<executorch_flatbuffer::SubsegmentOffsets> constant_segment) {
     fbb_.AddOffset(Program::VT_CONSTANT_SEGMENT, constant_segment);
   }
+  void add_mutable_data_segments(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<executorch_flatbuffer::SubsegmentOffsets>>> mutable_data_segments) {
+    fbb_.AddOffset(Program::VT_MUTABLE_DATA_SEGMENTS, mutable_data_segments);
+  }
+  void add_named_data(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<executorch_flatbuffer::NamedData>>> named_data) {
+    fbb_.AddOffset(Program::VT_NAMED_DATA, named_data);
+  }
   explicit ProgramBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
@@ -2770,8 +3001,12 @@ inline ::flatbuffers::Offset<Program> CreateProgram(
     ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<executorch_flatbuffer::Buffer>>> constant_buffer = 0,
     ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<executorch_flatbuffer::BackendDelegateInlineData>>> backend_delegate_data = 0,
     ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<executorch_flatbuffer::DataSegment>>> segments = 0,
-    ::flatbuffers::Offset<executorch_flatbuffer::SubsegmentOffsets> constant_segment = 0) {
+    ::flatbuffers::Offset<executorch_flatbuffer::SubsegmentOffsets> constant_segment = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<executorch_flatbuffer::SubsegmentOffsets>>> mutable_data_segments = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<executorch_flatbuffer::NamedData>>> named_data = 0) {
   ProgramBuilder builder_(_fbb);
+  builder_.add_named_data(named_data);
+  builder_.add_mutable_data_segments(mutable_data_segments);
   builder_.add_constant_segment(constant_segment);
   builder_.add_segments(segments);
   builder_.add_backend_delegate_data(backend_delegate_data);
@@ -2788,11 +3023,15 @@ inline ::flatbuffers::Offset<Program> CreateProgramDirect(
     const std::vector<::flatbuffers::Offset<executorch_flatbuffer::Buffer>> *constant_buffer = nullptr,
     const std::vector<::flatbuffers::Offset<executorch_flatbuffer::BackendDelegateInlineData>> *backend_delegate_data = nullptr,
     const std::vector<::flatbuffers::Offset<executorch_flatbuffer::DataSegment>> *segments = nullptr,
-    ::flatbuffers::Offset<executorch_flatbuffer::SubsegmentOffsets> constant_segment = 0) {
+    ::flatbuffers::Offset<executorch_flatbuffer::SubsegmentOffsets> constant_segment = 0,
+    const std::vector<::flatbuffers::Offset<executorch_flatbuffer::SubsegmentOffsets>> *mutable_data_segments = nullptr,
+    const std::vector<::flatbuffers::Offset<executorch_flatbuffer::NamedData>> *named_data = nullptr) {
   auto execution_plan__ = execution_plan ? _fbb.CreateVector<::flatbuffers::Offset<executorch_flatbuffer::ExecutionPlan>>(*execution_plan) : 0;
   auto constant_buffer__ = constant_buffer ? _fbb.CreateVector<::flatbuffers::Offset<executorch_flatbuffer::Buffer>>(*constant_buffer) : 0;
   auto backend_delegate_data__ = backend_delegate_data ? _fbb.CreateVector<::flatbuffers::Offset<executorch_flatbuffer::BackendDelegateInlineData>>(*backend_delegate_data) : 0;
   auto segments__ = segments ? _fbb.CreateVector<::flatbuffers::Offset<executorch_flatbuffer::DataSegment>>(*segments) : 0;
+  auto mutable_data_segments__ = mutable_data_segments ? _fbb.CreateVector<::flatbuffers::Offset<executorch_flatbuffer::SubsegmentOffsets>>(*mutable_data_segments) : 0;
+  auto named_data__ = named_data ? _fbb.CreateVector<::flatbuffers::Offset<executorch_flatbuffer::NamedData>>(*named_data) : 0;
   return executorch_flatbuffer::CreateProgram(
       _fbb,
       version,
@@ -2800,7 +3039,9 @@ inline ::flatbuffers::Offset<Program> CreateProgramDirect(
       constant_buffer__,
       backend_delegate_data__,
       segments__,
-      constant_segment);
+      constant_segment,
+      mutable_data_segments__,
+      named_data__);
 }
 
 inline bool VerifyKernelTypes(::flatbuffers::Verifier &verifier, const void *obj, KernelTypes type) {

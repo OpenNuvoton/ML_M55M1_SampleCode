@@ -18,10 +18,10 @@
 namespace vkcompute {
 
 void check_binary_op_args(
-    const vTensor& self,
-    const vTensor& other,
-    const vTensor& out) {
-  VK_CHECK_COND(check_same_memory_layout(self, other, out));
+    const api::vTensor& self,
+    const api::vTensor& other,
+    const api::vTensor& out) {
+  VK_CHECK_COND(check_same_packed_dim(self, other, out));
   std::vector<int64_t> broadcasted_sizes =
       calculate_broadcasted_output_size(self, other);
   VK_CHECK_COND(out.sizes() == broadcasted_sizes);
@@ -44,25 +44,21 @@ void resize_binary_op_node(
   out->virtual_resize(new_out_sizes);
 }
 
-void add_binary_op_node(
+void add_binary_op_texture_node(
     ComputeGraph& graph,
     const ValueRef in1,
     const ValueRef in2,
     const ValueRef alpha,
     const ValueRef out,
     const std::string& op_name) {
-  ValueRef arg1 = prepack_if_tensor_ref(graph, in1);
-  ValueRef arg2 =
-      prepack_if_tensor_ref(graph, in2, graph.memory_layout_of(arg1));
+  ValueRef arg1 = prepack_standard_like(graph, in1, out, true);
+  ValueRef arg2 = prepack_standard_like(graph, in2, out, true);
 
   vTensorPtr t_in1 = graph.get_tensor(arg1);
   vTensorPtr t_in2 = graph.get_tensor(arg2);
   vTensorPtr t_out = graph.get_tensor(out);
 
   check_binary_op_args(*t_in1, *t_in2, *t_out);
-
-  api::utils::uvec3 global_size = t_out->image_extents();
-  api::utils::uvec3 local_size = adaptive_work_group_size(global_size);
 
   float alpha_val = 1.0f;
   // String is checked since floor_div passes in an unused string argument in
@@ -71,33 +67,100 @@ void add_binary_op_node(
     alpha_val = graph.extract_scalar<float>(alpha);
   }
 
-  const api::utils::ivec2 broadcast_params =
-      create_broadcast_params(*t_in1, *t_in2);
+  const struct BinaryOpsParams {
+    const utils::ivec2 broadcast_params;
+    const float alpha_val;
+  } binary_ops_params{create_broadcast_params(*t_in1, *t_in2), alpha_val};
 
   std::string kernel_name("binary_");
   kernel_name.reserve(kShaderNameReserve);
   kernel_name += op_name;
+  add_storage_type_suffix(kernel_name, *t_out);
   add_dtype_suffix(kernel_name, *t_out);
 
-  graph.execute_nodes().emplace_back(new ExecuteNode(
+  graph.execute_nodes().emplace_back(new DispatchNode(
       graph,
       VK_KERNEL_FROM_STR(kernel_name),
-      global_size,
-      local_size,
+      graph.create_global_wg_size(out),
+      graph.create_local_wg_size(out),
       // Inputs and Outputs
-      {{out, api::MemoryAccessType::WRITE},
-       {{arg1, arg2}, api::MemoryAccessType::READ}},
+      {{out, vkapi::MemoryAccessType::WRITE},
+       {{arg1, arg2}, vkapi::MemoryAccessType::READ}},
       // Shader params buffers
-      {t_out->sizes_ubo(),
-       t_in1->sizes_ubo(),
-       t_in2->sizes_ubo(),
-       graph.create_params_buffer(broadcast_params),
-       graph.create_params_buffer(alpha_val)},
+      {},
       // Specialization Constants
-      {SV(t_out->packed_dim_whcn_idx())},
+      {t_out->hashed_layout(), t_in1->hashed_layout(), t_in2->hashed_layout()},
       // Resizing Logic
       resize_binary_op_node,
-      {}));
+      {},
+      {{graph.sizes_pc_of(out),
+        graph.sizes_pc_of(arg1),
+        graph.sizes_pc_of(arg2),
+        PushConstantDataInfo(&binary_ops_params, sizeof(binary_ops_params))}}));
+}
+
+void add_binary_op_buffer_node(
+    ComputeGraph& graph,
+    const ValueRef in1,
+    const ValueRef in2,
+    const ValueRef alpha,
+    const ValueRef out,
+    const std::string& op_name) {
+  // check_binary_op_args(*t_in1, *t_in2, *t_out);
+
+  float alpha_val = 1.0f;
+  // String is checked since floor_div passes in an unused string argument in
+  // place of alpha
+  if (is_valid(alpha) && !graph.val_is_string(alpha)) {
+    alpha_val = graph.extract_scalar<float>(alpha);
+  }
+
+  std::string kernel_name("binary_");
+  kernel_name.reserve(kShaderNameReserve);
+  kernel_name += op_name;
+  add_storage_type_suffix(kernel_name, graph.storage_type_of(out));
+  add_dtype_suffix(kernel_name, graph.dtype_of(out));
+
+  graph.execute_nodes().emplace_back(new DispatchNode(
+      graph,
+      VK_KERNEL_FROM_STR(kernel_name),
+      graph.create_global_wg_size(out),
+      graph.create_local_wg_size(out),
+      // Inputs and Outputs
+      {{out, vkapi::MemoryAccessType::WRITE},
+       {{in1, in2}, vkapi::MemoryAccessType::READ}},
+      // Shader params buffers
+      {},
+      // Specialization Constants
+      {graph.packed_dim_of(out),
+       graph.packed_dim_of(in1),
+       graph.packed_dim_of(in2)},
+      // Resizing Logic
+      resize_binary_op_node,
+      {},
+      {{
+          graph.sizes_pc_of(in1),
+          graph.sizes_pc_of(in2),
+          graph.strides_pc_of(out),
+          graph.strides_pc_of(in1),
+          graph.strides_pc_of(in2),
+          graph.numel_pc_of(out),
+          PushConstantDataInfo(&alpha_val, sizeof(float)),
+      }}));
+}
+
+void add_binary_op_node(
+    ComputeGraph& graph,
+    const ValueRef in1,
+    const ValueRef in2,
+    const ValueRef alpha,
+    const ValueRef out,
+    const std::string& op_name) {
+  if (graph.is_buffer_storage(out)) {
+    add_binary_op_buffer_node(graph, in1, in2, alpha, out, op_name);
+  } else {
+    add_binary_op_texture_node(graph, in1, in2, alpha, out, op_name);
+  }
 }
 
 #define DEFINE_BINARY_OP_WITH_ALPHA_FN(op_name)                          \
@@ -122,6 +185,7 @@ DEFINE_BINARY_OP_WITH_ALPHA_FN(floor_divide);
 DEFINE_BINARY_OP_FN(mul);
 DEFINE_BINARY_OP_FN(div);
 DEFINE_BINARY_OP_FN(pow);
+DEFINE_BINARY_OP_FN(minimum);
 
 REGISTER_OPERATORS {
   VK_REGISTER_OP(aten.add.Tensor, add);
@@ -130,6 +194,7 @@ REGISTER_OPERATORS {
   VK_REGISTER_OP(aten.div.Tensor, div);
   VK_REGISTER_OP(aten.div.Tensor_mode, floor_divide);
   VK_REGISTER_OP(aten.pow.Tensor_Tensor, pow);
+  VK_REGISTER_OP(aten.minimum.default, minimum);
 }
 
 } // namespace vkcompute

@@ -8,9 +8,17 @@
 
 #pragma once
 
+#ifdef __GNUC__
+// Disable -Wdeprecated-declarations, as some builds use 'Werror'.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
 #include <executorch/runtime/core/evalue.h>
 #include <executorch/runtime/core/event_tracer.h>
 #include <executorch/runtime/core/exec_aten/exec_aten.h>
+#include <executorch/runtime/core/named_data_map.h>
+#include <executorch/runtime/core/span.h>
 #include <executorch/runtime/executor/memory_manager.h>
 #include <executorch/runtime/executor/method_meta.h>
 #include <executorch/runtime/platform/compiler.h>
@@ -23,8 +31,14 @@ struct ExecutionPlan;
 struct EValue;
 } // namespace executorch_flatbuffer
 
-namespace torch {
-namespace executor {
+namespace executorch {
+namespace ET_RUNTIME_NAMESPACE {
+
+// Forward declare NamedData. This is a public header and must not include
+// internal data types.
+namespace deserialization {
+struct NamedData;
+} // namespace deserialization
 
 // Forward declare Program to avoid a circular reference.
 class Program;
@@ -32,13 +46,12 @@ class Program;
 // Forward declare internal types.
 class BackendDelegate;
 struct Chain;
-template <typename T>
-class Span;
 class KernelRuntimeContext;
 using OpFunction = void (*)(KernelRuntimeContext&, EValue**);
 /// A list of pointers into the master values table that together compose the
 /// argument list for a single instruction
 using InstructionArgs = Span<EValue*>;
+using deserialization::NamedData;
 
 /**
  * An executable method of an executorch program. Maps to a python method like
@@ -54,6 +67,7 @@ class Method final {
       : step_state_(rhs.step_state_),
         program_(rhs.program_),
         memory_manager_(rhs.memory_manager_),
+        temp_allocator_(rhs.temp_allocator_),
         serialization_plan_(rhs.serialization_plan_),
         event_tracer_(rhs.event_tracer_),
         n_value_(rhs.n_value_),
@@ -62,15 +76,17 @@ class Method final {
         delegates_(rhs.delegates_),
         n_chains_(rhs.n_chains_),
         chains_(rhs.chains_),
-        init_state_(rhs.init_state_),
-        pre_allocated_input_(rhs.pre_allocated_input_),
-        pre_allocated_output_(rhs.pre_allocated_output_) {
+        external_constants_(rhs.external_constants_),
+        n_external_constants_(rhs.n_external_constants_),
+        init_state_(rhs.init_state_) {
     // Required: clear out fields that the dtor looks at, so that we don't free
     // anything twice.
     rhs.n_value_ = 0;
     rhs.values_ = nullptr;
     rhs.n_delegate_ = 0;
     rhs.delegates_ = nullptr;
+    rhs.n_external_constants_ = 0;
+    rhs.external_constants_ = nullptr;
 
     // Helpful: Try to ensure that any other interactions with the old object
     // result in failures.
@@ -82,8 +98,6 @@ class Method final {
     rhs.event_tracer_ = nullptr;
     rhs.n_chains_ = 0;
     rhs.chains_ = nullptr;
-    rhs.pre_allocated_input_ = false;
-    rhs.pre_allocated_output_ = false;
   }
 
   /**
@@ -104,7 +118,7 @@ class Method final {
    *
    * @returns Error::Ok on success, non-Ok on failure.
    */
-  __ET_NODISCARD Error set_input(const EValue& input_evalue, size_t input_idx);
+  ET_NODISCARD Error set_input(const EValue& input_evalue, size_t input_idx);
 
   /**
    * Sets the values of all method inputs.
@@ -118,8 +132,8 @@ class Method final {
    *
    * @returns Error::Ok on success, non-Ok on failure.
    */
-  __ET_NODISCARD Error
-  set_inputs(const exec_aten::ArrayRef<EValue>& input_evalues);
+  ET_NODISCARD Error
+  set_inputs(const executorch::aten::ArrayRef<EValue>& input_evalues);
 
   /**
    * Sets the data buffer of the specified method output to the provided value.
@@ -140,7 +154,7 @@ class Method final {
    *
    * @returns Error::Ok on success, non-Ok on failure.
    */
-  __ET_NODISCARD Error
+  ET_NODISCARD Error
   set_output_data_ptr(void* buffer, size_t size, size_t output_idx);
 
   /**
@@ -160,41 +174,71 @@ class Method final {
    *
    * @returns Error::Ok on success, non-Ok on failure.
    */
-  __ET_NODISCARD Error get_outputs(EValue* output_evalues, size_t length);
+  ET_NODISCARD Error get_outputs(EValue* output_evalues, size_t length);
+
+  /**
+   * Copies the method's inputs into the provided array.
+   *
+   * WARNING: The input contains shallow copies of internal tensor inputs.
+   * Please do not mutate returned Tensor elements.
+   *
+   * @param[in] input_evalues The array to copy the inputs into. The first
+   *     `inputs_size()` elements will be set to the corresponding input
+   *     values. The rest of the array will be set to the EValue value None.
+   * @param[in] length The size of the `input_evalues` array in elements. Must
+   *     be greater than or equal to `inputs_size()`.
+   *
+   * @returns Error::Ok on success, non-Ok on failure.
+   */
+  ET_NODISCARD Error get_inputs(EValue* input_evalues, size_t length);
+
+  /**
+   *
+   * Retrieves the attribute tensor associated with the given name.
+   *
+   * @param[in] name The name of the attribute tensor to retrieve.
+   *
+   * @returns Result containing the attribute tensor on success, non-Ok on
+   * failure.
+   */
+  ET_NODISCARD Result<executorch::aten::Tensor> get_attribute(
+      executorch::aten::string_view name);
 
   /**
    * Execute the method.
    *
    * NOTE: Will fail if the method has been partially executed using the
-   * `experimental_step()` api.
+   * `step()` api.
    *
    * @returns Error::Ok on success, non-Ok on failure.
    */
-  __ET_NODISCARD Error execute();
+  ET_NODISCARD Error execute();
 
   /**
-   * Advances/executes a single instruction in the method.
-   *
-   * NOTE: Prototype API; subject to change.
+   * EXPERIMENTAL: Advances/executes a single instruction in the method.
    *
    * @retval Error::Ok step succeeded
    * @retval non-Ok step failed
    * @retval Error::EndOfMethod method finished executing successfully
    */
-  __ET_NODISCARD Error experimental_step();
+  ET_EXPERIMENTAL ET_NODISCARD Error step();
+
+  /// DEPRECATED: Use `step()` instead.
+  ET_DEPRECATED ET_NODISCARD Error experimental_step();
 
   /**
-   * Resets execution state to the start of the Method. For use with the
-   * `experimental_step()` API.
-   *
-   * NOTE: Prototype API; subject to change.
+   * EXPERIMENTAL: Resets execution state to the start of the Method. For use
+   * with the `step()` API.
    *
    * @retval Error:Ok on success
    * @retval Error::InvalidState if called before step-based execution reached
    *     the end of the Method. This means it is not possible to recover a
    *     Method that failed mid-execution.
    */
-  __ET_NODISCARD Error experimental_reset_execution();
+  ET_EXPERIMENTAL ET_NODISCARD Error reset_execution();
+
+  /// DEPRECATED: Use `reset_execution()` instead.
+  ET_DEPRECATED ET_NODISCARD Error experimental_reset_execution();
 
   /**
    * Returns the MethodMeta that corresponds to the calling Method.
@@ -220,13 +264,13 @@ class Method final {
 
   /// DEPRECATED: Use MethodMeta instead to access metadata, and set_input to
   /// update Method inputs.
-  __ET_DEPRECATED const EValue& get_input(size_t i) const;
+  ET_DEPRECATED const EValue& get_input(size_t i) const;
   /// DEPRECATED: Use MethodMeta instead to access metadata, and set_input to
   /// update Method inputs.
-  __ET_DEPRECATED EValue& mutable_input(size_t i);
+  ET_DEPRECATED EValue& mutable_input(size_t i);
   /// DEPRECATED: Use MethodMeta instead to access metadata, and get_output to
   /// retrieve Method outputs.
-  __ET_DEPRECATED EValue& mutable_output(size_t i);
+  ET_DEPRECATED EValue& mutable_output(size_t i);
 
   ~Method();
 
@@ -256,10 +300,12 @@ class Method final {
   Method(
       const Program* program,
       MemoryManager* memory_manager,
-      EventTracer* event_tracer)
+      EventTracer* event_tracer,
+      MemoryAllocator* temp_allocator)
       : step_state_(),
         program_(program),
         memory_manager_(memory_manager),
+        temp_allocator_(temp_allocator),
         serialization_plan_(nullptr),
         event_tracer_(event_tracer),
         n_value_(0),
@@ -268,23 +314,26 @@ class Method final {
         delegates_(nullptr),
         n_chains_(0),
         chains_(nullptr),
-        init_state_(InitializationState::Uninitialized),
-        pre_allocated_input_(false),
-        pre_allocated_output_(false) {}
+        external_constants_(nullptr),
+        n_external_constants_(0),
+        init_state_(InitializationState::Uninitialized) {}
 
   /// Static factory used by Program.
-  __ET_NODISCARD static Result<Method> load(
+  ET_NODISCARD static Result<Method> load(
       executorch_flatbuffer::ExecutionPlan* s_plan,
       const Program* program,
       MemoryManager* memory_manager,
-      EventTracer* event_tracer);
+      EventTracer* event_tracer,
+      const NamedDataMap* named_data_map);
 
   /**
    * Initialize the method from its serialized representation.
    *
    * @returns Error::Ok on success, non-Ok on failure.
    */
-  __ET_NODISCARD Error init(executorch_flatbuffer::ExecutionPlan* s_plan);
+  ET_NODISCARD Error init(
+      executorch_flatbuffer::ExecutionPlan* s_plan,
+      const NamedDataMap* named_data_map);
 
   /// Returns true if the Method was successfully initialized.
   inline bool initialized() const {
@@ -297,11 +346,12 @@ class Method final {
   size_t get_output_index(size_t i) const;
 
   // Executes a single instruction using the state in step_state_
-  __ET_NODISCARD Error execute_instruction();
+  ET_NODISCARD Error execute_instruction();
 
   StepState step_state_;
   const Program* program_;
   MemoryManager* memory_manager_;
+  MemoryAllocator* temp_allocator_;
   executorch_flatbuffer::ExecutionPlan* serialization_plan_;
   EventTracer* event_tracer_;
 
@@ -314,18 +364,39 @@ class Method final {
   size_t n_chains_;
   Chain* chains_;
 
+  NamedData* external_constants_;
+  size_t n_external_constants_ = 0;
+
   InitializationState init_state_;
-  bool pre_allocated_input_;
-  bool pre_allocated_output_;
+
+  /**
+   * Counts the number of tensors marked as EXTERNAL in the flatbuffer
+   * for this method.
+   */
+  ET_NODISCARD Result<size_t> get_num_external_constants();
+
+  /**
+   * Parses the flatbuffer for constant tensors tagged as EXTERNAL.
+   * Retrieves the external constants using the named_data_map and places them
+   * into `external_constants_`. Updates `n_external_constants_` to count the
+   * number of successfully-initialized external constants.
+   * FreeableBuffers returned by the named_data_map are owned by the
+   * method and are freed on method destruction.
+   *
+   * @param[in] named_data_map, to retrieve external constants from.
+   * @returns Error::Ok on success, non-Ok on failure.
+   */
+  ET_NODISCARD Error
+  parse_external_constants(const NamedDataMap* named_data_map);
 
   /**
    * Parses the elements of the values_ array. On error, n_value_ will be set to
    * the number of successfully-initialized entries so that ~Method doesn't try
    * to clean up uninitialized entries.
    */
-  __ET_NODISCARD Error parse_values();
+  ET_NODISCARD Error parse_values(const NamedDataMap* named_data_map);
 
-  __ET_NODISCARD Error resolve_operator(
+  ET_NODISCARD Error resolve_operator(
       int32_t op_index,
       OpFunction* kernels,
       size_t kernel_index,
@@ -335,5 +406,17 @@ class Method final {
   void log_outputs();
 };
 
+} // namespace ET_RUNTIME_NAMESPACE
+} // namespace executorch
+
+namespace torch {
+namespace executor {
+// TODO(T197294990): Remove these deprecated aliases once all users have moved
+// to the new `::executorch` namespaces.
+using ::executorch::ET_RUNTIME_NAMESPACE::Method;
 } // namespace executor
 } // namespace torch
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif

@@ -17,29 +17,23 @@
 
 namespace vkcompute {
 
-using api::utils::ivec2;
-using api::utils::ivec3;
-using api::utils::ivec4;
-using api::utils::uvec4;
+using utils::ivec2;
+using utils::ivec3;
+using utils::ivec4;
+using utils::uvec4;
 
 namespace {
 
 void check_args(
-    const vTensor& in,
+    const api::vTensor& in,
     const std::vector<int64_t>& permute_dims,
-    const vTensor& out) {
-  VK_CHECK_COND(check_memory_layout_is(in, api::kChannelsPacked));
-  VK_CHECK_COND(check_memory_layout_is(out, api::kChannelsPacked));
+    const api::vTensor& out) {
+  VK_CHECK_COND(check_same_packed_dim(in, out));
 
   // This implementation doesn't not requires the input tensor to have the same
   // dim size as the argument. The code will work as long as the input tensor's
   // dim size is shorter than the permute dim array. In this case, the code
   // assume size of 1 at the higher dimensions.
-
-  int64_t out_dim = out.dim();
-  VK_CHECK_COND(
-      out_dim == permute_dims.size(),
-      "Output tensor dim size must match argument");
 }
 
 } // namespace
@@ -56,15 +50,18 @@ void add_permute_node(
 
   ivec4 out_dims{0, 1, 2, 3};
 
-  int64_t out_dim = t_out->dim();
-  std::vector<bool> seen(out_dim);
-  for (int i = 0; i < t_out->dim(); i++) {
+  // Special cases of squeeze/unsqueeze. Because the input dim size can be
+  // different with output dim size. So pick t_in->dim() if squeeze, and
+  // t_out->dim() if unsqueeze to create parameter for permute.
+  int64_t out_ndim = std::max(t_in->dim(), t_out->dim());
+  std::vector<bool> seen(out_ndim);
+  for (int i = 0; i < out_ndim; i++) {
     int64_t permute_dim = permute_dims[i];
     VK_CHECK_COND(
         !seen[permute_dim], "Argument dim ", permute_dim, "  is repeated");
     seen[permute_dim] = true;
 
-    out_dims.data[(4u - out_dim) + i] = permute_dim + (4 - out_dim);
+    out_dims[(4u - out_ndim) + i] = permute_dim + (4 - out_ndim);
   }
 
   std::string kernel_name = "permute";
@@ -74,34 +71,32 @@ void add_permute_node(
   int32_t out_channels = dim_at<kChannel4D>(t_out->sizes());
   int32_t in_channels = dim_at<kChannel4D>(t_in->sizes());
 
-  int32_t out_c_aligned = api::utils::align_up_4(out_channels);
-  int32_t in_c_aligned = api::utils::align_up_4(in_channels);
+  const auto packed_dim = graph.packed_dim_of(in);
+  ivec2 channel_info = {out_channels, in_channels};
+  if (packed_dim == WHCN::kChannelsDim) {
+    channel_info[0] = utils::align_up_4(channel_info[0]);
+    channel_info[1] = utils::align_up_4(channel_info[1]);
+  }
 
-  const struct Block final {
-    ivec4 out_ndims;
-    ivec2 ch_info;
-  } params{
-      out_dims,
-      {out_c_aligned, in_c_aligned},
-  };
+  const vkapi::SpecVarList spec_vars = {packed_dim};
 
-  api::utils::uvec3 global_size = t_out->image_extents();
-  api::utils::uvec3 local_size = adaptive_work_group_size(global_size);
-
-  graph.execute_nodes().emplace_back(new ExecuteNode(
+  graph.execute_nodes().emplace_back(new DispatchNode(
       graph,
       VK_KERNEL_FROM_STR(kernel_name),
-      global_size,
-      local_size,
-      {{out, api::MemoryAccessType::WRITE}, {in, api::MemoryAccessType::READ}},
-      {t_out->texture_limits_ubo(),
-       t_out->sizes_ubo(),
-       graph.create_params_buffer(params)},
-      // Specialization Constants
+      graph.create_global_wg_size(out),
+      graph.create_local_wg_size(out),
+      {{out, vkapi::MemoryAccessType::WRITE},
+       {in, vkapi::MemoryAccessType::READ}},
       {},
+      // Specialization Constants
+      spec_vars,
       // Resizing Logic
       nullptr,
-      {}));
+      {},
+      {{graph.logical_limits_pc_of(out),
+        graph.sizes_pc_of(in),
+        PushConstantDataInfo(&out_dims, sizeof(out_dims)),
+        PushConstantDataInfo(&channel_info, sizeof(channel_info))}}));
 }
 
 void add_permute_node(

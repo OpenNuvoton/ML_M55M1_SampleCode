@@ -114,6 +114,30 @@ at::Tensor & wrapper_CPU_dtype_out_embedding_byte_out(const at::Tensor & weight,
 
 namespace {
 
+at::Tensor & wrapper_CPU_out_embedding_2bit_out(const at::Tensor & weight, const at::Tensor & weight_scales, const ::std::optional<at::Tensor> & weight_zero_points, int64_t weight_quant_min, int64_t weight_quant_max, const at::Tensor & indices, at::Tensor & out) {
+    // No device check
+
+
+  // DeviceGuard omitted
+  return torch::executor::native::quantized_embedding_2bit_out(weight, weight_scales, weight_zero_points, weight_quant_min, weight_quant_max, indices, out);
+}
+
+} // anonymous namespace
+
+namespace {
+
+at::Tensor & wrapper_CPU_dtype_out_embedding_2bit_out(const at::Tensor & weight, const at::Tensor & weight_scales, const ::std::optional<at::Tensor> & weight_zero_points, int64_t weight_quant_min, int64_t weight_quant_max, const at::Tensor & indices, ::std::optional<at::ScalarType> dtype, at::Tensor & out) {
+    // No device check
+
+
+  // DeviceGuard omitted
+  return torch::executor::native::quantized_embedding_2bit_dtype_out(weight, weight_scales, weight_zero_points, weight_quant_min, weight_quant_max, indices, dtype, out);
+}
+
+} // anonymous namespace
+
+namespace {
+
 at::Tensor & wrapper_CPU_out_embedding_4bit_out(const at::Tensor & weight, const at::Tensor & weight_scales, const ::std::optional<at::Tensor> & weight_zero_points, int64_t weight_quant_min, int64_t weight_quant_max, const at::Tensor & indices, at::Tensor & out) {
     // No device check
 
@@ -184,6 +208,42 @@ at::Tensor & wrapper_CPU_Tensor_out_quantize_per_tensor_out(const at::Tensor & i
 
 } // anonymous namespace
 
+namespace {
+
+::std::tuple<at::Tensor &,at::Tensor &> wrapper_CPU_out_choose_qparams_per_token_asymmetric_out(const at::Tensor & input, at::ScalarType dtype, at::Tensor & scale_out, at::Tensor & zero_point_out) {
+    // No device check
+
+
+  // DeviceGuard omitted
+  return torch::executor::native::choose_qparams_per_token_asymmetric_out(input, dtype, scale_out, zero_point_out);
+}
+
+} // anonymous namespace
+
+namespace {
+
+at::Tensor & wrapper_CPU_out_quantize_per_token_out(const at::Tensor & input, const at::Tensor & scales, const at::Tensor & zero_points, int64_t quant_min, int64_t quant_max, at::ScalarType dtype, at::Tensor & out) {
+    // No device check
+
+
+  // DeviceGuard omitted
+  return torch::executor::native::quantize_per_token_out(input, scales, zero_points, quant_min, quant_max, dtype, out);
+}
+
+} // anonymous namespace
+
+namespace {
+
+at::Tensor & wrapper_CPU_out_dequantize_per_token_out(const at::Tensor & input, const at::Tensor & scales, const at::Tensor & zero_points, int64_t quant_min, int64_t quant_max, at::ScalarType dtype, at::ScalarType output_dtype, at::Tensor & out) {
+    // No device check
+
+
+  // DeviceGuard omitted
+  return torch::executor::native::dequantize_per_token_out(input, scales, zero_points, quant_min, quant_max, dtype, output_dtype, out);
+}
+
+} // anonymous namespace
+
 // All out variants ops
 
 TORCH_LIBRARY_IMPL(quantized_decomposed, CPU, m) {
@@ -211,6 +271,12 @@ TORCH_FN(wrapper_CPU_out_embedding_byte_out));
 m.impl("embedding_byte.dtype_out",
 TORCH_FN(wrapper_CPU_dtype_out_embedding_byte_out));
 
+m.impl("embedding_2bit.out",
+TORCH_FN(wrapper_CPU_out_embedding_2bit_out));
+
+m.impl("embedding_2bit.dtype_out",
+TORCH_FN(wrapper_CPU_dtype_out_embedding_2bit_out));
+
 m.impl("embedding_4bit.out",
 TORCH_FN(wrapper_CPU_out_embedding_4bit_out));
 
@@ -229,7 +295,16 @@ TORCH_FN(wrapper_CPU_out_quantize_per_tensor_out));
 m.impl("quantize_per_tensor.Tensor_out",
 TORCH_FN(wrapper_CPU_Tensor_out_quantize_per_tensor_out));
 
-};
+m.impl("choose_qparams_per_token_asymmetric.out",
+TORCH_FN(wrapper_CPU_out_choose_qparams_per_token_asymmetric_out));
+
+m.impl("quantize_per_token.out",
+TORCH_FN(wrapper_CPU_out_quantize_per_token_out));
+
+m.impl("dequantize_per_token.out",
+TORCH_FN(wrapper_CPU_out_dequantize_per_token_out));
+
+}
 
 namespace cpu {
 

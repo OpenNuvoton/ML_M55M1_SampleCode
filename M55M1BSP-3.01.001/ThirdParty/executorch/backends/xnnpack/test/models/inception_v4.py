@@ -12,6 +12,9 @@ from timm.models import inception_v4
 
 
 class TestInceptionV4(unittest.TestCase):
+    def setUp(self):
+        torch._dynamo.reset()
+
     ic4 = inception_v4(pretrained=False).eval()
     model_inputs = (torch.randn(3, 299, 299).unsqueeze(0),)
 
@@ -32,9 +35,7 @@ class TestInceptionV4(unittest.TestCase):
         (
             Tester(self.ic4, self.model_inputs)
             .export()
-            .to_edge()
-            .check(list(self.all_operators))
-            .partition()
+            .to_edge_transform_and_lower()
             .check(["torch.ops.higher_order.executorch_call_delegate"])
             .check_not(list(self.all_operators))
             .to_executorch()
@@ -52,9 +53,7 @@ class TestInceptionV4(unittest.TestCase):
             Tester(self.ic4, self.model_inputs)
             .quantize()
             .export()
-            .to_edge()
-            .check(list(ops_after_quantization))
-            .partition()
+            .to_edge_transform_and_lower()
             .check(["torch.ops.higher_order.executorch_call_delegate"])
             .check_not(list(ops_after_quantization))
             .to_executorch()

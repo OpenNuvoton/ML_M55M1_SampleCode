@@ -8,10 +8,12 @@
 #include <memory>
 #include <mutex>
 
-namespace torch {
-namespace executor {
+namespace executorch {
+namespace backends {
 namespace mps {
 namespace delegate {
+
+using executorch::runtime::Error;
 
 static std::unique_ptr<MPSDevice> mps_device;
 static std::once_flag mpsdev_init;
@@ -20,11 +22,11 @@ static inline MTLLanguageVersion getMetalLanguageVersion(const id<MTLDevice>& de
   // MPS Advanced Indexing needs at least Metal 2.0 (support for Argument Buffers and function constants)
   // host_name attribute needs at least Metal 2.2 and ulong needs Metal 2.3 (supported on MacOS 11+)
   MTLLanguageVersion languageVersion = MTLLanguageVersion2_3;
-#if defined(__MAC_13_0)
-  if (macOS13Plus) {
-    languageVersion = MTLLanguageVersion3_0;
+  if (@available(iOS 16, macOS 13, *)) {
+    if (macOS13Plus) {
+      languageVersion = MTLLanguageVersion3_0;
+    }
   }
-#endif
 
   ET_CHECK_MSG([device supportsFamily:MTLGPUFamilyMac2], "Missing Metal support for MTLGPUFamilyMac2");
   return languageVersion;
@@ -76,7 +78,7 @@ bool MPSDevice::isMacOS13Plus(MacOSVersion version) const {
   static bool _macos_13_3_plus = [compileOptions respondsToSelector:@selector(maxTotalThreadsPerThreadgroup)] == YES;
 
   static bool _macos_14_0_plus = [mpsCD instancesRespondToSelector:@selector(conjugateWithTensor:name:)] == YES;
-
+  static bool _macos_15_0_plus = [mpsCD instancesRespondToSelector:@selector(scaledDotProductAttentionWithQueryTensor:keyTensor:valueTensor:maskTensor:scale:name:)] == YES;
   switch (version) {
     case MacOSVersion::MACOS_VER_13_0_PLUS:
       return _macos_13_0_plus;
@@ -88,6 +90,8 @@ bool MPSDevice::isMacOS13Plus(MacOSVersion version) const {
       return _macos_13_3_plus;
     case MacOSVersion::MACOS_VER_14_0_PLUS:
       return _macos_14_0_plus;
+    case MacOSVersion::MACOS_VER_15_0_PLUS:
+      return _macos_15_0_plus;
     default:
       return false;
   }
@@ -144,11 +148,11 @@ MPSDevice::compilePSO(LibraryType libraryType, const char* kernelName) {
   return err;
 }
 
-bool isMacOS13OrNewer(MacOSVersion version) {
+bool is_macos_13_or_newer(MacOSVersion version) {
   return MPSDevice::getInstance()->isMacOS13Plus(version);
 }
 
 } // namespace delegate
 } // namespace mps
-} // namespace executor
-} // namespace torch
+} // namespace backends
+} // namespace executorch

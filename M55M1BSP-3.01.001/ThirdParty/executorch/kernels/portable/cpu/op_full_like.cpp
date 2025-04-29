@@ -5,6 +5,7 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
+#include <c10/util/irange.h>
 
 #include <executorch/kernels/portable/cpu/scalar_utils.h>
 #include <executorch/runtime/kernel/kernel_includes.h>
@@ -13,11 +14,11 @@ namespace torch {
 namespace executor {
 namespace native {
 
-using Tensor = exec_aten::Tensor;
-using ScalarType = exec_aten::ScalarType;
+using Tensor = executorch::aten::Tensor;
+using ScalarType = executorch::aten::ScalarType;
 
 Tensor& full_like_out(
-    RuntimeContext& ctx,
+    KernelRuntimeContext& ctx,
     const Tensor& in,
     const Scalar& fill_value,
     optional<MemoryFormat> memory_format,
@@ -34,6 +35,11 @@ Tensor& full_like_out(
         "memory_format must be contiguous");
   }
 
+  ET_KERNEL_CHECK(
+      ctx, tensors_have_same_dim_order(in, out), InvalidArgument, out);
+
+  ET_KERNEL_CHECK(ctx, tensor_is_default_dim_order(in), InvalidArgument, out);
+
   // Resize for dynamic shape
   ET_KERNEL_CHECK_MSG(
       ctx,
@@ -49,12 +55,13 @@ Tensor& full_like_out(
 
   ET_SWITCH_REALB_TYPES(val_type, ctx, name, CTYPE_VAL, [&] {
     CTYPE_VAL val;
-    utils::extract_scalar(fill_value, &val);
+    ET_KERNEL_CHECK(
+        ctx, utils::extract_scalar(fill_value, &val), InvalidArgument, );
 
-    ET_SWITCH_REALHB_TYPES(out_type, ctx, name, CTYPE_OUT, [&] {
+    ET_SWITCH_REALHBBF16_TYPES(out_type, ctx, name, CTYPE_OUT, [&] {
       CTYPE_OUT val_casted = static_cast<CTYPE_OUT>(val);
       auto data_out = out.mutable_data_ptr<CTYPE_OUT>();
-      for (size_t i = 0; i < out.numel(); ++i) {
+      for (const auto i : c10::irange(out.numel())) {
         data_out[i] = val_casted;
       }
     });

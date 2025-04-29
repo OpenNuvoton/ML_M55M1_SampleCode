@@ -19,8 +19,8 @@
 #include <memory>
 #include <vector>
 
-namespace torch {
-namespace executor {
+namespace executorch {
+namespace backends {
 namespace xnnpack {
 namespace delegate {
 
@@ -34,6 +34,7 @@ class XNNExecutor {
   std::vector<uint32_t> input_ids_;
   std::vector<uint32_t> output_ids_;
   std::vector<xnn_external_value> externals_;
+  std::vector<std::string> packed_data_names_;
 
  public:
   XNNExecutor() = default;
@@ -46,15 +47,20 @@ class XNNExecutor {
     return output_ids_.size();
   }
 
+  inline std::vector<std::string> get_packed_data_names() {
+    return packed_data_names_;
+  }
+
   /**
    * Initialize the XNNExecutor with a given runtime and input/output ids.
    * The input/output ids are expected to be sorted in order of their
    * flatbuffer id_outs
    */
-  __ET_NODISCARD Error initialize(
+  ET_NODISCARD executorch::runtime::Error initialize(
       xnn_runtime_t runtime,
       std::vector<uint32_t>&& input_ids,
-      std::vector<uint32_t>&& output_ids);
+      std::vector<uint32_t>&& output_ids,
+      std::vector<std::string>&& packed_data_names);
 
   /**
    * Prepares the arguments for runtime graph execution.
@@ -62,24 +68,27 @@ class XNNExecutor {
    * input shapes will be propagated through the runtime, and perform
    * any additional memory planning as needed
    */
-  __ET_NODISCARD Error prepare_args(EValue** args);
+  ET_NODISCARD executorch::runtime::Error prepare_args(
+      executorch::runtime::EValue** args);
 
   /**
    * Executes the graph using the args prepared at prepare_args().
    */
-  __ET_NODISCARD Error forward(BackendExecutionContext& context);
+  ET_NODISCARD executorch::runtime::Error forward(
+      executorch::runtime::BackendExecutionContext& context);
 
   /**
    * Prepares the outputs to be returned by the delegate
    *
    * Performs any post processing of outputs like tensor resizing
    */
-  __ET_NODISCARD Error resize_outputs(EValue** args) const;
+  ET_NODISCARD executorch::runtime::Error resize_outputs(
+      executorch::runtime::EValue** args) const;
 
   friend class XNNCompiler;
 };
 
 } // namespace delegate
 } // namespace xnnpack
-} // namespace executor
-} // namespace torch
+} // namespace backends
+} // namespace executorch

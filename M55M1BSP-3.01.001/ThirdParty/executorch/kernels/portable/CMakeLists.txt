@@ -23,8 +23,8 @@ endif()
 
 set(_common_compile_options -Wno-deprecated-declarations)
 
-include(${EXECUTORCH_ROOT}/build/Utils.cmake)
-include(${EXECUTORCH_ROOT}/build/Codegen.cmake)
+include(${EXECUTORCH_ROOT}/tools/cmake/Utils.cmake)
+include(${EXECUTORCH_ROOT}/tools/cmake/Codegen.cmake)
 
 if(NOT PYTHON_EXECUTABLE)
   resolve_python_executable()
@@ -38,12 +38,11 @@ list(FILTER _portable_kernels__srcs EXCLUDE REGEX "test/*.cpp")
 list(FILTER _portable_kernels__srcs EXCLUDE REGEX "codegen")
 # Generate C++ bindings to register kernels into both PyTorch (for AOT) and
 # Executorch (for runtime). Here select all ops in functions.yaml
-set(_yaml "${CMAKE_CURRENT_LIST_DIR}/functions.yaml")
+set(_yaml "${CMAKE_CURRENT_SOURCE_DIR}/functions.yaml")
 gen_selected_ops(LIB_NAME "portable_ops_lib" OPS_SCHEMA_YAML "${_yaml}")
 # Expect gen_selected_ops output file to be selected_operators.yaml
 generate_bindings_for_kernels(
-  LIB_NAME "portable_ops_lib" FUNCTIONS_YAML
-  ${CMAKE_CURRENT_SOURCE_DIR}/functions.yaml
+  LIB_NAME "portable_ops_lib" FUNCTIONS_YAML "${_yaml}"
 )
 message("Generated files ${gen_command_sources}")
 
@@ -64,4 +63,24 @@ gen_operators_lib(
   LIB_NAME "portable_ops_lib" KERNEL_LIBS portable_kernels DEPS executorch
 )
 
-install(TARGETS portable_kernels portable_ops_lib DESTINATION lib)
+# Portable kernels support optional parallelization (and, in the
+# future, perhaps other performance features). If support is present,
+# produce an optimized version.
+if(EXECUTORCH_BUILD_PTHREADPOOL AND EXECUTORCH_BUILD_KERNELS_OPTIMIZED)
+  add_library(optimized_portable_kernels ${_portable_kernels__srcs})
+  target_link_libraries(optimized_portable_kernels PRIVATE executorch)
+  target_link_libraries(optimized_portable_kernels PUBLIC extension_threadpool)
+  target_compile_options(optimized_portable_kernels PUBLIC ${_common_compile_options})
+  target_include_directories(optimized_portable_kernels PRIVATE ${TORCH_INCLUDE_DIRS})
+  target_compile_definitions(optimized_portable_kernels PRIVATE ET_USE_PYTORCH_HEADERS)
+  install(
+    TARGETS optimized_portable_kernels
+    DESTINATION lib
+  )
+endif()
+
+install(
+  TARGETS portable_kernels portable_ops_lib
+  DESTINATION lib
+  PUBLIC_HEADER DESTINATION include/executorch/kernels/portable/
+)

@@ -6,12 +6,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#include "kernels.h"
-#include "NatureDSP_Signal.h"
-#include "NatureDSP_Signal_vector.h"
-#include "xa_nnlib_common.h"
-#include "xa_nnlib_common_macros.h"
+#include <executorch/backends/cadence/hifi/kernels/kernels.h>
+#include <xa_nnlib_common.h>
+#include <xa_nnlib_common_macros.h>
 
+namespace cadence {
 namespace impl {
 namespace HiFi {
 namespace kernels {
@@ -19,6 +18,11 @@ namespace kernels {
 __attribute__((always_inline)) void
 memcpy(void* dst, const void* src, size_t num_bytes) {
   MEMCPY_8b(dst, src, num_bytes);
+}
+
+void* allocate_temp_memory(KernelRuntimeContext& ctx, size_t size) {
+  Result<void*> temp_mem_res = ctx.allocate_temp(size);
+  return temp_mem_res.ok() ? temp_mem_res.get() : nullptr;
 }
 
 // Quantize a fp32 value to an int8_t/uint8_t value
@@ -166,6 +170,7 @@ void requantize(
 typed_quantize_val(int8_t);
 typed_quantize_val(uint8_t);
 typed_quantize_val(int16_t);
+typed_quantize_val(uint16_t);
 #undef typed_quantize_val
 
 #define typed_quantize_vec(dtype)  \
@@ -178,6 +183,7 @@ typed_quantize_val(int16_t);
 typed_quantize_vec(int8_t);
 typed_quantize_vec(uint8_t);
 typed_quantize_vec(int16_t);
+typed_quantize_vec(uint16_t);
 typed_quantize_vec(int32_t);
 #undef typed_quantize_vec
 
@@ -187,6 +193,7 @@ typed_quantize_vec(int32_t);
 typed_dequantize_val(int8_t);
 typed_dequantize_val(uint8_t);
 typed_dequantize_val(int16_t);
+typed_dequantize_val(uint16_t);
 #undef typed_dequantize_val
 
 #define typed_dequantize_vec(dtype) \
@@ -199,6 +206,7 @@ typed_dequantize_val(int16_t);
 typed_dequantize_vec(int8_t);
 typed_dequantize_vec(uint8_t);
 typed_dequantize_vec(int16_t);
+typed_dequantize_vec(uint16_t);
 typed_dequantize_vec(int32_t);
 #undef typed_dequantize_vec
 
@@ -233,3 +241,4 @@ typed_requantize_vec(uint8_t, int8_t);
 }; // namespace kernels
 }; // namespace HiFi
 }; // namespace impl
+}; // namespace cadence

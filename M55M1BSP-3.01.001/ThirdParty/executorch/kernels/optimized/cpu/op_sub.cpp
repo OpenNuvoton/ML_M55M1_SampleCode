@@ -6,6 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+#include <executorch/kernels/optimized/cpu/binary_ops.h>
 #include <executorch/kernels/optimized/vec/functional.h>
 #include <executorch/kernels/optimized/vec/vec.h>
 #include <executorch/kernels/portable/cpu/scalar_utils.h>
@@ -13,6 +14,8 @@
 #include <executorch/runtime/core/exec_aten/util/tensor_util.h>
 #include <executorch/runtime/kernel/kernel_includes.h>
 #include <executorch/runtime/platform/assert.h>
+
+#include <executorch/kernels/optimized/cpu/op_add_sub_impl.h>
 
 namespace torch {
 namespace executor {
@@ -67,11 +70,11 @@ struct SubInner<false, CTYPE_A, CTYPE_B, CTYPE_IN, CTYPE_OUT>
 
 } // namespace
 
-using Tensor = exec_aten::Tensor;
-using ScalarType = exec_aten::ScalarType;
+using Tensor = executorch::aten::Tensor;
+using ScalarType = executorch::aten::ScalarType;
 
 Tensor& opt_sub_out(
-    RuntimeContext& ctx,
+    KernelRuntimeContext& ctx,
     const Tensor& a,
     const Tensor& b,
     const Scalar& alpha,
@@ -83,67 +86,67 @@ Tensor& opt_sub_out(
   ScalarType out_type = out.scalar_type();
 
   ET_KERNEL_CHECK(ctx, tensor_is_realh_type(out), InvalidArgument, out);
-
-  if (a_type == b_type && a_type == out_type && a.sizes().equals(b.sizes()) &&
-      a_type != ScalarType::Half) {
-    // Resize for dynamic shape
-    auto error = resize_tensor(out, a.sizes());
-    ET_KERNEL_CHECK_MSG(
-        ctx,
-        error == Error::Ok,
-        InvalidArgument,
-        out,
-        "Failed to resize output tensor.");
-
-    ET_SWITCH_REAL_TYPES(out_type, ctx, "sub.out", CTYPE, [&]() {
-      CTYPE alpha_val;
+  if (a.numel() == 1 || b.numel() == 1) {
+    if (a_type == b_type && a_type == out_type && a_type != ScalarType::Half) {
+      const Tensor* tensor;
+      const Tensor* scalar;
+      ScalarType tensor_type;
+      ScalarType scalar_type;
+      if (a.numel() == 1) {
+        tensor = &b;
+        tensor_type = b_type;
+        scalar = &a;
+        scalar_type = a_type;
+      } else {
+        tensor = &a;
+        tensor_type = a_type;
+        scalar = &b;
+        scalar_type = b_type;
+      }
       ET_KERNEL_CHECK(
-          ctx, utils::extract_scalar(alpha, &alpha_val), InvalidArgument, );
-
-      using Vec = executorch::vec::Vectorized<CTYPE>;
-      executorch::vec::map2<CTYPE>(
-          [alpha_val](Vec x, Vec y) { return x - Vec(alpha_val) * y; },
-          out.mutable_data_ptr<CTYPE>(),
-          a.const_data_ptr<CTYPE>(),
-          b.const_data_ptr<CTYPE>(),
-          out.numel());
-    });
-  } else {
-    ScalarType common_type =
-        promoteTypes(a_type, b_type, /*half_to_float*/ true);
-    ET_KERNEL_CHECK(ctx, canCast(common_type, out_type), InvalidArgument, out);
-
-    ET_KERNEL_CHECK(
-        ctx,
-        resize_to_broadcast_target_size(a, b, out) == Error::Ok,
-        InvalidArgument,
-        out);
-
-    ET_SWITCH_REALH_TYPES(a_type, ctx, "sub.out", CTYPE_A, [&]() {
-      ET_SWITCH_REALH_TYPES(b_type, ctx, "sub.out", CTYPE_B, [&]() {
-        using CTYPE_IN = typename torch::executor::
-            promote_types<CTYPE_A, CTYPE_B, /*half_to_float*/ true>::type;
-        ET_DCHECK(CppTypeToScalarType<CTYPE_IN>::value == common_type);
-        ET_SWITCH_REALH_TYPES(out_type, ctx, "sub.out", CTYPE_OUT, [&]() {
-          CTYPE_IN alpha_val;
+          ctx,
+          resize_to_broadcast_target_size(a, b, out) == Error::Ok,
+          InvalidArgument,
+          out);
+      ET_SWITCH_REAL_TYPES(tensor_type, ctx, "sub.out", CTYPE, [&]() {
+        ET_SWITCH_REAL_TYPES(scalar_type, ctx, "sub.out", CTYPE_SCALAR, [&]() {
+          CTYPE alpha_val;
           ET_KERNEL_CHECK(
               ctx, utils::extract_scalar(alpha, &alpha_val), InvalidArgument, );
-          SubInner<
-              can_cast<CTYPE_IN, CTYPE_OUT>::value,
-              CTYPE_A,
-              CTYPE_B,
-              CTYPE_IN,
-              CTYPE_OUT>::run(a, b, alpha_val, out);
+          CTYPE_SCALAR scalar_val = *scalar->const_data_ptr<CTYPE_SCALAR>();
+          CTYPE scalar_casted = static_cast<CTYPE>(scalar_val);
+
+          using Vec = executorch::vec::Vectorized<CTYPE>;
+          if (a.numel() == 1) {
+            executorch::vec::map<CTYPE>(
+                [alpha_val, scalar_casted](Vec x) {
+                  return Vec(scalar_casted) - Vec(alpha_val) * x;
+                },
+                out.mutable_data_ptr<CTYPE>(),
+                tensor->const_data_ptr<CTYPE>(),
+                out.numel());
+          } else {
+            executorch::vec::map<CTYPE>(
+                [alpha_val, scalar_casted](Vec x) {
+                  return x - Vec(alpha_val * scalar_casted);
+                },
+                out.mutable_data_ptr<CTYPE>(),
+                tensor->const_data_ptr<CTYPE>(),
+                out.numel());
+          }
         });
       });
-    });
+      return out;
+    }
   }
 
-  return out;
+  static constexpr const char op_name[] = "sub.out";
+  return torch::executor::kernels::impl::opt_add_sub_out_impl<true, op_name>(
+      ctx, a, b, alpha, out);
 }
 
 Tensor& opt_sub_scalar_out(
-    RuntimeContext& ctx,
+    KernelRuntimeContext& ctx,
     const Tensor& a,
     const Scalar& b,
     const Scalar& alpha,

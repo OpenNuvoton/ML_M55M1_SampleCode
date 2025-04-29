@@ -14,6 +14,9 @@ from torchsr.models import edsr_r16f64
 
 
 class TestEDSR(unittest.TestCase):
+    def setUp(self):
+        torch._dynamo.reset()
+
     edsr = edsr_r16f64(2, False).eval()  # noqa
     model_inputs = (torch.randn(1, 3, 224, 224),)
 
@@ -21,8 +24,7 @@ class TestEDSR(unittest.TestCase):
         (
             Tester(self.edsr, self.model_inputs)
             .export()
-            .to_edge()
-            .partition()
+            .to_edge_transform_and_lower()
             .to_executorch()
             .serialize()
             .run_method_and_compare_outputs()
@@ -34,8 +36,7 @@ class TestEDSR(unittest.TestCase):
             Tester(self.edsr, self.model_inputs)
             .quantize()
             .export()
-            .to_edge()
-            .partition()
+            .to_edge_transform_and_lower()
             .to_executorch()
             .serialize()
             .run_method_and_compare_outputs()
@@ -47,8 +48,7 @@ class TestEDSR(unittest.TestCase):
             Tester(self.edsr, self.model_inputs)
             .quantize(Quantize(calibrate=False))
             .export()
-            .to_edge()
-            .partition()
+            .to_edge_transform_and_lower()
             .to_executorch()
             .serialize()
             .run_method_and_compare_outputs()

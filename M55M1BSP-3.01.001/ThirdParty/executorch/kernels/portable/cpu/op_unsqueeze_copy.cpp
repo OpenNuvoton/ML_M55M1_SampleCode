@@ -6,6 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+#include <c10/util/irange.h>
 #include <cstdint>
 #include <cstring>
 
@@ -16,12 +17,12 @@ namespace torch {
 namespace executor {
 namespace native {
 
-using Tensor = exec_aten::Tensor;
+using Tensor = executorch::aten::Tensor;
 
 // unsqueeze_copy.out(Tensor self, int dim, *, Tensor(a!) out) -> Tensor(a!)
 // -> Tensor(a!)
 Tensor& unsqueeze_copy_out(
-    RuntimeContext& ctx,
+    KernelRuntimeContext& ctx,
     const Tensor& self,
     int64_t dim,
     Tensor& out) {
@@ -38,7 +39,7 @@ Tensor& unsqueeze_copy_out(
   ET_KERNEL_CHECK(ctx, self.dim() + 1 == out.dim(), InvalidArgument, out);
   ET_KERNEL_CHECK(ctx, dim <= self.dim(), InvalidArgument, out);
 
-  for (size_t i = 0; i < out.dim(); ++i) {
+  for (const auto i : c10::irange(out.dim())) {
     if (i < dim) {
       expected_output_size[i] = self.size(i);
     } else if (i > dim) {

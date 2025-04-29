@@ -5,11 +5,19 @@ et_kernel_metadata:
   - default
   quantized_decomposed::choose_qparams.Tensor_out:
   - default
+  quantized_decomposed::choose_qparams_per_token_asymmetric.out:
+  - default
   quantized_decomposed::dequantize_per_channel.out:
   - default
   quantized_decomposed::dequantize_per_tensor.Tensor_out:
   - default
   quantized_decomposed::dequantize_per_tensor.out:
+  - default
+  quantized_decomposed::dequantize_per_token.out:
+  - default
+  quantized_decomposed::embedding_2bit.dtype_out:
+  - default
+  quantized_decomposed::embedding_2bit.out:
   - default
   quantized_decomposed::embedding_4bit.dtype_out:
   - default
@@ -28,6 +36,8 @@ et_kernel_metadata:
   quantized_decomposed::quantize_per_tensor.Tensor_out:
   - default
   quantized_decomposed::quantize_per_tensor.out:
+  - default
+  quantized_decomposed::quantize_per_token.out:
   - default
 include_all_non_op_selectives: false
 include_all_operators: false
@@ -35,85 +45,115 @@ kernel_metadata: {}
 operators:
   quantized_decomposed::add.out:
     debug_info:
-    - quantized.yaml
+    - /home/chchen59/executorch_home/executorch/kernels/quantized/quantized.yaml
     include_all_overloads: false
     is_root_operator: true
     is_used_for_training: true
   quantized_decomposed::choose_qparams.Tensor_out:
     debug_info:
-    - quantized.yaml
+    - /home/chchen59/executorch_home/executorch/kernels/quantized/quantized.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  quantized_decomposed::choose_qparams_per_token_asymmetric.out:
+    debug_info:
+    - /home/chchen59/executorch_home/executorch/kernels/quantized/quantized.yaml
     include_all_overloads: false
     is_root_operator: true
     is_used_for_training: true
   quantized_decomposed::dequantize_per_channel.out:
     debug_info:
-    - quantized.yaml
+    - /home/chchen59/executorch_home/executorch/kernels/quantized/quantized.yaml
     include_all_overloads: false
     is_root_operator: true
     is_used_for_training: true
   quantized_decomposed::dequantize_per_tensor.Tensor_out:
     debug_info:
-    - quantized.yaml
+    - /home/chchen59/executorch_home/executorch/kernels/quantized/quantized.yaml
     include_all_overloads: false
     is_root_operator: true
     is_used_for_training: true
   quantized_decomposed::dequantize_per_tensor.out:
     debug_info:
-    - quantized.yaml
+    - /home/chchen59/executorch_home/executorch/kernels/quantized/quantized.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  quantized_decomposed::dequantize_per_token.out:
+    debug_info:
+    - /home/chchen59/executorch_home/executorch/kernels/quantized/quantized.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  quantized_decomposed::embedding_2bit.dtype_out:
+    debug_info:
+    - /home/chchen59/executorch_home/executorch/kernels/quantized/quantized.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  quantized_decomposed::embedding_2bit.out:
+    debug_info:
+    - /home/chchen59/executorch_home/executorch/kernels/quantized/quantized.yaml
     include_all_overloads: false
     is_root_operator: true
     is_used_for_training: true
   quantized_decomposed::embedding_4bit.dtype_out:
     debug_info:
-    - quantized.yaml
+    - /home/chchen59/executorch_home/executorch/kernels/quantized/quantized.yaml
     include_all_overloads: false
     is_root_operator: true
     is_used_for_training: true
   quantized_decomposed::embedding_4bit.out:
     debug_info:
-    - quantized.yaml
+    - /home/chchen59/executorch_home/executorch/kernels/quantized/quantized.yaml
     include_all_overloads: false
     is_root_operator: true
     is_used_for_training: true
   quantized_decomposed::embedding_byte.dtype_out:
     debug_info:
-    - quantized.yaml
+    - /home/chchen59/executorch_home/executorch/kernels/quantized/quantized.yaml
     include_all_overloads: false
     is_root_operator: true
     is_used_for_training: true
   quantized_decomposed::embedding_byte.out:
     debug_info:
-    - quantized.yaml
+    - /home/chchen59/executorch_home/executorch/kernels/quantized/quantized.yaml
     include_all_overloads: false
     is_root_operator: true
     is_used_for_training: true
   quantized_decomposed::mixed_linear.out:
     debug_info:
-    - quantized.yaml
+    - /home/chchen59/executorch_home/executorch/kernels/quantized/quantized.yaml
     include_all_overloads: false
     is_root_operator: true
     is_used_for_training: true
   quantized_decomposed::mixed_mm.out:
     debug_info:
-    - quantized.yaml
+    - /home/chchen59/executorch_home/executorch/kernels/quantized/quantized.yaml
     include_all_overloads: false
     is_root_operator: true
     is_used_for_training: true
   quantized_decomposed::quantize_per_channel.out:
     debug_info:
-    - quantized.yaml
+    - /home/chchen59/executorch_home/executorch/kernels/quantized/quantized.yaml
     include_all_overloads: false
     is_root_operator: true
     is_used_for_training: true
   quantized_decomposed::quantize_per_tensor.Tensor_out:
     debug_info:
-    - quantized.yaml
+    - /home/chchen59/executorch_home/executorch/kernels/quantized/quantized.yaml
     include_all_overloads: false
     is_root_operator: true
     is_used_for_training: true
   quantized_decomposed::quantize_per_tensor.out:
     debug_info:
-    - quantized.yaml
+    - /home/chchen59/executorch_home/executorch/kernels/quantized/quantized.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  quantized_decomposed::quantize_per_token.out:
+    debug_info:
+    - /home/chchen59/executorch_home/executorch/kernels/quantized/quantized.yaml
     include_all_overloads: false
     is_root_operator: true
     is_used_for_training: true

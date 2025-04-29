@@ -15,6 +15,7 @@
 #import <model_logging_options.h>
 #import <multiarray.h>
 #import <objc_array_util.h>
+#import <executorch/runtime/platform/runtime.h>
 
 using namespace executorchcoreml;
 
@@ -56,6 +57,10 @@ std::vector<MultiArray> to_multiarrays(NSArray<MLMultiArray *> *ml_multiarrays) 
 + (nullable NSURL *)bundledResourceWithName:(NSString *)name extension:(NSString *)extension {
     NSBundle *bundle = [NSBundle bundleForClass:BackendDelegateTests.class];
     return [bundle URLForResource:name withExtension:extension];
+}
+
++ (void)setUp {
+    executorch::runtime::runtime_init();
 }
 
 - (void)setUp {
@@ -151,17 +156,15 @@ std::vector<MultiArray> to_multiarrays(NSArray<MLMultiArray *> *ml_multiarrays) 
     int y = 50;
     // add_coreml_all does the following operations.
     int z = x + y;
-    z = z + x;
-    z = z + x;
-    z = z + z;
     
     NSArray<MLMultiArray *> *inputs = [ETCoreMLTestUtils inputsForModel:model repeatedValues:@[@(x), @(y)] error:&localError];
     XCTAssertNotNil(inputs);
     MLMultiArray *output = [ETCoreMLTestUtils filledMultiArrayWithShape:inputs[0].shape dataType:inputs[0].dataType repeatedValue:@(0) error:&localError];
     NSArray<MLMultiArray *> *args = [inputs arrayByAddingObject:output];
     std::error_code errorCode;
+    auto argsVec = to_multiarrays(args);
     XCTAssertTrue(_delegate->execute(handle,
-                                     to_multiarrays(args),
+                                     argsVec,
                                      ModelLoggingOptions(),
                                      nullptr,
                                      errorCode));
@@ -185,8 +188,9 @@ std::vector<MultiArray> to_multiarrays(NSArray<MLMultiArray *> *ml_multiarrays) 
     MLMultiArray *output = [ETCoreMLTestUtils filledMultiArrayWithShape:inputs[0].shape dataType:inputs[0].dataType repeatedValue:@(0) error:&localError];
     NSArray<MLMultiArray *> *args = [inputs arrayByAddingObject:output];
     std::error_code errorCode;
-    XCTAssertTrue(_delegate->execute(handle, 
-                                     to_multiarrays(args),
+    auto argsVec = to_multiarrays(args);
+    XCTAssertTrue(_delegate->execute(handle,
+                                     argsVec,
                                      ModelLoggingOptions(),
                                      nullptr,
                                      errorCode));

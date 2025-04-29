@@ -9,14 +9,12 @@
 #pragma once
 
 #include <executorch/backends/xnnpack/runtime/XNNExecutor.h>
+#include <executorch/backends/xnnpack/runtime/XNNWeightsCache.h>
 #include <executorch/runtime/platform/compiler.h>
-
 #include <xnnpack.h>
-#include <memory>
-#include <vector>
 
-namespace torch {
-namespace executor {
+namespace executorch {
+namespace backends {
 namespace xnnpack {
 namespace delegate {
 
@@ -25,14 +23,16 @@ class XNNCompiler {
   // Takes Flatbuffer Serialized XNNPACK Model and rebuilds the xnn-subgraph
   // returns an executor object that holds the xnn runtime object which we
   // can then use to set inputs and run inference using the xnn graph.
-  __ET_NODISCARD static Error compileModel(
+  ET_NODISCARD static executorch::runtime::Error compileModel(
       const void* buffer_pointer,
       size_t num_bytes,
       XNNExecutor* executor,
-      MemoryAllocator* runtime_allocator);
+      XNNWeightsCache* weights_cache,
+      xnn_workspace_t workspace,
+      const NamedDataMap* named_data_map);
 };
 
 } // namespace delegate
 } // namespace xnnpack
-} // namespace executor
-} // namespace torch
+} // namespace backends
+} // namespace executorch

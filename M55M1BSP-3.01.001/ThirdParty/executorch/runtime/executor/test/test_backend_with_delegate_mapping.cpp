@@ -14,8 +14,18 @@
 #include <cstdlib> /* strtol */
 #include <cstring>
 
-namespace torch {
-namespace executor {
+using executorch::ET_RUNTIME_NAMESPACE::Backend;
+using executorch::ET_RUNTIME_NAMESPACE::BackendExecutionContext;
+using executorch::ET_RUNTIME_NAMESPACE::BackendInitContext;
+using executorch::ET_RUNTIME_NAMESPACE::BackendInterface;
+using executorch::ET_RUNTIME_NAMESPACE::CompileSpec;
+using executorch::ET_RUNTIME_NAMESPACE::DelegateHandle;
+using executorch::runtime::ArrayRef;
+using executorch::runtime::Error;
+using executorch::runtime::EValue;
+using executorch::runtime::FreeableBuffer;
+using executorch::runtime::MemoryAllocator;
+using executorch::runtime::Result;
 
 struct DemoOp {
   const char* name;
@@ -27,7 +37,7 @@ struct DemoOpList {
   size_t numops;
 };
 
-class BackendWithDelegateMapping final : public PyTorchBackendInterface {
+class BackendWithDelegateMapping final : public BackendInterface {
  public:
   ~BackendWithDelegateMapping() override = default;
 
@@ -60,8 +70,11 @@ class BackendWithDelegateMapping final : public PyTorchBackendInterface {
       }
 
       if (op_name != nullptr && delegate_debug_identifier != nullptr) {
-        char* op_name_mem = (char*)ET_ALLOCATE_OR_RETURN_ERROR(
-            runtime_allocator, strlen(op_name) + 1);
+        char* op_name_mem =
+            (char*)runtime_allocator->allocate(strlen(op_name) + 1);
+        if (op_name_mem == nullptr) {
+          return Error::MemoryAllocationFailed;
+        }
         memcpy(op_name_mem, op_name, strlen(op_name) + 1);
         op_list->ops[num_ops].name = op_name_mem;
         op_list->ops[num_ops].debug_handle = atoi(delegate_debug_identifier);
@@ -96,10 +109,16 @@ class BackendWithDelegateMapping final : public PyTorchBackendInterface {
         "Instruction count must be non-negative: %ld",
         instruction_number);
 
-    auto op_list =
-        ET_ALLOCATE_INSTANCE_OR_RETURN_ERROR(runtime_allocator, DemoOpList);
-    op_list->ops = ET_ALLOCATE_LIST_OR_RETURN_ERROR(
-        runtime_allocator, DemoOp, instruction_number);
+    auto op_list = runtime_allocator->allocateInstance<DemoOpList>();
+    if (op_list == nullptr) {
+      return Error::MemoryAllocationFailed;
+    }
+
+    op_list->ops = runtime_allocator->allocateList<DemoOp>(instruction_number);
+    if (op_list->ops == nullptr) {
+      return Error::MemoryAllocationFailed;
+    }
+
     op_list->numops = static_cast<size_t>(instruction_number);
 
     Error error =
@@ -114,7 +133,7 @@ class BackendWithDelegateMapping final : public PyTorchBackendInterface {
   // This function doesn't actually execute the op but just prints out the op
   // name and the corresponding delegate debug identifier.
   Error execute(
-      __ET_UNUSED BackendExecutionContext& context,
+      ET_UNUSED BackendExecutionContext& context,
       DelegateHandle* handle,
       EValue** args) const override {
     (void)args;
@@ -154,6 +173,3 @@ auto cls = BackendWithDelegateMapping();
 Backend backend{"BackendWithDelegateMappingDemo", &cls};
 static auto success_with_compiler = register_backend(backend);
 } // namespace
-
-} // namespace executor
-} // namespace torch

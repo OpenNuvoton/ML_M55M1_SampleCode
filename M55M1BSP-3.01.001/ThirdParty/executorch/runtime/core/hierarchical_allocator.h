@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <c10/util/irange.h>
 #include <executorch/runtime/core/memory_allocator.h>
 #include <executorch/runtime/core/result.h>
 #include <executorch/runtime/core/span.h>
@@ -16,8 +17,8 @@
 #include <executorch/runtime/platform/log.h>
 #include <cstdint>
 
-namespace torch {
-namespace executor {
+namespace executorch {
+namespace runtime {
 
 /**
  * A group of buffers that can be used to represent a device's memory hierarchy.
@@ -38,7 +39,7 @@ class HierarchicalAllocator final {
   /**
    * DEPRECATED: Use spans instead.
    */
-  __ET_DEPRECATED HierarchicalAllocator(
+  ET_DEPRECATED HierarchicalAllocator(
       uint32_t n_allocators,
       MemoryAllocator* allocators)
       : buffers_(to_spans(n_allocators, allocators)) {}
@@ -55,21 +56,23 @@ class HierarchicalAllocator final {
    * @returns On success, the address of the requested byte offset into the
    *     specified buffer. On failure, a non-Ok Error.
    */
-  __ET_NODISCARD Result<void*> get_offset_address(
+  ET_NODISCARD Result<void*> get_offset_address(
       uint32_t memory_id,
       size_t offset_bytes,
       size_t size_bytes) {
     ET_CHECK_OR_RETURN_ERROR(
         memory_id < buffers_.size(),
         InvalidArgument,
-        "id %" PRIu32 " >= %zu",
+        "id %" PRIu32 " >= %" ET_PRIsize_t,
         memory_id,
         buffers_.size());
     Span<uint8_t> buffer = buffers_[memory_id];
     ET_CHECK_OR_RETURN_ERROR(
         offset_bytes + size_bytes <= buffer.size(),
         MemoryAllocationFailed,
-        "offset_bytes (%zu) + size_bytes (%zu) >= allocator size (%zu) "
+        "offset_bytes (%" ET_PRIsize_t ") + size_bytes (%" ET_PRIsize_t
+        ") >= allocator size (%" ET_PRIsize_t
+        ") "
         "for memory_id %" PRIu32,
         offset_bytes,
         size_bytes,
@@ -94,7 +97,7 @@ class HierarchicalAllocator final {
         "n_allocators %" PRIu32 " > %zu",
         n_allocators,
         kSpanArraySize);
-    for (uint32_t i = 0; i < n_allocators; ++i) {
+    for (const auto i : c10::irange(n_allocators)) {
       span_array_[i] =
           Span<uint8_t>(allocators[i].base_address(), allocators[i].size());
     }
@@ -105,5 +108,13 @@ class HierarchicalAllocator final {
   Span<Span<uint8_t>> buffers_;
 };
 
+} // namespace runtime
+} // namespace executorch
+
+namespace torch {
+namespace executor {
+// TODO(T197294990): Remove these deprecated aliases once all users have moved
+// to the new `::executorch` namespaces.
+using ::executorch::runtime::HierarchicalAllocator;
 } // namespace executor
 } // namespace torch

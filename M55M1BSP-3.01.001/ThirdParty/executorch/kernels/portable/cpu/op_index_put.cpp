@@ -6,6 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+#include <c10/util/irange.h>
 #include <cstring>
 
 #include <executorch/kernels/portable/cpu/util/advanced_index_util.h>
@@ -16,12 +17,12 @@ namespace torch {
 namespace executor {
 namespace native {
 
-using Tensor = exec_aten::Tensor;
+using Tensor = executorch::aten::Tensor;
 
 Tensor& index_put_out(
-    RuntimeContext& ctx,
+    KernelRuntimeContext& ctx,
     const Tensor& in,
-    exec_aten::ArrayRef<exec_aten::optional<Tensor>> indices,
+    executorch::aten::ArrayRef<executorch::aten::optional<Tensor>> indices,
     const Tensor& values,
     const bool accumulate,
     Tensor& out) {
@@ -32,6 +33,11 @@ Tensor& index_put_out(
 
   ET_KERNEL_CHECK(
       ctx, tensors_have_same_dtype(in, values), InvalidArgument, out);
+
+  ET_KERNEL_CHECK(
+      ctx, tensors_have_same_dim_order(in, out), InvalidArgument, out);
+
+  ET_KERNEL_CHECK(ctx, tensor_is_default_dim_order(in), InvalidArgument, out);
 
   ScalarType in_type = in.scalar_type();
   size_t block_count = count_index_blocks(indices);
@@ -48,7 +54,7 @@ Tensor& index_put_out(
     ET_KERNEL_CHECK(
         ctx, tensor_is_broadcastable_to(values, out), InvalidArgument, out);
 
-    ET_SWITCH_REALHB_TYPES(in_type, ctx, "index_put.out", CTYPE, [&]() {
+    ET_SWITCH_REALHBBF16_TYPES(in_type, ctx, "index_put.out", CTYPE, [&]() {
       apply_binary_elementwise_fn<CTYPE, CTYPE, CTYPE>(
           [accumulate](const CTYPE val_in, const CTYPE val) {
             return accumulate ? val_in + val : val;
@@ -111,15 +117,15 @@ Tensor& index_put_out(
 
   // Compute the number of elements in the indexed space
   size_t x_numel = 1;
-  for (size_t i = 0; i < x_dim; i++) {
+  for (const auto i : c10::irange(x_dim)) {
     x_numel *= x_sizes[i];
   }
 
-  ET_SWITCH_REALHB_TYPES(in_type, ctx, "index_put.out", CTYPE, [&]() {
+  ET_SWITCH_REALHBBF16_TYPES(in_type, ctx, "index_put.out", CTYPE, [&]() {
     const CTYPE* const values_data = values.const_data_ptr<CTYPE>();
     CTYPE* const out_data = out.mutable_data_ptr<CTYPE>();
 
-    for (auto x_ix = 0; x_ix < x_numel; x_ix++) {
+    for (const auto x_ix : c10::irange(x_numel)) {
       size_t in_ix = 0;
 
       size_t x_coord[kTensorDimensionLimit];

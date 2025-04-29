@@ -10,20 +10,20 @@
       <TargetName>Release</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6160000::V6.16::ARMCLANG</pCCUsed>
+      <pCCUsed>6230000::V6.23::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
-          <Device>ARMCM55</Device>
-          <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.8.0</PackID>
-          <PackURL>http://www.keil.com/pack/</PackURL>
-          <Cpu>IRAM(0x30000000,0x00020000) IRAM2(0x20000000,0x00020000) IROM(0x10000000,0x00200000) IROM2(0x00000000,0x00200000) CPUTYPE("Cortex-M55") FPU3(DFPU) DSP TZ MVE(FP) CLOCK(12000000) ESEL ELITTLE</Cpu>
+          <Device>M55M1H2LJAE</Device>
+          <Vendor>Nuvoton</Vendor>
+          <PackID>Nuvoton.NuMicroM55_DFP.1.0.0</PackID>
+          <PackURL>https://github.com/OpenNuvoton/cmsis-packs/raw/master/Nuvoton_DFP/</PackURL>
+          <Cpu>IRAM(0x20100000,0x150000) IRAM2(0x30100000,0x150000) IROM(0x00100000,0x200000) IROM2(0x10100000,0x200000) CPUTYPE("Cortex-M55") FPU3(DFPU) DSP TZ MVE(FP) CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
-          <FlashDriverDll>UL2V8M(-S0 -C0 -P0 -FD30000000 -FC1000)</FlashDriverDll>
+          <FlashDriverDll>UL2V8M(-S0 -C0 -P0 -FD20000000 -FC8000 -FN3 -FF0M55M1_AP_2M -FS0100000 -FL0200000 -FF1M55M1_LD_8 -FS1F100000 -FL12000 -FF2M55M1_NS_2M -FS210100000 -FL2200000 -FP0($$Device:M55M1H2LJAE$Flash\M55M1_AP_2M.FLM) -FP1($$Device:M55M1H2LJAE$Flash\M55M1_LD_8.FLM) -FP2($$Device:M55M1H2LJAE$Flash\M55M1_NS_2M.FLM))</FlashDriverDll>
           <DeviceId>0</DeviceId>
-          <RegisterFile>$$Device:ARMCM55$Device\ARM\ARMCM55\Include\ARMCM55.h</RegisterFile>
+          <RegisterFile>$$Device:M55M1H2LJAE$Device\M55M1\Include\M55M1.h</RegisterFile>
           <MemoryEnv></MemoryEnv>
           <Cmp></Cmp>
           <Asm></Asm>
@@ -33,7 +33,7 @@
           <SLE66CMisc></SLE66CMisc>
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
-          <SFDFile></SFDFile>
+          <SFDFile>$$Device:M55M1H2LJAE$SVD\Nuvoton\M55M1.svd</SFDFile>
           <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
@@ -138,7 +138,7 @@
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2V8M.DLL</Flash2>
-          <Flash3>"" ()</Flash3>
+          <Flash3></Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -186,15 +186,16 @@
             <RvdsVP>3</RvdsVP>
             <RvdsMve>2</RvdsMve>
             <RvdsCdeCp>0</RvdsCdeCp>
+            <nBranchProt>0</nBranchProt>
             <hadIRAM2>1</hadIRAM2>
             <hadIROM2>1</hadIROM2>
-            <StupSel>0</StupSel>
+            <StupSel>8</StupSel>
             <useUlib>0</useUlib>
             <EndSel>1</EndSel>
             <uLtcg>0</uLtcg>
             <nSecure>0</nSecure>
-            <RoSelD>0</RoSelD>
-            <RwSelD>5</RwSelD>
+            <RoSelD>4</RoSelD>
+            <RwSelD>4</RwSelD>
             <CodeSel>0</CodeSel>
             <OptFeed>0</OptFeed>
             <NoZi1>0</NoZi1>
@@ -205,12 +206,12 @@
             <Ro1Chk>0</Ro1Chk>
             <Ro2Chk>0</Ro2Chk>
             <Ro3Chk>0</Ro3Chk>
-            <Ir1Chk>0</Ir1Chk>
+            <Ir1Chk>1</Ir1Chk>
             <Ir2Chk>0</Ir2Chk>
             <Ra1Chk>0</Ra1Chk>
             <Ra2Chk>0</Ra2Chk>
             <Ra3Chk>0</Ra3Chk>
-            <Im1Chk>0</Im1Chk>
+            <Im1Chk>1</Im1Chk>
             <Im2Chk>0</Im2Chk>
             <OnChipMemories>
               <Ocm1>
@@ -245,12 +246,12 @@
               </Ocm6>
               <IRAM>
                 <Type>0</Type>
-                <StartAddress>0x30000000</StartAddress>
-                <Size>0x20000</Size>
+                <StartAddress>0x20100000</StartAddress>
+                <Size>0x150000</Size>
               </IRAM>
               <IROM>
                 <Type>1</Type>
-                <StartAddress>0x10000000</StartAddress>
+                <StartAddress>0x100000</StartAddress>
                 <Size>0x200000</Size>
               </IROM>
               <XRAM>
@@ -275,12 +276,12 @@
               </OCR_RVCT3>
               <OCR_RVCT4>
                 <Type>1</Type>
-                <StartAddress>0x10000000</StartAddress>
+                <StartAddress>0x100000</StartAddress>
                 <Size>0x200000</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
                 <Type>1</Type>
-                <StartAddress>0x0</StartAddress>
+                <StartAddress>0x10100000</StartAddress>
                 <Size>0x200000</Size>
               </OCR_RVCT5>
               <OCR_RVCT6>
@@ -300,13 +301,13 @@
               </OCR_RVCT8>
               <OCR_RVCT9>
                 <Type>0</Type>
-                <StartAddress>0x30000000</StartAddress>
-                <Size>0x20000</Size>
+                <StartAddress>0x20100000</StartAddress>
+                <Size>0x150000</Size>
               </OCR_RVCT9>
               <OCR_RVCT10>
                 <Type>0</Type>
-                <StartAddress>0x20000000</StartAddress>
-                <Size>0x20000</Size>
+                <StartAddress>0x30100000</StartAddress>
+                <Size>0x150000</Size>
               </OCR_RVCT10>
             </OnChipMemories>
             <RvctStartVector></RvctStartVector>
@@ -329,7 +330,7 @@
             <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>5</v6Lang>
-            <v6LangP>8</v6LangP>
+            <v6LangP>9</v6LangP>
             <vShortEn>1</vShortEn>
             <vShortWch>1</vShortWch>
             <v6Lto>0</v6Lto>
@@ -337,9 +338,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>NDEBUG, ET_ENABLE_PROGRAM_VERIFICATION=0, ET_MIN_LOG=Info</Define>
+              <Define>NDEBUG, ET_ENABLE_PROGRAM_VERIFICATION=0, ET_MIN_LOG=Info, C10_USING_CUSTOM_GENERATED_MACROS</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\_prebuilt\schema\include;..\..\third-party\flatbuffers\include;..\..\..\..\ThirdParty;..\..\..\..\Library\StdDriver\inc\npu</IncludePath>
+              <IncludePath>..\..\..\;..\..\..\..\Library\StdDriver\inc\npu;..\..\third-party\flatbuffers\include;..\..\runtime\core\portable_type\c10</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>

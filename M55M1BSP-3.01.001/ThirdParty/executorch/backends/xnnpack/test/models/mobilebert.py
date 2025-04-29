@@ -7,11 +7,14 @@
 import unittest
 
 import torch
-from executorch.backends.xnnpack.test.tester import Tester
+from executorch.backends.xnnpack.test.tester import Quantize, Tester
 from transformers import MobileBertConfig, MobileBertModel  # @manual
 
 
 class TestMobilebert(unittest.TestCase):
+    def setUp(self):
+        torch._dynamo.reset()
+
     # pyre-ignore
     mobilebert = MobileBertModel(MobileBertConfig()).eval()
     example_inputs = (torch.tensor([[101, 7592, 1010, 2026, 3899, 2003, 10140, 102]]),)
@@ -32,9 +35,19 @@ class TestMobilebert(unittest.TestCase):
         (
             Tester(self.mobilebert, self.example_inputs)
             .export()
-            .to_edge()
-            .check(list(self.supported_ops))
-            .partition()
+            .to_edge_transform_and_lower()
+            .check_not(list(self.supported_ops))
+            .to_executorch()
+            .serialize()
+            .run_method_and_compare_outputs(inputs=self.example_inputs)
+        )
+
+    def test_qs8_mobilebert(self):
+        (
+            Tester(self.mobilebert, self.example_inputs)
+            .quantize(Quantize(calibrate=False))
+            .export()
+            .to_edge_transform_and_lower()
             .check_not(list(self.supported_ops))
             .to_executorch()
             .serialize()

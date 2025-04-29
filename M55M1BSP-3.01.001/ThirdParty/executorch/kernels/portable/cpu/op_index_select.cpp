@@ -6,6 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+#include <c10/util/irange.h>
 #include <cinttypes>
 #include <cstdint>
 #include <cstring>
@@ -17,16 +18,21 @@ namespace torch {
 namespace executor {
 namespace native {
 
-using Tensor = exec_aten::Tensor;
+using Tensor = executorch::aten::Tensor;
 
 Tensor& index_select_out(
-    RuntimeContext& ctx,
+    KernelRuntimeContext& ctx,
     const Tensor& in,
     int64_t dim,
     const Tensor& index,
     Tensor& out) {
   ET_KERNEL_CHECK(
       ctx, check_index_select_args(in, dim, index, out), InvalidArgument, out);
+
+  ET_KERNEL_CHECK(
+      ctx, tensors_have_same_dim_order(in, out), InvalidArgument, out);
+
+  ET_KERNEL_CHECK(ctx, tensor_is_default_dim_order(in), InvalidArgument, out);
 
   if (dim < 0) {
     dim += nonzero_dim(in);
@@ -68,10 +74,10 @@ Tensor& index_select_out(
   ET_SWITCH_TWO_TYPES(
       Long, Int, ix_type, ctx, "index_select.out", CTYPE, [&]() {
         const CTYPE* const index_arr = index.mutable_data_ptr<CTYPE>();
-        for (int i = 0; i < leading_dims; i++) {
+        for (const auto i : c10::irange(leading_dims)) {
           const char* src = input_data + i * in_dim_length * length_per_step;
           char* dest = out_data + i * out_dim_length * length_per_step;
-          for (auto j = 0; j < out_dim_length; j++) {
+          for (const auto j : c10::irange(out_dim_length)) {
             const char* copy_src = src + index_arr[j] * length_per_step;
             memcpy(dest, copy_src, length_per_step);
             dest += length_per_step;

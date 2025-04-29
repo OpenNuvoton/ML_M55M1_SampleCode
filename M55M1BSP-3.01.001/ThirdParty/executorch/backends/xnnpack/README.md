@@ -98,16 +98,17 @@ After exporting the XNNPACK Delegated model, we can now try running it with exam
 cd executorch
 
 # Get a clean cmake-out directory
-rm- -rf cmake-out
+./install_executorch.sh --clean
 mkdir cmake-out
 
 # Configure cmake
 cmake \
     -DCMAKE_INSTALL_PREFIX=cmake-out \
     -DCMAKE_BUILD_TYPE=Release \
-    -DEXECUTORCH_BUILD_EXTENSION_MODULE=ON \
-    -DEXECUTORCH_BUILD_XNNPACK=ON \
     -DEXECUTORCH_BUILD_EXTENSION_DATA_LOADER=ON \
+    -DEXECUTORCH_BUILD_EXTENSION_MODULE=ON \
+    -DEXECUTORCH_BUILD_EXTENSION_TENSOR=ON \
+    -DEXECUTORCH_BUILD_XNNPACK=ON \
     -DEXECUTORCH_ENABLE_LOGGING=ON \
     -DPYTHON_EXECUTABLE=python \
     -Bcmake-out .
@@ -130,6 +131,6 @@ create an issue on [github](https://www.github.com/pytorch/executorch/issues).
 
 
 ## See Also
-For more information about the XNNPACK Delegate, please check out the following resources:
-- [ExecuTorch XNNPACK Delegate](https://pytorch.org/executorch/0.2/native-delegates-executorch-xnnpack-delegate.html)
-- [Building and Running ExecuTorch with XNNPACK Backend](https://pytorch.org/executorch/0.2/native-delegates-executorch-xnnpack-delegate.html)
+For more information about the XNNPACK Backend, please check out the following resources:
+- [XNNPACK Backend](https://pytorch.org/executorch/main/backends-xnnpack)
+- [XNNPACK Backend Internals](https://pytorch.org/executorch/main/backend-delegates-xnnpack-reference)

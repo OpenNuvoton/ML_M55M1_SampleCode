@@ -52,9 +52,15 @@ enum QuantizeDef : byte {
 enum QuantizeType : byte {
     SCALE_OFFSET = 0,
     AXIS_SCALE_OFFSET,
-    // TODO: enable
-    //   QNN_QUANTIZATION_ENCODING_BW_SCALE_OFFSET
-    //   QNN_QUANTIZATION_ENCODING_BW_AXIS_SCALE_OFFSET
+    BW_SCALE_OFFSET,
+    BW_AXIS_SCALE_OFFSET,
+    BLOCKWISE_EXPANSION,
+    UNDEFINED,
+}
+
+enum BlockScaleStorageType: byte {
+    BITWIDTH_SCALE_STORAGE_8 = 0,
+    BITWIDTH_SCALE_STORAGE_16,
     UNDEFINED,
 }
 
@@ -66,17 +72,28 @@ struct ScaleOffset {
 table QuantizeParam {
     def: QuantizeDef;
     type: QuantizeType;
+    bitwidth: uint;
     axis: int;
+    // used by bitwidth quantization
+    scales: [float];
+    offsets: [int];
+    // used by general quantization
     data: [ScaleOffset];
+    // used by block quantization
+    num_blocks_per_axis: uint;
+    block_scale_storage_type: BlockScaleStorageType;
+    block_scale: [ubyte];
 }
 
 table Tensor {
     name: string;
     shape: [uint];
+    dynamic_dims: [ubyte];
     type: TensorType;
     dtype: DataType;
     qparam: QuantizeParam;
-    data: [ubyte];
+    size: uint;
+    offset: ulong;
 }
 
 table Operator {
@@ -84,14 +101,19 @@ table Operator {
     package_name: string;
     type_name: string;
     // keep only tensor indexes
-    inputs: [int];
-    outputs: [int];
-    params: [int];
+    inputs: [uint];
+    outputs: [uint];
+    params: [uint];
 }
 
 table Graph {
+    name: string;
     nodes: [Operator];
     tensors: [Tensor];
 }
 
-root_type Graph;
+table Context {
+    graphs: [Graph];
+}
+
+root_type Context;

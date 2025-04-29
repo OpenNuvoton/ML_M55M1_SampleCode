@@ -1,4 +1,5 @@
 # Copyright (c) Qualcomm Innovation Center, Inc.
+# Copyright 2025 Arm Limited and/or its affiliates.
 # All rights reserved
 #
 # This source code is licensed under the BSD-style license found in the
@@ -38,48 +39,44 @@ if(${ANDROID})
   find_library(android_log log)
 endif()
 
-if(NOT FLATC_EXECUTABLE)
-  set(FLATC_EXECUTABLE flatc)
-endif()
-
 set(qcir_schema_include_dir ${CMAKE_CURRENT_LIST_DIR}/aot/ir)
 set(qcir_schema_output ${qcir_schema_include_dir}/qcir_generated.h)
 add_custom_command(
   OUTPUT qcir_schema_output
   COMMAND ${FLATC_EXECUTABLE} --cpp --cpp-std c++11 --scoped-enums -o
           ${qcir_schema_include_dir} ${qcir_schema_include_dir}/qcir.fbs
+  DEPENDS flatc
   COMMENT "Generating qualcomm ir schema headers"
   VERBATIM
 )
 
 add_compile_options("-Wall" "-Werror" "-Wno-sign-compare")
+add_compile_definitions(C10_USING_CUSTOM_GENERATED_MACROS)
 
 # GNU emit wanring for ignored attributes Unfortunately, we use [[maybe_unused]]
 # which can be ignored by GNU. So we make it a warning, not an error in GNU.
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   add_compile_options("-Wno-error=attributes")
+  add_link_options("-flto=auto")
 endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
   # strip symbols
   add_link_options("-s")
-  # hide dynamic symbols
-  set(CMAKE_C_VISIBILITY_PRESET hidden)
-  set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
   # --gc-sections is added by torch.
-  add_compile_options(
-    "-O3" "-ffunction-sections" "-fdata-sections" "-frtti"
-    "-Wno-unused-command-line-argument"
-  )
+  add_compile_options("-O3" "-ffunction-sections" "-fdata-sections" "-frtti")
 endif()
 
 include_directories(
   BEFORE ${_common_include_directories} ${QNN_SDK_ROOT}/include/QNN
   ${EXECUTORCH_SOURCE_DIR}/third-party/flatbuffers/include
+  ${EXECUTORCH_SOURCE_DIR}/runtime/core/portable_type/c10
 )
 
-set(_qnn_schema__srcs backends/qualcomm/serialization/schema.fbs)
+set(_qnn_schema__srcs
+  backends/qualcomm/serialization/qc_compiler_spec.fbs
+)
 set(_qnn_schema__include_dir "${CMAKE_BINARY_DIR}/schema/include")
 # Paths to headers generated from the .fbs files.
 set(_qnn_schema__outputs)
@@ -100,6 +97,7 @@ add_custom_command(
     "${_qnn_schema__include_dir}/executorch/backends/qualcomm"
     ${_qnn_schema__srcs}
   WORKING_DIRECTORY ${EXECUTORCH_SOURCE_DIR}
+  DEPENDS flatc
   COMMENT "Generating qnn_schema headers"
   VERBATIM
 )
@@ -118,6 +116,7 @@ add_library(qcir_utils STATIC)
 add_library(qnn_backend STATIC)
 add_library(qnn_backend_cache STATIC)
 add_library(qnn_context STATIC)
+add_library(qnn_custom_protocol STATIC)
 add_library(qnn_device STATIC)
 add_library(qnn_executorch_backend SHARED)
 add_library(qnn_executorch_header INTERFACE)
@@ -125,7 +124,6 @@ add_library(qnn_executorch_logging STATIC)
 add_library(qnn_factory STATIC)
 add_library(qnn_function_interface INTERFACE)
 add_library(qnn_graph STATIC)
-add_library(qnn_header INTERFACE)
 add_library(qnn_implementation STATIC)
 add_library(qnn_logger STATIC)
 add_library(qnn_manager STATIC)
@@ -142,21 +140,18 @@ add_library(utils STATIC)
 # declare dependency
 #
 target_link_libraries(qcir_utils PRIVATE qcir)
-target_link_libraries(wrappers PRIVATE qnn_header qnn_executorch_logging)
-target_link_libraries(qnn_function_interface INTERFACE qnn_header)
+target_link_libraries(wrappers PRIVATE qnn_executorch_logging)
 target_link_libraries(
-  qnn_implementation PRIVATE qnn_function_interface qnn_header
-                             qnn_executorch_logging ${CMAKE_DL_LIBS}
+  qnn_implementation PRIVATE qnn_function_interface qnn_executorch_logging ${CMAKE_DL_LIBS}
 )
-target_link_libraries(qnn_sys_function_interface INTERFACE qnn_header)
 target_link_libraries(
-  qnn_sys_implementation PRIVATE qnn_sys_function_interface qnn_header
-                                 qnn_executorch_logging ${CMAKE_DL_LIBS}
+  qnn_sys_implementation PRIVATE qnn_sys_function_interface qnn_executorch_logging ${CMAKE_DL_LIBS}
 )
 target_link_libraries(qnn_executorch_logging PRIVATE qnn_schema)
 target_link_libraries(qnn_profiler PRIVATE qnn_executorch_logging)
 target_link_libraries(qnn_logger PRIVATE qnn_implementation ${android_log})
 target_link_libraries(qnn_backend PRIVATE qnn_implementation qnn_logger)
+target_link_libraries(qnn_custom_protocol PRIVATE qcir_utils)
 target_link_libraries(
   qnn_device PRIVATE qnn_executorch_logging qnn_implementation qnn_logger
 )
@@ -176,17 +171,18 @@ target_link_libraries(
 )
 
 target_link_libraries(
-  qnn_factory
-  PUBLIC qnn_header
-  PRIVATE qnn_schema qnn_backend qnn_device qnn_context qnn_graph
-          qnn_mem_manager
+  qnn_factory PRIVATE qnn_schema qnn_backend qnn_device qnn_context qnn_graph
+          qnn_mem_manager qnn_custom_protocol
 )
 target_link_libraries(
   qnn_manager PRIVATE qnn_factory wrappers qnn_schema utils shared_buffer
 )
 target_link_libraries(
   qnn_executorch_backend PRIVATE qnn_executorch_header qnn_schema qnn_manager
-                                 executorch_no_prim_ops qcir_utils
+                                 executorch_core qcir_utils extension_tensor
+)
+set_target_properties(
+  qnn_executorch_backend PROPERTIES LINK_FLAGS "-Wl,-rpath='$ORIGIN'"
 )
 target_link_libraries(utils PRIVATE qnn_executorch_logging)
 target_link_libraries(
@@ -196,11 +192,6 @@ target_link_libraries(
 # add linker option
 #
 target_link_options_shared_lib(qnn_executorch_backend)
-
-#
-# add compile option
-#
-target_compile_options(executorch PUBLIC -DET_EVENT_TRACER_ENABLED)
 
 #
 # add sources
@@ -235,6 +226,9 @@ if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "x86_64")
   set_target_properties(
     PyQnnManagerAdaptor PROPERTIES CXX_VISIBILITY_PRESET hidden
   )
+  set_target_properties(
+    PyQnnWrapperAdaptor PROPERTIES CXX_VISIBILITY_PRESET hidden
+  )
 
   target_link_libraries(
     PyQnnManagerAdaptor
@@ -245,6 +239,7 @@ if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "x86_64")
             qnn_executorch_header
             executorch
             qcir_utils
+            extension_tensor
   )
   target_link_libraries(
     PyQnnWrapperAdaptor PRIVATE pybind11::module pybind11::lto wrappers
@@ -257,6 +252,19 @@ if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "x86_64")
     # Strip unnecessary sections of the binary
     pybind11_strip(PyQnnManagerAdaptor)
     pybind11_strip(PyQnnWrapperAdaptor)
+  endif()
+
+  if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    # need to allow exceptions in pybind
+    set(_pybind_compile_options -Wno-deprecated-declarations -fPIC -frtti
+                                -fexceptions
+    )
+    target_compile_options(
+      PyQnnManagerAdaptor PUBLIC ${_pybind_compile_options}
+    )
+    target_compile_options(
+      PyQnnWrapperAdaptor PUBLIC ${_pybind_compile_options}
+    )
   endif()
 
   add_subdirectory(

@@ -4,7 +4,7 @@
 # This source code is licensed under the BSD-style license found in the
 # LICENSE file in the root directory of this source tree.
 
-from typing import cast, Optional, Tuple
+from typing import Any, cast, Optional, Tuple
 
 import executorch.exir as exir
 import torch
@@ -62,6 +62,20 @@ def check_or_raise(condition: bool, err: str) -> None:
         raise RuntimeError(err)
 
 
+def is_node(node: Any) -> bool:
+    """
+    returns true if node is a torch.fx.Node, otherwise false
+    """
+    return isinstance(node, torch.fx.Node)
+
+
+def is_getitem(node: torch.fx.Node) -> bool:
+    if node.op != "call_function":
+        return False
+
+    return node.target.__name__ == "getitem"  # pyre-ignore
+
+
 def get_input_node(node: torch.fx.Node, input_index: int) -> torch.fx.Node:
     return cast(torch.fx.Node, node.args[input_index])
 
@@ -117,6 +131,22 @@ def get_param_tensor(
     raise RuntimeError(f"unsupported param type, {node.op}.")
 
 
+def get_tensor_name(exp_prog: ExportedProgram, node: torch.fx.Node) -> str:
+    if node is None:
+        return ""
+    if is_param(exp_prog, node):
+        return exp_prog.graph_signature.inputs_to_parameters[node.name]
+    elif is_buffer(exp_prog, node):
+        return exp_prog.graph_signature.inputs_to_buffers[node.name]
+    elif is_lifted_tensor_constant(exp_prog, node):
+        return exp_prog.graph_signature.inputs_to_lifted_tensor_constants[node.name]
+    else:
+        assert isinstance(node.target, str)
+        return node.target
+
+    return ""
+
+
 def get_source_fn(node: torch.fx.Node) -> Optional[torch.fx.Node]:
     """
     Returns the source fn of the given node, return None if something goes wrong
@@ -128,3 +158,33 @@ def get_source_fn(node: torch.fx.Node) -> Optional[torch.fx.Node]:
         return None
     source_fn = source_fn_st[-1]
     return source_fn[1]
+
+
+def is_depthwise_conv(
+    kernel_shape: Tuple[int, ...], groups: int = 1, is_transpose: bool = False
+) -> bool:
+    """
+    A convolution is depthwise if:
+        1) groups = input_channels (i.e. group_input_channels = 1)
+        2) output_channels is a positive integer multiple of input channels
+
+    For standard convolutions:
+        weight shape = (out_channels, in_channels_per_group, height, width)
+    For transposed convolutions:
+        weight shape = (in_channels, out_channels_per_group, height, width)
+
+    Returns True if the convolution is depthwise
+    """
+    if len(kernel_shape) < 2 or groups < 1:
+        return False
+
+    if is_transpose:
+        group_input_channels = int(kernel_shape[0] / groups)
+        group_output_channels = kernel_shape[1]
+    else:
+        group_input_channels = kernel_shape[1]
+        group_output_channels = int(kernel_shape[0] / groups)
+
+    return (
+        group_input_channels == 1 and group_output_channels % group_input_channels == 0
+    )

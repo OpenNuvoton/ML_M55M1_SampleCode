@@ -13,7 +13,9 @@ from torchvision import models
 
 
 class TestInceptionV3(unittest.TestCase):
-    # pyre-ignore
+    def setUp(self):
+        torch._dynamo.reset()
+
     ic3 = models.inception_v3(weights="IMAGENET1K_V1").eval()  # noqa
     model_inputs = (torch.randn(1, 3, 224, 224),)
 
@@ -35,9 +37,7 @@ class TestInceptionV3(unittest.TestCase):
         (
             Tester(self.ic3, self.model_inputs)
             .export()
-            .to_edge()
-            .check(list(self.all_operators))
-            .partition()
+            .to_edge_transform_and_lower()
             .check(["torch.ops.higher_order.executorch_call_delegate"])
             .check_not(list(self.all_operators))
             .to_executorch()
@@ -56,9 +56,7 @@ class TestInceptionV3(unittest.TestCase):
             Tester(self.ic3, self.model_inputs)
             .quantize()
             .export()
-            .to_edge()
-            .check(list(ops_after_quantization))
-            .partition()
+            .to_edge_transform_and_lower()
             .check(["torch.ops.higher_order.executorch_call_delegate"])
             .check_not(list(ops_after_quantization))
             .to_executorch()
@@ -77,9 +75,7 @@ class TestInceptionV3(unittest.TestCase):
             Tester(self.ic3, self.model_inputs)
             .quantize(Quantize(calibrate=False))
             .export()
-            .to_edge()
-            .check(list(ops_after_quantization))
-            .partition()
+            .to_edge_transform_and_lower()
             .check(["torch.ops.higher_order.executorch_call_delegate"])
             .check_not(list(ops_after_quantization))
             .to_executorch()

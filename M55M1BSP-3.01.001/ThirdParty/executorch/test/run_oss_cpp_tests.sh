@@ -22,32 +22,43 @@ elif [[ $(uname) == "Linux" ]]; then
   export LLVM_COV="${LLVM_COV:-llvm-cov}"
 fi
 
+if [[ -z "${PYTHON_EXECUTABLE:-}" ]]; then
+  PYTHON_EXECUTABLE=python3
+fi
+which "${PYTHON_EXECUTABLE}"
+
 build_executorch() {
+  BUILD_VULKAN="OFF"
+  if [ -x "$(command -v glslc)" ]; then
+    BUILD_VULKAN="ON"
+  fi
   cmake . \
     -DCMAKE_INSTALL_PREFIX=cmake-out \
     -DEXECUTORCH_USE_CPP_CODE_COVERAGE=ON \
+    -DEXECUTORCH_BUILD_KERNELS_CUSTOM=ON \
+    -DEXECUTORCH_BUILD_KERNELS_OPTIMIZED=ON \
+    -DEXECUTORCH_BUILD_KERNELS_QUANTIZED=ON \
     -DEXECUTORCH_BUILD_EXTENSION_DATA_LOADER=ON \
+    -DEXECUTORCH_BUILD_EXTENSION_FLAT_TENSOR=ON \
+    -DEXECUTORCH_BUILD_EXTENSION_LLM_RUNNER=ON \
+    -DEXECUTORCH_BUILD_EXTENSION_MODULE=ON \
+    -DEXECUTORCH_BUILD_EXTENSION_RUNNER_UTIL=ON \
+    -DEXECUTORCH_BUILD_EXTENSION_TENSOR=ON \
+    -DEXECUTORCH_BUILD_DEVTOOLS=ON \
+    -DEXECUTORCH_BUILD_VULKAN=$BUILD_VULKAN \
+    -DEXECUTORCH_BUILD_XNNPACK=ON \
+    -DEXECUTORCH_BUILD_TESTS=ON \
     -Bcmake-out
   cmake --build cmake-out -j9 --target install
 }
 
-build_gtest() {
-  mkdir -p third-party/googletest/build
-  pushd third-party/googletest/build
-  cmake .. -DCMAKE_INSTALL_PREFIX=.
-  make -j4
-  make install
-  popd
-}
-
 build_and_run_test() {
   local test_dir=$1
-  cmake "${test_dir}" \
-    -DCMAKE_INSTALL_PREFIX=cmake-out \
-    -DEXECUTORCH_USE_CPP_CODE_COVERAGE=ON \
-    -DCMAKE_PREFIX_PATH="$(pwd)/third-party/googletest/build" \
-    -Bcmake-out/"${test_dir}"
-  cmake --build cmake-out/"${test_dir}" -j9
+
+  if [[ "$test_dir" =~ .*examples/models/llama/tokenizer.* ]]; then
+    RESOURCES_PATH=$(realpath examples/models/llama/tokenizer/test/resources)
+  fi
+  export RESOURCES_PATH
 
   for t in cmake-out/"${test_dir}"/*test; do
     if [ -e "$t" ]; then
@@ -58,22 +69,22 @@ build_and_run_test() {
 }
 
 report_coverage() {
-  "${LLVM_PROFDATA}" merge -sparse cmake-out/*.profraw -o cmake-out/merged.profdata
-  "${LLVM_COV}" report -instr-profile=cmake-out/merged.profdata $TEST_BINARY_LIST
+  ${LLVM_PROFDATA} merge -sparse cmake-out/*.profraw -o cmake-out/merged.profdata
+  ${LLVM_COV} report -instr-profile=cmake-out/merged.profdata $TEST_BINARY_LIST
 }
 
-probe_tests() {
+run_ctest() {
+  pushd cmake-out/
+  ctest --output-on-failure
+  popd
+}
+
+probe_additional_tests() {
   # This function finds the set of directories that contain C++ tests
   # CMakeLists.txt rules, that are buildable using build_and_run_test
   dirs=(
-    backends
-    examples
-    extension
-    kernels
-    runtime
-    schema
-    sdk
-    test
+    examples/models/llama/tokenizer
+    extension/llm/tokenizer
   )
 
   find "${dirs[@]}" \
@@ -83,13 +94,13 @@ probe_tests() {
 }
 
 build_executorch
-build_gtest
+run_ctest
 
 if [ -z "$1" ]; then
   echo "Running all directories:"
-  probe_tests
+  probe_additional_tests
 
-  for test_dir in $(probe_tests); do
+  for test_dir in $(probe_additional_tests); do
     build_and_run_test "${test_dir}"
   done
 else

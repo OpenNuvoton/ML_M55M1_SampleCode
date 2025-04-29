@@ -12,6 +12,9 @@ from torchvision import models
 
 
 class TestViT(unittest.TestCase):
+    def setUp(self):
+        torch._dynamo.reset()
+
     vit = models.vision_transformer.vit_b_16(weights="IMAGENET1K_V1")
     vit = vit.eval()
     model_inputs = (torch.randn(1, 3, 224, 224),)
@@ -73,9 +76,7 @@ class TestViT(unittest.TestCase):
         }
         (
             tester.export()
-            .to_edge()
-            .check(list(self.all_operators))
-            .partition()
+            .to_edge_transform_and_lower()
             .check(["torch.ops.higher_order.executorch_call_delegate"])
             .check_not(list(lowerable_xnn_operators))
             .check_not(check_nots)

@@ -6,10 +6,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+#include <executorch/kernels/optimized/cpu/binary_ops.h>
 #include <executorch/kernels/optimized/vec/functional.h>
 #include <executorch/kernels/optimized/vec/vec.h>
 #include <executorch/kernels/portable/cpu/scalar_utils.h>
 #include <executorch/kernels/portable/cpu/util/broadcast_util.h>
+#include <executorch/runtime/core/exec_aten/util/tensor_util.h> // IWYU pragma: export
 #include <executorch/runtime/kernel/kernel_includes.h>
 #include <executorch/runtime/platform/assert.h>
 
@@ -17,30 +19,10 @@ namespace torch {
 namespace executor {
 namespace native {
 
-using Tensor = exec_aten::Tensor;
-using ScalarType = exec_aten::ScalarType;
+using Tensor = executorch::aten::Tensor;
+using ScalarType = executorch::aten::ScalarType;
 
 namespace {
-
-// Move to generic util as this is applicable to all binary ops
-bool can_use_optimized_path(
-    const Tensor& a,
-    const Tensor& b,
-    const Tensor& out) {
-  ScalarType a_type = a.scalar_type();
-  ScalarType b_type = b.scalar_type();
-  ScalarType out_type = out.scalar_type();
-
-  bool can_use_optimized_path = true;
-  can_use_optimized_path =
-      can_use_optimized_path && ((a_type == b_type) && (a_type == out_type));
-  can_use_optimized_path = can_use_optimized_path &&
-      (a_type != ScalarType::Half && b_type != ScalarType::Half);
-  can_use_optimized_path = can_use_optimized_path &&
-      (a.sizes().equals(b.sizes()) ||
-       (a.numel() == b.numel() && a.numel() == out.numel()));
-  return can_use_optimized_path;
-}
 
 template <
     bool can_cast,
@@ -85,10 +67,11 @@ template <
     typename CTYPE_OUT>
 struct MulInner<false, CTYPE_A, CTYPE_B, CTYPE_IN, CTYPE_OUT>
     : public ReportCanCastBug {};
+
 } // namespace
 
 Tensor& opt_mul_out(
-    RuntimeContext& ctx,
+    KernelRuntimeContext& ctx,
     const Tensor& a,
     const Tensor& b,
     Tensor& out) {
@@ -98,7 +81,36 @@ Tensor& opt_mul_out(
   ScalarType b_type = b.scalar_type();
   ScalarType out_type = out.scalar_type();
 
-  if (can_use_optimized_path(a, b, out)) {
+  if (b.numel() == 1) {
+    if (a_type == b_type && a_type == out_type && a_type != ScalarType::Half &&
+        a_type != ScalarType::BFloat16) {
+      ET_KERNEL_CHECK(
+          ctx,
+          resize_to_broadcast_target_size(a, b, out) == Error::Ok,
+          InvalidArgument,
+          out);
+
+      ET_SWITCH_REALB_TYPES(a_type, ctx, "mul.out", CTYPE, [&]() {
+        ET_SWITCH_REALB_TYPES(b_type, ctx, "mul.out", CTYPE_B, [&]() {
+          CTYPE_B b_val = *b.const_data_ptr<CTYPE_B>();
+          CTYPE b_casted = static_cast<CTYPE>(b_val);
+
+          using Vec = executorch::vec::Vectorized<CTYPE>;
+          executorch::vec::map<CTYPE>(
+              [b_casted](Vec x) { return x * Vec(b_casted); },
+              out.mutable_data_ptr<CTYPE>(),
+              a.const_data_ptr<CTYPE>(),
+              out.numel());
+        });
+      });
+      return out;
+    }
+  } else if (a.numel() == 1) {
+    return opt_mul_out(ctx, b, a, out);
+  }
+
+  auto selected_optimized_path = select_optimized_path(a, b, out);
+  if (selected_optimized_path == ElementwiseOptimizedPath::kTreatAs1d) {
     // Resize for dynamic shape
     auto error = resize_tensor(out, a.sizes());
     ET_KERNEL_CHECK_MSG(
@@ -117,6 +129,12 @@ Tensor& opt_mul_out(
           b.const_data_ptr<CTYPE>(),
           out.numel());
     });
+  } else if (selected_optimized_path != ElementwiseOptimizedPath::kNone) {
+    ET_SWITCH_REALB_TYPES(out_type, ctx, "mul.out", CTYPE, [&]() {
+      auto mul_lambda = [](auto x, auto y) { return x * y; };
+      return torch::executor::handle_broadcast_elementwise<CTYPE>(
+          ctx, mul_lambda, a, b, out, selected_optimized_path);
+    });
   } else {
     ScalarType common_type =
         promoteTypes(a_type, b_type, /*half_to_float*/ true);
@@ -128,12 +146,12 @@ Tensor& opt_mul_out(
         InvalidArgument,
         out);
 
-    ET_SWITCH_REALHB_TYPES(a_type, ctx, "mul.out", CTYPE_A, [&]() {
-      ET_SWITCH_REALHB_TYPES(b_type, ctx, "mul.out", CTYPE_B, [&]() {
+    ET_SWITCH_REALHBBF16_TYPES(a_type, ctx, "mul.out", CTYPE_A, [&]() {
+      ET_SWITCH_REALHBBF16_TYPES(b_type, ctx, "mul.out", CTYPE_B, [&]() {
         using CTYPE_IN = typename torch::executor::
             promote_types<CTYPE_A, CTYPE_B, /*half_to_float*/ true>::type;
         ET_DCHECK(CppTypeToScalarType<CTYPE_IN>::value == common_type);
-        ET_SWITCH_REALHB_TYPES(out_type, ctx, "mul.out", CTYPE_OUT, [&]() {
+        ET_SWITCH_REALHBBF16_TYPES(out_type, ctx, "mul.out", CTYPE_OUT, [&]() {
           apply_binary_elementwise_fn<CTYPE_A, CTYPE_B, CTYPE_OUT>(
               [](const CTYPE_A val_a, const CTYPE_B val_b) {
                 CTYPE_IN a_casted = static_cast<CTYPE_IN>(val_a);
@@ -154,7 +172,7 @@ Tensor& opt_mul_out(
 }
 
 Tensor& opt_mul_scalar_out(
-    RuntimeContext& ctx,
+    KernelRuntimeContext& ctx,
     const Tensor& a,
     const Scalar& b,
     Tensor& out) {
@@ -168,7 +186,7 @@ Tensor& opt_mul_scalar_out(
 
   ET_CHECK(common_type == out_type);
 
-  if (common_type == ScalarType::Half) {
+  if (common_type == ScalarType::Half || common_type == ScalarType::BFloat16) {
     common_type = ScalarType::Float;
   }
 
@@ -177,7 +195,7 @@ Tensor& opt_mul_scalar_out(
   ET_CHECK_MSG(error == Error::Ok, "Failed to resize output tensor.");
 
   if (a_type == common_type && a_type == out_type &&
-      a_type != ScalarType::Half) {
+      a_type != ScalarType::Half && a_type != ScalarType::BFloat16) {
     ET_SWITCH_REALB_TYPES(a_type, ctx, "mul.Scalar_out", CTYPE, [&]() {
       ET_SWITCH_SCALAR_OBJ_TYPES(b_type, ctx, "mul.Scalar_out", CTYPE_B, [&]() {
         CTYPE_B b_val;
@@ -193,11 +211,11 @@ Tensor& opt_mul_scalar_out(
       });
     });
   } else {
-    ET_SWITCH_REALHB_TYPES(a_type, ctx, "mul.Scalar_out", CTYPE_A, [&]() {
+    ET_SWITCH_REALHBBF16_TYPES(a_type, ctx, "mul.Scalar_out", CTYPE_A, [&]() {
       ET_SWITCH_SCALAR_OBJ_TYPES(b_type, ctx, "mul.Scalar_out", CTYPE_B, [&]() {
         ET_SWITCH_REALB_TYPES(
             common_type, ctx, "mul.Scalar_out", CTYPE_IN, [&]() {
-              ET_SWITCH_REALHB_TYPES(
+              ET_SWITCH_REALHBBF16_TYPES(
                   out_type, ctx, "mul.Scalar_out", CTYPE_OUT, [&]() {
                     CTYPE_B b_val;
                     ET_EXTRACT_SCALAR(b, b_val);

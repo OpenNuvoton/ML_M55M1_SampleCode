@@ -1,4 +1,4 @@
-load("@fbsource//xplat/executorch/build:runtime_wrapper.bzl", "runtime")
+load("@fbsource//xplat/executorch/build:runtime_wrapper.bzl", "get_aten_mode_options", "runtime")
 load("@fbsource//xplat/executorch/codegen:codegen.bzl", "et_operator_library", "executorch_generated_lib", "exir_custom_ops_aot_lib")
 
 def define_common_targets():
@@ -16,14 +16,17 @@ def define_common_targets():
         ops = [
             "quantized_decomposed::add.out",
             "quantized_decomposed::choose_qparams.Tensor_out",
+            "quantized_decomposed::choose_qparams_per_token_asymmetric.out",
             "quantized_decomposed::dequantize_per_channel.out",
             "quantized_decomposed::dequantize_per_tensor.out",
             "quantized_decomposed::dequantize_per_tensor.Tensor_out",
+            "quantized_decomposed::dequantize_per_token.out",
             "quantized_decomposed::mixed_linear.out",
             "quantized_decomposed::mixed_mm.out",
             "quantized_decomposed::quantize_per_channel.out",
             "quantized_decomposed::quantize_per_tensor.out",
             "quantized_decomposed::quantize_per_tensor.Tensor_out",
+            "quantized_decomposed::quantize_per_token.out",
         ],
         define_static_targets = True,
     )
@@ -44,7 +47,10 @@ def define_common_targets():
     exir_custom_ops_aot_lib(
         name = "aot_lib",
         yaml_target = ":quantized.yaml",
-        visibility = ["//executorch/..."],
+        visibility = [
+                "//executorch/...",
+                "@EXECUTORCH_CLIENTS",
+        ],
         kernels = [":quantized_operators_aten"],
         deps = [
             ":quantized_ops_need_aot_registration",
@@ -55,9 +61,27 @@ def define_common_targets():
         name = "all_quantized_ops",
         ops_schema_yaml_target = ":quantized.yaml",
         define_static_targets = True,
+        visibility = [
+                "//executorch/...",
+                "@EXECUTORCH_CLIENTS",
+        ],
     )
 
-    for aten_mode in (True, False):
+    # On Windows we can only compile these two ops currently, so adding a
+    # separate target for this.
+    et_operator_library(
+        name = "q_dq_ops",
+            ops = [
+                "quantized_decomposed::dequantize_per_tensor.out",
+                "quantized_decomposed::dequantize_per_tensor.Tensor_out",
+                "quantized_decomposed::quantize_per_tensor.out",
+                "quantized_decomposed::quantize_per_tensor.Tensor_out",
+                "quantized_decomposed::dequantize_per_channel.out",
+                "quantized_decomposed::quantize_per_channel.out",
+            ],
+    )
+
+    for aten_mode in get_aten_mode_options():
         aten_suffix = "_aten" if aten_mode else ""
 
         runtime.cxx_library(
@@ -88,3 +112,34 @@ def define_common_targets():
             ],
             define_static_targets = True,
         )
+
+        # On Windows we can only compile these two ops currently, so adding a
+        # separate target for this.
+        executorch_generated_lib(
+            name = "q_dq_ops_generated_lib" + aten_suffix,
+            custom_ops_yaml_target = ":quantized.yaml",
+            kernel_deps = [
+                "//executorch/kernels/quantized/cpu:op_quantize" + aten_suffix,
+                "//executorch/kernels/quantized/cpu:op_dequantize" + aten_suffix,
+            ],
+            aten_mode = aten_mode,
+            deps = [
+                ":q_dq_ops",
+            ],
+            visibility = [
+                "//executorch/...",
+                "@EXECUTORCH_CLIENTS",
+            ],
+        )
+
+    runtime.python_library(
+        name = "quantized_ops_lib",
+        srcs = ["__init__.py"],
+        deps = [
+            "//caffe2:torch",
+        ],
+        visibility = [
+            "//executorch/kernels/quantized/...",
+            "@EXECUTORCH_CLIENTS",
+        ],
+    )

@@ -7,12 +7,15 @@
 import unittest
 
 import torch
-from executorch.backends.xnnpack.passes.convert_to_linear import ConvertToLinearPass
+from executorch.backends.xnnpack._passes.convert_to_linear import ConvertToLinearPass
 from executorch.backends.xnnpack.test.tester import RunPasses, Tester
 
 
 class TestConvertToLinear(unittest.TestCase):
     PassStage = RunPasses([ConvertToLinearPass])
+
+    def setUp(self):
+        torch._dynamo.reset()
 
     def test_fp32_convert_to_linear(self):
         in_sizes = [1, 4, 4]
@@ -21,6 +24,7 @@ class TestConvertToLinear(unittest.TestCase):
         bias_vals = [True, True, False]
 
         for i, _ in enumerate(in_sizes):
+            torch._dynamo.reset()
             in_size = int(in_sizes[i])
             input_size = int(input_sizes[i])
             output_size = int(output_sizes[i])

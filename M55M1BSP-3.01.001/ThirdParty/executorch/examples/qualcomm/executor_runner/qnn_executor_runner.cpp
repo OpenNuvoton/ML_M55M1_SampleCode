@@ -13,26 +13,26 @@
  * This tool can run ExecuTorch model files with Qualcomm AI Engine Direct
  * and the portable kernels.
  *
- * User could specify arguments like desired input data, iterfations, etc.
+ * User could specify arguments like desired input data, iterations, etc.
  * Currently we assume that the outputs are all fp32 tensors.
  */
 
 #include <executorch/backends/qualcomm/runtime/QnnExecuTorch.h>
+#include <executorch/devtools/etdump/etdump_flatcc.h>
 #include <executorch/extension/data_loader/file_data_loader.h>
 #include <executorch/extension/runner_util/inputs.h>
 #include <executorch/runtime/core/memory_allocator.h>
 #include <executorch/runtime/executor/method.h>
 #include <executorch/runtime/executor/program.h>
 #include <executorch/runtime/platform/log.h>
-#include <executorch/runtime/platform/profiler.h>
 #include <executorch/runtime/platform/runtime.h>
-#include <executorch/sdk/etdump/etdump_flatcc.h>
-#include <executorch/util/util.h>
 
 #include <gflags/gflags.h>
 
+#include <chrono>
 #include <fstream>
 #include <memory>
+#include <numeric>
 
 static uint8_t method_allocator_pool[4 * 1024U * 1024U]; // 4 MB
 
@@ -40,10 +40,6 @@ DEFINE_string(
     model_path,
     "model.pte",
     "Model serialized in flatbuffer format.");
-DEFINE_string(
-    prof_result_path,
-    "prof_result.bin",
-    "Executorch profiler output path.");
 DEFINE_string(
     output_folder_path,
     "outputs",
@@ -55,14 +51,56 @@ DEFINE_bool(
     shared_buffer,
     false,
     "Specifies to use shared buffers for zero-copy usecase between the application and device/co-processor associated with the backend.");
+DEFINE_uint32(method_index, 0, "Index of methods to be specified.");
 
 DEFINE_string(
     etdump_path,
     "etdump.etdp",
     "If etdump generation is enabled an etdump will be written out to this path");
-using namespace torch::executor;
-using torch::executor::MemoryAllocator;
-using torch::executor::util::FileDataLoader;
+
+DEFINE_bool(
+    dump_intermediate_outputs,
+    false,
+    "Dump intermediate outputs to etdump file.");
+
+DEFINE_string(
+    debug_output_path,
+    "debug_output.bin",
+    "Path to dump debug outputs to.");
+
+DEFINE_string(
+    input_shape_path,
+    "",
+    "Path to file with input shapes specified (used in dynamic shape scenario).");
+
+DEFINE_string(
+    output_shape_path,
+    "",
+    "Path to file with output shapes specified (used in dynamic shape scenario).");
+
+DEFINE_int32(
+    debug_buffer_size,
+    20000000, // 20MB
+    "Size of the debug buffer in bytes to allocate for intermediate outputs and program outputs logging.");
+
+using executorch::aten::Tensor;
+using executorch::aten::TensorImpl;
+using executorch::etdump::ETDumpGen;
+using executorch::etdump::ETDumpResult;
+using executorch::extension::FileDataLoader;
+using executorch::extension::prepare_input_tensors;
+using executorch::runtime::Error;
+using executorch::runtime::EValue;
+using executorch::runtime::EventTracerDebugLogLevel;
+using executorch::runtime::HierarchicalAllocator;
+using executorch::runtime::MemoryAllocator;
+using executorch::runtime::MemoryManager;
+using executorch::runtime::Method;
+using executorch::runtime::MethodMeta;
+using executorch::runtime::Program;
+using executorch::runtime::Result;
+using executorch::runtime::Span;
+using executorch::runtime::TensorInfo;
 
 class CustomMemory {
  public:
@@ -101,7 +139,7 @@ class CustomMemory {
 };
 
 int main(int argc, char** argv) {
-  runtime_init();
+  executorch::runtime::runtime_init();
 
   gflags::ParseCommandLineFlags(&argc, &argv, true);
   if (argc != 1) {
@@ -119,7 +157,9 @@ int main(int argc, char** argv) {
   const char* model_path = FLAGS_model_path.c_str();
   Result<FileDataLoader> loader = FileDataLoader::from(model_path);
   ET_CHECK_MSG(
-      loader.ok(), "FileDataLoader::from() failed: 0x%" PRIx32, loader.error());
+      loader.ok(),
+      "FileDataLoader::from() failed: 0x%" PRIx32,
+      (int)loader.error());
 
   // Parse the program file. This is immutable, and can also be reused between
   // multiple execution invocations across multiple threads.
@@ -130,10 +170,11 @@ int main(int argc, char** argv) {
   }
   ET_LOG(Info, "Model file %s is loaded.", model_path);
 
-  // Use the first method in the program.
+  // Use the designated method in the program, default to the first one
   const char* method_name = nullptr;
   {
-    const auto method_name_result = program->get_method_name(0);
+    const auto method_name_result =
+        program->get_method_name(FLAGS_method_index);
     ET_CHECK_MSG(method_name_result.ok(), "Program has no methods");
     method_name = *method_name_result;
   }
@@ -168,7 +209,6 @@ int main(int argc, char** argv) {
   // In this example we use a statically allocated memory pool.
   MemoryAllocator method_allocator{
       MemoryAllocator(sizeof(method_allocator_pool), method_allocator_pool)};
-  method_allocator.enable_profiling("method allocator");
 
   // The memory-planned buffers will back the mutable tensors used by the
   // method. The sizes of these buffers were determined ahead of time during the
@@ -201,17 +241,24 @@ int main(int argc, char** argv) {
   // the method can mutate the memory-planned buffers, so the method should only
   // be used by a single thread at at time, but it can be reused.
   //
-  torch::executor::ETDumpGen etdump_gen = torch::executor::ETDumpGen();
-  // TODO: So far we have issues with etdump_gen during load_method. Enable it
-  // after the issues are fixed.
+  ETDumpGen etdump_gen;
   Result<Method> method =
-      program->load_method(method_name, &memory_manager, nullptr);
+      program->load_method(method_name, &memory_manager, &etdump_gen);
   ET_CHECK_MSG(
       method.ok(),
       "Loading of method %s failed with status 0x%" PRIx32,
       method_name,
-      method.error());
+      (int)method.error());
   ET_LOG(Info, "Method loaded.");
+
+  void* debug_buffer;
+  if (FLAGS_dump_intermediate_outputs) {
+    debug_buffer = malloc(FLAGS_debug_buffer_size);
+    Span<uint8_t> buffer((uint8_t*)debug_buffer, FLAGS_debug_buffer_size);
+    etdump_gen.set_debug_buffer(buffer);
+    etdump_gen.set_event_tracer_debug_level(
+        EventTracerDebugLogLevel::kIntermediateOutputs);
+  }
 
   // Prepare the inputs.
   // Allocate data memory for inputs and outputs
@@ -240,11 +287,11 @@ int main(int argc, char** argv) {
         custom_mem_ptr->GetPtr(),
         const_cast<TensorImpl::DimOrderType*>(tensor_meta->dim_order().data()));
     Error ret = method->set_input(Tensor(&impl), input_index);
-    ET_CHECK_MSG(ret == Error::Ok, "Failed to set input tensor: %d", ret);
+    ET_CHECK_MSG(ret == Error::Ok, "Failed to set input tensor: %d", (int)ret);
   }
   for (int output_index = 0; output_index < method->outputs_size();
        ++output_index) {
-    const exec_aten::Tensor& t = method->get_output(output_index).toTensor();
+    const Tensor& t = method->get_output(output_index).toTensor();
     out_custom_mem.push_back(
         std::make_unique<CustomMemory>(FLAGS_shared_buffer));
     std::unique_ptr<CustomMemory>& custom_mem_ptr = out_custom_mem.back();
@@ -260,7 +307,9 @@ int main(int argc, char** argv) {
       // This can error if the outputs are already pre-allocated. Ignore
       // this error because it doesn't affect correctness, but log it.
       ET_LOG(
-          Error, "ignoring error from set_output_data_ptr(): 0x%" PRIx32, ret);
+          Info,
+          "ignoring error from set_output_data_ptr(): 0x%" PRIx32,
+          (int)ret);
     }
   }
   ET_LOG(Info, "Inputs prepared.");
@@ -285,6 +334,31 @@ int main(int argc, char** argv) {
       return res;
     };
 
+    // dynamic shape related
+    std::vector<std::vector<int32_t>> expected_input_shapes,
+        expected_output_shapes;
+    if (!FLAGS_input_shape_path.empty() && !FLAGS_output_shape_path.empty()) {
+      std::ifstream input_shape_list(FLAGS_input_shape_path);
+      std::ifstream output_shape_list(FLAGS_output_shape_path);
+      std::string shape_content;
+      while (std::getline(input_shape_list, shape_content)) {
+        auto dims = split(shape_content, ", ");
+        std::vector<int32_t> shape;
+        for (std::string& dim : dims) {
+          shape.push_back(std::stoi(dim));
+        }
+        expected_input_shapes.emplace_back(std::move(shape));
+      }
+      while (std::getline(output_shape_list, shape_content)) {
+        auto dims = split(shape_content, ", ");
+        std::vector<int32_t> shape;
+        for (std::string& dim : dims) {
+          shape.push_back(std::stoi(dim));
+        }
+        expected_output_shapes.emplace_back(std::move(shape));
+      }
+    }
+
     std::string file_path;
     int inference_index = 0;
     double elapsed_time = 0;
@@ -299,6 +373,15 @@ int main(int argc, char** argv) {
           num_inputs,
           input_files.size());
 
+      // dynamic shape related
+      if (!expected_input_shapes.empty()) {
+        ET_CHECK_MSG(
+            expected_input_shapes.size() == num_inputs,
+            "Number of inputs (%zu) mismatch with input shapes (%zu)",
+            num_inputs,
+            expected_input_shapes.size());
+      }
+
       for (int input_index = 0; input_index < num_inputs; ++input_index) {
         MethodMeta method_meta = method->method_meta();
         Result<TensorInfo> tensor_meta =
@@ -308,18 +391,20 @@ int main(int argc, char** argv) {
         fin.seekg(0, fin.end);
         size_t file_size = fin.tellg();
 
-        ET_CHECK_MSG(
-            file_size == tensor_meta->nbytes(),
-            "Input(%d) size mismatch. file bytes: %zu, tensor bytes: %zu",
-            input_index,
-            file_size,
-            tensor_meta->nbytes());
-
         fin.seekg(0, fin.beg);
         fin.read(
             static_cast<char*>(in_custom_mem[input_index]->GetPtr()),
             file_size);
         fin.close();
+
+        if (expected_input_shapes.empty()) {
+          ET_CHECK_MSG(
+              file_size == tensor_meta->nbytes(),
+              "Input(%d) size mismatch. file bytes: %zu, tensor bytes: %zu",
+              input_index,
+              file_size,
+              tensor_meta->nbytes());
+        }
 
         // For pre-allocated use case, we need to call set_input
         // to copy data for the input tensors since they doesn't
@@ -327,12 +412,16 @@ int main(int argc, char** argv) {
         TensorImpl impl = TensorImpl(
             tensor_meta->scalar_type(),
             /*dim=*/tensor_meta->sizes().size(),
-            const_cast<TensorImpl::SizesType*>(tensor_meta->sizes().data()),
+            const_cast<TensorImpl::SizesType*>(
+                expected_input_shapes.empty()
+                    ? tensor_meta->sizes().data()
+                    : expected_input_shapes[input_index].data()),
             in_custom_mem[input_index]->GetPtr(),
             const_cast<TensorImpl::DimOrderType*>(
                 tensor_meta->dim_order().data()));
         Error ret = method->set_input(Tensor(&impl), input_index);
-        ET_CHECK_MSG(ret == Error::Ok, "Failed to set input tensor: %d", ret);
+        ET_CHECK_MSG(
+            ret == Error::Ok, "Failed to set input tensor: %d", (int)ret);
       }
 
       Error status = Error::Ok;
@@ -366,36 +455,30 @@ int main(int argc, char** argv) {
           status == Error::Ok,
           "Execution of method %s failed with status 0x%" PRIx32,
           method_name,
-          status);
+          (int)status);
 
       std::vector<EValue> outputs(method->outputs_size());
       status = method->get_outputs(outputs.data(), method->outputs_size());
       ET_CHECK(status == Error::Ok);
-      // The following code assumes all output EValues are floating point
-      // tensors. We need to handle other types of EValues and tensor
-      // dtypes. Furthermore, we need a util to print tensors in a more
-      // interpretable (e.g. size, dtype) and readable way.
-      // TODO for the above at T159700776
       for (size_t output_index = 0; output_index < method->outputs_size();
            output_index++) {
         auto output_tensor = outputs[output_index].toTensor();
+        size_t nbytes = output_tensor.nbytes();
+        if (!expected_output_shapes.empty()) {
+          nbytes = std::accumulate(
+              expected_output_shapes[output_index].begin(),
+              expected_output_shapes[output_index].end(),
+              executorch::runtime::elementSize(output_tensor.scalar_type()),
+              std::multiplies<int>());
+        }
         auto output_file_name = FLAGS_output_folder_path + "/output_" +
             std::to_string(inference_index) + "_" +
             std::to_string(output_index) + ".raw";
         std::ofstream fout(output_file_name.c_str(), std::ios::binary);
-        fout.write(
-            output_tensor.const_data_ptr<char>(), output_tensor.nbytes());
+        fout.write(output_tensor.const_data_ptr<char>(), nbytes);
         fout.close();
       }
 
-      // Dump the profiling data to the specified file.
-      torch::executor::prof_result_t prof_result;
-      EXECUTORCH_DUMP_PROFILE_RESULTS(&prof_result);
-      if (prof_result.num_bytes != 0) {
-        FILE* ptr = fopen(FLAGS_prof_result_path.c_str(), "w+");
-        fwrite(prof_result.prof_data, 1, prof_result.num_bytes, ptr);
-        fclose(ptr);
-      }
       ++inference_index;
     }
     ET_LOG(
@@ -405,19 +488,27 @@ int main(int argc, char** argv) {
         elapsed_time,
         elapsed_time / inference_index);
   } else {
-    // if no input is provided, run with default input as executor_runner.
+    // if no input is provided, fill the inputs with default values
+    auto inputs = prepare_input_tensors(*method);
+    ET_CHECK_MSG(
+        inputs.ok(),
+        "Could not prepare inputs: 0x%" PRIx32,
+        (uint32_t)inputs.error());
+    ET_LOG(
+        Info,
+        "Input list not provided. Inputs prepared with default values set.");
     Error status = method->execute();
     ET_CHECK_MSG(
         status == Error::Ok,
         "Execution of method %s failed with status 0x%" PRIx32,
         method_name,
-        status);
+        (int)status);
     ET_LOG(Info, "Model executed successfully.");
   }
 
   // Dump the etdump data containing profiling/debugging data to the specified
   // file.
-  etdump_result result = etdump_gen.get_etdump_data();
+  ETDumpResult result = etdump_gen.get_etdump_data();
   if (result.buf != nullptr && result.size > 0) {
     ET_LOG(
         Info,
@@ -428,6 +519,18 @@ int main(int argc, char** argv) {
     fwrite((uint8_t*)result.buf, 1, result.size, f);
     fclose(f);
     free(result.buf);
+  }
+
+  if (FLAGS_dump_intermediate_outputs) {
+    ET_LOG(
+        Info,
+        "Write debug output binary to %s, Size = %zu",
+        FLAGS_debug_output_path.c_str(),
+        (size_t)FLAGS_debug_buffer_size);
+    FILE* f = fopen(FLAGS_debug_output_path.c_str(), "w+");
+    fwrite((uint8_t*)debug_buffer, 1, FLAGS_debug_buffer_size, f);
+    fclose(f);
+    free(debug_buffer);
   }
 
   return 0;

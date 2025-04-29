@@ -16,14 +16,11 @@ layout(std430) buffer;
 
 #include "indexing_utils.h"
 
-layout(set = 0, binding = 0, ${IMAGE_FORMAT[DTYPE]}) uniform PRECISION restrict writeonly ${IMAGE_T[NDIM][DTYPE]} image_out;
-layout(set = 0, binding = 1) uniform PRECISION sampler3D image_in;
+${layout_declare_tensor(0, "w", "t_out", DTYPE, STORAGE)}
+${layout_declare_tensor(1, "r", "t_in", DTYPE, STORAGE)}
 
-layout(set = 0, binding = 2) uniform PRECISION restrict OutSizes {
+layout(push_constant) uniform PRECISION restrict Block {
   ivec4 out_sizes;
-};
-
-layout(set = 0, binding = 3) uniform PRECISION restrict InSizes {
   ivec4 in_sizes;
 };
 
@@ -44,18 +41,18 @@ void main() {
   // Assume there is a virtual continous buffer in nchw format. From the output
   // pos, we first calculate the index in the virual buffer, and then calculate
   // the input position from the indx.
-  const ivec4 buf_indices = get_texel_nchw_buffer_ixs(out_tensor_idx, out_sizes, out_packed_dim);
+  const ivec4 buf_indices = tidx_to_nchwi(out_tensor_idx, out_sizes, out_packed_dim);
 
   VEC4_T value = VEC4_T(0);
   // Need to look up the 4 values in the output texel separately.
   for (int i = 0 ; i < 4; i++) {
     if (out_tensor_idx[out_packed_dim]++ < out_sizes[out_packed_dim]) {
-      ivec4 user_coor = from_nchw_buffer_i(buf_indices[i], in_sizes);
+      ivec4 user_coor = nchwi_to_tidx(buf_indices[i], in_sizes);
       ivec4 in_pos_elem = to_texture_elem_pos(user_coor, in_sizes, in_packed_dim);
-      VEC4_T intex = texelFetch(image_in, in_pos_elem.xyz, 0);
+      VEC4_T intex = texelFetch(t_in, in_pos_elem.xyz, 0);
       value[i] = intex[in_pos_elem.w];
     }
   }
 
-  imageStore(image_out, out_pos, value);
+  imageStore(t_out, out_pos, value);
 }

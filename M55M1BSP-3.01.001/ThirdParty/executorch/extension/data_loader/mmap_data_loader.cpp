@@ -13,18 +13,20 @@
 #include <limits>
 
 #include <fcntl.h>
-#include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <unistd.h>
 
+#include <executorch/extension/data_loader/mman.h>
 #include <executorch/runtime/core/error.h>
 #include <executorch/runtime/core/result.h>
 #include <executorch/runtime/platform/log.h>
 
-namespace torch {
-namespace executor {
-namespace util {
+using executorch::runtime::Error;
+using executorch::runtime::FreeableBuffer;
+using executorch::runtime::Result;
+
+namespace executorch {
+namespace extension {
 
 namespace {
 
@@ -60,14 +62,16 @@ MmapDataLoader::~MmapDataLoader() {
   std::free(const_cast<char*>(file_name_));
   // fd_ can be -1 if this instance was moved from, but closing a negative fd is
   // safe (though it will return an error).
-  ::close(fd_);
+  if (fd_ != -1) {
+    ::close(fd_);
+  }
 }
 
 Result<MmapDataLoader> MmapDataLoader::from(
     const char* file_name,
     MmapDataLoader::MlockConfig mlock_config) {
   // Cache the page size.
-  long page_size = sysconf(_SC_PAGESIZE);
+  long page_size = get_os_page_size();
   if (page_size < 0) {
     ET_LOG(Error, "Could not get page size: %s (%d)", ::strerror(errno), errno);
     return Error::AccessFailed;
@@ -137,7 +141,7 @@ void MunmapSegment(void* context, void* data, size_t size) {
     // do about it.
     ET_LOG(
         Error,
-        "munmap(0x%zx, %zu) failed: %s (ignored)",
+        "munmap(0x%zx, %zu) failed: %s (%d) (ignored)",
         (size_t)range.start,
         range.size,
         ::strerror(errno),
@@ -146,7 +150,10 @@ void MunmapSegment(void* context, void* data, size_t size) {
 }
 } // namespace
 
-Result<FreeableBuffer> MmapDataLoader::Load(size_t offset, size_t size) {
+Result<FreeableBuffer> MmapDataLoader::load(
+    size_t offset,
+    size_t size,
+    ET_UNUSED const DataLoader::SegmentInfo& segment_info) const {
   ET_CHECK_OR_RETURN_ERROR(
       // Probably had its value moved to another instance.
       fd_ >= 0,
@@ -176,12 +183,22 @@ Result<FreeableBuffer> MmapDataLoader::Load(size_t offset, size_t size) {
   Range range =
       get_overlapping_pages(static_cast<uintptr_t>(offset), size, page_size_);
 
+  size_t map_size = range.size;
+  if (range.start + map_size > file_size_) {
+    // Clamp to the end of the file.
+    //
+    // The Windows implementation of mmap uses CreateFileMapping which returns
+    // error STATUS_SECTION_TOO_BIG (0xc0000040) if we try to map past the end
+    // of the last page of a file mapped in as read-only.
+    map_size = file_size_ - range.start;
+  }
+
   // Map the pages read-only. MAP_PRIVATE vs. MAP_SHARED doesn't matter since
   // the data is read-only, but use PRIVATE just to further avoid accidentally
   // modifying the file.
   void* pages = ::mmap(
       nullptr,
-      range.size,
+      map_size,
       PROT_READ,
       MAP_PRIVATE,
       fd_,
@@ -251,6 +268,5 @@ Result<size_t> MmapDataLoader::size() const {
   return file_size_;
 }
 
-} // namespace util
-} // namespace executor
-} // namespace torch
+} // namespace extension
+} // namespace executorch

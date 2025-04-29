@@ -15,7 +15,12 @@
 
 #pragma once
 
+#include <cstddef>
 #include <cstdint>
+
+namespace executorch {
+namespace backends {
+namespace arm {
 
 // Standard block name size
 const uint32_t kVelaBlockNameLength = 16;
@@ -66,3 +71,7 @@ bool vela_bin_read(const char* data, VelaHandles* handles, int size);
  * on the Ethos-U.
  */
 bool vela_bin_validate(const char* data, int size);
+
+} // namespace arm
+} // namespace backends
+} // namespace executorch

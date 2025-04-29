@@ -44,9 +44,10 @@ from executorch.exir.operator.convert import is_out_variant
 from executorch.exir.types import ValueSpec
 
 from torch._C import _EnableTorchFunction, DisableTorchFunctionSubclass  # @manual
-from torch._decomp import core_aten_decompositions, get_decompositions
+from torch._decomp import get_decompositions
 from torch._dynamo.guards import Guard
 from torch._functorch.eager_transforms import _maybe_unwrap_functional_tensor
+from torch.export import default_decompositions
 from torch.func import functionalize
 from torch.fx.operator_schemas import normalize_function
 from torch.utils._pytree import TreeSpec
@@ -272,7 +273,7 @@ class PythonTensor(torch.Tensor):
             kwargs = {}
         if torch.is_inference_mode_enabled():
             if func is torch.nn.functional.layer_norm:
-                args, kwargs = normalize_function(func, args, kwargs)
+                args, kwargs = normalize_function(func, args, kwargs)  # pyre-fixme[23]
                 input, normalized_shape = args
                 normalized_shape = list(normalized_shape)
                 return cls.__torch_dispatch__(
@@ -345,7 +346,7 @@ class PythonTensor(torch.Tensor):
 
         # Kind of a hacky way to test if an op is in-place or not
         if func.__name__[-1] == "_" and func.__name__[0] != "_":
-            if type(args[0]) == PythonTensor:
+            if isinstance(args[0], PythonTensor):
                 args[0].proxy = proxy_out
 
         if not torch.fx.traceback.has_preserved_node_meta():
@@ -361,13 +362,13 @@ class PythonTensor(torch.Tensor):
             if e is None:
                 e = torch.empty(())
 
-            if type(e) == torch.Tensor:
+            if isinstance(e, torch.Tensor):
                 return PythonTensor(e, proxy)
 
             # Inplace and out-variant ops may return one of their arguments, which is already
             # a PythonTensor. In this case, we need to update the PythonTensor's associated
             # proxy to the newly created proxy.
-            if type(e) == PythonTensor:
+            if isinstance(e, PythonTensor):
                 e.update_proxy(proxy)
                 return e
 
@@ -470,13 +471,13 @@ class DispatchTracer(fx.Tracer):
                 self.submodules[a] = name_submodule
             return self.create_node("get_attr", self.submodules[a], (), {})
 
-        return super().create_arg(a)
+        return super().create_arg(a)  # pyre-fixme[7]
 
     @staticmethod
     def get() -> "DispatchTracer":
         return TRACER
 
-    def trace(
+    def trace(  # pyre-fixme[14,15]
         self,
         root: Callable[..., Value],
         concrete_args: Tuple[Value, ...] = (),
@@ -628,10 +629,39 @@ def _default_decomposition_table(
             torch.ops.aten.arange.start,
             torch.ops.aten.transpose,
         ]
-        # pyre-fixme[7]: Expected `Dict[OpOverload, typing.Callable[..., executorch.e...
-        return get_decompositions(decomp_opset)
+        return get_decompositions(decomp_opset)  # pyre-fixme[7]
+
+    decomps = default_decompositions()
+    # Add edge specific decompositions
+    additional_decomp_ops = [
+        # TODO: Eventually this op should be added to the core decompo table, and will not
+        # need to be added here.
+        torch.ops.aten.linalg_vector_norm.default,
+    ]
+    additional_decomps = get_decompositions(additional_decomp_ops)
+    decomps.update(additional_decomps)
     # pyre-fixme[7]: Expected `Dict[OpOverload, typing.Callable[..., executorch.exir....
-    return core_aten_decompositions()
+
+    never_decompose = []
+    try:
+        # Do not decompose torchao quant primitives
+        # They have decompositions registered for inductor/CUDA, but in ExecuTorch we
+        # just pattern match them and lower to delegates
+        import torchao  # noqa: F401
+
+        never_decompose.extend(
+            [
+                torch.ops.torchao.quantize_affine.default,
+                torch.ops.torchao.dequantize_affine.default,
+                torch.ops.torchao.choose_qparams_affine.default,
+            ]
+        )
+    except:
+        pass
+
+    for op in never_decompose:
+        decomps.pop(op, None)
+    return decomps  # pyre-fixme[7]
 
 
 def dynamo_trace(
@@ -724,7 +754,9 @@ def dispatch_trace(
 
     _, out_spec = pytree.tree_flatten(tree_out)
 
+    # pyre-fixme[16]: `GraphModule` has no attribute `in_spec`.
     gm.in_spec = in_spec
+    # pyre-fixme[16]: `GraphModule` has no attribute `out_spec`.
     gm.out_spec = out_spec
 
     # TODO (tmanlaibaatar) This is bit clowny, but our

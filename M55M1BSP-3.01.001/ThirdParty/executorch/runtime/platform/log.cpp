@@ -13,19 +13,16 @@
 #include <executorch/runtime/platform/compiler.h>
 #include <executorch/runtime/platform/platform.h>
 
-namespace torch {
-namespace executor {
+namespace executorch {
+namespace runtime {
 namespace internal {
-
-/// Maximum length of a log message.
-static constexpr size_t kMaxLogMessageLength = 256;
 
 /**
  * Get the current timestamp to construct a log event.
  *
  * @retval Monotonically non-decreasing timestamp in system ticks.
  */
-et_timestamp_t getLogTimestamp() {
+et_timestamp_t get_log_timestamp() {
   return et_pal_current_ticks();
 }
 
@@ -76,15 +73,17 @@ static_assert(
  * @param[in] args Variable argument list.
  */
 void vlogf(
-    __ET_UNUSED LogLevel level,
+    ET_UNUSED LogLevel level,
     et_timestamp_t timestamp,
     const char* filename,
-    __ET_UNUSED const char* function,
+    ET_UNUSED const char* function,
     size_t line,
     const char* format,
     va_list args) {
 #if ET_LOG_ENABLED
 
+  // Maximum length of a log message.
+  static constexpr size_t kMaxLogMessageLength = 256;
   char buf[kMaxLogMessageLength];
   size_t len = vsnprintf(buf, kMaxLogMessageLength, format, args);
   if (len >= kMaxLogMessageLength - 1) {
@@ -93,8 +92,7 @@ void vlogf(
   }
   buf[kMaxLogMessageLength - 1] = 0;
 
-  et_pal_log_level_t pal_level =
-      (int(level) >= 0 && level < LogLevel::NumLevels)
+  et_pal_log_level_t pal_level = (level < LogLevel::NumLevels)
       ? kLevelToPal[size_t(level)]
       : et_pal_log_level_t::kUnknown;
 
@@ -105,5 +103,5 @@ void vlogf(
 }
 
 } // namespace internal
-} // namespace executor
-} // namespace torch
+} // namespace runtime
+} // namespace executorch

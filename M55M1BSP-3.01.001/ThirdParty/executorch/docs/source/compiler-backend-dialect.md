@@ -1,7 +1,7 @@
 # Backend Dialect
 ## Overview
 
-_Backend dialect_ is a special variant of [edge dialect](./ir-exir.md), because it contains backend specific nodes and metadata, after backend specific graph transformations. Backend dialect is an optional stage, only needed if we want to introduce backend-awareness into the graph. More specifically, a graph in backend dialect may contain operators or delegated lowered modules (see [delegate doc](./compiler-delegate-and-partitioner.md)) that are only meaningful to the target backend. One use case is that if we want to fuse operators into a single operator, for example, fusing consecutive addmm + relu to a single operator addmm_relu, we can do that here.
+_Backend dialect_ is a special variant of [edge dialect](ir-exir.md), because it contains backend specific nodes and metadata, after backend specific graph transformations. Backend dialect is an optional stage, only needed if we want to introduce backend-awareness into the graph. More specifically, a graph in backend dialect may contain operators or delegated lowered modules (see [delegate doc](compiler-delegate-and-partitioner.md)) that are only meaningful to the target backend. One use case is that if we want to fuse operators into a single operator, for example, fusing consecutive addmm + relu to a single operator addmm_relu, we can do that here.
 
 This document describes how to introduce backend specific operators.
 
@@ -145,6 +145,12 @@ There are the backend operators currently using `bind_pattern_to_op` API.
 * `executorch_prims::floordiv.int(SymInt a, SymInt b) -> SymInt`
   * pattern: builtin.floordiv
   * backend: executor
+* `executorch_prims::truediv.int(Scalar a, Scalar b) -> Scalar`
+  * pattern: builtin.div
+  * backend: executor
+* `executorch_prims::sym_float.Scalar(Scalar a) -> Scalar`
+  * pattern: builtin.float
+  * backend: executor
 * `executorch_prims::gt.int(SymInt a, SymInt b) -> bool`
   * pattern: builtin.gt
   * backend: executor
@@ -159,6 +165,12 @@ There are the backend operators currently using `bind_pattern_to_op` API.
   * backend: executor
 * `executorch_prims::eq.int(SymInt a, SymInt b) -> bool`
   * pattern: builtin.eq
+  * backend: executor
+* `executorch_prims::mod.Scalar(SymInt a, SymInt b) -> SymInt`
+  * pattern: builtin.divmod
+  * backend: executor
+* `executorch_prims::neg.Scalar(Scalar a) -> Scalar`
+  * pattern: operator.ne
   * backend: executor
 * `quantized_decomposed::embedding_byte(Tensor weight, Tensor weight_scales, Tensor weight_zero_points, int weight_quant_min, int weight_quant_max, Tensor indices) -> Tensor`
   * pattern: [source](https://github.com/pytorch/executorch/blob/main/exir/passes/_quant_patterns_and_replacements.py)

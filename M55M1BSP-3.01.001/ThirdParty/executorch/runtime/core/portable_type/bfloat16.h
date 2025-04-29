@@ -8,21 +8,20 @@
 
 #pragma once
 
-#include <cstdint>
+#include <c10/util/BFloat16.h>
+
+namespace executorch::runtime::etensor {
+using c10::BFloat16;
+namespace internal {
+using c10::detail::f32_from_bits;
+using c10::detail::round_to_nearest_even;
+} // namespace internal
+} // namespace executorch::runtime::etensor
 
 namespace torch {
 namespace executor {
-
-/**
- * The "brain floating-point" type, compatible with c10/util/BFloat16.h from
- * pytorch core.
- *
- * This representation uses 1 bit for the sign, 8 bits for the exponent and 7
- * bits for the mantissa.
- */
-struct alignas(2) BFloat16 {
-  uint16_t x;
-};
-
+// TODO(T197294990): Remove these deprecated aliases once all users have moved
+// to the new `::executorch` namespaces.
+using ::executorch::runtime::etensor::BFloat16;
 } // namespace executor
 } // namespace torch

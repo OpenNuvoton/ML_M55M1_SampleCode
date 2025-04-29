@@ -1,143 +1,93 @@
 # Copyright (c) Meta Platforms, Inc. and affiliates.
-# Copyright 2024 Arm Limited and/or its affiliates.
 # All rights reserved.
+# Copyright 2024-2025 Arm Limited and/or its affiliates.
 #
 # This source code is licensed under the BSD-style license found in the
 # LICENSE file in the root directory of this source tree.
-
-import logging
-import unittest
 
 from typing import Tuple
 
 import torch
 from executorch.backends.arm.test import common
-from executorch.backends.arm.test.tester.arm_tester import ArmTester
-from parameterized import parameterized
+from executorch.backends.arm.test.tester.test_pipeline import (
+    EthosU55PipelineBI,
+    EthosU85PipelineBI,
+    TosaPipelineBI,
+    TosaPipelineMI,
+)
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+aten_op = "torch.ops.aten.softmax.default"  # Used for checking that we do not have softmax in the graph after decompose
+exir_op = "executorch_exir_dialects_edge__ops_aten__softmax_tensor"
 
-test_data_suite = [
-    # (test_name, test_data, dim)
-    ("zeros", torch.zeros(10, 10, 10, 10), 1),
-    ("ones", torch.ones(10, 10, 10, 10), 1),
-    ("rand", torch.rand(10, 10, 10, 10), 2),
-    ("randn", torch.randn(10, 10, 10, 10), 3),
-]
+input_t1 = Tuple[torch.Tensor]  # Input x
 
 
-class TestSoftmax(unittest.TestCase):
-    class Softmax(torch.nn.Module):
-        def __init__(self, dim: int = -1):
-            super().__init__()
-            self.softmax = torch.nn.Softmax(dim=dim)
+class Softmax(torch.nn.Module):
+    def __init__(self, dim: int = -1):
+        super().__init__()
+        self.softmax = torch.nn.Softmax(dim=dim)
 
-        def forward(self, x):
-            return self.softmax(x)
+    def forward(self, x):
+        return self.softmax(x)
 
-    def _test_softmax_tosa_MI_pipeline(
-        self, module: torch.nn.Module, test_data: Tuple[torch.tensor]
-    ):
-        tester = (
-            ArmTester(
-                module,
-                inputs=test_data,
-                compile_spec=common.get_tosa_compile_spec(),
-            )
-            .export()
-            .check(["torch.ops.aten._softmax.default"])
-            .check_not(["torch.ops.quantized_decomposed"])
-            .to_edge()
-            .partition()
-            .check_not(["executorch_exir_dialects_edge__ops_aten__softmax_default"])
-            .check_count({"torch.ops.higher_order.executorch_call_delegate": 1})
-            .to_executorch()
-        )
-        if common.TOSA_REF_MODEL_INSTALLED:
-            tester.run_method_and_compare_outputs()
-        else:
-            logger.warning(
-                "TOSA ref model tool not installed, skip numerical correctness tests"
-            )
+    test_data = {
+        "ones": ((torch.ones(10, 10),), 1),
+        "ones_neg_dim": ((torch.ones(1, 3, 4),), -1),
+        "randn_neg_dim": ((torch.randn(1, 5, 8, 7),), -3),
+        "zeros": ((torch.zeros(1, 8, 5, 2),), 0),
+        "zeros_neg_dim": ((torch.zeros(1, 7, 8, 9),), -4),
+        "rand": ((torch.rand(1, 2, 5, 8),), 2),
+        "rand_neg_dim": ((torch.rand(1, 10, 8, 10),), -2),
+        "randn_mult_batches": ((torch.randn(2, 10, 10, 10),), 3),
+    }
 
-    def _test_softmax_tosa_BI_pipeline(
-        self, module: torch.nn.Module, test_data: Tuple[torch.tensor]
-    ):
-        tester = (
-            ArmTester(
-                module, inputs=test_data, compile_spec=common.get_tosa_compile_spec()
-            )
-            .quantize()
-            .export()
-            .check_count({"torch.ops.aten._softmax.default": 1})
-            .check(["torch.ops.quantized_decomposed"])
-            .to_edge()
-            .partition()
-            .check_not(["executorch_exir_dialects_edge__ops_aten__softmax_default"])
-            .check_count({"torch.ops.higher_order.executorch_call_delegate": 1})
-            .to_executorch()
-        )
-        if common.TOSA_REF_MODEL_INSTALLED:
-            tester.run_method_and_compare_outputs(qtol=1)
-        else:
-            logger.warning(
-                "TOSA ref model tool not installed, skip numerical correctness tests"
-            )
 
-    def _test_softmax_tosa_u55_BI_pipeline(
-        self, module: torch.nn.Module, test_data: Tuple[torch.tensor]
-    ):
-        (
-            ArmTester(
-                module,
-                inputs=test_data,
-                compile_spec=common.get_u55_compile_spec(),
-            )
-            .quantize()
-            .export()
-            .check_count({"torch.ops.aten._softmax.default": 1})
-            .check(["torch.ops.quantized_decomposed"])
-            .to_edge()
-            .partition()
-            .check_not(["executorch_exir_dialects_edge__ops_aten__softmax_default"])
-            .check_count({"torch.ops.higher_order.executorch_call_delegate": 1})
-            .to_executorch()
-        )
-
-    @parameterized.expand(test_data_suite)
-    def test_softmax_tosa_MI(
-        self,
-        test_name: str,
-        test_data: torch.Tensor,
-        dim: int,
-    ):
-        self._test_softmax_tosa_MI_pipeline(self.Softmax(dim=dim), (test_data,))
-
-    # Expected to fail since ArmQuantizer cannot quantize a SoftMax operator
-    # TODO(MLETORCH-92)
-    @parameterized.expand(test_data_suite)
-    @unittest.expectedFailure
-    def test_softmax_tosa_BI(
-        self,
-        test_name: str,
-        test_data: torch.Tensor,
-        dim: int,
-    ):
-        self._test_softmax_tosa_BI_pipeline(self.Softmax(dim=dim), (test_data,))
-
-    # Expected to fail since ArmQuantizer cannot quantize a SoftMax layer
-    # TODO(MLETORCH-92)
-    @parameterized.expand(test_data_suite)
-    @unittest.skipIf(
-        not common.VELA_INSTALLED,
-        "There is no point in running U55 tests if the Vela tool is not installed",
+@common.parametrize("test_data", Softmax.test_data)
+def test_softmax_tosa_MI(test_data):
+    data, dim = test_data
+    pipeline = TosaPipelineMI[input_t1](Softmax(dim), data, [])
+    pipeline.add_stage_after(
+        "to_edge_transform_and_lower", pipeline.tester.check_not, [exir_op]
     )
-    @unittest.expectedFailure
-    def test_softmax_tosa_u55_BI(
-        self,
-        test_name: str,
-        test_data: torch.Tensor,
-        dim: int,
-    ):
-        self._test_softmax_tosa_u55_BI_pipeline(self.Softmax(dim=dim), (test_data,))
+    pipeline.run()
+
+
+@common.parametrize("test_data", Softmax.test_data)
+def test_softmax_tosa_BI(test_data):
+    data, dim = test_data
+    pipeline = TosaPipelineBI[input_t1](Softmax(dim), data, [])
+    pipeline.add_stage_after("quantize", pipeline.tester.check_not, [aten_op])
+    pipeline.change_args("run_method_and_compare_outputs", qtol=1)
+    pipeline.run()
+
+
+@common.parametrize(
+    "test_data",
+    Softmax.test_data,
+    xfails={
+        "randn_mult_batches": "MLETORCH-433: Multiple batches not supported on FVP"
+    },
+)
+@common.XfailIfNoCorstone300
+def test_softmax_u55_BI(test_data):
+    data, dim = test_data
+    pipeline = EthosU55PipelineBI[input_t1](Softmax(dim), data, [], run_on_fvp=True)
+    pipeline.add_stage_after("quantize", pipeline.tester.check_not, [aten_op])
+    pipeline.change_args("run_method_and_compare_outputs", qtol=1)
+    pipeline.run()
+
+
+@common.parametrize(
+    "test_data",
+    Softmax.test_data,
+    xfails={
+        "randn_mult_batches": "MLETORCH-433: Multiple batches not supported on FVP"
+    },
+)
+@common.XfailIfNoCorstone320
+def test_softmax_u85_BI(test_data):
+    data, dim = test_data
+    pipeline = EthosU85PipelineBI[input_t1](Softmax(dim), data, [], run_on_fvp=True)
+    pipeline.add_stage_after("quantize", pipeline.tester.check_not, [aten_op])
+    pipeline.change_args("run_method_and_compare_outputs", qtol=1)
+    pipeline.run()

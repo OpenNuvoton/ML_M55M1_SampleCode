@@ -1,11 +1,10 @@
 # Copyright (c) Meta Platforms, Inc. and affiliates.
-# Copyright 2024 Arm Limited and/or its affiliates.
 # All rights reserved.
+# Copyright 2024-2025 Arm Limited and/or its affiliates.
 #
 # This source code is licensed under the BSD-style license found in the
 # LICENSE file in the root directory of this source tree.
 
-import logging
 import unittest
 
 from typing import Tuple
@@ -15,8 +14,6 @@ from executorch.backends.arm.test import common
 from executorch.backends.arm.test.tester.arm_tester import ArmTester
 from parameterized import parameterized
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
 
 test_data_suite = [
     # (test_name, test_data, [num_features, affine, track_running_stats, weight, bias, running_mean, running_var,] )
@@ -497,6 +494,8 @@ test_no_stats_data_suite = [
 
 
 class TestBatchNorm2d(unittest.TestCase):
+    """Tests BatchNorm2d."""
+
     class BatchNorm2d(torch.nn.Module):
         def __init__(
             self,
@@ -527,16 +526,13 @@ class TestBatchNorm2d(unittest.TestCase):
     def _test_batchnorm2d_tosa_MI_pipeline(
         self, module: torch.nn.Module, test_data: Tuple[torch.Tensor]
     ):
-        tester = (
+        (
             ArmTester(
                 module,
-                inputs=test_data,
-                compile_spec=common.get_tosa_compile_spec(),
+                example_inputs=test_data,
+                compile_spec=common.get_tosa_compile_spec("TOSA-0.80+MI"),
             )
             .export()
-            .check_count(
-                {"torch.ops.aten._native_batch_norm_legit_no_training.default": 1}
-            )
             .check_not(["torch.ops.quantized_decomposed"])
             .to_edge()
             .check_count(
@@ -552,22 +548,17 @@ class TestBatchNorm2d(unittest.TestCase):
                 ]
             )
             .to_executorch()
+            .run_method_and_compare_outputs(inputs=test_data)
         )
-        if common.TOSA_REF_MODEL_INSTALLED:
-            tester.run_method_and_compare_outputs(test_data)
-        else:
-            logger.warning(
-                "TOSA ref model tool not installed, skip numerical correctness tests"
-            )
 
     def _test_batchnorm2d_no_stats_tosa_MI_pipeline(
         self, module: torch.nn.Module, test_data: Tuple[torch.Tensor]
     ):
-        tester = (
+        (
             ArmTester(
                 module,
-                inputs=test_data,
-                compile_spec=common.get_tosa_compile_spec(),
+                example_example_inputs=test_data,
+                compile_spec=common.get_tosa_compile_spec("TOSA-0.80+MI"),
             )
             .export()
             .check_count({"torch.ops.aten._native_batch_norm_legit.no_stats": 1})
@@ -586,22 +577,17 @@ class TestBatchNorm2d(unittest.TestCase):
                 ]
             )
             .to_executorch()
+            .run_method_and_compare_outputs(inputs=test_data)
         )
-        if common.TOSA_REF_MODEL_INSTALLED:
-            tester.run_method_and_compare_outputs(test_data)
-        else:
-            logger.warning(
-                "TOSA ref model tool not installed, skip numerical correctness tests"
-            )
 
     def _test_batchnorm2d_tosa_BI_pipeline(
         self, module: torch.nn.Module, test_data: Tuple[torch.Tensor]
     ):
-        tester = (
+        (
             ArmTester(
                 module,
-                inputs=test_data,
-                compile_spec=common.get_tosa_compile_spec(),
+                example_inputs=test_data,
+                compile_spec=common.get_tosa_compile_spec("TOSA-0.80+BI"),
             )
             .quantize()
             .export()
@@ -623,14 +609,8 @@ class TestBatchNorm2d(unittest.TestCase):
                 ]
             )
             .to_executorch()
+            .run_method_and_compare_outputs(inputs=test_data)
         )
-
-        if common.TOSA_REF_MODEL_INSTALLED:
-            tester.run_method_and_compare_outputs(test_data)
-        else:
-            logger.warning(
-                "TOSA ref model tool not installed, skip numerical correctness tests"
-            )
 
     def _test_batchnorm2d_u55_BI_pipeline(
         self, module: torch.nn.Module, test_data: Tuple[torch.Tensor]
@@ -638,7 +618,7 @@ class TestBatchNorm2d(unittest.TestCase):
         (
             ArmTester(
                 module,
-                inputs=test_data,
+                example_inputs=test_data,
                 compile_spec=common.get_u55_compile_spec(),
             )
             .quantize()
@@ -664,7 +644,7 @@ class TestBatchNorm2d(unittest.TestCase):
         )
 
     @parameterized.expand(test_data_suite)
-    def test_batchnorm2d_tosa_MI(
+    def test_native_batch_norm_legit_no_training_tosa_MI(
         self,
         test_name: str,
         test_data: torch.Tensor,
@@ -682,7 +662,7 @@ class TestBatchNorm2d(unittest.TestCase):
     # Expected to fail since not inplemented
     @parameterized.expand(test_no_stats_data_suite)
     @unittest.expectedFailure
-    def test_batchnorm2d_no_stats_tosa_MI(
+    def test_native_batch_norm_legit_tosa_MI(
         self,
         test_name: str,
         test_data: torch.Tensor,
@@ -697,13 +677,13 @@ class TestBatchNorm2d(unittest.TestCase):
             self.BatchNorm2d(*model_params), (test_data,)
         )
 
-    # Expected to fail since ArmQuantizer cannot quantize a BatchNorm layer
+    # Expected to fail since TOSAQuantizer cannot quantize a BatchNorm layer
     # TODO(MLETORCH-100)
     @parameterized.expand(test_data_suite)
     @unittest.skip(
-        reason="Expected to fail since ArmQuantizer cannot quantize a BatchNorm layer"
+        reason="Expected to fail since TOSAQuantizer (for BI) cannot quantize a BatchNorm layer"
     )
-    def test_batchnorm2d_tosa_BI(
+    def test_native_batch_norm_legit_no_training_tosa_BI(
         self,
         test_name: str,
         test_data: torch.Tensor,
@@ -718,18 +698,14 @@ class TestBatchNorm2d(unittest.TestCase):
             self.BatchNorm2d(*model_params), (test_data,)
         )
 
-    # Expected to fail since ArmQuantizer cannot quantize a BatchNorm layer
+    # Expected to fail since EthosUQuantizer (TOSAQuantizer (BI)) cannot quantize a BatchNorm layer
     # TODO(MLETORCH-100)
     @parameterized.expand(test_data_suite)
     @unittest.skip(
-        reason="Expected to fail since ArmQuantizer cannot quantize a BatchNorm layer"
-    )
-    @unittest.skipIf(
-        not common.VELA_INSTALLED,
-        "There is no point in running U55 tests if the Vela tool is not installed",
+        reason="Expected to fail since EthosUQuantizer cannot quantize a BatchNorm layer"
     )
     @unittest.expectedFailure
-    def test_batchnorm2d_u55_BI(
+    def test_native_batch_norm_legit_no_training_u55_BI(
         self,
         test_name: str,
         test_data: torch.Tensor,

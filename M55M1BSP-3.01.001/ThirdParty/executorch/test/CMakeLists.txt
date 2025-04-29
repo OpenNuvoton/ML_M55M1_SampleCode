@@ -19,15 +19,14 @@
 cmake_minimum_required(VERSION 3.19)
 project(size_test)
 
-# Use C++11 for size test.
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 set(EXECUTORCH_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/..)
 
-include(${EXECUTORCH_ROOT}/build/Utils.cmake)
+include(${EXECUTORCH_ROOT}/tools/cmake/Utils.cmake)
 
 # Find prebuilt executorch library
-find_package(executorch CONFIG REQUIRED)
+find_package(executorch CONFIG REQUIRED HINTS ${CMAKE_INSTALL_PREFIX})
 
 # Let files say "include <executorch/path/to/header.h>".
 set(_common_include_directories ${EXECUTORCH_ROOT}/..)
@@ -62,10 +61,24 @@ endif()
 #
 add_executable(size_test_all_ops ${_size_test__srcs})
 target_link_options_shared_lib(portable_ops_lib)
-target_link_libraries(size_test_all_ops executorch
-  portable_ops_lib portable_kernels)
+target_link_libraries(
+  size_test_all_ops executorch portable_ops_lib portable_kernels
+)
 if(CMAKE_BUILD_TYPE EQUAL "Release")
   target_link_options(size_test_all_ops PRIVATE "LINKER:--gc-sections")
+endif()
+
+#
+# size_test_all_optimized_ops: binary with optimized ops and no delegate backend
+#
+if(EXECUTORCH_BUILD_KERNELS_OPTIMIZED)
+add_executable(size_test_all_optimized_ops ${_size_test__srcs})
+target_link_options_shared_lib(optimized_native_cpu_ops_lib)
+target_link_libraries(
+  size_test_all_optimized_ops executorch optimized_native_cpu_ops_lib)
+if(CMAKE_BUILD_TYPE EQUAL "Release")
+  target_link_options(size_test_all_optimized_ops PRIVATE "LINKER:--gc-sections")
+endif()
 endif()
 
 # Print all summary

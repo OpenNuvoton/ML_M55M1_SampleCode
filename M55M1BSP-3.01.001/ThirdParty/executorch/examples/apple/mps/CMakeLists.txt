@@ -18,16 +18,12 @@ if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 17)
 endif()
 
-if(NOT FLATC_EXECUTABLE)
-  set(FLATC_EXECUTABLE flatc)
-endif()
-
 # Source root directory for executorch.
 if(NOT EXECUTORCH_ROOT)
   set(EXECUTORCH_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../..)
 endif()
 
-include(${EXECUTORCH_ROOT}/build/Utils.cmake)
+include(${EXECUTORCH_ROOT}/tools/cmake/Utils.cmake)
 
 if(NOT PYTHON_EXECUTABLE)
   resolve_python_executable()
@@ -35,7 +31,7 @@ endif()
 
 add_compile_options("-Wall" "-Werror")
 
-include(${EXECUTORCH_ROOT}/build/Utils.cmake)
+include(${EXECUTORCH_ROOT}/tools/cmake/Utils.cmake)
 
 set(_common_compile_options -Wno-deprecated-declarations -fPIC
                             -DET_EVENT_TRACER_ENABLED
@@ -62,8 +58,8 @@ if(NOT CMAKE_TOOLCHAIN_FILE MATCHES ".*(iOS|ios\.toolchain)\.cmake$")
   #
 
   # portable_ops_lib
-  include(${EXECUTORCH_ROOT}/build/Utils.cmake)
-  include(${EXECUTORCH_ROOT}/build/Codegen.cmake)
+  include(${EXECUTORCH_ROOT}/tools/cmake/Utils.cmake)
+  include(${EXECUTORCH_ROOT}/tools/cmake/Codegen.cmake)
   gen_selected_ops(LIB_NAME "mps_portable_ops_lib" INCLUDE_ALL_OPS "ON")
   generate_bindings_for_kernels(
     LIB_NAME "mps_portable_ops_lib" FUNCTIONS_YAML
@@ -92,8 +88,8 @@ if(NOT CMAKE_TOOLCHAIN_FILE MATCHES ".*(iOS|ios\.toolchain)\.cmake$")
   include(${EXECUTORCH_SRCS_FILE})
   target_include_directories(
     bundled_program
-    INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/../../../sdk/include
-              ${CMAKE_CURRENT_BINARY_DIR}/../../../sdk/bundled_program
+    INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/../../../devtools/include
+              ${CMAKE_CURRENT_BINARY_DIR}/../../../devtools/bundled_program
               ${EXECUTORCH_ROOT}/third-party/flatbuffers/include
               ${EXECUTORCH_ROOT}/third-party/flatcc/include
               ${_mps_schema_headers}
@@ -105,6 +101,10 @@ if(NOT CMAKE_TOOLCHAIN_FILE MATCHES ".*(iOS|ios\.toolchain)\.cmake$")
     set(FLATCC_LIB flatccrt_d)
   else()
     set(FLATCC_LIB flatccrt)
+  endif()
+
+  if(CMAKE_BUILD_TYPE MATCHES "Debug")
+    target_link_options(mps_executor_runner PUBLIC -fsanitize=undefined)
   endif()
 
   target_link_libraries(

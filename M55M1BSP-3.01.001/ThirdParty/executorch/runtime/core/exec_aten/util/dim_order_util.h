@@ -8,19 +8,23 @@
 
 #pragma once
 
+#include <c10/util/irange.h>
 #include <cstdint>
+#include <cstdio>
+#include <cstring>
 
 #include <executorch/runtime/core/error.h>
 #include <executorch/runtime/platform/assert.h>
 #include <executorch/runtime/platform/compiler.h>
-namespace torch {
-namespace executor {
+
+namespace executorch {
+namespace runtime {
 
 namespace {
 template <typename DimOrderType>
 bool validate_dim_order(const DimOrderType* dim_order, const size_t dims) {
-  for (int32_t i = 0; i < dims; ++i) {
-    if (dim_order[i] >= dims) {
+  for (size_t i = 0; i < dims; ++i) {
+    if (dim_order[i] >= static_cast<DimOrderType>(dims)) {
       return false;
     }
   }
@@ -39,8 +43,8 @@ template <typename DimOrderType>
 inline bool is_contiguous_dim_order(
     const DimOrderType* dim_order,
     const size_t dims) {
-  for (int i = 0; i < dims; ++i) {
-    if (dim_order[i] != i) {
+  for (size_t i = 0; i < dims; ++i) {
+    if (dim_order[i] != static_cast<DimOrderType>(i)) {
       return false;
     }
   }
@@ -62,7 +66,7 @@ bool is_channels_last_dim_order(
     return false;
   }
   // 4-dim tensor is interpreted as NCHW, 5-dim tensor is interpreted as NCHWD
-  size_t channels_dim = 1;
+  DimOrderType channels_dim = 1;
   // Last value in the dim order should be the channels dim
   if (dim_order[dims - 1] != channels_dim) {
     return false;
@@ -71,8 +75,8 @@ bool is_channels_last_dim_order(
   if (dim_order[0] != 0) {
     return false;
   }
-  int d = 1;
-  while (d < dims - 1) {
+  DimOrderType d = 1;
+  while (d < static_cast<DimOrderType>(dims) - 1) {
     if (dim_order[d] != d + 1) {
       return false;
     }
@@ -133,7 +137,7 @@ inline void dim_order_to_stride_nocheck(
 }
 
 template <typename SizesType, typename DimOrderType, typename StridesType>
-__ET_NODISCARD inline Error dim_order_to_stride(
+ET_NODISCARD inline Error dim_order_to_stride(
     const SizesType* sizes,
     const DimOrderType* dim_order,
     const size_t dims,
@@ -152,13 +156,15 @@ __ET_NODISCARD inline Error dim_order_to_stride(
   return Error::Ok;
 }
 
+namespace internal {
+
 template <typename StridesType, typename DimOrderType>
 struct StrideDimOrder {
   StridesType stride;
   DimOrderType dim_order;
 
-  StrideDimOrder(StridesType stride, DimOrderType dim_order)
-      : stride(stride), dim_order(dim_order) {}
+  StrideDimOrder(StridesType stride_, DimOrderType dim_order_)
+      : stride(stride_), dim_order(dim_order_) {}
   StrideDimOrder() = default;
   bool operator>(const StrideDimOrder& other) const {
     // descending order
@@ -201,6 +207,8 @@ struct Sorter {
   }
 };
 
+} // namespace internal
+
 /*
  * This utility translated strides to dimension order
  * information. Dimension order specifies how the dimensions are laid out in the
@@ -221,7 +229,7 @@ struct Sorter {
  * TODO(T148342910)
  */
 template <typename DimOrderType, typename StridesType>
-__ET_NODISCARD inline Error stride_to_dim_order(
+ET_NODISCARD inline Error stride_to_dim_order(
     const StridesType* strides,
     const size_t dims,
     DimOrderType* dim_order) {
@@ -236,20 +244,34 @@ __ET_NODISCARD inline Error stride_to_dim_order(
       "dims %zu exceeds maximum allowed %zu",
       dims,
       kMaxNumOfDimensions);
-  StrideDimOrder<StridesType, DimOrderType> array[kMaxNumOfDimensions];
+  internal::StrideDimOrder<StridesType, DimOrderType>
+      array[kMaxNumOfDimensions];
   for (DimOrderType i = 0; i < dims; i++) {
     array[i].dim_order = i;
     array[i].stride = strides[i];
   }
 
-  Sorter<StrideDimOrder<StridesType, DimOrderType>> sorter;
+  internal::Sorter<internal::StrideDimOrder<StridesType, DimOrderType>> sorter;
 
   sorter.quick_sort(array, 0, dims - 1);
 
-  for (auto i = 0; i < dims; i++) {
+  for (const auto i : c10::irange(dims)) {
     dim_order[i] = array[i].dim_order;
   }
   return Error::Ok;
 }
+
+} // namespace runtime
+} // namespace executorch
+
+namespace torch {
+namespace executor {
+// TODO(T197294990): Remove these deprecated aliases once all users have moved
+// to the new `::executorch` namespaces.
+using ::executorch::runtime::dim_order_to_stride;
+using ::executorch::runtime::dim_order_to_stride_nocheck;
+using ::executorch::runtime::is_channels_last_dim_order;
+using ::executorch::runtime::is_contiguous_dim_order;
+using ::executorch::runtime::stride_to_dim_order;
 } // namespace executor
 } // namespace torch

@@ -10,6 +10,7 @@
 
 #include <executorch/runtime/core/exec_aten/util/dim_order_util.h>
 #include <executorch/runtime/core/exec_aten/util/scalar_type_util.h>
+#include <executorch/runtime/core/named_data_map.h>
 #include <executorch/runtime/executor/memory_manager.h>
 #include <executorch/runtime/executor/program.h>
 #include <executorch/runtime/platform/profiler.h>
@@ -17,11 +18,11 @@
 
 #include <ATen/ATen.h> // @donotremove @manual=//caffe2/aten:ATen-core
 
-namespace torch {
-namespace executor {
+namespace executorch {
+// This file is only used in ATen mode, so we use the runtime_aten namespace.
+namespace runtime {
+namespace aten {
 namespace deserialization {
-
-using torch::executor::Error;
 
 namespace {
 
@@ -33,7 +34,9 @@ void deleteNothing(void*) {}
 Result<at::Tensor> parseTensor(
     const Program* program,
     MemoryManager* memory_manager,
-    const executorch_flatbuffer::Tensor* s_tensor) {
+    const executorch_flatbuffer::Tensor* s_tensor,
+    const NamedDataMap* named_data_map,
+    Span<NamedData> external_constants) {
   EXECUTORCH_SCOPE_PROF("TensorParser::parseTensor");
 
   ET_CHECK_OR_RETURN_ERROR(
@@ -70,7 +73,7 @@ Result<at::Tensor> parseTensor(
   std::vector<int64_t> sizes(
       s_tensor->sizes()->begin(), s_tensor->sizes()->end());
   std::vector<int64_t> strides(ndim);
-  auto status = torch::executor::dim_order_to_stride(
+  auto status = dim_order_to_stride(
       s_tensor->sizes()->data(),
       s_tensor->dim_order()->data(),
       ndim,
@@ -96,7 +99,7 @@ Result<at::Tensor> parseTensor(
     // within aten kernels.
     auto impl = tensor.unsafeGetTensorImpl();
     at::StorageImpl* storage = impl->unsafe_storage().unsafeGetStorageImpl();
-    storage->set_allocator(getCPUAllocator());
+    storage->set_allocator(at::getCPUAllocator());
     storage->set_resizable(true);
     storage->set_nbytes(0);
     impl->set_sizes_contiguous(0);
@@ -104,7 +107,12 @@ Result<at::Tensor> parseTensor(
   } else {
     // Now that we know how big the tensor is, find and assign its memory.
     Result<void*> data_ptr = getTensorDataPtr(
-        s_tensor, program, tensor.nbytes(), memory_manager->planned_memory());
+        s_tensor,
+        program,
+        tensor.nbytes(),
+        memory_manager->planned_memory(),
+        named_data_map,
+        external_constants);
     if (!data_ptr.ok()) {
       ET_LOG(
           Error,
@@ -113,12 +121,13 @@ Result<at::Tensor> parseTensor(
       return data_ptr.error();
     }
     tensor.unsafeGetTensorImpl()->unsafe_storage().set_data_ptr(
-        at::DataPtr(data_ptr.get(), DeviceType::CPU));
+        at::DataPtr(data_ptr.get(), c10::DeviceType::CPU));
   }
 
   return tensor;
 }
 
 } // namespace deserialization
-} // namespace executor
-} // namespace torch
+} // namespace aten
+} // namespace runtime
+} // namespace executorch

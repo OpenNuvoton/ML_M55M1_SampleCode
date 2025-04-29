@@ -4,39 +4,99 @@
 # This source code is licensed under the BSD-style license found in the
 # LICENSE file in the root directory of this source tree.
 
-from executorch.exir.dialects._ops import ops as exir_ops
-from executorch.exir.pass_base import ExportPass
+# pyre-strict
+
+from typing import Any, List, Optional
+
+import torch
+import torch.fx
+import torch.utils._pytree as pytree
+from executorch.backends.cadence.aot.fuse_ops import (
+    CadenceFuseOpsInGraph,
+    FuseFullThenReshapePass,
+    FuseTransposeOpPairsPass,
+)
+from executorch.backends.cadence.aot.pass_utils import (
+    CadencePassAttribute,
+    create_cadence_pass_filter,
+    register_cadence_pass,
+)
+
+from executorch.backends.cadence.aot.remove_ops import (
+    CadenceRemoveNops,
+    RemoveNopSliceOrViewOpPass,
+    RemoveRedundantOps,
+)
+from executorch.backends.cadence.aot.reorder_ops import CadenceReorderOpsInGraph
+from executorch.backends.cadence.aot.replace_ops import CadenceReplaceOpsInGraph
+from executorch.backends.cadence.aot.simplify_ops import CadenceSimplifyOpsInGraph
+from executorch.exir.pass_base import ExportPass, PassResult
+from executorch.exir.pass_manager import PassManager, PassType
+from executorch.exir.passes import dead_code_elimination_pass
+from executorch.exir.passes.scalar_to_tensor_pass import ScalarToTensorPass
+from executorch.exir.passes.spec_prop_pass import SpecPropPass
 
 
-class ReplacePT2QuantWithCadenceQuant(ExportPass):
+@register_cadence_pass(CadencePassAttribute(opt_level=0))
+class InitializePipeline(ExportPass):
     """
-    Replace the pt2 quantization ops with custom cadence quantization ops.
+    Initialize the pass pipeline. This should invariably be the first pass to
+    run.
     """
 
-    def call_operator(self, op, args, kwargs, meta):
-        if op not in {exir_ops.edge.quantized_decomposed.quantize_per_tensor.default}:
-            return super().call_operator(op, args, kwargs, meta)
-
-        return super().call_operator(
-            exir_ops.edge.cadence.quantize_per_tensor.default,
-            args,
-            kwargs,
-            meta,
-        )
+    def call(self, graph_module: torch.fx.GraphModule) -> PassResult:
+        dead_code_elimination_pass(graph_module)
+        result = SpecPropPass()(graph_module)
+        assert result is not None
+        return result
 
 
-class ReplacePT2DequantWithCadenceDequant(ExportPass):
+@register_cadence_pass(CadencePassAttribute(opt_level=0))
+class FinalizePipeline(ExportPass):
     """
-    Replace the pt2 dequantization ops with custom cadence dequantization ops.
+    The final cleanup pass after running the pass pipeline.
     """
 
-    def call_operator(self, op, args, kwargs, meta):
-        if op not in {exir_ops.edge.quantized_decomposed.dequantize_per_tensor.default}:
-            return super().call_operator(op, args, kwargs, meta)
+    def call(self, graph_module: torch.fx.GraphModule) -> PassResult:
+        finalize_passes: List[PassType] = [
+            ScalarToTensorPass(),
+            SpecPropPass(),
+        ]
+        result = PassManager(passes=finalize_passes)(graph_module)
+        dead_code_elimination_pass(result.graph_module)
+        return result
 
-        return super().call_operator(
-            exir_ops.edge.cadence.dequantize_per_tensor.default,
-            args,
-            kwargs,
-            meta,
-        )
+
+# Similar to what's done in executorch/exir/pass_base.py
+Argument = Any  # pyre-ignore
+
+
+def get_passes_in_default_order() -> List[ExportPass]:
+    passes = [
+        InitializePipeline,
+        RemoveRedundantOps.passes,
+        CadenceReorderOpsInGraph.passes,
+        # Phase ordering: remove -> fusion -> replacement passes.
+        CadenceRemoveNops.passes,
+        CadenceFuseOpsInGraph.passes,
+        CadenceReplaceOpsInGraph.passes,
+        CadenceSimplifyOpsInGraph.passes,
+        FinalizePipeline,
+        FuseFullThenReshapePass,
+        FuseTransposeOpPairsPass,
+        RemoveNopSliceOrViewOpPass,
+    ]
+    return pytree.tree_flatten(passes)[0]
+
+
+def get_cadence_passes(
+    opt_level: int,
+) -> List[Optional[PassResult]]:
+    passes = get_passes_in_default_order()
+    pass_filter = create_cadence_pass_filter(opt_level)
+    filtered_passes = [
+        # pyre-ignore[20]: Expect argument graph_module
+        filtered_pass()
+        for filtered_pass in list(filter(pass_filter, passes))
+    ]
+    return filtered_passes

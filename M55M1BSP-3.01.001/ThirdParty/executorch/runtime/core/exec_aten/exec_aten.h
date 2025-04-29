@@ -9,6 +9,7 @@
 #pragma once
 
 #include <executorch/runtime/core/tensor_shape_dynamism.h> // @manual
+#include <executorch/runtime/platform/compiler.h>
 #ifdef USE_ATEN_LIB
 #include <ATen/Tensor.h> // @manual
 #include <c10/core/Device.h>
@@ -17,6 +18,7 @@
 #include <c10/core/MemoryFormat.h> // @manual
 #include <c10/core/Scalar.h> // @manual
 #include <c10/util/ArrayRef.h> // @manual
+#include <c10/util/BFloat16-math.h> // @manual
 #include <c10/util/BFloat16.h> // @manual
 #include <c10/util/Half.h> // @manual
 #include <c10/util/Optional.h> // @manual
@@ -31,6 +33,7 @@
 #else // use executor
 #include <executorch/runtime/core/array_ref.h> // @manual
 #include <executorch/runtime/core/portable_type/bfloat16.h> // @manual
+#include <executorch/runtime/core/portable_type/bfloat16_math.h> // @manual
 #include <executorch/runtime/core/portable_type/complex.h> // @manual
 #include <executorch/runtime/core/portable_type/device.h> // @manual
 #include <executorch/runtime/core/portable_type/half.h> // @manual
@@ -44,22 +47,38 @@
 
 #endif
 
-namespace exec_aten {
+/**
+ * This hack is for separating out ATen mode vs non-ATen mode. In ATen mode,
+ * we use the ATen types directly. In non-ATen mode, we use the portable types.
+ * To avoid duplicate symbols and/or duplicate operator registration, when a
+ * user depends on both the ATen mode and non-ATen mode versions of the
+ * ExecuTorch library.
+ */
+#ifndef ET_RUNTIME_NAMESPACE
+#if defined(USE_ATEN_LIB)
+#define ET_RUNTIME_NAMESPACE runtime::aten
+#else
+#define ET_RUNTIME_NAMESPACE runtime
+#endif
+#endif
 
-using TensorShapeDynamism = torch::executor::TensorShapeDynamism;
+namespace executorch {
+namespace aten {
+
+using TensorShapeDynamism = executorch::runtime::TensorShapeDynamism;
 
 #ifdef USE_ATEN_LIB
 
 using Tensor = at::Tensor;
 using TensorList = at::TensorList;
 using TensorImpl = at::TensorImpl;
-using string_view = c10::string_view;
+using string_view = std::string_view;
 template <typename T>
 using ArrayRef = c10::ArrayRef<T>;
 template <typename T>
-using optional = c10::optional<T>;
-using nullopt_t = c10::nullopt_t;
-using c10::nullopt;
+using optional = std::optional<T>;
+using nullopt_t = std::nullopt_t;
+using std::nullopt;
 using ScalarType = at::ScalarType;
 using Scalar = c10::Scalar;
 using MemoryFormat = c10::MemoryFormat;
@@ -84,6 +103,24 @@ using IntArrayRef = at::IntArrayRef;
 
 template <typename T>
 using OptionalArrayRef = c10::OptionalArrayRef<T>;
+using OptionalIntArrayRef = OptionalArrayRef<int64_t>;
+
+inline ssize_t compute_numel(const SizesType* sizes, ssize_t dim) {
+  return static_cast<ssize_t>(
+      c10::multiply_integers(c10::ArrayRef<SizesType>(sizes, dim)));
+}
+
+#undef ET_PRI_TENSOR_SIZE
+#define ET_PRI_TENSOR_SIZE PRId64
+
+#undef ET_PRI_TENSOR_DIM
+#define ET_PRI_TENSOR_DIM PRId64
+
+#undef ET_PRI_TENSOR_NUMEL
+#define ET_PRI_TENSOR_NUMEL PRId64
+
+#undef ET_PRI_SIZES_AND_STRIDES
+#define ET_PRI_SIZES_AND_STRIDES PRId64
 
 #else // Use executor types
 
@@ -96,7 +133,7 @@ template <typename T>
 using optional = torch::executor::optional<T>;
 using nullopt_t = torch::executor::nullopt_t;
 // NOLINTNEXTLINE(facebook-hte-NamespaceScopedStaticDeclaration)
-static constexpr nullopt_t nullopt{0};
+using std::nullopt;
 using ScalarType = torch::executor::ScalarType;
 using TensorList = ArrayRef<Tensor>;
 using Scalar = torch::executor::Scalar;
@@ -124,13 +161,21 @@ using IntArrayRef = torch::executor::IntArrayRef;
 template <typename T>
 using OptionalArrayRef =
     torch::executor::optional<torch::executor::ArrayRef<T>>;
+using OptionalIntArrayRef = OptionalArrayRef<int64_t>;
 
-#endif // Use executor types
+using torch::executor::compute_numel;
 
-} // namespace exec_aten
+#endif // Use ExecuTorch types
+
+} // namespace aten
+} // namespace executorch
+
+// DEPRECATED: The exec_aten:: namespace is deprecated. Use executorch::aten::
+// instead.
+namespace exec_aten = executorch::aten;
+
 namespace torch {
 namespace executor {
-using TensorList = exec_aten::TensorList;
-
+using TensorList = ::executorch::aten::TensorList;
 } // namespace executor
 } // namespace torch

@@ -63,6 +63,7 @@ SUPPORTED_OPS = [
     exir_ops.edge.aten.avg_pool2d.default,
     exir_ops.edge.aten.leaky_relu.default,
     exir_ops.edge.aten.addmm.default,  # TODO(T163877189) add constraint for addmm
+    exir_ops.edge.aten.rsqrt.default,
 ]
 
 SUPPORTED_MODULES = [
@@ -73,6 +74,7 @@ SUPPORTED_MODULES = [
     torch.nn.BatchNorm2d,
     torch.nn.BatchNorm1d,
     torch.nn.Conv2d,
+    torch.nn.ConvTranspose2d,
     torch.nn.Linear,
     torch.nn.functional.linear,
     torch.nn.PReLU,  # Without this, the PReLU weight becomes not a get_attr
@@ -101,6 +103,8 @@ SUPPORTED_QUANT_OPS = [
     exir_ops.edge.aten.addmm.default,  # TODO(T163877189) add constraint for addmm
 ]
 
+# This set is used to determine if an op is a supported Quantized Op. This is
+# used to determine whether a quantization op is implicit or explicit.
 SUPPORTED_IMPLICIT_Q_DQ_OP_NAMES_SET = {
     op.name()
     for op in (
@@ -108,6 +112,7 @@ SUPPORTED_IMPLICIT_Q_DQ_OP_NAMES_SET = {
         + [
             exir_ops.edge.aten._to_copy.default,
             exir_ops.edge.aten.linear.default,
+            exir_ops.edge.aten.convolution.default,
         ]
     )
 }

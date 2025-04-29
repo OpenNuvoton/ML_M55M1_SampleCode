@@ -77,7 +77,9 @@ target_sources(
 target_sources(
   qnn_backend_cache
   PUBLIC ${CMAKE_CURRENT_LIST_DIR}/QnnBackendCache.h
+         ${CMAKE_CURRENT_LIST_DIR}/htpbackend/HtpBackendCache.h
   PRIVATE ${CMAKE_CURRENT_LIST_DIR}/QnnBackendCache.cpp
+          ${CMAKE_CURRENT_LIST_DIR}/htpbackend/HtpBackendCache.cpp
 )
 
 # qnn_graph
@@ -89,6 +91,7 @@ target_sources(
           ${CMAKE_CURRENT_LIST_DIR}/htpbackend/HtpGraph.cpp
           ${CMAKE_CURRENT_LIST_DIR}/htpbackend/HtpGraphCustomConfig.h
           ${CMAKE_CURRENT_LIST_DIR}/htpbackend/HtpGraphCustomConfig.cpp
+          ${HOST_ARCHITECTURE}/HtpGraphCustomConfig.cpp
 )
 
 # qnn_backend
@@ -113,51 +116,9 @@ target_sources(
   PRIVATE ${CMAKE_CURRENT_LIST_DIR}/QnnBackendFactory.cpp
 )
 
-set(qnn_header_basenames
-    QnnBackend.h
-    QnnCommon.h
-    QnnContext.h
-    QnnDevice.h
-    GPU/QnnGpuBackend.h
-    GPU/QnnGpuCommon.h
-    GPU/QnnGpuContext.h
-    GPU/QnnGpuGraph.h
-    QnnGraph.h
-    HTP/QnnHtpCommon.h
-    HTP/QnnHtpDevice.h
-    HTP/QnnHtpGraph.h
-    HTP/QnnHtpPerfInfrastructure.h
-    HTP/QnnHtpProfile.h
-    HTP/QnnHtpProperty.h
-    QnnInterface.h
-    QnnLog.h
-    QnnMem.h
-    QnnOpDef.h
-    QnnOpPackage.h
-    QnnProfile.h
-    QnnProperty.h
-    Saver/QnnSaver.h
-    Saver/QnnSaverCommon.h
-    QnnSdkBuildId.h
-    QnnSignal.h
-    QnnTensor.h
-    QnnTypes.h
-    System/QnnSystemCommon.h
-    System/QnnSystemContext.h
-    System/QnnSystemInterface.h
+# qnn_custom_protocol
+target_sources(
+  qnn_custom_protocol
+  PUBLIC ${CMAKE_CURRENT_LIST_DIR}/QnnCustomProtocol.h
+  PRIVATE ${CMAKE_CURRENT_LIST_DIR}/QnnCustomProtocol.cpp
 )
-
-set(QNN_HEADER_DIR_DST ${CMAKE_CURRENT_BINARY_DIR}/QNN/include)
-
-# add the custom commands to copy each headers
-foreach(_qnn_header ${qnn_header_basenames})
-  # copy at generation time to make below target_sources(qnn_header) happy.
-  configure_file(
-    ${QNN_SDK_ROOT}/include/QNN/${_qnn_header}
-    ${QNN_HEADER_DIR_DST}/${_qnn_header} COPYONLY
-  )
-  list(APPEND qnn_header_files ${QNN_HEADER_DIR_DST}/${_qnn_header})
-endforeach()
-
-# qnn_header
-target_sources(qnn_header INTERFACE ${qnn_header_files})

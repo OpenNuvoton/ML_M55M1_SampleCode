@@ -19,8 +19,8 @@ namespace executorch_flatbuffer {
 struct ExecutionPlan;
 } // namespace executorch_flatbuffer
 
-namespace torch {
-namespace executor {
+namespace executorch {
+namespace ET_RUNTIME_NAMESPACE {
 
 /**
  * Metadata about a specific tensor of an ExecuTorch Program.
@@ -50,12 +50,23 @@ class TensorInfo final {
   /**
    * Returns the scalar type of the input/output.
    */
-  exec_aten::ScalarType scalar_type() const;
+  executorch::aten::ScalarType scalar_type() const;
+
+  /**
+   * Returns whether the tensor's memory was planned during export.
+   */
+  bool is_memory_planned() const;
 
   /**
    * Returns the size of the tensor in bytes.
    */
   size_t nbytes() const;
+
+  /**
+   * Returns the fully qualified name of the Tensor might be empty if the tensor
+   * is nameless.
+   */
+  executorch::aten::string_view name() const;
 
  private:
   // Let MethodMeta create TensorInfo.
@@ -64,7 +75,9 @@ class TensorInfo final {
   TensorInfo(
       Span<const int32_t> sizes,
       Span<const uint8_t> dim_order,
-      exec_aten::ScalarType scalar_type);
+      executorch::aten::ScalarType scalar_type,
+      const bool is_memory_planned,
+      executorch::aten::string_view name);
 
   /**
    * The sizes of the tensor.
@@ -82,8 +95,14 @@ class TensorInfo final {
    */
   Span<const uint8_t> dim_order_;
 
+  /// The fully qualified name of the Tensor.
+  executorch::aten::string_view name_;
+
   /// The scalar type of the tensor.
-  exec_aten::ScalarType scalar_type_;
+  executorch::aten::ScalarType scalar_type_;
+
+  /// Whether the tensor's memory was planned during export.
+  bool is_memory_planned_;
 
   /// The size in bytes of the tensor.
   size_t nbytes_;
@@ -162,6 +181,21 @@ class MethodMeta final {
   Result<TensorInfo> output_tensor_meta(size_t index) const;
 
   /**
+   * Get the number of attribute tensors in this method.
+   *
+   * @returns The number of attribute tensors.
+   */
+  size_t num_attributes() const;
+
+  /**
+   * Get metadata about the specified attribute tensor.
+   *
+   * @param[in] index The index of the attribute tensor to look up.
+   * @returns The metadata on success, or an error on failure.
+   */
+  Result<TensorInfo> attribute_tensor_meta(size_t index) const;
+
+  /**
    * Get the number of memory-planned buffers this method requires.
    *
    * @returns The number of memory-planned buffers.
@@ -177,9 +211,40 @@ class MethodMeta final {
   Result<int64_t> memory_planned_buffer_size(size_t index) const;
 
   /**
+   * Check to see if a backend is used in this method.
+   *
+   * @param[in] backend_name The name of the backend to search for.
+   * @returns true if a backend is used in this method, otherwise false.
+   */
+  bool uses_backend(const char* backend_name) const;
+
+  /**
+   * Get the number of backends used in this method.
+   *
+   * @returns The total number of backend names.
+   */
+  size_t num_backends() const;
+
+  /**
+   * Get the backend name at the given index.
+   *
+   * @param[in] index The index of the backend name.
+   * @returns A Result wrapping the backend name as a C-style string
+   * on success, or an error if the index is invalid.
+   */
+  Result<const char*> get_backend_name(size_t index) const;
+
+  /**
+   * Get the number of instructions in this method.
+   *
+   * @returns The number of instructions.
+   */
+  ET_EXPERIMENTAL size_t num_instructions() const;
+
+  /**
    * DEPRECATED: Use num_memory_planned_buffers() instead.
    */
-  __ET_DEPRECATED size_t num_non_const_buffers() const {
+  ET_DEPRECATED size_t num_non_const_buffers() const {
     return num_memory_planned_buffers();
   }
 
@@ -200,5 +265,14 @@ class MethodMeta final {
   const executorch_flatbuffer::ExecutionPlan* s_plan_;
 };
 
+} // namespace ET_RUNTIME_NAMESPACE
+} // namespace executorch
+
+namespace torch {
+namespace executor {
+// TODO(T197294990): Remove these deprecated aliases once all users have moved
+// to the new `::executorch` namespaces.
+using ::executorch::ET_RUNTIME_NAMESPACE::MethodMeta;
+using ::executorch::ET_RUNTIME_NAMESPACE::TensorInfo;
 } // namespace executor
 } // namespace torch

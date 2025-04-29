@@ -42,30 +42,12 @@ class OpChooseQparamsTensor(OpSkipOps):
 
 
 @register_node_visitor
-class OpDequantizePerChannelDefault(OpSkipOps):
-    """
-    do nothing if node is dequantize_per_channel.default
-    """
-
-    target = "quantized_decomposed.dequantize_per_channel.default"
-
-
-@register_node_visitor
 class OpGetItem(OpSkipOps):
     """
     do nothing if node is getitem
     """
 
     target = "getitem"
-
-
-@register_node_visitor
-class OpQuantizePerChannelDefault(OpSkipOps):
-    """
-    do nothing if node is quantize_per_channel.default
-    """
-
-    target = "quantized_decomposed.quantize_per_channel.default"
 
 
 @register_node_visitor
@@ -98,27 +80,18 @@ class OpSymSizeInt(OpSkipOps):
 
 
 @register_node_visitor
+class OpChooseQparamsAffine(OpSkipOps):
+    """
+    do nothing if node is choose_qparams_affine.default
+    """
+
+    target = "torchao.choose_qparams_affine.default"
+
+
+@register_node_visitor
 class OpChooseQparamsToken(OpSkipOps):
     """
     do nothing if node is choose_qparams_per_token_asymmetric.tensor
     """
 
     target = "quantized_decomposed.choose_qparams_per_token_asymmetric.default"
-
-
-@register_node_visitor
-class OpQuantizePerChannelGroupDefault(OpSkipOps):
-    """
-    do nothing if node is quantize_per_channel_group.default
-    """
-
-    target = "quantized_decomposed.quantize_per_channel_group.default"
-
-
-@register_node_visitor
-class OpDequantizePerChannelGroupDefault(OpSkipOps):
-    """
-    do nothing if node is dequantize_per_channel_group.default
-    """
-
-    target = "quantized_decomposed.dequantize_per_channel_group.default"

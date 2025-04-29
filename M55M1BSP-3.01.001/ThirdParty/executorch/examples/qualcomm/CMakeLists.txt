@@ -4,10 +4,9 @@
 # This source code is licensed under the BSD-style license found in the
 # LICENSE file in the root directory of this source tree.
 
+set(CMAKE_CXX_STANDARD 17)
 # qnn_executor_runner: Like executor_runner but with QNN
-if(NOT ${ANDROID})
-  message(FATAL_ERROR "Not building Android, quitting...")
-endif()
+
 cmake_minimum_required(VERSION 3.19)
 project(qualcomm_runner_example)
 
@@ -16,8 +15,8 @@ if(NOT EXECUTORCH_ROOT)
   set(EXECUTORCH_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 endif()
 
-include(${EXECUTORCH_ROOT}/build/Utils.cmake)
-include(${EXECUTORCH_ROOT}/build/Codegen.cmake)
+include(${EXECUTORCH_ROOT}/tools/cmake/Utils.cmake)
+include(${EXECUTORCH_ROOT}/tools/cmake/Codegen.cmake)
 
 if(NOT PYTHON_EXECUTABLE)
   resolve_python_executable()
@@ -50,7 +49,6 @@ include(${EXECUTORCH_SRCS_FILE})
 get_filename_component(
   EXECUTORCH_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/../.." ABSOLUTE
 )
-set(_qnn_executor_runner__srcs ${_executor_runner__srcs})
 
 # portable_ops_lib
 gen_selected_ops(LIB_NAME "full_portable_ops_lib" INCLUDE_ALL_OPS "ON")
@@ -65,22 +63,35 @@ target_compile_options(
   full_portable_ops_lib INTERFACE -DET_EVENT_TRACER_ENABLED
 )
 target_include_directories(
-  full_portable_ops_lib PUBLIC ${_common_include_directories}
+  full_portable_ops_lib
+  PUBLIC
+    ${_common_include_directories}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../extension/llm/tokenizers/include
 )
 
-list(TRANSFORM _qnn_executor_runner__srcs PREPEND "${EXECUTORCH_SOURCE_DIR}/")
-list(FILTER _qnn_executor_runner__srcs EXCLUDE REGEX ".*executor_runner.cpp$")
-list(PREPEND _qnn_executor_runner__srcs
-     ${CMAKE_CURRENT_LIST_DIR}/executor_runner/qnn_executor_runner.cpp
+# find RE2 for tokenizer
+set(ABSL_ENABLE_INSTALL ON)
+set(ABSL_PROPAGATE_CXX_STD ON)
+set(_pic_flag ${CMAKE_POSITION_INDEPENDENT_CODE})
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+add_subdirectory(
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../extension/llm/tokenizers/third-party/abseil-cpp
+  ${CMAKE_CURRENT_BINARY_DIR}/abseil-cpp
 )
+add_subdirectory(
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../extension/llm/tokenizers/third-party/re2
+  ${CMAKE_CURRENT_BINARY_DIR}/re2
+)
+set(CMAKE_POSITION_INDEPENDENT_CODE ${_pic_flag})
 
-add_executable(qnn_executor_runner ${_qnn_executor_runner__srcs})
+# build qnn_executor_runner
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/executor_runner)
 
-target_include_directories(
-  qnn_executor_runner PUBLIC ${_common_include_directories}
-)
-target_link_libraries(
-  qnn_executor_runner qnn_executorch_backend full_portable_ops_lib etdump
-  ${FLATCCRT_LIB} gflags
-)
-target_compile_options(qnn_executor_runner PUBLIC ${_common_compile_options})
+# build qnn_llama_runner for llama
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/oss_scripts/llama)
+
+# build qaihub_llama2_7b_runner and qaihub_llama3_8b_runner
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/qaihub_scripts/llama)
+
+# build qaihub_stable_diffusion_runner
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/qaihub_scripts/stable_diffusion)

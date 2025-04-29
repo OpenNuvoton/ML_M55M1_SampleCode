@@ -23,6 +23,9 @@ class DL3Wrapper(torch.nn.Module):
 
 
 class TestDeepLabV3(unittest.TestCase):
+    def setUp(self):
+        torch._dynamo.reset()
+
     dl3 = DL3Wrapper()
     dl3 = dl3.eval()
     model_inputs = (torch.randn(1, 3, 224, 224),)
@@ -32,8 +35,7 @@ class TestDeepLabV3(unittest.TestCase):
         (
             Tester(self.dl3, self.model_inputs)
             .export()
-            .to_edge()
-            .partition()
+            .to_edge_transform_and_lower()
             .to_executorch()
             .serialize()
             .run_method_and_compare_outputs()

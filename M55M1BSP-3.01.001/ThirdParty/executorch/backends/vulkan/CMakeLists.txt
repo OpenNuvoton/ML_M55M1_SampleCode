@@ -28,15 +28,11 @@ if(NOT PYTHON_EXECUTABLE)
   set(PYTHON_EXECUTABLE python3)
 endif()
 
-if(NOT FLATC_EXECUTABLE)
-  set(FLATC_EXECUTABLE flatc)
-endif()
-
 # Include this file to access target_link_options_shared_lib This is required to
 # provide access to target_link_options_shared_lib which allows libraries to be
 # linked with the --whole-archive flag. This is required for libraries that
 # perform dynamic registration via static initialization.
-include(${EXECUTORCH_ROOT}/build/Utils.cmake)
+include(${EXECUTORCH_ROOT}/tools/cmake/Utils.cmake)
 
 include(cmake/ShaderLibrary.cmake)
 
@@ -44,23 +40,25 @@ include(cmake/ShaderLibrary.cmake)
 
 set(VULKAN_THIRD_PARTY_PATH ${CMAKE_CURRENT_SOURCE_DIR}/third-party)
 
-set(VULKAN_HEADERS_PATH ${VULKAN_THIRD_PARTY_PATH}/Vulkan-Headers/include)
+set(VULKAN_HEADERS_PATH ${VULKAN_THIRD_PARTY_PATH}/Vulkan-Headers)
 set(VOLK_PATH ${VULKAN_THIRD_PARTY_PATH}/volk)
 set(VMA_PATH ${VULKAN_THIRD_PARTY_PATH}/VulkanMemoryAllocator)
 
-set(COMMON_INCLUDES ${EXECUTORCH_ROOT}/.. ${VULKAN_HEADERS_PATH} ${VOLK_PATH}
-                    ${VMA_PATH}
+set(COMMON_INCLUDES ${EXECUTORCH_ROOT}/.. ${VULKAN_HEADERS_PATH}/include
+                    ${VOLK_PATH} ${VMA_PATH}
 )
 
 # Compile settings
 
-set(VULKAN_CXX_FLAGS "")
+set(VULKAN_CXX_FLAGS "-fexceptions")
 list(APPEND VULKAN_CXX_FLAGS "-DUSE_VULKAN_WRAPPER")
 list(APPEND VULKAN_CXX_FLAGS "-DUSE_VULKAN_VOLK")
 
 # vulkan API files
 
 file(GLOB_RECURSE vulkan_api_cpp ${RUNTIME_PATH}/api/*)
+file(GLOB_RECURSE vulkan_vkapi_cpp ${RUNTIME_PATH}/vk_api/*)
+list(APPEND vulkan_api_cpp ${vulkan_vkapi_cpp})
 list(APPEND vulkan_api_cpp ${VOLK_PATH}/volk.c)
 
 # vulkan ComputeGraph files
@@ -81,15 +79,16 @@ set(vulkan_standard_shaders_cpp ${generated_spv_cpp})
 set(SCHEMA_INCLUDE_DIR ${CMAKE_BINARY_DIR}/schema/include)
 
 set(GENERATED_HEADER
-    ${SCHEMA_INCLUDE_DIR}/executorch/backends/vulkan/schema_generated.h
+    ${SCHEMA_INCLUDE_DIR}/executorch/backends/vulkan/serialization/schema_generated.h
 )
 
 add_custom_command(
   OUTPUT ${GENERATED_HEADER}
   COMMAND
     ${FLATC_EXECUTABLE} --cpp --cpp-std c++11 --scoped-enums -o
-    "${SCHEMA_INCLUDE_DIR}/executorch/backends/vulkan/" ${_vulkan_schema__srcs}
+    "${SCHEMA_INCLUDE_DIR}/executorch/backends/vulkan/serialization/" ${_vulkan_schema__srcs}
   WORKING_DIRECTORY ${EXECUTORCH_ROOT}
+  DEPENDS flatc
   COMMENT "Generating vulkan_schema headers"
   VERBATIM
 )
@@ -118,6 +117,8 @@ target_link_libraries(vulkan_backend PRIVATE vulkan_schema executorch)
 target_compile_options(vulkan_backend PRIVATE ${VULKAN_CXX_FLAGS})
 # Link this library with --whole-archive due to dynamic backend registration
 target_link_options_shared_lib(vulkan_backend)
+
+set_property(TARGET vulkan_backend PROPERTY CXX_STANDARD 17)
 
 # Executor Runner
 

@@ -1,14 +1,14 @@
-# ExecuTorch Concepts
+# Concepts
 This page provides an overview of key concepts and terms used throughout the ExecuTorch documentation. It is intended to help readers understand the terminology and concepts used in PyTorch Edge and ExecuTorch.
 
 ## Concepts Map
-![](./_static/img/concepts-map-overview.png)
+![](_static/img/concepts-map-overview.png)
 
-<a href="./_static/img/concepts-map-overview.png" target="_blank">View in full size</a>
+<a href="_static/img/concepts-map-overview.png" target="_blank">View in full size</a>
 
-<a href="./_static/img/concepts-map-detailed.png" target="_blank">View detailed concept map</a>
+<a href="_static/img/concepts-map-detailed.png" target="_blank">View detailed concept map</a>
 
-## [AOT (Ahead of Time)](./getting-started-architecture.md#program-preparation)
+## [AOT (Ahead of Time)](getting-started-architecture.md#program-preparation)
 
 AOT generally refers to the program preparation that occurs before execution. On a high level, ExecuTorch workflow is split into an AOT compilation and a runtime. The AOT steps involve compilation into an Intermediate Representation (IR), along with optional transformations and optimizations.
 
@@ -16,17 +16,17 @@ AOT generally refers to the program preparation that occurs before execution. On
 
 Fundamentally, it is a tensor library on top of which almost all other Python and C++ interfaces in PyTorch are built. It provides a core Tensor class, on which many hundreds of operations are defined.
 
-## [ATen Dialect](./ir-exir.md#aten-dialect)
+## [ATen Dialect](ir-exir.md#aten-dialect)
 
-ATen dialect is the immediate result of exporting an eager module to a graph representation. It is the entry point of the ExecuTorch compilation pipeline; after exporting to ATen dialect, subsequent passes can lower to [Core ATen dialect](./concepts.md#concepts#core-aten-dialect) and [Edge dialect](./concepts.md#edge-dialect).
+ATen dialect is the immediate result of exporting an eager module to a graph representation. It is the entry point of the ExecuTorch compilation pipeline; after exporting to ATen dialect, subsequent passes can lower to [Core ATen dialect](concepts.md#concepts#core-aten-dialect) and [Edge dialect](concepts.md#edge-dialect).
 
-ATen dialect is a valid [EXIR](./concepts.md#exir) with additional properties. It consists of functional ATen operators, higher order operators (like control flow operators) and registered custom operators.
+ATen dialect is a valid [EXIR](concepts.md#exir) with additional properties. It consists of functional ATen operators, higher order operators (like control flow operators) and registered custom operators.
 
 The goal of ATen dialect is to capture users’ programs as faithfully as possible.
 
 ## ATen mode
 
-ATen mode uses the ATen implementation of Tensor (`at::Tensor`) and related types, such as `ScalarType`, from the PyTorch core. This is in contrast to portable mode, which uses ExecuTorch’s smaller implementation of tensor (`torch::executor::Tensor`) and related types, such as `torch::executor::ScalarType`.
+ATen mode uses the ATen implementation of Tensor (`at::Tensor`) and related types, such as `ScalarType`, from the PyTorch core. This is in contrast to ETensor mode, which uses ExecuTorch’s smaller implementation of tensor (`executorch::runtime::etensor::Tensor`) and related types, such as `executorch::runtime::etensor::ScalarType`.
 - ATen kernels that rely on the full `at::Tensor` API are usable in this configuration.
 - ATen kernels tend to do dynamic memory allocation and often have extra flexibility (and thus overhead) to handle cases not needed by mobile/embedded clients. e.g.,  CUDA support, sparse tensor support, and dtype promotion.
 - Note: ATen mode is currently a WIP.
@@ -39,7 +39,7 @@ Autograd safe ATen dialect includes only differentiable ATen operators, along wi
 
 A specific hardware (like GPU, NPU) or a software stack (like XNNPACK) that consumes a graph or part of it, with performance and efficiency benefits.
 
-## [Backend Dialect](./ir-exir.md#backend-dialect)
+## [Backend Dialect](ir-exir.md#backend-dialect)
 
 Backend dialect is the immediate result of exporting Edge dialect to specific backend. It’s target-aware, and may contain operators or submodules that are only meaningful to the target backend. This dialect allows the introduction of target-specific operators that do not conform to the schema defined in the Core ATen Operator Set and are not shown in ATen or Edge Dialect.
 
@@ -61,7 +61,7 @@ An open-source, cross-platform family of tools designed to build, test and packa
 
 ## Codegen
 
-At a high level, codegen performs two tasks; generating the [kernel registration](./kernel-library-custom-aten-kernel.md) library, and optionally running [selective build](#selective-build).
+At a high level, codegen performs two tasks; generating the [kernel registration](kernel-library-custom-aten-kernel.md) library, and optionally running [selective build](#selective-build).
 
 The kernel registration library connects operator names (referenced in the model) with the corresponding kernel implementation (from the kernel library).
 
@@ -73,7 +73,7 @@ The output of codegen is a set of C++ bindings (various `.h`, `.cpp` files) that
 
 Core ATen dialect contains the core ATen operators along with higher order operators (control flow) and registered custom operators.
 
-## [Core ATen operators / Canonical ATen operator set](./ir-ops-set-definition.md)
+## [Core ATen operators / Canonical ATen operator set](ir-ops-set-definition.md)
 
 A select subset of the PyTorch ATen operator library. Core ATen operators will not be decomposed when exported with the core ATen decomposition table. They serve as a reference for the baseline ATen ops that a backend or compiler should expect from upstream.
 
@@ -83,15 +83,25 @@ Decomposing an operator means expressing it as a combination of other operators.
 
 ## [Custom operator](https://docs.google.com/document/d/1_W62p8WJOQQUzPsJYa7s701JXt0qf2OfLub2sbkHOaU/edit?fbclid=IwAR1qLTrChO4wRokhh_wHgdbX1SZwsU-DUv1XE2xFq0tIKsZSdDLAe6prTxg#heading=h.ahugy69p2jmz)
 
-These are operators that aren't part of the ATen library, but which appear in [eager mode](./concepts.md#eager-mode). Registered custom operators are registered into the current PyTorch eager mode runtime, usually with a `TORCH_LIBRARY` call. They are most likely associated with a specific target model or hardware platform. For example, [torchvision::roi_align](https://pytorch.org/vision/main/generated/torchvision.ops.roi_align.html) is a custom operator widely used by torchvision (doesn't target a specific hardware).
+These are operators that aren't part of the ATen library, but which appear in [eager mode](concepts.md#eager-mode). Registered custom operators are registered into the current PyTorch eager mode runtime, usually with a `TORCH_LIBRARY` call. They are most likely associated with a specific target model or hardware platform. For example, [torchvision::roi_align](https://pytorch.org/vision/main/generated/torchvision.ops.roi_align.html) is a custom operator widely used by torchvision (doesn't target a specific hardware).
 
 ## DataLoader
 
 An interface that enables the ExecuTorch runtime to read from a file or other data source without directly depending on operating system concepts like files or memory allocation.
 
-## [Delegation](./compiler-delegate-and-partitioner.md)
+## [Delegation](compiler-delegate-and-partitioner.md)
 
 To run parts (or all) of a program on a specific backend (eg. XNNPACK) while the rest of the program (if any) runs on the basic ExecuTorch runtime. Delegation enables us to leverage the performance and efficiency benefits of specialized backends and hardware.
+
+## Dim Order
+
+ExecuTorch introduces `Dim Order` to describe tensor's memory format by returning a permutation of the dimensions, from the outermost to the innermost one.
+
+For example, for a tensor with memory format [N, C, H, W], or [contiguous](https://pytorch.org/blog/tensor-memory-format-matters/) memory format, [0, 1, 2, 3] will be its dim order.
+
+Also, for a tensor with memory format [N, H, W, C], or [channels_last memory format](https://pytorch.org/tutorials/intermediate/memory_format_tutorial.html), we return [0, 2, 3, 1] for its dim order.
+
+Currently ExecuTorch only supports dim order representation for [contiguous](https://pytorch.org/blog/tensor-memory-format-matters/) and [channels_last](https://pytorch.org/tutorials/intermediate/memory_format_tutorial.html) memory format.
 
 ## DSP (Digital Signal Processor)
 
@@ -103,7 +113,7 @@ Data type, the type of data (eg. float, integer, etc.) in a tensor.
 
 ## [Dynamic Quantization](https://pytorch.org/docs/main/quantization.html#general-quantization-flow)
 
-A method of quantizing wherein tensors are quantized on the fly during inference. This is in contrast to [static quantization](./concepts.md#static-quantization), where tensors are quantized before inference.
+A method of quantizing wherein tensors are quantized on the fly during inference. This is in contrast to [static quantization](concepts.md#static-quantization), where tensors are quantized before inference.
 
 ## Dynamic shapes
 
@@ -113,7 +123,7 @@ Refers to the ability of a model to accept inputs with varying shapes during inf
 
 Python execution environment where operators in a model are immediately executed as they are encountered. e.g. Jupyter / Colab notebooks are run in eager mode. This is in contrast to graph mode, where operators are first synthesized into a graph which is then compiled and executed.
 
-## [Edge Dialect](./ir-exir.md#edge-dialect)
+## [Edge Dialect](ir-exir.md#edge-dialect)
 
 A dialect of EXIR with the following properties:
 - All operators are from a predefined operator set, called 'Edge Operators' or are registered custom operators.
@@ -141,7 +151,7 @@ An ExecuTorch `Program` maps string names like `forward` to specific ExecuTorch 
 
 A sample wrapper around the ExecuTorch runtime which includes all the operators and backends.
 
-## [EXIR](./ir-exir.md)
+## [EXIR](ir-exir.md)
 
 The **EX**port **I**ntermediate **R**epresentation (IR) from `torch.export`. Contains the computational graph of the model. All EXIR graphs are valid [FX graphs](https://pytorch.org/docs/stable/fx.html#torch.fx.Graph).
 
@@ -161,7 +171,7 @@ The cost of various loading and initialization tasks (not inference). For exampl
 
 ATen operators that do not have any side effects.
 
-## [Graph](./ir-exir.md)
+## [Graph](ir-exir.md)
 
 An EXIR Graph is a PyTorch program represented in the form of a DAG (directed acyclic graph). Each node in the graph represents a particular computation or operation, and edges of this graph consist of references between nodes. Note: all EXIR graphs are valid [FX graphs](https://pytorch.org/docs/stable/fx.html#torch.fx.Graph).
 
@@ -196,11 +206,11 @@ A table with mappings between kernel names and their implementations. This allow
 
 The process of transforming a model to run on various backends. It is called 'lowering' as it is moving code closer to the hardware. In ExecuTorch, lowering is performed as part of backend delegation.
 
-## [Memory planning](./compiler-memory-planning.md)
+## [Memory planning](compiler-memory-planning.md)
 
 The process of allocating and managing memory for a model. In ExecuTorch, a memory planning pass is run before the graph is saved to flatbuffer. This assigns a memory ID to each tensor and an offset in the buffer, marking where storage for the tensor starts.
 
-## [Node](./ir-exir.md)
+## [Node](ir-exir.md)
 
 A node in an EXIR graph represents a particular computation or operation, and is represented in Python using [torch.fx.Node](https://pytorch.org/docs/stable/fx.html#torch.fx.Node) class.
 
@@ -218,7 +228,7 @@ Instead of allocating returned tensors in kernel implementations, an operator's 
 
 This makes it easier for memory planners to perform tensor lifetime analysis. In ExecuTorch, an out variant pass is performed before memory planning.
 
-## [PAL (Platform Abstraction Layer)](./runtime-platform-abstraction-layer.md)
+## [PAL (Platform Abstraction Layer)](runtime-platform-abstraction-layer.md)
 
 Provides a way for execution environments to override operations such as;
 - Getting the current time.
@@ -230,14 +240,14 @@ The default PAL implementation can be overridden if it doesn’t work for a part
 
 Kernels that support a subset of tensor dtypes and/or dim orders.
 
-## [Partitioner](./compiler-custom-compiler-passes#Partitioner)
+## [Partitioner](compiler-custom-compiler-passes.md#Partitioner)
 
 Parts of a model may be delegated to run on an optimized backend. The partitioner splits the graph into the appropriate sub-networks and tags them for delegation.
 
-## Portable mode (lean mode)
+## ETensor mode
 
-Portable mode uses ExecuTorch’s smaller implementation of tensor (`torch::executor::Tensor`) along with related types (`torch::executor::ScalarType`, etc.). This is in contrast to ATen mode, which uses the ATen implementation of Tensor (`at::Tensor`) and related types (`ScalarType`, etc.)
-- `torch::executor::Tensor`, also known as ETensor, is a source-compatible subset of `at::Tensor`. Code written against ETensor can build against `at::Tensor`.
+ETensor mode uses ExecuTorch’s smaller implementation of tensor (`executorch::runtime::etensor::Tensor`) along with related types (`executorch::runtime::etensor::ScalarType`, etc.). This is in contrast to ATen mode, which uses the ATen implementation of Tensor (`at::Tensor`) and related types (`ScalarType`, etc.)
+- `executorch::runtime::etensor::Tensor`, also known as ETensor, is a source-compatible subset of `at::Tensor`. Code written against ETensor can build against `at::Tensor`.
 - ETensor does not own or allocate memory on its own. To support dynamic shapes, kernels can allocate Tensor data using the MemoryAllocator provided by the client.
 
 ## Portable kernels
@@ -265,19 +275,19 @@ A quantization technique where the model is quantized after it has been trained 
 
 Models may lose accuracy after quantization. QAT enables higher accuracy compared to eg. PTQ, by modeling the effects of quantization while training. During training, all weights and activations are ‘fake quantized’; float values are rounded to mimic int8 values, but all computations are still done with floating point numbers. Thus, all weight adjustments during training are made ‘aware’ that the model will ultimately be quantized. QAT applies the quantization flow during training, in contrast to PTQ which applies it afterwards.
 
-## [Quantization](./quantization-overview.md)
+## [Quantization](quantization-overview.md)
 
 Techniques for performing computations and memory accesses on tensors with lower precision data, usually `int8`. Quantization improves model performance by lowering the memory usage and (usually) decreasing computational latency; depending on the hardware, computation done in lower precision will typically be faster, e.g. `int8` matmul vs `fp32` matmul. Often, quantization comes at the cost of model accuracy.
 
-## [Runtime](./runtime-overview.md)
+## [Runtime](runtime-overview.md)
 
 The ExecuTorch runtime executes models on edge devices. It is responsible for program initialization, program execution and, optionally, destruction (releasing backend owned resources).
 
-## [SDK](./sdk-overview.md)
+## [Developer Tools](devtools-overview.md)
 
-Software Development Kit. The tooling users need to profile, debug and visualize programs that are running with ExecuTorch.
+A collection of tools users need to profile, debug and visualize programs that are running with ExecuTorch.
 
-## [Selective build](./kernel-library-selective-build.md)
+## [Selective build](kernel-library-selective-build.md)
 
 An API used to build a leaner runtime by linking only to kernels used by the program. This provides significant binary size savings.
 

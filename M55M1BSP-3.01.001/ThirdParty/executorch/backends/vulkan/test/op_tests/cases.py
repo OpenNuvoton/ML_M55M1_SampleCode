@@ -5,9 +5,12 @@
 # LICENSE file in the root directory of this source tree.
 
 
-from collections import namedtuple
+import itertools
 
-from executorch.backends.vulkan.test.op_tests.utils.codegen import VkTestSuite
+from collections import namedtuple
+from typing import Callable
+
+from executorch.backends.vulkan.test.op_tests.utils.test_suite import VkTestSuite
 
 
 # Prime numbers dim sizes for testing
@@ -21,7 +24,24 @@ S1 = 7
 S = 5
 XS = 3
 
+test_suites = {}
 
+
+def register_test_suite(aten_op):
+    def test_suite_decorator(fn: Callable) -> Callable:
+        if isinstance(aten_op, str):
+            test_suites[aten_op] = fn()
+        elif isinstance(aten_op, list):
+            for op in aten_op:
+                test_suites[op] = fn()
+        return fn
+
+    return test_suite_decorator
+
+
+@register_test_suite(
+    ["aten.add.Tensor", "aten.sub.Tensor", "aten.div.Tensor", "aten.mul.Tensor"]
+)
 def get_binary_elementwise_inputs():
     test_suite = VkTestSuite(
         [
@@ -31,49 +51,57 @@ def get_binary_elementwise_inputs():
             ((S, S1, S2), (S, S1, S2)),
             ((S, S1, S2), (S, S1, 1), 2.0),
             ((S, S1, S2), (S, 1, S2), 2.0),
+            ((XS, S, S1, S2), (XS, S, 1, 1), 2.0),
         ]
     )
     test_suite.layouts = [
-        "api::kWidthPacked",
-        "api::kChannelsPacked",
+        "utils::kWidthPacked",
+        "utils::kChannelsPacked",
     ]
+    test_suite.storage_types = ["utils::kBuffer", "utils::kTexture3D"]
     return test_suite
 
 
+@register_test_suite("aten.mm.default")
 def get_mm_inputs():
     test_suite = VkTestSuite(
         [
             ((M1, L), (L, M2)),
             ((S1, S2), (S2, M)),
+            ((6, 32), (32, 64)),
         ],
     )
     test_suite.prepacked_args = ["mat2"]
     # ATen matmul doesn't support half
     test_suite.dtypes = ["at::kFloat"]
+    test_suite.storage_types = ["utils::kTexture3D", "utils::kBuffer"]
     test_suite.layouts = [
-        "api::kWidthPacked",
-        "api::kChannelsPacked",
+        "utils::kWidthPacked",
+        "utils::kChannelsPacked",
     ]
     return test_suite
 
 
+@register_test_suite("aten.bmm.default")
 def get_bmm_inputs():
     test_suite = VkTestSuite(
         [
             ((S, M1, L), (S, L, M2)),
             ((M, S1, S2), (M, S2, M)),
+            ((4, 6, 32), (4, 32, 16)),
         ],
     )
     test_suite.prepacked_args = ["mat2"]
     # ATen matmul doesn't support half
     test_suite.dtypes = ["at::kFloat"]
     test_suite.layouts = [
-        "api::kWidthPacked",
-        "api::kChannelsPacked",
+        "utils::kWidthPacked",
+        "utils::kChannelsPacked",
     ]
     return test_suite
 
 
+@register_test_suite("aten.addmm.default")
 def get_addmm_inputs():
     test_suite = VkTestSuite(
         [
@@ -83,38 +111,115 @@ def get_addmm_inputs():
             ((M1, M2), (M1, M2), (M2, M2), 4.2, 2.3),
             ((M1, 1), (M1, L), (L, L), 2.0, 3.0),
             ((M2), (M1, M2), (M2, M2)),
+            ((6, M2), (6, M2), (M2, M2)),
         ]
     )
     # ATen matmul doesn't support half
     test_suite.dtypes = ["at::kFloat"]
     test_suite.layouts = [
-        "api::kWidthPacked",
-        "api::kChannelsPacked",
+        "utils::kWidthPacked",
+        "utils::kChannelsPacked",
     ]
     return test_suite
 
 
+common_MKN_list = [
+    (S2, M2, M1),
+    (L, L, M1),
+]
+
+
+@register_test_suite("aten.linear.default")
 def get_linear_inputs():
-    MKN_list = [
-        (S2, M2, M1),
-        (L, L, M1),
-    ]
+    MKN_list = common_MKN_list
 
     inputs_list = [((M, K), (N, K), None) for M, K, N in MKN_list]
     inputs_list += [((M, K), (N, K), (N)) for M, K, N in MKN_list]
     inputs_list += [((3, M, K), (N, K), None) for M, K, N in MKN_list]
     inputs_list += [((3, M, K), (N, K), (N)) for M, K, N in MKN_list]
+    inputs_list += [((3, 6, K), (N, K), (N)) for M, K, N in MKN_list]
 
     test_suite = VkTestSuite(inputs_list)
     test_suite.dtypes = ["at::kFloat"]
     test_suite.layouts = [
-        "api::kWidthPacked",
-        "api::kChannelsPacked",
+        "utils::kWidthPacked",
+        "utils::kChannelsPacked",
     ]
+    test_suite.storage_types = ["utils::kBuffer", "utils::kTexture3D"]
     return test_suite
 
 
-def get_pool2d_inputs():
+@register_test_suite("aten._weight_int8pack_mm.default")
+def get_weight_int8pack_mm_inputs():
+    MKN_list = [
+        [1, 480, 256],
+        [1, 1024, 1024],
+        [1, 1024, 256],
+        [3, 480, 256],
+        [6, 480, 256],
+        [6, 256, 1024],
+        [6, 1024, 256],
+        [6, 256, 256],
+        [6, 256, 512],
+        [4, 768, 4096],
+        [1024, 1024, 1024],
+    ]
+
+    inputs_list = [((M, K), (N, K), (N)) for M, K, N in MKN_list]
+
+    test_suite = VkTestSuite(inputs_list)
+    test_suite.dtypes = ["at::kFloat"]
+    test_suite.layouts = ["utils::kWidthPacked"]
+    test_suite.storage_types = ["utils::kTexture3D", "utils::kBuffer"]
+    test_suite.prepacked_args = ["mat2", "scales"]
+    test_suite.requires_prepack = True
+
+    test_suite.arg_dtype["mat2"] = "at::kChar"
+    test_suite.arg_data_range["mat2"] = (0, 100)
+
+    test_suite.arg_data_range["scales"] = (0.0008, 0.001)
+
+    return test_suite
+
+
+@register_test_suite("aten.avg_pool2d.default")
+def get_avg_pool2d_inputs():
+    Test = namedtuple(
+        "VkAvgPoolTest",
+        [
+            "self",
+            "kernel_size",
+            "stride",
+            "padding",
+            "ceil_mode",
+            "count_include_pad",
+            "divisor_override",
+        ],
+    )
+
+    test_cases = []
+    for ceil_mode in [True, False]:
+        for count_include_pad in [True, False]:
+            for divisor_override in [None, 5]:
+                test_cases += [
+                    Test(
+                        self=(S, M1, M2),
+                        kernel_size=[2, 2],
+                        stride=[1, 1],
+                        padding=[0, 0],
+                        ceil_mode=ceil_mode,
+                        count_include_pad=count_include_pad,
+                        divisor_override=divisor_override,
+                    ),
+                ]
+
+    test_suite = VkTestSuite([tuple(tc) for tc in test_cases])
+    test_suite.dtypes = ["at::kFloat"]
+    return test_suite
+
+
+@register_test_suite("aten.max_pool2d_with_indices.default")
+def get_max_pool2d_inputs():
     test_suite = VkTestSuite(
         [
             ((S, M1, M2), [2, 2], [1, 1], [0, 0], [1, 1]),
@@ -123,113 +228,196 @@ def get_pool2d_inputs():
     return test_suite
 
 
+@register_test_suite("aten.convolution.default")
 def get_conv_inputs():
-    test_suite = VkTestSuite(
+    Test = namedtuple(
+        "ConvTest",
         [
-            (
-                (1, 6, 40, 50),
-                (8, 6, 3, 3),
-                (8,),
-                [1, 2],
-                [2, 3],
-                [1, 1],
-                False,
-                [0, 0],
-                1,
-            ),
-            (
-                (1, 6, 40, 50),
-                (6, 8, 3, 3),
-                (8,),
-                [1, 2],
-                [2, 3],
-                [1, 1],
-                True,
-                [0, 1],
-                1,
-            ),
-            (
-                (1, 8, 72, 96),
-                (8, 1, 3, 3),
-                (8,),
-                [1, 1],
-                [1, 1],
-                [1, 1],
-                False,
-                [0, 0],
-                8,
-            ),
-            (
-                (1, 8, 72, 96),
-                (8, 8, 1, 1),
-                (8,),
-                [1, 1],
-                [1, 1],
-                [1, 1],
-                False,
-                [0, 0],
-                1,
-            ),
-            (
-                (1, 6, 40, 50),
-                (8, 6, 3, 3),
-                None,
-                [1, 2],
-                [2, 3],
-                [1, 1],
-                False,
-                [0, 0],
-                1,
-            ),
-            (
-                (1, 6, 7),
-                (6, 1, 3),
-                (6,),
-                [1],
-                [0],
-                [1],
-                False,
-                [0],
-                6,
-            ),
-            (
-                (2, 20, 30),
-                (10, 4, 6),
-                (10,),
-                [5],
-                [5],
-                [3],
-                False,
-                [0],
-                5,
-            ),
-            (
-                (1, 9, 11),
-                (9, 1, 3),
-                None,
-                [1],
-                [0],
-                [1],
-                False,
-                [0],
-                9,
-            ),
-            (
-                (5, 15, 30),
-                (20, 3, 3),
-                None,
-                [3],
-                [5],
-                [7],
-                False,
-                [0],
-                5,
-            ),
-        ]
+            "self",
+            "weight",
+            "bias",
+            "stride",
+            "padding",
+            "dilation",
+            "transposed",
+            "output_padding",
+            "groups",
+        ],
     )
+    Test.__new__.__defaults__ = (
+        None,
+        None,
+        None,
+        [1, 1],
+        [0, 0],
+        [1, 1],
+        False,
+        [9, 0],
+        1,
+    )
+    test_cases = []
+    test_cases = [
+        Test(
+            self=(1, 6, 40, 50),
+            weight=(8, 6, 3, 3),
+            bias=(8,),
+            stride=[1, 2],
+            padding=[2, 3],
+            dilation=[1, 1],
+            transposed=False,
+            output_padding=[0, 0],
+            groups=1,
+        ),
+        Test(
+            self=(1, 6, 40, 50),
+            weight=(6, 8, 3, 3),
+            bias=(8,),
+            stride=[1, 2],
+            padding=[2, 3],
+            dilation=[1, 1],
+            transposed=True,
+            output_padding=[0, 1],
+            groups=1,
+        ),
+        Test(
+            self=(1, 8, 72, 96),
+            weight=(8, 1, 3, 3),
+            bias=(8,),
+            stride=[1, 1],
+            padding=[1, 1],
+            dilation=[1, 1],
+            transposed=False,
+            output_padding=[0, 0],
+            groups=8,
+        ),
+        Test(
+            self=(1, 8, 72, 96),
+            weight=(8, 8, 1, 1),
+            bias=(8,),
+            stride=[1, 1],
+            padding=[1, 1],
+            dilation=[1, 1],
+            transposed=False,
+            output_padding=[0, 0],
+            groups=1,
+        ),
+        Test(
+            self=(1, 6, 40, 50),
+            weight=(8, 6, 3, 3),
+            bias=None,
+            stride=[1, 2],
+            padding=[2, 3],
+            dilation=[1, 1],
+            transposed=False,
+            output_padding=[0, 0],
+            groups=1,
+        ),
+        Test(
+            self=(1, 6, 7),
+            weight=(6, 1, 3),
+            bias=(6,),
+            stride=[1],
+            padding=[0],
+            dilation=[1],
+            transposed=False,
+            output_padding=[0],
+            groups=6,
+        ),
+        Test(
+            self=(2, 20, 30),
+            weight=(10, 4, 6),
+            bias=(10,),
+            stride=[5],
+            padding=[5],
+            dilation=[3],
+            transposed=False,
+            output_padding=[0],
+            groups=5,
+        ),
+        Test(
+            self=(1, 9, 11),
+            weight=(9, 1, 3),
+            bias=None,
+            stride=[1],
+            padding=[0],
+            dilation=[1],
+            transposed=False,
+            output_padding=[0],
+            groups=9,
+        ),
+        Test(
+            self=(5, 15, 30),
+            weight=(20, 3, 3),
+            bias=None,
+            stride=[3],
+            padding=[5],
+            dilation=[7],
+            transposed=False,
+            output_padding=[0],
+            groups=5,
+        ),
+        Test(
+            self=(1, 16, 672, 512),
+            weight=(64, 16, 1, 1),
+            bias=(64,),
+            stride=[1, 1],
+            padding=[0, 0],
+            dilation=[1, 1],
+            transposed=False,
+            output_padding=[0, 0],
+            groups=1,
+        ),
+        Test(
+            self=(1, 4, 234, 234),
+            weight=(4, 1, 3, 3),
+            bias=(4,),
+            stride=[2, 1],
+            padding=[1, 1],
+            dilation=[1, 1],
+            transposed=False,
+            output_padding=[0, 0],
+            groups=4,
+        ),
+        Test(
+            self=(1, 4, 234, 234),
+            weight=(4, 1, 3, 3),
+            bias=(4,),
+            stride=[1, 2],
+            padding=[1, 1],
+            dilation=[1, 1],
+            transposed=False,
+            output_padding=[0, 0],
+            groups=4,
+        ),
+        Test(
+            self=(1, 4, 234, 234),
+            weight=(4, 1, 3, 3),
+            bias=(4,),
+            stride=[2, 2],
+            padding=[1, 1],
+            dilation=[1, 1],
+            transposed=False,
+            output_padding=[0, 0],
+            groups=4,
+        ),
+        Test(
+            self=(1, 8, 90, 77),
+            weight=(1, 8, 3, 3),
+            bias=(1,),
+            stride=[1, 1],
+            padding=[2, 2],
+            dilation=[2, 2],
+            transposed=False,
+            output_padding=[0, 0],
+            groups=1,
+        ),
+    ]
+
+    test_suite = VkTestSuite(test_cases)
     return test_suite
 
 
+@register_test_suite("aten.native_layer_norm.default")
 def get_native_layer_norm_inputs():
     test_suite = VkTestSuite(
         [
@@ -238,25 +426,45 @@ def get_native_layer_norm_inputs():
             ((S, XL, M1, M2), [M2], (M2), (M2), 0.001),
         ]
     )
+    test_suite.layouts = [
+        "utils::kWidthPacked",
+        "utils::kHeightPacked",
+        "utils::kChannelsPacked",
+    ]
     return test_suite
 
 
 def get_upsample_inputs():
-    test_suite = VkTestSuite(
-        [
-            # (input tensor shape, output 2D image size (H, W), output scaling factors)
-            ((2, 2, 2, 2), None, [1, 1]),
-            ((1, 1, 2, 2), None, [2, 2]),
-            ((1, 1, 2, 2), None, [2, 4]),
-            ((1, 1, 2, 2), None, [4, 2]),
-            ((1, 1, 2, 2), [2, 2], None),
-            ((1, 1, 2, 2), [2, 4], None),
-            ((1, 1, 2, 2), [3, 2], None),
-        ]
-    )
-    return test_suite
+    inputs_list = [
+        # (input tensor shape, output 2D image size (H, W), output scaling factors)
+        ((2, 2, 2, 2), None, [1, 1]),
+        ((1, 1, 2, 2), None, [2, 2]),
+        ((1, 1, 2, 2), None, [2, 4]),
+        ((1, 1, 2, 2), None, [4, 2]),
+        ((1, 1, 2, 2), [2, 2], None),
+        ((1, 1, 2, 2), [2, 4], None),
+        ((1, 1, 2, 2), [3, 2], None),
+    ]
+    return inputs_list
 
 
+@register_test_suite("aten.upsample_nearest2d.vec")
+def get_upsample_nearest2d_inputs():
+    inputs_list = get_upsample_inputs()
+    return VkTestSuite(inputs_list)
+
+
+@register_test_suite("aten.upsample_bilinear2d.vec")
+def get_upsample_bilinear2d_inputs():
+    base_inputs_list = get_upsample_inputs()
+    inputs_list = []
+    for input_case in base_inputs_list:
+        inputs_list.append((input_case[0], input_case[1], False, input_case[2]))
+        inputs_list.append((input_case[0], input_case[1], True, input_case[2]))
+    return VkTestSuite(inputs_list)
+
+
+@register_test_suite(["aten.full.default", "aten.full_like.default"])
 def get_full_inputs():
     test_suite = VkTestSuite(
         [
@@ -268,6 +476,26 @@ def get_full_inputs():
     return test_suite
 
 
+@register_test_suite(
+    [
+        "aten.zeros.default",
+        "aten.zeros_like.default",
+        "aten.ones.default",
+        "aten.ones_like.default",
+    ]
+)
+def get_ones_inputs():
+    test_suite = VkTestSuite(
+        [
+            ([S1, S2]),
+            ([M, M1, M2]),
+            ([L, M, M1, M2]),
+        ]
+    )
+    return test_suite
+
+
+@register_test_suite(["aten.select.int", "aten.select_copy.int"])
 def get_select_int_inputs():
     test_suite = VkTestSuite(
         [
@@ -290,30 +518,26 @@ def get_select_int_inputs():
     return test_suite
 
 
+@register_test_suite(["aten.permute.default", "aten.permute_copy.default"])
 def get_permute_inputs():
-    test_suite = VkTestSuite(
-        [
-            ((9, 2, 9, 4), [0, 1, 2, 3]),
-            ((9, 2, 9, 4), [0, 1, 3, 2]),
-            ((9, 2, 9, 4), [0, 2, 1, 3]),
-            ((9, 2, 9, 4), [0, 2, 3, 1]),
-            ((9, 2, 9, 4), [0, 3, 1, 2]),
-            ((9, 2, 9, 4), [0, 3, 2, 1]),
-            ((9, 2, 9, 4), [3, 0, 1, 2]),
-            ((9, 2, 9, 4), [3, 2, 0, 1]),
-            ((9, 2, 9, 4), [2, 3, 0, 1]),
-            ((9, 2, 9, 4), [2, 0, 3, 1]),
-            ((9, 2, 9), [2, 0, 1]),
-            ((9, 2, 9), [1, 2, 0]),
-            ((9, 2), [0, 1]),
-            ((9, 2), [1, 0]),
-        ]
-    )
+    batch_tests = [
+        ((9, 2, 5, 7), out_axis) for out_axis in itertools.permutations([0, 1, 2, 3])
+    ]
+    channel_tests = [
+        ((9, 2, 5), out_axis) for out_axis in itertools.permutations([0, 1, 2])
+    ]
+    wh_tests = [((9, 2), out_axis) for out_axis in itertools.permutations([0, 1])]
+    test_suite = VkTestSuite(batch_tests + channel_tests + wh_tests)
 
-    test_suite.layouts = ["api::kChannelsPacked"]
+    test_suite.layouts = [
+        "utils::kWidthPacked",
+        "utils::kHeightPacked",
+        "utils::kChannelsPacked",
+    ]
     return test_suite
 
 
+@register_test_suite("aten.view_copy.default")
 def get_view_inputs():
     test_suite = VkTestSuite(
         [
@@ -334,14 +558,15 @@ def get_view_inputs():
         ]
     )
     test_suite.layouts = [
-        "api::kWidthPacked",
-        "api::kHeightPacked",
-        "api::kChannelsPacked",
+        "utils::kWidthPacked",
+        "utils::kHeightPacked",
+        "utils::kChannelsPacked",
     ]
     return test_suite
 
 
-def get_slice_inputs():
+@register_test_suite("aten.slice_copy.Tensor")
+def get_slice_out_inputs():
     Test = namedtuple("VkSliceTest", ["self", "dim", "start", "end", "step"])
     Test.__new__.__defaults__ = (None, 0, None, None, 1)
 
@@ -417,12 +642,75 @@ def get_slice_inputs():
 
     test_suite = VkTestSuite([tuple(tc) for tc in test_cases])
 
-    test_suite.dtypes = ["at::kFloat"]
-    test_suite.layouts = ["api::kChannelsPacked"]
+    test_suite.dtypes = ["at::kFloat", "at::kHalf"]
+    test_suite.layouts = [
+        "utils::kWidthPacked",
+        "utils::kHeightPacked",
+        "utils::kChannelsPacked",
+    ]
     test_suite.data_gen = "make_seq_tensor"
     return test_suite
 
 
+def get_slice_view_inputs():
+    Test = namedtuple("VkSliceTest", ["self", "dim", "start", "end", "step"])
+    Test.__new__.__defaults__ = (None, 0, None, None, 1)
+
+    # Slice by channel
+    test_cases = [
+        Test(self=[1, 17, 1, 10], dim=1, start=0, end=4),
+        Test(self=[1, 17, 1, 10], dim=1, start=0, end=8),
+        Test(self=[1, 17, 3, 7], dim=1, start=0, end=12),
+    ]
+
+    test_suite = VkTestSuite([tuple(tc) for tc in test_cases])
+
+    test_suite.dtypes = ["at::kFloat"]
+    test_suite.storage_types = ["utils::kBuffer", "utils::kTexture3D"]
+    test_suite.layouts = ["utils::kWidthPacked"]
+    test_suite.data_gen = "make_seq_tensor"
+    test_suite.is_view_op = True
+
+    return test_suite
+
+
+@register_test_suite(["aten.slice.Tensor"])
+def get_slice_inputs():
+    texture_test_suite = get_slice_out_inputs()
+    texture_test_suite.test_name_suffix = "no_view"
+
+    view_test_suite = get_slice_view_inputs()
+    view_test_suite.test_name_suffix = "view"
+
+    return [view_test_suite, texture_test_suite]
+
+
+@register_test_suite(["aten.transpose.int"])
+def get_transpose_inputs():
+    Test = namedtuple("VkTransposeViewTest", ["self", "dim0", "dim1"])
+    Test.__new__.__defaults__ = (None, 0, 1)
+
+    test_cases = [
+        Test(self=[M1, M2], dim0=0, dim1=1),
+        Test(self=[M1, S2, M], dim0=0, dim1=1),
+        Test(self=[M1, S2, M], dim0=0, dim1=2),
+        Test(self=[M1, S2, M], dim0=2, dim1=1),
+        Test(self=[S, M, S2, M2], dim0=3, dim1=2),
+        Test(self=[S, M, S2, M2], dim0=1, dim1=2),
+        Test(self=[S, M, S2, M2], dim0=3, dim1=1),
+    ]
+
+    test_suite = VkTestSuite([tuple(tc) for tc in test_cases])
+
+    test_suite.dtypes = ["at::kFloat"]
+    test_suite.storage_types = ["utils::kBuffer", "utils::kTexture3D"]
+    test_suite.layouts = ["utils::kWidthPacked", "utils::kChannelsPacked"]
+    test_suite.data_gen = "make_seq_tensor"
+    test_suite.is_view_op = True
+    return test_suite
+
+
+@register_test_suite("aten.index_select.default")
 def get_index_select_inputs():
     Test = namedtuple("VkIndexSelectTest", ["self", "dim", "index"])
     Test.__new__.__defaults__ = (None, 0, None)
@@ -442,10 +730,31 @@ def get_index_select_inputs():
     test_suite = VkTestSuite([tuple(tc) for tc in test_cases])
 
     test_suite.dtypes = ["at::kFloat"]
-    test_suite.layouts = ["api::kChannelsPacked"]
+    test_suite.layouts = ["utils::kChannelsPacked"]
     return test_suite
 
 
+@register_test_suite("aten.embedding.default")
+def get_embedding_inputs():
+    Test = namedtuple("VkEmbeddingTest", ["weight", "indices"])
+    Test.__new__.__defaults__ = (None, None)
+
+    test_cases = [
+        Test(weight=[10, 9], indices=[0, 2]),
+        Test(weight=[10, 9], indices=[2, 3, 4, 5, 7]),
+        Test(weight=[10, 9], indices=[[0, 2], [1, 4], [7, 7]]),
+        Test(weight=[10, 9], indices=[[1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 3]]),
+        Test(weight=[10, 9], indices=[[[3, 1, 4], [1, 5, 9]], [[2, 6, 5], [3, 5, 8]]]),
+    ]
+
+    test_suite = VkTestSuite([tuple(tc) + (-1, "false", "false") for tc in test_cases])
+
+    test_suite.dtypes = ["at::kFloat"]
+    test_suite.layouts = ["utils::kChannelsPacked"]
+    return test_suite
+
+
+@register_test_suite("aten.unsqueeze_copy.default")
 def get_unsqueeze_inputs():
     test_suite = VkTestSuite(
         [
@@ -466,12 +775,13 @@ def get_unsqueeze_inputs():
         ]
     )
     test_suite.layouts = [
-        "api::kChannelsPacked",
+        "utils::kChannelsPacked",
     ]
     test_suite.data_gen = "make_seq_tensor"
     return test_suite
 
 
+@register_test_suite("aten.clone.default")
 def get_clone_inputs():
     test_suite = VkTestSuite(
         [
@@ -489,14 +799,33 @@ def get_clone_inputs():
         ]
     )
     test_suite.layouts = [
-        "api::kChannelsPacked",
+        "utils::kChannelsPacked",
     ]
     test_suite.data_gen = "make_seq_tensor"
     return test_suite
 
 
+@register_test_suite("aten.repeat.default")
 def get_repeat_inputs():
-    test_suite = VkTestSuite(
+    test_suite_2d = VkTestSuite(
+        [
+            ((2, 3), [1, 4]),
+            ((2, 3), [4, 1]),
+            ((2, 3), [4, 4]),
+            ((2, 3), [3, 1, 4]),
+        ]
+    )
+    test_suite_2d.layouts = [
+        "utils::kWidthPacked",
+        "utils::kHeightPacked",
+        "utils::kChannelsPacked",
+    ]
+    test_suite_2d.storage_types = ["utils::kTexture2D"]
+    test_suite_2d.data_gen = "make_seq_tensor"
+    test_suite_2d.dtypes = ["at::kFloat"]
+    test_suite_2d.test_name_suffix = "2d"
+
+    test_suite_3d = VkTestSuite(
         [
             # Repeat channels only (most challenging case)
             ((3, XS, S), [2, 1, 1]),
@@ -531,21 +860,70 @@ def get_repeat_inputs():
             ((2, 3), [3, 3, 2, 4]),
         ]
     )
-    test_suite.layouts = [
-        "api::kChannelsPacked",
+    test_suite_3d.layouts = [
+        "utils::kWidthPacked",
+        "utils::kHeightPacked",
+        "utils::kChannelsPacked",
     ]
-    test_suite.data_gen = "make_seq_tensor"
-    test_suite.dtypes = ["at::kFloat"]
-    return test_suite
+    test_suite_3d.storage_types = ["utils::kTexture3D"]
+    test_suite_3d.data_gen = "make_seq_tensor"
+    test_suite_3d.dtypes = ["at::kFloat"]
+    test_suite_3d.test_name_suffix = "3d"
+
+    return [test_suite_2d, test_suite_3d]
 
 
+@register_test_suite("aten.repeat_interleave.self_int")
+def get_repeat_interleave_inputs():
+    test_suite_W = VkTestSuite(
+        [
+            ((4, 32, 256), 3, -2),
+            # Test repeat on each non-packed dim
+            ((16, 32, 64), 5, -2),
+            ((16, 32, 64), 5, -3),
+            # Test batched inputs
+            ((3, 5, 32, 64), 4, -2),
+            ((3, 5, 32, 64), 4, -3),
+        ]
+    )
+    test_suite_W.layouts = [
+        "utils::kWidthPacked",
+    ]
+    test_suite_W.data_gen = "make_seq_tensor"
+    test_suite_W.dtypes = ["at::kFloat"]
+    test_suite_W.test_name_suffix = "W_packed"
+
+    test_suite_C = VkTestSuite(
+        [
+            # Test repeat on each non-packed dim
+            ((32, 32, 16), 5, -1),
+            ((32, 32, 16), 5, -2),
+            # Test batched inputs
+            ((3, 16, 8, 64), 4, -1),
+            ((3, 16, 8, 64), 4, -2),
+        ]
+    )
+    test_suite_C.layouts = [
+        "utils::kChannelsPacked",
+    ]
+    test_suite_C.data_gen = "make_seq_tensor"
+    test_suite_C.dtypes = ["at::kFloat"]
+    test_suite_C.test_name_suffix = "C_packed"
+
+    return [test_suite_W, test_suite_C]
+
+
+@register_test_suite("aten.cat.default")
 def get_cat_inputs():
     # TensorList must be specified as list of tuples
     test_suite = VkTestSuite(
         [
             # Cat on Height
+            ([(M, M, 3, 5), (M, M, 0, 5)], 2),
             ([(S1, S1, 3, 5), (S1, S1, 0, 5)], 2),
+            ([(M, M, 3, 5), (M, M, 4, 5)], 2),
             ([(S1, S1, 3, 5), (S1, S1, 4, 5)], 2),
+            ([(M2, 3, 5), (M2, 4, 5)], 1),
             ([(S1, 3, 5), (S1, 4, 5)], 1),
             ([(3, 5), (4, 5)], 0),
             ([(3, 5), (4, 5), (1, 5)], 0),
@@ -554,7 +932,9 @@ def get_cat_inputs():
                 0,
             ),
             # Cat on Width
+            ([(M, M, 5, 3), (M, M, 5, 4)], 3),
             ([(S1, S1, 5, 3), (S1, S1, 5, 4)], 3),
+            ([(M, 5, 3), (M, 5, 4)], 2),
             ([(S1, 5, 3), (S1, 5, 4)], 2),
             ([(5, 0), (5, 4)], 1),
             ([(5, 3), (5, 4)], 1),
@@ -565,7 +945,9 @@ def get_cat_inputs():
             ),
             ([(5,), (6,)], 0),
             # Cat on Batch
+            ([(M, S1, 5, 4), (M1, S1, 5, 4)], 0),
             ([(S, S1, 5, 4), (S1, S1, 5, 4)], 0),
+            ([(S, M, 5, 4), (S1, M, 5, 4)], 0),
             ([(S, XS, 5, 4), (S1, XS, 5, 4)], 0),
             ([(S, S2, 5, 4), (S1, S2, 5, 4)], 0),
             (
@@ -577,7 +959,9 @@ def get_cat_inputs():
                 0,
             ),
             # Cat on Channel
+            ([(M, 5, 4), (0, 5, 4), (M1, 5, 4)], 0),
             ([(S, 5, 4), (0, 5, 4), (S2, 5, 4)], 0),
+            ([(M, 5, 4), (M1, 5, 4), (M2, 5, 4)], 0),
             ([(S, 5, 4), (S1, 5, 4), (S2, 5, 4)], 0),
             ([(XS, 5, 4), (XS, 5, 4), (S2, 5, 4)], 0),
             ([(XS, S, 5, 4), (XS, S1, 5, 4), (XS, S2, 5, 4)], 1),
@@ -593,25 +977,34 @@ def get_cat_inputs():
         ]
     )
     test_suite.layouts = [
-        "api::kChannelsPacked",
+        "utils::kWidthPacked",
+        "utils::kHeightPacked",
+        "utils::kChannelsPacked",
     ]
     test_suite.data_gen = "make_seq_tensor"
     test_suite.dtypes = ["at::kFloat"]
     return test_suite
 
 
+@register_test_suite("aten.split_with_sizes_copy.default")
 def get_split_with_sizes_inputs():
     Test = namedtuple("VkSliceTest", ["self", "sizes", "dim"])
     test_cases = [
         # Split on Width
+        Test(self=(S1, 7, 10, 11), sizes=[1, 3, 2, 5], dim=3),
         Test(self=(S1, 7, 10, 10), sizes=[1, 2, 3, 4], dim=3),
+        Test(self=(7, 10, 11), sizes=[1, 3, 2, 5], dim=2),
         Test(self=(7, 10, 10), sizes=[1, 2, 3, 4], dim=2),
+        Test(self=(7, 10, 11), sizes=[3, 8], dim=2),
         Test(self=(7, 10, 10), sizes=[1, 9], dim=2),
         Test(self=(10, 10), sizes=[1, 9], dim=1),
         Test(self=(10,), sizes=[1, 9], dim=0),
         # Split on Height
+        Test(self=(S1, 7, 11, 10), sizes=[1, 3, 2, 5], dim=2),
         Test(self=(S1, 7, 10, 10), sizes=[1, 2, 3, 4], dim=2),
+        Test(self=(7, 11, 10), sizes=[1, 3, 2, 5], dim=1),
         Test(self=(7, 10, 10), sizes=[1, 2, 3, 4], dim=1),
+        Test(self=(7, 11, 11), sizes=[3, 8], dim=1),
         Test(self=(7, 10, 10), sizes=[10], dim=1),
         Test(self=(7, 6, 10), sizes=[1, 1, 1, 1, 1, 1], dim=1),
         Test(self=(10, 10), sizes=[1, 2, 3, 4], dim=0),
@@ -619,8 +1012,11 @@ def get_split_with_sizes_inputs():
         Test(self=(10, 7, 10, 10), sizes=[3, 6, 1], dim=0),
         Test(self=(10, 7, 10, 10), sizes=[10], dim=0),
         # Split on Channel
+        Test(self=(7, 13, 4, 8), sizes=[3, 5, 2, 3], dim=1),
         Test(self=(7, 13, 4, 8), sizes=[3, 6, 1, 3], dim=1),
+        Test(self=(7, 13, 4, 8), sizes=[3, 2, 2, 5, 1], dim=1),
         Test(self=(7, 13, 4, 8), sizes=[3, 3, 3, 3, 1], dim=1),
+        Test(self=(13, 4, 8), sizes=[3, 5, 2, 1, 2], dim=0),
         Test(self=(13, 4, 8), sizes=[3, 3, 3, 3, 1], dim=0),
         Test(self=(13, 4, 8), sizes=[2, 9, 2], dim=0),
         Test(self=(13, 4, 8), sizes=[13], dim=0),
@@ -628,13 +1024,16 @@ def get_split_with_sizes_inputs():
     test_suite = VkTestSuite([tuple(tc) for tc in test_cases])
 
     test_suite.layouts = [
-        "api::kChannelsPacked",
+        "utils::kWidthPacked",
+        "utils::kHeightPacked",
+        "utils::kChannelsPacked",
     ]
     test_suite.data_gen = "make_seq_tensor"
     test_suite.dtypes = ["at::kFloat"]
     return test_suite
 
 
+@register_test_suite("aten.split.Tensor")
 def get_split_tensor_inputs():
     test_suite = VkTestSuite(
         [
@@ -678,44 +1077,78 @@ def get_split_tensor_inputs():
     )
 
     test_suite.layouts = [
-        "api::kChannelsPacked",
+        "utils::kWidthPacked",
+        "utils::kHeightPacked",
+        "utils::kChannelsPacked",
     ]
     test_suite.data_gen = "make_seq_tensor"
     test_suite.dtypes = ["at::kFloat"]
     return test_suite
 
 
+def get_reduce_inputs(is_softmax: bool = False):
+    bool_arg = False if is_softmax else True
+    return [
+        ((L), 0, bool_arg),
+        ((L), -1, bool_arg),
+        ((M, L), 0, bool_arg),
+        ((M, L), 1, bool_arg),
+        ((L, M), -1, bool_arg),
+        ((M, L), -2, bool_arg),
+        ((S, S1, S2), 0, bool_arg),
+        ((S, S1, S2), 1, bool_arg),
+        ((S, S1, S2), 2, bool_arg),
+        ((S, S1, S2), -1, bool_arg),
+        ((S, S1, S2), -2, bool_arg),
+        ((S, S1, S2), -3, bool_arg),
+        ((1, S, S1, S2), 1, bool_arg),
+        ((1, S, S1, S2), 2, bool_arg),
+        ((1, S, S1, S2), 3, bool_arg),
+        ((1, S, S1, S2), -1, bool_arg),
+        ((1, S, S1, S2), -2, bool_arg),
+        ((1, S, S1, S2), -3, bool_arg),
+        # Test batches > 1 where the reduction dim is not the concat dim
+        ((S, S2, S1, 128), -1, bool_arg),
+    ]
+
+
+@register_test_suite(["aten._softmax.default", "aten._log_softmax.default"])
 def get_softmax_inputs():
-    test_suite = VkTestSuite(
-        [
-            ((S1), 0, False),
-            ((S1), -1, False),
-            ((S, S1), 0, False),
-            ((S, S1), 1, False),
-            ((S, S1), -1, False),
-            ((S, S1), -2, False),
-            ((S, S1, S2), 0, False),
-            ((S, S1, S2), 1, False),
-            ((S, S1, S2), 2, False),
-            ((S, S1, S2), -1, False),
-            ((S, S1, S2), -2, False),
-            ((S, S1, S2), -3, False),
-            ((XS, S, S1, S2), 0, False),
-            ((XS, S, S1, S2), 1, False),
-            ((XS, S, S1, S2), 2, False),
-            ((XS, S, S1, S2), 3, False),
-            ((XS, S, S1, S2), -1, False),
-            ((XS, S, S1, S2), -2, False),
-            ((XS, S, S1, S2), -3, False),
-            ((XS, S, S1, S2), -4, False),
-        ]
-    )
+    test_suite = VkTestSuite(get_reduce_inputs(is_softmax=True))
     test_suite.layouts = [
-        "api::kChannelsPacked",
+        "utils::kWidthPacked",
+        "utils::kChannelsPacked",
     ]
     return test_suite
 
 
+@register_test_suite(
+    ["aten.amax.default", "aten.amin.default", "aten.sum.dim_IntList", "aten.mean.dim"]
+)
+def get_reduce_op_inputs():
+    test_suite = VkTestSuite(get_reduce_inputs())
+    test_suite.layouts = [
+        "utils::kChannelsPacked",
+        "utils::kWidthPacked",
+    ]
+    return test_suite
+
+
+@register_test_suite(
+    [
+        "aten.sqrt.default",
+        "aten.rsqrt.default",
+        "aten.exp.default",
+        "aten.hardshrink.default",
+        "aten.sin.default",
+        "aten.neg.default",
+        "aten.cos.default",
+        "aten.hardswish.default",
+        "aten.hardsigmoid.default",
+        "aten.leaky_relu.default",
+        "aten.round.default",
+    ]
+)
 def get_unary_ops_inputs():
     test_suite = VkTestSuite(
         [
@@ -725,12 +1158,13 @@ def get_unary_ops_inputs():
             (S1, S2, S2, M2),
         ]
     )
-    test_suite.storage_types = ["api::kTexture3D", "api::kBuffer"]
+    test_suite.storage_types = ["utils::kTexture3D", "utils::kBuffer"]
     test_suite.atol = "1e-4"
     test_suite.rtol = "1e-4"
     return test_suite
 
 
+@register_test_suite("aten._native_batch_norm_legit_no_training.default")
 def get_native_batch_norm_inputs():
     Test = namedtuple(
         "VkSliceTest", ["self", "weight", "bias", "mean", "var", "momentum", "eps"]
@@ -803,10 +1237,13 @@ def get_native_batch_norm_inputs():
     ]
 
     test_suite = VkTestSuite(test_cases)
+    test_suite.requires_prepack = True
+    test_suite.prepacked_args = ["weight", "bias", "mean", "var"]
 
     return test_suite
 
 
+@register_test_suite("aten.gelu.default")
 def get_gelu_inputs():
     test_suite = VkTestSuite(
         [
@@ -819,6 +1256,7 @@ def get_gelu_inputs():
     return test_suite
 
 
+@register_test_suite("aten.arange.start_step")
 def get_arange_inputs():
     test_suite = VkTestSuite(
         [
@@ -836,48 +1274,78 @@ def get_arange_inputs():
     )
 
     test_suite.layouts = [
-        "api::kChannelsPacked",
+        "utils::kChannelsPacked",
     ]
     return test_suite
 
 
-test_suites = {
-    "aten.add.Tensor": get_binary_elementwise_inputs(),
-    "aten.sub.Tensor": get_binary_elementwise_inputs(),
-    "aten.div.Tensor": get_binary_elementwise_inputs(),
-    "aten.mul.Tensor": get_binary_elementwise_inputs(),
-    "aten.addmm.default": get_addmm_inputs(),
-    "aten.bmm.default": get_bmm_inputs(),
-    "aten.mm.default": get_mm_inputs(),
-    "aten.linear.default": get_linear_inputs(),
-    "aten.max_pool2d_with_indices.default": get_pool2d_inputs(),
-    "aten.convolution.default": get_conv_inputs(),
-    "aten.native_layer_norm.default": get_native_layer_norm_inputs(),
-    "aten.full.default": get_full_inputs(),
-    "aten.select.int": get_select_int_inputs(),
-    "aten.select_copy.int": get_select_int_inputs(),
-    "aten.permute.default": get_permute_inputs(),
-    "aten.permute_copy.default": get_permute_inputs(),
-    "aten.view_copy.default": get_view_inputs(),
-    "aten.slice_copy.Tensor": get_slice_inputs(),
-    "aten.slice.Tensor": get_slice_inputs(),
-    "aten.index_select.default": get_index_select_inputs(),
-    "aten.unsqueeze_copy.default": get_unsqueeze_inputs(),
-    "aten.clone.default": get_clone_inputs(),
-    "aten.repeat.default": get_repeat_inputs(),
-    "aten.cat.default": get_cat_inputs(),
-    "aten.split_with_sizes_copy.default": get_split_with_sizes_inputs(),
-    "aten.split.Tensor": get_split_tensor_inputs(),
-    "aten.sqrt.default": get_unary_ops_inputs(),
-    "aten.exp.default": get_unary_ops_inputs(),
-    "aten._softmax.default": get_softmax_inputs(),
-    "aten._log_softmax.default": get_softmax_inputs(),
-    "aten._native_batch_norm_legit_no_training.default": get_native_batch_norm_inputs(),
-    "aten.gelu.default": get_gelu_inputs(),
-    "aten.hardshrink.default": get_unary_ops_inputs(),
-    "aten.upsample_nearest2d.vec": get_upsample_inputs(),
-    "aten.sin.default": get_unary_ops_inputs(),
-    "aten.neg.default": get_unary_ops_inputs(),
-    "aten.cos.default": get_unary_ops_inputs(),
-    "aten.arange.start_step": get_arange_inputs(),
-}
+@register_test_suite("aten.constant_pad_nd.default")
+def get_constant_pad_nd_inputs():
+    test_suite = VkTestSuite(
+        [
+            ([S1, S2], [1, 1], 24.0),
+            ([M, M1, M2], [2, 2], 23.2),
+            ([L, M, M1, M2], [3, 5], 12.2),
+            ([S1, S2], [1, 1, 1, 1], 24.0),
+            ([M, M1, M2], [2, 2, 2, 2], 23.2),
+            ([L, M, M1, M2], [3, 5, 3, 5], 12.2),
+            ([M, M1, M2], [1, 2, 3, 4, 5, 6], 23.2),
+            ([L, M, M1, M2], [3, 3, 3, 3, 3, 3], 12.2),
+        ]
+    )
+    return test_suite
+
+
+@register_test_suite("aten.minimum.default")
+def get_minimum_inputs():
+    test_suite = VkTestSuite(
+        [
+            ((M1, M2), (M2)),
+            ((M1, M2), (M1, M2)),
+            ((M1, M2, M), (M2, M)),
+            ((M1, M1, S1, S2), (M1, M1, S1, S2)),
+            ((S1, S1, S2, S), (S1, S2, S)),
+            ((M1, S1, S2), (L, M1, S1, S2)),
+            ((S1, S2), (L, M1, S1, S2)),
+        ]
+    )
+    return test_suite
+
+
+@register_test_suite("aten.squeeze_copy.dims")
+def get_squeeze_copy_dim_inputs():
+    test_suite = VkTestSuite(
+        [
+            ([S, S, S, 1], 3),
+            ([S, 1, S, S], 1),
+            ([S, 1, 1, S], [1, 2]),
+            ([1, S, S, S], 0),
+            ([S, S, S, S], 3),
+            ([S, S, S, S], 2),
+            ([S, S, S, S], 1),
+            ([M, M1, 1], 2),
+            ([M, 1, M1], 1),
+            ([1, M1, M1], 0),
+        ]
+    )
+    return test_suite
+
+
+@register_test_suite("aten.flip.default")
+def get_flip_inputs():
+    Test = namedtuple("Flip", ["self", "dim"])
+    Test.__new__.__defaults__ = (None, 0)
+
+    test_cases = [
+        Test(self=[9], dim=[0]),
+        Test(self=[9, 9], dim=[0, 1]),
+        Test(self=[9, 9, 9], dim=[0, 2]),
+        Test(self=[9, 9, 9], dim=[0, 1, 2]),
+        Test(self=[9, 9, 9, 9], dim=[0]),
+        Test(self=[9, 9, 9, 9], dim=[0, 2, 3]),
+        Test(self=[9, 9, 9, 9], dim=[1, 3]),
+        Test(self=[9, 9, 9, 9], dim=[0, 1, 2, 3]),
+    ]
+
+    test_suite = VkTestSuite([tuple(tc) for tc in test_cases])
+    return test_suite

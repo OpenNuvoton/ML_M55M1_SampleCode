@@ -4,13 +4,16 @@
 # This source code is licensed under the BSD-style license found in the
 # LICENSE file in the root directory of this source tree.
 
+# pyre-unsafe
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Union
+
+import torch
 
 from executorch.exir.dynamic_shape import DynamicMemoryPlanningMode
 from executorch.exir.pass_manager import PassType
 from executorch.exir.passes import MemoryPlanningPass, ToOutVarPass
-from executorch.exir.passes.sym_shape_eval_pass import HintBasedSymShapeEvalPass
+from executorch.exir.passes.sym_shape_eval_pass import ConstraintBasedSymShapeEvalPass
 from executorch.exir.tracer import ExirDynamoConfig
 from torch.fx._compatibility import compatibility
 
@@ -36,6 +39,10 @@ class EdgeCompileConfig:
     _check_ir_validity: bool = True
     # TODO(larryliu): remove this
     _use_edge_ops: bool = True
+    # Allow core ATen ops check to be skipped for certain ops, but continue with the rest of the checks.
+    _core_aten_ops_exception_list: List[torch._ops.OpOverload] = field(
+        default_factory=list
+    )
     _skip_type_promotion: bool = False
     # TODO(gasoonjia): remove this
     _skip_dim_order: bool = False
@@ -48,9 +55,7 @@ class ExecutorchBackendConfig:
 
     # A single memory planning pass can be defined for all the programs in the
     # EdgeProgramManager or can be defined per program.
-    memory_planning_pass: Union[PassType, Dict[str, PassType]] = MemoryPlanningPass(
-        "greedy"
-    )
+    memory_planning_pass: Union[PassType, Dict[str, PassType]] = MemoryPlanningPass()
     to_out_var_pass: PassType = ToOutVarPass(ignore_to_out_var_failure=False)
     dynamic_memory_planning_mode: DynamicMemoryPlanningMode = (
         DynamicMemoryPlanningMode.UPPER_BOUND
@@ -62,15 +67,9 @@ class ExecutorchBackendConfig:
     # This makes it possible to free those blobs at runtime.
     extract_delegate_segments: bool = True
 
-    # Whether to extract constants from the Program into separate segments,
-    # rather than encoding those constants in the flatbuffer data.
-    # This reduces the memory overhead of creating the .pte file for models with
-    # large constant data.
-    extract_constant_segment: bool = True
-
     # When extracting segments, the starting offset of each segment will be
     # aligned to this value (in bytes). Must be a power of two.
-    segment_alignment: int = 4096
+    segment_alignment: int = 128
 
     # If provided, the minimum alignment of tensor buffers in the program. Must
     # be a power of 2. If not provided, uses the value in the schema file.
@@ -79,8 +78,27 @@ class ExecutorchBackendConfig:
     # If provided, the minimum alignment of delegate data in the program. Must
     # be a power of 2. If not provided, uses the value in the schema file.
     delegate_alignment: Optional[int] = None
-    sym_shape_eval_pass: PassType = HintBasedSymShapeEvalPass()
+
+    # A single sym shape eval pass can be defined for all the programs in the
+    # EdgeProgramManager or can be defined per program.
+    sym_shape_eval_pass: Union[PassType, Dict[str, PassType]] = (
+        ConstraintBasedSymShapeEvalPass()
+    )
 
     # If set to true, view_copy operations will be converted to lightweight
     # view operations in the ET runtime
+    # Moreover, static views will be elided from the ExecuTorch graph
     remove_view_copy: bool = True
+
+    # If set to true, all constant tensors will be stored in a separate file,
+    # external to the PTE file.
+    external_constants: bool = False
+
+    # If set to true, all trainable weights will be stored in a separate file,
+    # external to the PTE file.
+    external_mutable_weights: bool = False
+
+    # If set to true, all mutable buffers will have their fully qualified names
+    # serialized in the PTE file. Its value is ignored if mutable buffers are not
+    # memory planned as the names must be serialized in that case.
+    emit_mutable_buffer_names: bool = False

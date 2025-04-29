@@ -14,16 +14,12 @@
 #
 
 cmake_minimum_required(VERSION 3.19)
-project(runtime_core_exec_aten_testing_util_test)
-
-# Use C++17 for test.
-set(CMAKE_CXX_STANDARD 17)
 
 set(EXECUTORCH_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../../../..)
 
-include(${EXECUTORCH_ROOT}/build/Test.cmake)
+include(${EXECUTORCH_ROOT}/tools/cmake/Test.cmake)
 
-set(_test_srcs tensor_util_test.cpp tensor_factory_test.cpp ../tensor_util.cpp)
+set(_test_srcs tensor_util_test.cpp tensor_factory_test.cpp)
 
 et_cxx_test(
   runtime_core_exec_aten_testing_util_test SOURCES ${_test_srcs} EXTRA_LIBS

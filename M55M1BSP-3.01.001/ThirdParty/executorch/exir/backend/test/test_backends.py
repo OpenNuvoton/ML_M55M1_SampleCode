@@ -10,7 +10,11 @@ from typing import Dict, List
 
 import executorch.exir as exir
 import torch
+from executorch.exir import to_edge
 from executorch.exir.backend.backend_api import LoweredBackendModule, to_backend
+from executorch.exir.backend.canonical_partitioners.all_node_partitioner import (
+    AllNodePartitioner,
+)
 from executorch.exir.backend.compile_spec_schema import CompileSpec
 from executorch.exir.backend.partitioner import (
     DelegationSpec,
@@ -35,10 +39,7 @@ from executorch.exir.backend.test.qnn_backend_demo import QnnBackend
 from executorch.exir.delegate import executorch_call_delegate
 from executorch.exir.dialects._ops import ops as exir_ops
 from executorch.exir.graph_module import get_control_flow_submodules
-from executorch.exir.lowered_backend_module import (
-    _get_new_signature,
-    get_lowered_submodules,
-)
+from executorch.exir.lowered_backend_module import get_lowered_submodules
 from executorch.exir.print_program import print_program
 from executorch.exir.schema import (
     BackendDelegate,
@@ -63,7 +64,6 @@ from torch.ao.quantization.quantize_fx import (
     prepare_fx,
 )
 from torch.export import ExportedProgram
-from torch.export.exported_program import OutputKind, TensorArgument
 from torch.testing import FileCheck
 
 
@@ -194,7 +194,7 @@ class TestBackends(unittest.TestCase):
             program=program,
             delegate=program.execution_plan[0].delegates[0],
             expected_id=BackendWithCompilerDemo.__name__,
-            expected_processed=b"1#op:demo::aten.sin.default, numel:1, dtype:torch.float32<debug_handle>1#",
+            expected_processed=b"1version:0#op:demo::aten.sin.default, numel:1, dtype:torch.float32<debug_handle>2#",
         )
 
         # Check the delegate instruction
@@ -414,7 +414,7 @@ class TestBackends(unittest.TestCase):
             program=program,
             delegate=program.execution_plan[0].delegates[0],
             expected_id=BackendWithCompilerDemo.__name__,
-            expected_processed=b"1#op:demo::aten.sin.default, numel:1, dtype:torch.float32<debug_handle>1#",
+            expected_processed=b"1version:0#op:demo::aten.sin.default, numel:1, dtype:torch.float32<debug_handle>2#",
         )
 
         # Check the delegate instruction
@@ -1255,7 +1255,7 @@ class TestBackends(unittest.TestCase):
                 return y
 
         inputs = ({"a": torch.randn(2, 2), "b": torch.randn(2, 2)},)
-        edge_prog = exir.to_edge(torch.export.export(M(), inputs))
+        edge_prog = exir.to_edge(torch.export.export(M(), inputs, strict=True))
         lowered_gm = to_backend(
             BackendWithCompilerDemo.__name__, edge_prog.exported_program(), []
         )
@@ -1271,20 +1271,177 @@ class TestBackends(unittest.TestCase):
         gm = exir.capture(ComposedM(), inputs, exir.CaptureConfig()).to_edge()
         gm(*inputs)
 
-    def test_get_new_signature(self):
-        class MyModule(torch.nn.Module):
-            def forward(self, x, y, z):
-                return x + y, y - z, z * x
+    def test_to_backend_delegation_spec(self):
+        class SinModule(torch.nn.Module):
+            def __init__(self):
+                super().__init__()
 
-        ep = torch.export.export(
-            MyModule(), (torch.randn(3, 2), torch.randn(3, 2), torch.randn(3, 2))
+            def forward(self, x):
+                return [torch.sin(x)]
+
+        sin_module = SinModule()
+        model_inputs = (torch.ones(1),)
+        max_value = model_inputs[0].shape[0]
+
+        partitioner = AllNodePartitioner(
+            "BackendWithCompilerDemo", [CompileSpec("max_value", bytes([max_value]))]
         )
-        sig, *_ = _get_new_signature(ep, ep.graph_module)
-        output_names = set()
-        self.assertEqual(len(sig.output_specs), 3)
-        for s in sig.output_specs:
-            self.assertEqual(s.kind, OutputKind.USER_OUTPUT)
-            self.assertIsInstance(s.arg, TensorArgument)
-            name = s.arg.name
-            self.assertNotIn(name, output_names)
-            output_names.add(name)
+
+        edgeir_m = to_edge(torch.export.export(sin_module, model_inputs))
+        edgeir_m = edgeir_m.to_backend(partitioner)
+        exec_prog = edgeir_m.to_executorch()
+        graph_module = exec_prog.exported_program().graph_module
+        # Check that there is not an aten.sin node.
+        self.assertTrue(
+            exir_ops.edge.aten.sin
+            not in {node.target for node in graph_module.graph.nodes}
+        )
+
+        # Check that there exists a call_delegate, representing the call to the
+        # delegated function
+        FileCheck().check("torch.ops.higher_order.executorch_call_delegate").run(
+            graph_module.code
+        )
+        lowered_submodules = get_lowered_submodules(graph_module)
+        self.assertEqual(len(lowered_submodules), 1)
+
+        for node in graph_module.graph.nodes:
+            if node.op == "call_function" and node.target == executorch_call_delegate:
+                # Check that first arg is lowered_module_{unique_id}
+                self.assertEqual(node.args[0].target, "lowered_module_0")
+
+        program = exec_prog.executorch_program
+
+        # Check the program can be printed
+        print_program(program)
+
+        # Check the backend delegate
+        self.check_backend_delegate(
+            program=program,
+            delegate=program.execution_plan[0].delegates[0],
+            expected_id=BackendWithCompilerDemo.__name__,
+            expected_processed=b"1version:0#op:demo::aten.sin.default, numel:1, dtype:torch.float32<debug_handle>2#",
+        )
+
+        # Check the delegate instruction
+        self.assertTrue(
+            isinstance(
+                program.execution_plan[0].chains[0].instructions[0].instr_args,
+                DelegateCall,
+            )
+        )
+        buff = exec_prog.buffer
+
+        executorch_module = _load_for_executorch_from_buffer(buff)
+        model_inputs = torch.ones(1)
+        model_outputs = executorch_module.forward([model_inputs])
+        self.assertEqual(
+            model_inputs,
+            torch.ones(1),
+        )
+        expected_output = 0.8333 * torch.ones(1)
+
+        self.assertTrue(
+            torch.allclose(model_outputs[0], expected_output, atol=1e-03, rtol=1e-03)
+        )
+
+    def test_to_backend_multimethod_delegation_spec(self):
+        class SinModule(torch.nn.Module):
+            def __init__(self):
+                super().__init__()
+
+            def forward(self, x):
+                return torch.sin(x)
+
+            def inputs(self):
+                return (torch.ones(1),)
+
+        class AddMulModule(torch.nn.Module):
+            def __init__(self):
+                super().__init__()
+
+            def forward(self, a, x, b):
+                y = torch.mm(a, x)
+                z = torch.add(y, b)
+                return z
+
+            def inputs(self):
+                return (torch.ones(2, 2), 2 * torch.ones(2, 2), 3 * torch.ones(2, 2))
+
+        sin_module = SinModule()
+        max_value_sin = sin_module.inputs()[0].shape[0]
+        sin_partitioner = AllNodePartitioner(
+            "BackendWithCompilerDemo",
+            [CompileSpec("max_value", bytes([max_value_sin]))],
+        )
+
+        add_mul_module = AddMulModule()
+        max_value_add_mul = add_mul_module.inputs()[0].shape[0]
+        add_mul_partitioner = AllNodePartitioner(
+            "BackendWithCompilerDemo",
+            [CompileSpec("max_value", bytes([max_value_add_mul]))],
+        )
+
+        edgeir_m = to_edge(
+            {
+                "sin": torch.export.export(sin_module, sin_module.inputs()),
+                "add_mul": torch.export.export(add_mul_module, add_mul_module.inputs()),
+            }
+        )
+        edgeir_m = edgeir_m.to_backend(
+            {
+                "sin": sin_partitioner,
+                "add_mul": add_mul_partitioner,
+            }
+        )
+        exec_prog = edgeir_m.to_executorch()
+
+        for method_name in ["sin", "add_mul"]:
+            graph_module = exec_prog.exported_program(method_name).graph_module
+            # Check delegated nodes are gone
+            self.assertTrue(
+                exir_ops.edge.aten.sin
+                not in {node.target for node in graph_module.graph.nodes}
+            )
+            self.assertTrue(
+                exir_ops.edge.aten.add
+                not in {node.target for node in graph_module.graph.nodes}
+            )
+            self.assertTrue(
+                exir_ops.edge.aten.mm
+                not in {node.target for node in graph_module.graph.nodes}
+            )
+            # Check that there exists a call_delegate, representing the call to the
+            # delegated function
+            FileCheck().check("torch.ops.higher_order.executorch_call_delegate").run(
+                graph_module.code
+            )
+            lowered_submodules = get_lowered_submodules(graph_module)
+            self.assertEqual(len(lowered_submodules), 1)
+
+        program = exec_prog.executorch_program
+
+        # Check the program can be printed
+        print_program(program)
+
+        buff = exec_prog.buffer
+
+        executorch_module = _load_for_executorch_from_buffer(buff)
+
+        for method_name, module in {
+            "sin": sin_module,
+            "add_mul": add_mul_module,
+        }.items():
+            inputs_flattened, _ = tree_flatten(module.inputs())
+            model_outputs = executorch_module.run_method(
+                method_name, tuple(inputs_flattened)
+            )
+
+            if method_name == "sin":
+                # backend with compiler demo does a taylor approximation of sin
+                ref_output = 0.8333 * torch.ones(1)
+            else:
+                ref_output = module(*module.inputs())
+            self.assertTrue(
+                torch.allclose(model_outputs[0], ref_output, atol=1e-03, rtol=1e-03)
+            )

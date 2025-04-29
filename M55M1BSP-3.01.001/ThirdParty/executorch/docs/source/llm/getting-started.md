@@ -1,4 +1,4 @@
-# Getting Started with LLMs via ExecuTorch
+# Intro to LLMs in Executorch
 
 Welcome to LLM Manual! This manual is designed to provide a practical example to leverage
 ExecuTorch in onboarding your own Large Language Models (LLMs). Our primary goal is to offer
@@ -12,6 +12,8 @@ Consequently, the results produced by the model may vary and might not always be
 We encourage users to use this project as a starting point and adapt it to their specific needs,
 which includes creating your own versions of the tokenizer, sampler, acceleration backends, and
 other components. We hope this project serves as a useful guide in your journey with LLMs and ExecuTorch.
+
+For deploying Llama with optimal performance, please see [Llama guide](llama.md).
 
 ### Table Of Contents
 
@@ -41,17 +43,18 @@ Instructions on installing miniconda can be [found here](https://docs.anaconda.c
 mkdir et-nanogpt
 cd et-nanogpt
 
-# Clone the ExecuTorch repository and submodules.
+# Clone the ExecuTorch repository.
 mkdir third-party
-git clone -b release/0.2 https://github.com/pytorch/executorch.git third-party/executorch
-cd third-party/executorch
-git submodule update --init
+git clone -b viable/strict https://github.com/pytorch/executorch.git third-party/executorch && cd third-party/executorch
 
-# Create a conda environment and install requirements.
-conda create -yn executorch python=3.10.0
-conda activate executorch
-pip install cmake zstd
-./install_requirements.sh
+# Create either a Python virtual environment:
+python3 -m venv .venv && source .venv/bin/activate && pip install --upgrade pip
+
+# Or a Conda environment:
+conda create -yn executorch python=3.10.0 && conda activate executorch
+
+# Install requirements
+./install_executorch.sh
 
 cd ../..
 ```
@@ -75,22 +78,18 @@ pyenv install -s 3.10
 pyenv virtualenv 3.10 executorch
 pyenv activate executorch
 
-# Clone the ExecuTorch repository and submodules.
-mkdir third-party
-git clone -b release/0.2 https://github.com/pytorch/executorch.git third-party/executorch
-cd third-party/executorch
-git submodule update --init
+# Clone the ExecuTorch repository.
+git clone -b viable/strict https://github.com/pytorch/executorch.git third-party/executorch && cd third-party/executorch
 
 # Install requirements.
-pip install cmake zstd
-PYTHON_EXECUTABLE=python ./install_requirements.sh
+PYTHON_EXECUTABLE=python ./install_executorch.sh
 
 cd ../..
 ```
 :::
 ::::
 
-For more information, see [Setting Up ExecuTorch](../getting-started-setup.md).
+For more information, see [Setting Up ExecuTorch](../getting-started-setup.rst).
 
 
 ## Running a Large Language Model Locally
@@ -144,8 +143,7 @@ import torch
 
 from executorch.exir import EdgeCompileConfig, to_edge
 from torch.nn.attention import sdpa_kernel, SDPBackend
-from torch._export import capture_pre_autograd_graph
-from torch.export import export
+from torch.export import export, export_for_training
 
 from model import GPT
 
@@ -161,7 +159,7 @@ example_inputs = (torch.randint(0, 100, (1, model.config.block_size), dtype=torc
 # long as they adhere to the rules specified in the dynamic shape configuration.
 # Here we set the range of 0th model input's 1st dimension as
 # [0, model.config.block_size].
-# See https://pytorch.org/executorch/main/concepts.html#dynamic-shapes
+# See https://pytorch.org/executorch/main/concepts#dynamic-shapes
 # for details about creating dynamic shapes.
 dynamic_shape = (
     {1: torch.export.Dim("token_dim", max=model.config.block_size)},
@@ -170,7 +168,7 @@ dynamic_shape = (
 # Trace the model, converting it to a portable intermediate representation.
 # The torch.no_grad() call tells PyTorch to exclude training-specific logic.
 with torch.nn.attention.sdpa_kernel([SDPBackend.MATH]), torch.no_grad():
-    m = capture_pre_autograd_graph(model, example_inputs, dynamic_shapes=dynamic_shape)
+    m = export_for_training(model, example_inputs, dynamic_shapes=dynamic_shape).module()
     traced_model = export(m, example_inputs, dynamic_shapes=dynamic_shape)
 
 # Convert the model into a runnable ExecuTorch program.
@@ -185,7 +183,7 @@ with open("nanogpt.pte", "wb") as file:
 
 To export, run the script with `python export_nanogpt.py` (or python3, as appropriate for your environment). It will generate a `nanogpt.pte` file in the current directory.
 
-For more information, see [Exporting to ExecuTorch](../tutorials/export-to-executorch-tutorial) and
+For more information, see [Exporting to ExecuTorch](https://pytorch.org/executorch/main/tutorials/export-to-executorch-tutorial) and
 [torch.export](https://pytorch.org/docs/stable/export.html).
 
 ### Step 2. Invoking the Runtime
@@ -198,25 +196,22 @@ Create a file called main.cpp with the following contents:
 // main.cpp
 
 #include <cstdint>
-#include <functional>
-#include <memory>
-#include <unordered_map>
 
-#include "basic_tokenizer.h"
 #include "basic_sampler.h"
-#include "managed_tensor.h"
+#include "basic_tokenizer.h"
 
 #include <executorch/extension/module/module.h>
-#include <executorch/extension/evalue_util/print_evalue.h>
+#include <executorch/extension/tensor/tensor.h>
+#include <executorch/runtime/core/evalue.h>
 #include <executorch/runtime/core/exec_aten/exec_aten.h>
-#include <executorch/runtime/core/exec_aten/util/dim_order_util.h>
-#include <executorch/runtime/core/exec_aten/util/tensor_util.h>
+#include <executorch/runtime/core/result.h>
 
-using namespace torch::executor;
-
-using SizesType = exec_aten::SizesType;
-using DimOrderType = exec_aten::DimOrderType;
-using StridesType = exec_aten::StridesType;
+using executorch::aten::ScalarType;
+using executorch::aten::Tensor;
+using executorch::extension::from_blob;
+using executorch::extension::Module;
+using executorch::runtime::EValue;
+using executorch::runtime::Result;
 ```
 
 The model inputs and outputs take the form of tensors. A tensor can be thought of as an multi-dimensional array.
@@ -238,57 +233,56 @@ std::string generate(
     BasicSampler& sampler,
     size_t max_input_length,
     size_t max_output_length) {
+  // Convert the input text into a list of integers (tokens) that represents it,
+  // using the string-to-token mapping that the model was trained on. Each token
+  // is an integer that represents a word or part of a word.
+  std::vector<int64_t> input_tokens = tokenizer.encode(prompt);
+  std::vector<int64_t> output_tokens;
 
-    // Convert the input text into a list of integers (tokens) that represents
-    // it, using the string-to-token mapping that the model was trained on.
-    // Each token is an integer that represents a word or part of a word.
-    std::vector<int64_t> input_tokens = tokenizer.encode(prompt);
-    std::vector<int64_t> output_tokens;
+  for (auto i = 0u; i < max_output_length; i++) {
+    // Convert the input_tokens from a vector of int64_t to EValue. EValue is a
+    // unified data type in the ExecuTorch runtime.
+    auto inputs = from_blob(
+        input_tokens.data(),
+        {1, static_cast<int>(input_tokens.size())},
+        ScalarType::Long);
 
-    for (auto i = 0u; i < max_output_length; i++) {
-        // Convert the input_tokens from a vector of int64_t to EValue.
-        // EValue is a unified data type in the ExecuTorch runtime.
-        ManagedTensor tensor_tokens(
-            input_tokens.data(),
-            {1, static_cast<int>(input_tokens.size())},
-            ScalarType::Long);
-        std::vector<EValue> inputs = {tensor_tokens.get_tensor()};
+    // Run the model. It will return a tensor of logits (log-probabilities).
+    auto logits_evalue = llm_model.forward(inputs);
 
-        // Run the model. It will return a tensor of logits (log-probabilities).
-        Result<std::vector<EValue>> logits_evalue = llm_model.forward(inputs);
+    // Convert the output logits from EValue to std::vector, which is what the
+    // sampler expects.
+    Tensor logits_tensor = logits_evalue.get()[0].toTensor();
+    std::vector<float> logits(
+        logits_tensor.data_ptr<float>(),
+        logits_tensor.data_ptr<float>() + logits_tensor.numel());
 
-        // Convert the output logits from EValue to std::vector, which is what
-        // the sampler expects.
-        Tensor logits_tensor = logits_evalue.get()[0].toTensor();
-        std::vector<float> logits(logits_tensor.data_ptr<float>(),
-            logits_tensor.data_ptr<float>() + logits_tensor.numel());
+    // Sample the next token from the logits.
+    int64_t next_token = sampler.sample(logits);
 
-        // Sample the next token from the logits.
-        int64_t next_token = sampler.sample(logits);
-
-        // Break if we reached the end of the text.
-        if (next_token == ENDOFTEXT_TOKEN) {
-            break;
-        }
-
-        // Add the next token to the output.
-        output_tokens.push_back(next_token);
-
-        std::cout << tokenizer.decode({ next_token });
-        std::cout.flush();
-
-        // Update next input.
-        input_tokens.push_back(next_token);
-        if (input_tokens.size() > max_input_length) {
-            input_tokens.erase(input_tokens.begin());
-        }
+    // Break if we reached the end of the text.
+    if (next_token == ENDOFTEXT_TOKEN) {
+      break;
     }
 
-    std::cout << std::endl;
+    // Add the next token to the output.
+    output_tokens.push_back(next_token);
 
-    // Convert the output tokens into a human-readable string.
-    std::string output_string = tokenizer.decode(output_tokens);
-    return output_string;
+    std::cout << tokenizer.decode({next_token});
+    std::cout.flush();
+
+    // Update next input.
+    input_tokens.push_back(next_token);
+    if (input_tokens.size() > max_input_length) {
+      input_tokens.erase(input_tokens.begin());
+    }
+  }
+
+  std::cout << std::endl;
+
+  // Convert the output tokens into a human-readable string.
+  std::string output_string = tokenizer.decode(output_tokens);
+  return output_string;
 }
 ```
 
@@ -314,38 +308,38 @@ penalties for repeated tokens, and biases to prioritize or de-prioritize specifi
 // main.cpp
 
 int main() {
-    // Set up the prompt. This provides the seed text for the model to elaborate.
-    std::cout << "Enter model prompt: ";
-    std::string prompt;
-    std::getline(std::cin, prompt);
+  // Set up the prompt. This provides the seed text for the model to elaborate.
+  std::cout << "Enter model prompt: ";
+  std::string prompt;
+  std::getline(std::cin, prompt);
 
-    // The tokenizer is used to convert between tokens (used by the model) and
-    // human-readable strings.
-    BasicTokenizer tokenizer("vocab.json");
+  // The tokenizer is used to convert between tokens (used by the model) and
+  // human-readable strings.
+  BasicTokenizer tokenizer("vocab.json");
 
-    // The sampler is used to sample the next token from the logits.
-    BasicSampler sampler = BasicSampler();
+  // The sampler is used to sample the next token from the logits.
+  BasicSampler sampler = BasicSampler();
 
-    // Load the exported nanoGPT program, which was generated via the previous steps.
-    Module model("nanogpt.pte", torch::executor::Module::MlockConfig::UseMlockIgnoreErrors);
+  // Load the exported nanoGPT program, which was generated via the previous
+  // steps.
+  Module model("nanogpt.pte", Module::LoadMode::MmapUseMlockIgnoreErrors);
 
-    const auto max_input_tokens = 1024;
-    const auto max_output_tokens = 30;
-    std::cout << prompt;
-    generate(model, prompt, tokenizer, sampler, max_input_tokens, max_output_tokens);
+  const auto max_input_tokens = 1024;
+  const auto max_output_tokens = 30;
+  std::cout << prompt;
+  generate(
+      model, prompt, tokenizer, sampler, max_input_tokens, max_output_tokens);
 }
 ```
 
-Finally, download the following files into the same directory as main.h:
+Finally, download the following files into the same directory as main.cpp:
 
 ```
 curl -O https://raw.githubusercontent.com/pytorch/executorch/main/examples/llm_manual/basic_sampler.h
 curl -O https://raw.githubusercontent.com/pytorch/executorch/main/examples/llm_manual/basic_tokenizer.h
-curl -O https://raw.githubusercontent.com/pytorch/executorch/main/examples/llm_manual/managed_tensor.h
 ```
 
-To learn more, see [Running an ExecuTorch Model in C++](../running-a-model-cpp-tutorial.md)
-and the [ExecuTorch Runtime API Reference](../executorch-runtime-api-reference.md).
+To learn more, see the [Runtime APIs Tutorial](../extension-module.md).
 
 ### Building and Running
 
@@ -365,22 +359,27 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Set options for executorch build.
+option(EXECUTORCH_ENABLE_LOGGING "" ON)
 option(EXECUTORCH_BUILD_EXTENSION_DATA_LOADER "" ON)
 option(EXECUTORCH_BUILD_EXTENSION_MODULE "" ON)
+option(EXECUTORCH_BUILD_EXTENSION_TENSOR "" ON)
 option(EXECUTORCH_BUILD_KERNELS_OPTIMIZED "" ON)
 
 # Include the executorch subdirectory.
 add_subdirectory(
-    ${CMAKE_CURRENT_SOURCE_DIR}/third-party/executorch
-    ${CMAKE_BINARY_DIR}/third-party/executorch)
+  ${CMAKE_CURRENT_SOURCE_DIR}/third-party/executorch
+  ${CMAKE_BINARY_DIR}/executorch
+)
 
 add_executable(nanogpt_runner main.cpp)
 target_link_libraries(
-    nanogpt_runner
-    PRIVATE
-    executorch
-    extension_module_static # Provides the Module class
-    optimized_native_cpu_ops_lib) # Provides baseline cross-platform kernels
+  nanogpt_runner
+  PRIVATE executorch
+          extension_module_static # Provides the Module class
+          extension_tensor # Provides the TensorPtr class
+          optimized_native_cpu_ops_lib # Provides baseline cross-platform
+                                       # kernels
+)
 ```
 
 At this point, the working directory should contain the following files:
@@ -389,7 +388,6 @@ At this point, the working directory should contain the following files:
 - main.cpp
 - basic_tokenizer.h
 - basic_sampler.h
-- managed_tensor.h
 - export_nanogpt.py
 - model.py
 - vocab.json
@@ -397,7 +395,7 @@ At this point, the working directory should contain the following files:
 
 If all of these are present, you can now build and run:
 ```bash
-(rm -rf cmake-out && mkdir cmake-out && cd cmake-out && cmake ..)
+(mkdir cmake-out && cd cmake-out && cmake ..)
 cmake --build cmake-out -j10
 ./cmake-out/nanogpt_runner
 ```
@@ -434,18 +432,18 @@ to the backend(s) targeted at export. To support multiple devices, such as
 XNNPACK acceleration for Android and Core ML for iOS, export a separate PTE file
 for each backend.
 
-To delegate to a backend at export time, ExecuTorch provides the `to_backend()`
-function in the `EdgeProgramManager` object, which takes a backend-specific
-partitioner object. The partitioner is responsible for finding parts of the
-computation graph that can be accelerated by the target backend，and
-`to_backend()` function will delegate matched part to given backend for
-acceleration and optimization. Any portions of the computation graph not
-delegated will be executed by the ExecuTorch operator implementations.
+To delegate a model to a specific backend during export, ExecuTorch uses the
+`to_edge_transform_and_lower()` function. This function takes the exported program
+from `torch.export` and a backend-specific partitioner object. The partitioner
+identifies parts of the computation graph that can be optimized by the target
+backend. Within `to_edge_transform_and_lower()`, the exported program is
+converted to an edge dialect program. The partitioner then delegates compatible
+graph sections to the backend for acceleration and optimization. Any graph parts
+not delegated are executed by ExecuTorch's default operator implementations.
 
 To delegate the exported model to a specific backend, we need to import its
 partitioner as well as edge compile config from ExecuTorch codebase first, then
-call `to_backend` with an instance of partitioner on the `EdgeProgramManager`
-object `to_edge` function created.
+call `to_edge_transform_and_lower`.
 
 Here's an example of how to delegate nanoGPT to XNNPACK (if you're deploying to an Android phone for instance):
 
@@ -457,12 +455,12 @@ from executorch.backends.xnnpack.partition.xnnpack_partitioner import XnnpackPar
 
 # Model to be delegated to specific backend should use specific edge compile config
 from executorch.backends.xnnpack.utils.configs import get_xnnpack_edge_compile_config
-from executorch.exir import EdgeCompileConfig, to_edge
+from executorch.exir import EdgeCompileConfig, to_edge_transform_and_lower
 
 import torch
 from torch.export import export
 from torch.nn.attention import sdpa_kernel, SDPBackend
-from torch._export import capture_pre_autograd_graph
+from torch.export import export_for_training
 
 from model import GPT
 
@@ -489,23 +487,20 @@ dynamic_shape = (
 # Trace the model, converting it to a portable intermediate representation.
 # The torch.no_grad() call tells PyTorch to exclude training-specific logic.
 with torch.nn.attention.sdpa_kernel([SDPBackend.MATH]), torch.no_grad():
-    m = capture_pre_autograd_graph(model, example_inputs, dynamic_shapes=dynamic_shape)
+    m = export_for_training(model, example_inputs, dynamic_shapes=dynamic_shape).module()
     traced_model = export(m, example_inputs, dynamic_shapes=dynamic_shape)
 
 # Convert the model into a runnable ExecuTorch program.
 # To be further lowered to Xnnpack backend, `traced_model` needs xnnpack-specific edge compile config
 edge_config = get_xnnpack_edge_compile_config()
-edge_manager = to_edge(traced_model, compile_config=edge_config)
-
-# Delegate exported model to Xnnpack backend by invoking `to_backend` function with Xnnpack partitioner.
-edge_manager = edge_manager.to_backend(XnnpackPartitioner())
+# Converted to edge program and then delegate exported model to Xnnpack backend
+# by invoking `to` function with Xnnpack partitioner.
+edge_manager = to_edge_transform_and_lower(traced_model, partitioner = [XnnpackPartitioner()], compile_config = edge_config)
 et_program = edge_manager.to_executorch()
 
 # Save the Xnnpack-delegated ExecuTorch program to a file.
 with open("nanogpt.pte", "wb") as file:
     file.write(et_program.buffer)
-
-
 ```
 
 Additionally, update CMakeLists.txt to build and link the XNNPACK backend to
@@ -519,26 +514,29 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Set options for executorch build.
+option(EXECUTORCH_ENABLE_LOGGING "" ON)
 option(EXECUTORCH_BUILD_EXTENSION_DATA_LOADER "" ON)
 option(EXECUTORCH_BUILD_EXTENSION_MODULE "" ON)
+option(EXECUTORCH_BUILD_EXTENSION_TENSOR "" ON)
 option(EXECUTORCH_BUILD_KERNELS_OPTIMIZED "" ON)
 option(EXECUTORCH_BUILD_XNNPACK "" ON) # Build with Xnnpack backend
 
 # Include the executorch subdirectory.
 add_subdirectory(
-    ${CMAKE_CURRENT_SOURCE_DIR}/third-party/executorch
-    ${CMAKE_BINARY_DIR}/executorch)
-
-# include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
+  ${CMAKE_CURRENT_SOURCE_DIR}/third-party/executorch
+  ${CMAKE_BINARY_DIR}/executorch
+)
 
 add_executable(nanogpt_runner main.cpp)
 target_link_libraries(
-    nanogpt_runner
-    PRIVATE
-    executorch
-    extension_module_static # Provides the Module class
-    optimized_native_cpu_ops_lib # Provides baseline cross-platform kernels
-    xnnpack_backend) # Provides the XNNPACK CPU acceleration backend
+  nanogpt_runner
+  PRIVATE executorch
+          extension_module_static # Provides the Module class
+          extension_tensor # Provides the TensorPtr class
+          optimized_native_cpu_ops_lib # Provides baseline cross-platform
+                                       # kernels
+          xnnpack_backend # Provides the XNNPACK CPU acceleration backend
+)
 ```
 
 Keep the rest of the code the same. For more details refer to [Exporting
@@ -551,7 +549,6 @@ At this point, the working directory should contain the following files:
 - main.cpp
 - basic_tokenizer.h
 - basic_sampler.h
-- managed_tensor.h
 - export_nanogpt.py
 - model.py
 - vocab.json
@@ -589,9 +586,9 @@ I'm not sure if you've heard of the "Curse of the Dragon" or not, but it's a ver
 
 The delegated model should be noticeably faster compared to the non-delegated model.
 
-For more information regarding backend delegateion, see the ExecuTorch guides
-for the [XNNPACK Backend](../tutorial-xnnpack-delegate-lowering.md) and [Core ML
-Backend](../build-run-coreml.md).
+For more information regarding backend delegation, see the ExecuTorch guides
+for the [XNNPACK Backend](../backends-xnnpack.md),  [Core ML
+Backend](../backends-coreml.md) and [Qualcomm AI Engine Direct Backend](../backends-qualcomm.md).
 
 ## Quantization
 
@@ -618,7 +615,7 @@ quantized operators where available.
 from executorch.backends.transforms.duplicate_dynamic_quant_chain import (
     DuplicateDynamicQuantChainPass,
 )
-from torch.ao.quantization.quantizer.xnnpack_quantizer import (
+from executorch.backends.xnnpack.quantizer.xnnpack_quantizer import (
     get_symmetric_quantization_config,
     XNNPACKQuantizer,
 )
@@ -633,7 +630,7 @@ xnnpack_quant_config = get_symmetric_quantization_config(
 xnnpack_quantizer = XNNPACKQuantizer()
 xnnpack_quantizer.set_global(xnnpack_quant_config)
 
-m = capture_pre_autograd_graph(model, example_inputs)
+m = export_for_training(model, example_inputs).module()
 
 # Annotate the model for quantization. This prepares the model for calibration.
 m = prepare_pt2e(m, xnnpack_quantizer)
@@ -649,8 +646,8 @@ DuplicateDynamicQuantChainPass()(m)
 traced_model = export(m, example_inputs)
 ```
 
-Additionally, add or update the `to_backend()` call to use `XnnpackPartitioner`. This instructs ExecuTorch to
-optimize the model for CPU execution via the XNNPACK backend.
+Additionally, add or update the `to_edge_transform_and_lower()` call to use `XnnpackPartitioner`. This
+instructs ExecuTorch to optimize the model for CPU execution via the XNNPACK backend.
 
 ```python
 from executorch.backends.xnnpack.partition.xnnpack_partitioner import (
@@ -659,41 +656,38 @@ from executorch.backends.xnnpack.partition.xnnpack_partitioner import (
 ```
 
 ```python
-edge_manager = to_edge(traced_model, compile_config=edge_config)
-edge_manager = edge_manager.to_backend(XnnpackPartitioner()) # Lower to XNNPACK.
+edge_config = get_xnnpack_edge_compile_config()
+# Convert to edge dialect and lower to XNNPack.
+edge_manager = to_edge_transform_and_lower(traced_model, partitioner = [XnnpackPartitioner()], compile_config = edge_config)
 et_program = edge_manager.to_executorch()
+
+with open("nanogpt.pte", "wb") as file:
+    file.write(et_program.buffer)
 ```
 
-Finally, ensure that the runner links against the `xnnpack_backend` target in CMakeLists.txt.
-
-```
-add_executable(nanogpt_runner main.cpp)
-target_link_libraries(
-    nanogpt_runner
-    PRIVATE
-    executorch
-    extension_module_static # Provides the Module class
-    optimized_native_cpu_ops_lib # Provides baseline cross-platform kernels
-    xnnpack_backend) # Provides the XNNPACK CPU acceleration backend
+Then run:
+```bash
+python export_nanogpt.py
+./cmake-out/nanogpt_runner
 ```
 
 For more information, see [Quantization in ExecuTorch](../quantization-overview.md).
 
 ## Profiling and Debugging
-After lowering a model by calling `to_backend()`, you may want to see what got delegated and what didn’t. ExecuTorch
+After lowering a model by calling `to_edge_transform_and_lower()`, you may want to see what got delegated and what didn’t. ExecuTorch
 provides utility methods to give insight on the delegation. You can use this information to gain visibility into
 the underlying computation and diagnose potential performance issues. Model authors can use this information to
 structure the model in a way that is compatible with the target backend.
 
 ### Visualizing the Delegation
 
-The `get_delegation_info()` method provides a summary of what happened to the model after the `to_backend()` call:
+The `get_delegation_info()` method provides a summary of what happened to the model after the `to_edge_transform_and_lower()` call:
 
 ```python
-from executorch.exir.backend.utils import get_delegation_info
+from executorch.devtools.backend_debug import get_delegation_info
 from tabulate import tabulate
 
-# ... After call to to_backend(), but before to_executorch()
+# ... After call to to_edge_transform_and_lower(), but before to_executorch()
 graph_module = edge_manager.exported_program().graph_module
 delegation_info = get_delegation_info(graph_module)
 print(delegation_info.get_summary())
@@ -701,11 +695,11 @@ df = delegation_info.get_operator_delegation_dataframe()
 print(tabulate(df, headers="keys", tablefmt="fancy_grid"))
 ```
 
-For nanoGPT targeting the XNNPACK backend, you might see the following:
+For nanoGPT targeting the XNNPACK backend, you might see the following (note that the numbers below are for illustration purposes only and actual values may vary):
 ```
-Total  delegated  subgraphs:  86
-Number  of  delegated  nodes:  473
-Number  of  non-delegated  nodes:  430
+Total  delegated  subgraphs:  145
+Number  of  delegated  nodes:  350
+Number  of  non-delegated  nodes:  760
 ```
 
 
@@ -714,13 +708,13 @@ Number  of  non-delegated  nodes:  430
 |  0  |  aten__softmax_default  |  12  |  0  |
 |  1  |  aten_add_tensor  |  37  |  0  |
 |  2  |  aten_addmm_default  |  48  |  0  |
-|  3  |  aten_arange_start_step  |  0  |  25  |
+|  3  |  aten_any_dim  |  0  |  12  |
 |      |  ...  |    |    |
-|  23  |  aten_view_copy_default  |  170  |  48  |
+|  25  |  aten_view_copy_default  |  96  |  122  |
 |      |  ...  |    |    |
-|  26  |  Total  |  473  |  430  |
+|  30  |  Total  |  350  |  760  |
 
-From the table, the operator `aten_view_copy_default` appears 170 times in delegate graphs and 48 times in non-delegated graphs.
+From the table, the operator `aten_view_copy_default` appears 96 times in delegate graphs and 122 times in non-delegated graphs.
 To see a more detailed view, use the `format_delegated_graph()` method to get a formatted str of printout of the whole graph or use `print_delegated_graph()` to print directly:
 
 ```python
@@ -731,38 +725,42 @@ print(format_delegated_graph(graph_module))
 This may generate a large amount of output for large models. Consider using "Control+F" or "Command+F" to locate the operator you’re interested in
 (e.g. “aten_view_copy_default”). Observe which instances are not under lowered graphs.
 
-In the fragment of the output for nanoGPT below, observe that embedding and add operators are delegated to XNNPACK while the sub operator is not.
+In the fragment of the output for nanoGPT below, observe that a transformer module has been delegated to XNNPACK while the where operator is not.
 
 ```
-%aten_unsqueeze_copy_default_22 : [num_users=1] = call_function[target=executorch.exir.dialects.edge._ops.aten.unsqueeze_copy.default](args = (%aten_arange_start_step_23, -2), kwargs = {})
-  %aten_unsqueeze_copy_default_23 : [num_users=1] = call_function[target=executorch.exir.dialects.edge._ops.aten.unsqueeze_copy.default](args = (%aten_arange_start_step_24, -1), kwargs = {})
-  %lowered_module_0 : [num_users=1] = get_attr[target=lowered_module_0]
-    backend_id: XnnpackBackend
-    lowered graph():
-      %aten_embedding_default : [num_users=1] = placeholder[target=aten_embedding_default]
-      %aten_embedding_default_1 : [num_users=1] = placeholder[target=aten_embedding_default_1]
-      %aten_add_tensor : [num_users=1] = call_function[target=executorch.exir.dialects.edge._ops.aten.add.Tensor](args = (%aten_embedding_default, %aten_embedding_default_1), kwargs = {})
-      return (aten_add_tensor,)
-  %executorch_call_delegate : [num_users=1] = call_function[target=torch.ops.higher_order.executorch_call_delegate](args = (%lowered_module_0, %aten_embedding_default, %aten_embedding_default_1), kwargs = {})
-  %aten_sub_tensor : [num_users=1] = call_function[target=executorch.exir.dialects.edge._ops.aten.sub.Tensor](args = (%aten_unsqueeze_copy_default, %aten_unsqueeze_copy_default_1), kwargs = {})
+%aten_where_self_22 : [num_users=1] = call_function[target=executorch.exir.dialects.edge._ops.aten.where.self](args = (%aten_logical_not_default_33, %scalar_tensor_23, %scalar_tensor_22), kwargs = {})
+%lowered_module_144 : [num_users=1] = get_attr[target=lowered_module_144]
+backend_id: XnnpackBackend
+lowered graph():
+    %p_transformer_h_0_attn_c_attn_weight : [num_users=1] = placeholder[target=p_transformer_h_0_attn_c_attn_weight]
+    %p_transformer_h_0_attn_c_attn_bias : [num_users=1] = placeholder[target=p_transformer_h_0_attn_c_attn_bias]
+    %getitem : [num_users=1] = placeholder[target=getitem]
+    %sym_size : [num_users=2] = placeholder[target=sym_size]
+    %aten_view_copy_default : [num_users=1] = call_function[target=executorch.exir.dialects.edge._ops.aten.view_copy.default](args = (%getitem, [%sym_size, 768]), kwargs = {})
+    %aten_permute_copy_default : [num_users=1] = call_function[target=executorch.exir.dialects.edge._ops.aten.permute_copy.default](args = (%p_transformer_h_0_attn_c_attn_weight, [1, 0]), kwargs = {})
+    %aten_addmm_default : [num_users=1] = call_function[target=executorch.exir.dialects.edge._ops.aten.addmm.default](args = (%p_transformer_h_0_attn_c_attn_bias, %aten_view_copy_default, %aten_permute_copy_default), kwargs = {})
+    %aten_view_copy_default_1 : [num_users=1] = call_function[target=executorch.exir.dialects.edge._ops.aten.view_copy.default](args = (%aten_addmm_default, [1, %sym_size, 2304]), kwargs = {})
+    return [aten_view_copy_default_1]
 ```
 
 ### Performance Analysis
 
-Through the ExecuTorch SDK, users are able to profile model execution, giving timing information for each operator in the model.
+Through the ExecuTorch Developer Tools, users are able to profile model execution, giving timing information for each operator in the model.
 
 #### Prerequisites
 
 ##### ETRecord generation (Optional)
 
-An ETRecord is an artifact generated at the time of export that contains model graphs and source-level metadata linking the ExecuTorch program to the original PyTorch model. You can view all profiling events without an ETRecord, though with an ETRecord, you will also be able to link each event to the types of operators being executed, module hierarchy, and stack traces of the original PyTorch source code. For more information, see [the ETRecord docs](../sdk-etrecord.md).
+An ETRecord is an artifact generated at the time of export that contains model graphs and source-level metadata linking the ExecuTorch program to the original PyTorch model. You can view all profiling events without an ETRecord, though with an ETRecord, you will also be able to link each event to the types of operators being executed, module hierarchy, and stack traces of the original PyTorch source code. For more information, see [the ETRecord docs](../etrecord.rst).
 
 
-In your export script, after calling `to_edge()` and `to_executorch()`, call `generate_etrecord()` with the `EdgeProgramManager` from `to_edge()` and the `ExecuTorchProgramManager` from `to_executorch()`. Make sure to copy the `EdgeProgramManager`, as the call to `to_backend()` mutates the graph in-place.
+In your export script, after calling `to_edge()` and `to_executorch()`, call `generate_etrecord()` with the `EdgeProgramManager` from `to_edge()` and the `ExecuTorchProgramManager` from `to_executorch()`. Make sure to copy the `EdgeProgramManager`, as the call to `to_edge_transform_and_lower()` mutates the graph in-place.
 
 ```
+# export_nanogpt.py
+
 import copy
-from executorch.sdk import generate_etrecord
+from executorch.devtools import generate_etrecord
 
 # Make the deep copy immediately after to to_edge()
 edge_manager_copy = copy.deepcopy(edge_manager)
@@ -777,26 +775,28 @@ Run the export script and the ETRecord will be generated as `etrecord.bin`.
 
 ##### ETDump generation
 
-An ETDump is an artifact generated at runtime containing a trace of the model execution. For more information, see [the ETDump docs](../sdk-etdump.md).
+An ETDump is an artifact generated at runtime containing a trace of the model execution. For more information, see [the ETDump docs](../etdump.md).
 
-Include the ETDump header in your code.
+Include the ETDump header and namespace in your code.
 ```cpp
 // main.cpp
 
-#include <executorch/sdk/etdump/etdump_flatcc.h>
+#include <executorch/devtools/etdump/etdump_flatcc.h>
+
+using executorch::etdump::ETDumpGen;
+using torch::executor::etdump_result;
 ```
 
 Create an Instance of the ETDumpGen class and pass it to the Module constructor.
 ```cpp
-std::unique_ptr<torch::executor::ETDumpGen> etdump_gen_ = std::make_unique<torch::executor::ETDumpGen>();
-Module model("nanogpt.pte", torch::executor::Module::MlockConfig::UseMlockIgnoreErrors, std::move(etdump_gen_));
+std::unique_ptr<ETDumpGen> etdump_gen_ = std::make_unique<ETDumpGen>();
+Module model("nanogpt.pte", Module::LoadMode::MmapUseMlockIgnoreErrors, std::move(etdump_gen_));
 ```
 
 After calling `generate()`, save the ETDump to a file. You can capture multiple
 model runs in a single trace, if desired.
 ```cpp
-torch::executor::ETDumpGen* etdump_gen =
-    static_cast<torch::executor::ETDumpGen*>(model.event_tracer());
+ETDumpGen* etdump_gen = static_cast<ETDumpGen*>(model.event_tracer());
 
 ET_LOG(Info, "ETDump size: %zu blocks", etdump_gen->get_num_blocks());
 etdump_result result = etdump_gen->get_etdump_data();
@@ -809,33 +809,34 @@ if (result.buf != nullptr && result.size > 0) {
 }
 ```
 
-Additionally, update CMakeLists.txt to build with SDK and enable events to be traced and logged into ETDump:
+Additionally, update CMakeLists.txt to build with Developer Tools and enable events to be traced and logged into ETDump:
 
 ```
-option(EXECUTORCH_BUILD_SDK "" ON)
+option(EXECUTORCH_ENABLE_EVENT_TRACER "" ON)
+option(EXECUTORCH_BUILD_DEVTOOLS "" ON)
 
 # ...
 
 target_link_libraries(
-    nanogpt_runner
-    PRIVATE
-    executorch
-    extension_module_static # Provides the Module class
-    optimized_native_cpu_ops_lib # Provides baseline cross-platform kernels
-    xnnpack_backend # Provides the XNNPACK CPU acceleration backend
+    # ... omit existing ones
     etdump) # Provides event tracing and logging
 
 target_compile_options(executorch PUBLIC -DET_EVENT_TRACER_ENABLED)
 target_compile_options(portable_ops_lib PUBLIC -DET_EVENT_TRACER_ENABLED)
 ```
-Run the runner, you will see “etdump.etdp” generated.
+Build and run the runner, you will see a file named “etdump.etdp” is generated. (Note that this time we build in release mode to get around a flatccrt build limitation.)
+```bash
+(rm -rf cmake-out && mkdir cmake-out && cd cmake-out && cmake -DCMAKE_BUILD_TYPE=Release ..)
+cmake --build cmake-out -j10
+./cmake-out/nanogpt_runner
+```
 
 #### Analyze with Inspector APIs
 
 Once you’ve collected debug artifacts ETDump (and optionally an ETRecord), you can use the Inspector API to view performance information.
 
 ```python
-from executorch.sdk import Inspector
+from executorch.devtools import Inspector
 
 inspector = Inspector(etdump_path="etdump.etdp")
 # If you also generated an ETRecord, then pass that in as well: `inspector = Inspector(etdump_path="etdump.etdp", etrecord="etrecord.bin")`
@@ -847,105 +848,19 @@ This prints the performance data in a tabular format in “inspector_out.txt”,
 ![](../_static/img/llm_manual_print_data_tabular.png)
 <a href="../_static/img/llm_manual_print_data_tabular.png" target="_blank">View in full size</a>
 
-To learn more about the Inspector and the rich functionality it provides, see the [Inspector API Reference](../sdk-inspector.md).
+To learn more about the Inspector and the rich functionality it provides, see the [Inspector API Reference](../model-inspector.rst).
 
 ## Custom Kernels
 With the ExecuTorch custom operator APIs, custom operator and kernel authors can easily bring in their kernel into PyTorch/ExecuTorch.
 
 There are three steps to use custom kernels in ExecuTorch:
 
-1.  Write the custom kernel using ExecuTorch types.
-2.  Compile and link the custom kernel to both AOT Python environment as well as the runtime binary.
-3.  Source-to-source transformation to swap an operator with a custom op.
-
-### Writing a Custom Kernel
-
-Define your custom operator schema for both functional variant (used in AOT compilation) and out variant (used in ExecuTorch runtime). The schema needs to follow PyTorch ATen convention (see [native_functions.yaml](https://github.com/pytorch/pytorch/blob/main/aten/src/ATen/native/native_functions.yaml)).
-
-```
-custom_linear(Tensor weight, Tensor input, Tensor(?) bias) -> Tensor
-
-custom_linear.out(Tensor weight, Tensor input, Tensor(?) bias, *, Tensor(a!) out) -> Tensor(a!)
-```
-
-Write your custom kernel according to the schema defined above. Use the `EXECUTORCH_LIBRARY` macro to make the kernel available to the ExecuTorch runtime.
-
-```cpp
-// custom_linear.h / custom_linear.cpp
-#include <executorch/runtime/kernel/kernel_includes.h>
-
-Tensor& custom_linear_out(const Tensor& weight, const Tensor& input, optional<Tensor> bias, Tensor& out) {
-    // calculation
-    return out;
-}
-
-// Register as myop::custom_linear.out
-EXECUTORCH_LIBRARY(myop, "custom_linear.out", custom_linear_out);
-```
-
-To make this operator available in PyTorch, you can define a wrapper around the ExecuTorch custom kernel. Note that the ExecuTorch
-implementation uses ExecuTorch tensor types, while the PyTorch wrapper uses ATen tensors.
-
-```cpp
-// custom_linear_pytorch.cpp
-
-#include "custom_linear.h"
-#include <torch/library.h>
-
-at::Tensor custom_linear(const at::Tensor& weight, const at::Tensor& input, std::optional<at::Tensor> bias) {
-
-    // initialize out
-    at::Tensor out = at::empty({weight.size(1), input.size(1)});
-
-    // wrap kernel in custom_linear.cpp into ATen kernel
-    WRAP_TO_ATEN(custom_linear_out, 3)(weight, input, bias, out);
-
-    return out;
-}
-
-// Register the operator with PyTorch.
-TORCH_LIBRARY(myop,  m) {
-    m.def("custom_linear(Tensor weight, Tensor input, Tensor(?) bias) -> Tensor", custom_linear);
-    m.def("custom_linear.out(Tensor weight, Tensor input, Tensor(?) bias, *, Tensor(a!) out) -> Tensor(a!)", WRAP_TO_ATEN(custom_linear_out, 3));
-}
-```
-
-### Compile and Link the Custom Kernel
-
-To make it available to the ExecuTorch runtime, compile custom_linear.h/cpp into the binary target. You can also build the kernel as a dynamically loaded library (.so or .dylib) and link it as well.
-
-To make it available to PyTorch, package custom_linear.h, custom_linear.cpp and custom_linear_pytorch.cpp into a dynamically loaded library (.so or .dylib) and load it into the python environment.
-This is needed to make PyTorch aware of the custom operator at the time of export.
-
-```python
-import torch
-torch.ops.load_library("libcustom_linear.so")
-```
-
-Once loaded, you can use the custom operator in PyTorch code.
+1.  [Write the custom kernel](../kernel-library-custom-aten-kernel.md#c-api-for-custom-ops) using ExecuTorch types.
+2.  [Compile and link the custom kernel](../kernel-library-custom-aten-kernel.md#compile-and-link-the-custom-kernel) to both AOT Python environment as well as the runtime binary.
+3.  [Source-to-source transformation](../kernel-library-custom-aten-kernel.md#using-a-custom-operator-in-a-model) to swap an operator with a custom op.
 
 For more information, see [PyTorch Custom Operators](https://pytorch.org/tutorials/advanced/torch_script_custom_ops.html) and
 and [ExecuTorch Kernel Registration](../kernel-library-custom-aten-kernel.md).
-
-### Using a Custom Operator in a Model
-
-The custom operator can explicitly used in the PyTorch model, or you can write a transformation to replace instances of a core operator with the custom variant. For this example, you could find
-all instances of `torch.nn.Linear` and replace them with `CustomLinear`.
-
-```python
-def  replace_linear_with_custom_linear(module):
-    for name, child in module.named_children():
-        if isinstance(child, nn.Linear):
-            setattr(
-                module,
-                name,
-                CustomLinear(child.in_features,  child.out_features, child.bias),
-        )
-        else:
-            replace_linear_with_custom_linear(child)
-```
-
-The remaining steps are the same as the normal flow. Now you can run this module in eager mode as well as export to ExecuTorch.
 
 ## How to Build Mobile Apps
 See the instructions for building and running LLMs using ExecuTorch on iOS and Android.

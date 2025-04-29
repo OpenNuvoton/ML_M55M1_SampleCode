@@ -15,9 +15,9 @@ namespace torch {
 namespace executor {
 namespace native {
 
-using Tensor = exec_aten::Tensor;
-using Scalar = exec_aten::Scalar;
-using ScalarType = exec_aten::ScalarType;
+using Tensor = executorch::aten::Tensor;
+using Scalar = executorch::aten::Scalar;
+using ScalarType = executorch::aten::ScalarType;
 
 namespace {
 
@@ -163,7 +163,7 @@ Tensor& quantized_add_out(
 }
 
 Tensor& quantized_add_out(
-    RuntimeContext& context,
+    KernelRuntimeContext& context,
     const Tensor& a,
     double a_scale,
     int64_t a_zero_point,

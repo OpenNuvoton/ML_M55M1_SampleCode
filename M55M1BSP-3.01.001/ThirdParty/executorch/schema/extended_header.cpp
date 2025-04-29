@@ -14,10 +14,8 @@
 #include <executorch/runtime/core/error.h>
 #include <executorch/runtime/core/result.h>
 
-#pragma clang diagnostic ignored "-Wdeprecated"
-
-namespace torch {
-namespace executor {
+namespace executorch {
+namespace runtime {
 
 namespace {
 
@@ -96,5 +94,5 @@ uint64_t GetUInt64LE(const uint8_t* data) {
 // Define storage for the static.
 constexpr char ExtendedHeader::kMagic[kMagicSize];
 
-} // namespace executor
-} // namespace torch
+} // namespace runtime
+} // namespace executorch

@@ -16,10 +16,22 @@
 #include <string>
 #include <iostream>
 
-namespace torch {
-namespace executor {
+namespace executorch {
+namespace backends {
 
-class MPSBackend final : public PyTorchBackendInterface {
+using executorch::aten::Tensor;
+using executorch::runtime::ArrayRef;
+using executorch::runtime::Backend;
+using executorch::runtime::BackendExecutionContext;
+using executorch::runtime::BackendInitContext;
+using executorch::runtime::CompileSpec;
+using executorch::runtime::DelegateHandle;
+using executorch::runtime::EValue;
+using executorch::runtime::Error;
+using executorch::runtime::FreeableBuffer;
+using executorch::runtime::Result;
+
+class MPSBackend final : public ::executorch::runtime::BackendInterface {
  public:
   ~MPSBackend() = default;
 
@@ -31,8 +43,11 @@ class MPSBackend final : public PyTorchBackendInterface {
       BackendInitContext& context,
       FreeableBuffer* processed,
       ArrayRef<CompileSpec> compile_specs) const override {
-    auto executor = ET_ALLOCATE_INSTANCE_OR_RETURN_ERROR(
-        context.get_runtime_allocator(), mps::delegate::MPSExecutor);
+    auto executor = context.get_runtime_allocator()->allocateInstance<mps::delegate::MPSExecutor>();
+    if (executor == nullptr) {
+      return Error::MemoryAllocationFailed;
+    }
+
     // NOTE: Since we use placement new and since this type is not trivially
     // destructible, we must call the destructor manually in destroy().
     new (executor) mps::delegate::MPSExecutor;
@@ -55,7 +70,7 @@ class MPSBackend final : public PyTorchBackendInterface {
 
   // Function that actually executes the model in the backend.
   Error execute(
-    __ET_UNUSED BackendExecutionContext& context,
+    ET_UNUSED BackendExecutionContext& context,
     DelegateHandle* handle,
     EValue** args) const override {
     auto executor = static_cast<mps::delegate::MPSExecutor*>(handle);
@@ -81,7 +96,7 @@ class MPSBackend final : public PyTorchBackendInterface {
           output_pointers.push_back(&args[i]->toTensor());
         }
       } else if (args[i]->isTensorList()) {
-        const exec_aten::ArrayRef<exec_aten::Tensor>& tensorList = args[i]->toTensorList();
+        const executorch::aten::ArrayRef<executorch::aten::Tensor>& tensorList = args[i]->toTensorList();
         for (auto& tensor_ : tensorList) {
           if (input_pointers.size() < executor->getNumInputs()) {
             input_pointers.push_back(&tensor_);
@@ -122,5 +137,5 @@ Backend backend{"MPSBackend", &cls};
 static auto success_with_compiler = register_backend(backend);
 } // namespace
 
-} // namespace executor
-} // namespace torch
+} // namespace backends
+} // namespace executorch

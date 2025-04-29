@@ -1,6 +1,6 @@
 # Copyright (c) Meta Platforms, Inc. and affiliates.
 # All rights reserved.
-# Copyright 2023-2024 Arm Limited and/or its affiliates.
+# Copyright 2023-2025 Arm Limited and/or its affiliates.
 #
 # This source code is licensed under the BSD-style license found in the
 # LICENSE file in the root directory of this source tree.
@@ -9,7 +9,7 @@ import binascii
 import os
 from argparse import ArgumentParser, ArgumentTypeError
 
-# Also see: https://git.mlplatform.org/ml/ethos-u/ml-embedded-evaluation-kit.git/tree/scripts/py/gen_model_cpp.py
+# Also see: https://git.gitlab.arm.com/artificial-intelligence/ethos-u/ml-embedded-evaluation-kit/-/blob/main/scripts/py/gen_model_cpp.py?ref_type=heads
 
 bytes_per_line = 32
 hex_digits_per_line = bytes_per_line * 2
@@ -64,15 +64,15 @@ if __name__ == "__main__":
     with open(args.pte, "rb") as fr, open(outfile, "w") as fw:
         data = fr.read()
         hexstream = binascii.hexlify(data).decode("utf-8")
-        hexstring = attr + "model_pte[] = {"
+        fw.write(attr + "model_pte[] = {")
 
         for i in range(0, len(hexstream), 2):
             if 0 == (i % hex_digits_per_line):
-                hexstring += "\n"
-            hexstring += "0x" + hexstream[i : i + 2] + ", "
+                fw.write("\n")
+            fw.write("0x" + hexstream[i : i + 2] + ", ")
 
-        hexstring += "};\n"
-        fw.write(hexstring)
+        fw.write("};\n")
+
         print(
-            f"Input: {args.pte} with {len(data)} bytes. Output: {outfile} with {len(hexstring)} bytes. Section: {args.section}."
+            f"Input: {args.pte} with {len(data)} bytes. Output: {outfile} with {fw.tell()} bytes. Section: {args.section}."
         )

@@ -15,9 +15,8 @@
 #include <gtest/gtest.h>
 
 using namespace ::testing;
-
-namespace torch {
-namespace executor {
+using executorch::runtime::etensor::nullopt;
+using executorch::runtime::etensor::optional;
 
 // Test that optional::value_type matches the template parameter type.
 static_assert(
@@ -37,11 +36,11 @@ TEST(TestOptional, NulloptHasNoValue) {
   EXPECT_FALSE(o.has_value());
 }
 
-TEST(TestOptional, ValueOfEmptyOptionalShouldDie) {
+TEST(TestOptional, ValueOfEmptyOptionalShouldThrow) {
   optional<int32_t> o;
   EXPECT_FALSE(o.has_value());
 
-  ET_EXPECT_DEATH({ (void)o.value(); }, "");
+  EXPECT_THROW({ (void)o.value(); }, std::bad_optional_access);
 }
 
 TEST(TestOptional, IntValue) {
@@ -141,6 +140,3 @@ TEST(TestOptional, ImplicitReturnOfNullopt) {
   auto o = function_returning_nullopt();
   EXPECT_FALSE(o.has_value());
 }
-
-} // namespace executor
-} // namespace torch

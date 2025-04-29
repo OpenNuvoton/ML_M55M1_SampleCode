@@ -3,7 +3,7 @@
 # Please refer to the license found in the LICENSE file in the root directory of the source tree.
 
 import logging
-from typing import List, Optional
+from typing import Callable, List, Optional, Tuple
 
 import coremltools as ct
 
@@ -17,7 +17,7 @@ from executorch.exir.backend.partitioner import (
     Partitioner,
     PartitionResult,
 )
-from executorch.exir.backend.utils import tag_constant_data
+from executorch.exir.backend.utils import tag_constant_data, tag_mutated_buffer
 from torch.export.exported_program import ExportedProgram
 from torch.fx.passes.infra.partitioner import CapabilityBasedPartitioner
 from torch.fx.passes.operator_support import OperatorSupportBase
@@ -61,6 +61,7 @@ class CoreMLPartitioner(Partitioner):
         self,
         skip_ops_for_coreml_delegation: Optional[List[str]] = None,
         compile_specs: Optional[List[CompileSpec]] = None,
+        take_over_mutable_buffer: Optional[bool] = True,
     ) -> None:
         if skip_ops_for_coreml_delegation is None:
             skip_ops_for_coreml_delegation = []
@@ -69,6 +70,7 @@ class CoreMLPartitioner(Partitioner):
             backend_id=CoreMLBackend.__name__,
             compile_specs=compile_specs if compile_specs is not None else [],
         )
+        self.take_over_mutable_buffer = take_over_mutable_buffer
 
     def partition(self, exported_program: ExportedProgram) -> PartitionResult:
         # Run the CapabilityBasedPartitioner to return the largest possible
@@ -89,7 +91,36 @@ class CoreMLPartitioner(Partitioner):
                 partition_tags[tag] = self.delegation_spec
 
         tag_constant_data(exported_program)
+        if self.take_over_mutable_buffer:
+            logger.info(
+                "Core ML partitioner will take over torch mutable buffer as Core ML state, "
+                "so if your model contains mutable buffer, "
+                "then you will need MacOS15+/iOS18+ to execute. "
+                "If you want your mutable buffer model to be compatible with older OS, "
+                "then please set `take_over_mutable_buffer=False`"
+            )
+            tag_mutated_buffer(exported_program)
 
         return PartitionResult(
             tagged_exported_program=exported_program, partition_tags=partition_tags
         )
+
+    def ops_to_not_decompose(
+        self, ep: ExportedProgram
+    ) -> Tuple[List[torch._ops.OpOverload], Optional[Callable[[torch.fx.Node], bool]]]:
+        do_not_decompose = []
+        op_support = OperatorsSupportedForCoreMLBackend()
+        for node in ep.graph.nodes:
+            if node.op == "call_function" and isinstance(
+                node.target, torch._ops.OpOverload
+            ):
+                try:
+                    if op_support.is_node_supported(None, node):
+                        do_not_decompose.append(node.target)
+                except Exception as e:
+                    # CoreML's op_support.is_node_supported will sometimes throw
+                    # for unsupported ops, rather than returning False
+                    logger.warning(
+                        f"Encountered exception when checking node support: {e}"
+                    )
+        return do_not_decompose, None

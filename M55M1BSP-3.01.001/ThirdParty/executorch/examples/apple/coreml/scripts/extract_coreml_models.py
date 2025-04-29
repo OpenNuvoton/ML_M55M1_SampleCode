@@ -10,12 +10,9 @@ from pathlib import Path
 
 from typing import List, Optional
 
-import executorchcoreml
-
+from executorch.backends.apple.coreml import executorchcoreml
 from executorch.backends.apple.coreml.compiler import CoreMLBackend
-
 from executorch.exir._serialize._program import deserialize_pte_binary
-
 from executorch.exir.schema import (
     BackendDelegate,
     BackendDelegateDataReference,
@@ -57,7 +54,7 @@ def extract_coreml_models(pte_data: bytes):
         model_index += 1
 
     if len(coreml_delegates) == 0:
-        print("The model isn't delegated to CoreML.")
+        print("The model isn't delegated to Core ML.")
 
 
 if __name__ == "__main__":

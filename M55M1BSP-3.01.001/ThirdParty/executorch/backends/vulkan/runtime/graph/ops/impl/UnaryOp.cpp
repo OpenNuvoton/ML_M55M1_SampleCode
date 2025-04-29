@@ -42,22 +42,23 @@ void add_unary_op_node(
   add_dtype_suffix(kernel_name, graph.dtype_of(out));
   add_storage_type_suffix(kernel_name, graph.storage_type_of(out));
 
-  api::ParamsBindList ubos({});
+  vkapi::ParamsBindList ubos({});
   if (graph.is_buffer_storage(out)) {
-    ubos.append({graph.ntexels_ubo(out)});
+    ubos.append({graph.numel_ubo(out)});
   } else {
-    ubos.append({graph.texture_limits_ubo(out)});
+    ubos.append({graph.logical_limits_ubo(out)});
   }
   ubos.append(
       {graph.create_params_buffer(min), graph.create_params_buffer(max)});
 
-  graph.execute_nodes().emplace_back(new ExecuteNode(
+  graph.execute_nodes().emplace_back(new DispatchNode(
       graph,
       VK_KERNEL_FROM_STR(kernel_name),
       graph.create_global_wg_size(out),
       graph.create_local_wg_size(out),
       // Inputs and Outputs
-      {{out, api::MemoryAccessType::WRITE}, {in, api::MemoryAccessType::READ}},
+      {{out, vkapi::MemoryAccessType::WRITE},
+       {in, vkapi::MemoryAccessType::READ}},
       // Shader params buffers
       ubos,
       // Specialization Constants
@@ -113,6 +114,17 @@ float get_val_or_inf(ComputeGraph& graph, const ValueRef& val, bool max) {
         "hardshrink");                                                   \
   }
 
+#define DEFINE_LEAKY_RELU_FN(op_name)                                    \
+  void op_name(ComputeGraph& graph, const std::vector<ValueRef>& args) { \
+    return add_unary_op_node(                                            \
+        graph,                                                           \
+        args[0],                                                         \
+        get_val_or_inf(graph, args[1], /*neg slope*/ false),             \
+        kDummyFloat,                                                     \
+        args[2],                                                         \
+        "leaky_relu");                                                   \
+  }
+
 void gelu(ComputeGraph& graph, const std::vector<ValueRef>& args) {
   // args[1] is the `approximate` string
   // https://fburl.com/code/9omngmyo
@@ -128,11 +140,16 @@ DEFINE_ACTIVATION_FN(neg);
 DEFINE_ACTIVATION_FN(sigmoid);
 DEFINE_ACTIVATION_FN(sin);
 DEFINE_ACTIVATION_FN(sqrt);
+DEFINE_ACTIVATION_FN(rsqrt);
 DEFINE_ACTIVATION_FN(tanh);
 DEFINE_CLAMP_FN(clamp);
 DEFINE_CLAMP_FN(hardtanh);
 DEFINE_RELU_FN(relu);
 DEFINE_HARDSHRINK_FN(hardshrink);
+DEFINE_ACTIVATION_FN(hardswish);
+DEFINE_ACTIVATION_FN(hardsigmoid);
+DEFINE_LEAKY_RELU_FN(leaky_relu);
+DEFINE_ACTIVATION_FN(round);
 
 REGISTER_OPERATORS {
   VK_REGISTER_OP(aten.abs.default, abs);
@@ -146,8 +163,13 @@ REGISTER_OPERATORS {
   VK_REGISTER_OP(aten.sigmoid.default, sigmoid);
   VK_REGISTER_OP(aten.sin.default, sin);
   VK_REGISTER_OP(aten.sqrt.default, sqrt);
+  VK_REGISTER_OP(aten.rsqrt.default, rsqrt);
   VK_REGISTER_OP(aten.tanh.default, tanh);
   VK_REGISTER_OP(aten.hardshrink.default, hardshrink);
+  VK_REGISTER_OP(aten.hardswish.default, hardswish);
+  VK_REGISTER_OP(aten.hardsigmoid.default, hardsigmoid);
+  VK_REGISTER_OP(aten.leaky_relu.default, leaky_relu);
+  VK_REGISTER_OP(aten.round.default, round);
 }
 
 } // namespace vkcompute
