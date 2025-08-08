@@ -1,7 +1,7 @@
 # ML_M55M1_SampleCode
 M55M1 machine learning application project
 ## Requirement
-1. M55M1BSP V3.01.001
+1. M55M1BSP V3.01.002
 2. Keil uVision5
 ## Install
 - Manual  
@@ -14,7 +14,7 @@ python install.py
 ```
 - Folder structure
 ```
-M55M1BSP-3.01.001
+M55M1BSP-3.01.002
 |--- Document
 |--- Library
 |--- SampleCode
