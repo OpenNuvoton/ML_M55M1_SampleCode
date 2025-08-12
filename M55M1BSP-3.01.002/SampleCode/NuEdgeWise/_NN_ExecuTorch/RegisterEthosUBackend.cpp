@@ -16,6 +16,9 @@
 
 #include <ethosu_driver.h>
 
+//Added by chchen59 /08/12/2025
+#define __SCRATCH_USE_MEM_ALLOCATOR__
+
 #if defined(ET_EVENT_TRACER_ENABLED)
 #include <executorch/runtime/core/event_tracer.h>
 #include <executorch/runtime/core/event_tracer_hooks.h>
@@ -79,10 +82,20 @@ typedef struct {
   FreeableBuffer* processed;
 } ExecutionHandle;
 
+typedef struct {
+	int max_scratch_size;
+	void *scratch_buf;
+} ExecutionScratch;
+
 extern "C" {
 void __attribute__((weak)) EthosUBackend_execute_begin() {}
 void __attribute__((weak)) EthosUBackend_execute_end() {}
 }
+
+ExecutionScratch s_sScratchInfo = {
+	.max_scratch_size = 0,
+	.scratch_buf = nullptr,
+};
 
 class EthosUBackendExecuteCallbacks {
  public:
@@ -128,6 +141,18 @@ class EthosUBackend final : public ::executorch::runtime::BackendInterface {
 
     handle->processed = processed;
 
+#if defined(__SCRATCH_USE_MEM_ALLOCATOR__)
+    VelaHandles vela_handles;
+    if (vela_bin_read(data, &vela_handles, size) ==
+        false) {
+      ET_LOG(Error, "EthosUBackend::vela_read: error, invalid binary layout");
+      return Error::InvalidProgram;
+    }
+		
+		if(vela_handles.scratch_data_size > s_sScratchInfo.max_scratch_size)
+			s_sScratchInfo.max_scratch_size = vela_handles.scratch_data_size;
+#endif
+		
     // Return the same buffer we were passed - this data will be
     // executed directly
     return handle;
@@ -158,6 +183,14 @@ class EthosUBackend final : public ::executorch::runtime::BackendInterface {
 
     ExecutionHandle* execution_handle = (ExecutionHandle*)input_handle;
     VelaHandles handles;
+
+#if defined(__SCRATCH_USE_MEM_ALLOCATOR__)
+		MemoryAllocator* allocator = context.get_temp_allocator();
+		if( s_sScratchInfo.scratch_buf == nullptr)
+		{
+			s_sScratchInfo.scratch_buf = allocator->allocate(s_sScratchInfo.max_scratch_size, 16);
+		}		
+#endif
 
     // Command stream - we know at this point it's aligned
     EXECUTORCH_PROF_START(
@@ -191,6 +224,21 @@ class EthosUBackend final : public ::executorch::runtime::BackendInterface {
         handles.scratch_data,
         handles.scratch_data_size);
 
+#if defined(__SCRATCH_USE_MEM_ALLOCATOR__)
+		if(s_sScratchInfo.scratch_buf)
+		{
+		  handles.scratch_data = (char *)s_sScratchInfo.scratch_buf;
+		}
+		else
+		{
+			ET_LOG(
+					Info,
+					"Max scratch size required %d. To speed up inference time. please enlarge temp_allocation_pool"
+			    , s_sScratchInfo.max_scratch_size);
+		}
+		
+#endif
+		
     // Write argument values (from EValue tensor) into Ethos-U scratch
     // TODO(MLETORCH-123): Optimise into direct write from Vela into the SRAM
     //                     or DRAM output for compatible data layouts.

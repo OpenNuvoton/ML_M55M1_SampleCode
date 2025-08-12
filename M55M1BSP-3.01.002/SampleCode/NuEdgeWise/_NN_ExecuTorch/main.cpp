@@ -29,7 +29,7 @@
 #include "ff.h"
 #include "Profiler.hpp"
 
-#define MODEL_AT_HYPERRAM_ADDR (0x82200000)
+#define MODEL_AT_HYPERRAM_ADDR (0x82300000)
 #define __PROFILE__
 
 /**
@@ -45,11 +45,12 @@ using namespace std;
 using torch::executor::Error;
 using torch::executor::Result;
 
+// To speed up inference time. Using temp_allocation_pool for EthosU's scratch buffer
 __attribute__((section(".bss.sram.data"), aligned(32)))
-uint8_t method_allocation_pool[1400 * 1024U];
+uint8_t temp_allocation_pool[1500 * 1024U];
 
 __attribute__((section(".bss.sram.data"), aligned(32)))
-uint8_t temp_allocation_pool[1 * 1024U];
+uint8_t method_allocation_pool[1400 * 1024U];
 
 
 /**
@@ -361,21 +362,12 @@ int main() {
         (unsigned int)method_meta.error());
   }
 
-#if 1
   ArmMemoryAllocator method_allocator(
       sizeof(method_allocation_pool), method_allocation_pool);
 
   std::vector<uint8_t*> planned_buffers; // Owns the memory
   std::vector<torch::executor::Span<uint8_t>> planned_spans; // Passed to the allocator
-#else
-  torch::executor::MemoryAllocator method_allocator{
-      torch::executor::MemoryAllocator(
-          sizeof(method_allocator_pool), method_allocator_pool)};
 
-  std::vector<std::unique_ptr<uint8_t[]>> planned_buffers; // Owns the memory
-  std::vector<torch::executor::Span<uint8_t>>
-      planned_spans; // Passed to the allocator
-#endif
   size_t num_memory_planned_buffers = method_meta->num_memory_planned_buffers();
 
   size_t planned_buffer_membase = method_allocator.used_size();
@@ -385,7 +377,6 @@ int main() {
         static_cast<size_t>(method_meta->memory_planned_buffer_size(id).get());
     ET_LOG(Info, "Setting up planned buffer %zu, size %zu.", id, buffer_size);
 
-#if 1
 	  /* Move to it's own allocator when MemoryPlanner is in place. */
     uint8_t* buffer =
         reinterpret_cast<uint8_t*>(method_allocator.allocate(buffer_size));
@@ -396,10 +387,6 @@ int main() {
     planned_buffers.push_back(buffer);
     planned_spans.push_back({planned_buffers.back(), buffer_size});
 	  
-#else	  
-    planned_buffers.push_back(std::make_unique<uint8_t[]>(buffer_size));
-    planned_spans.push_back({planned_buffers.back().get(), buffer_size});
-#endif
   }
 
   size_t planned_buffer_memsize =
@@ -413,7 +400,7 @@ int main() {
 
   torch::executor::MemoryManager memory_manager(
       &method_allocator, &planned_memory, &temp_allocator);
-
+			
   size_t method_loaded_membase = method_allocator.used_size();
 
   executorch::runtime::EventTracer* event_tracer_ptr = nullptr;
