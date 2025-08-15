@@ -18,6 +18,7 @@
 
 //Added by chchen59 /08/12/2025
 #define __SCRATCH_USE_MEM_ALLOCATOR__
+#include "NuMicro.h"
 
 #if defined(ET_EVENT_TRACER_ENABLED)
 #include <executorch/runtime/core/event_tracer.h>
@@ -188,7 +189,7 @@ class EthosUBackend final : public ::executorch::runtime::BackendInterface {
 		MemoryAllocator* allocator = context.get_temp_allocator();
 		if( s_sScratchInfo.scratch_buf == nullptr)
 		{
-			s_sScratchInfo.scratch_buf = allocator->allocate(s_sScratchInfo.max_scratch_size, 16);
+			s_sScratchInfo.scratch_buf = allocator->allocate(DCACHE_ALIGN_LINE_SIZE(s_sScratchInfo.max_scratch_size), DCACHE_LINE_SIZE);
 		}		
 #endif
 
