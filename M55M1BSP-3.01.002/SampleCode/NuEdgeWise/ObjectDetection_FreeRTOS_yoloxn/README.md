@@ -1,11 +1,11 @@
-# ObjectDetection_YOLOv8n
-A demonstration sample for [yolox-nano-ti-tflite](M55M1BSP-3.00.001/SampleCode/NuEdgeWise/ObjectDetection_FreeRTOS_yoloxn/README.md) model
+# ObjectDetection_YOLOX
+A demonstration sample for yolox-nano-ti-tflite model
 ## Requirement
 1. Keil uVision5
 ## Howto
 1. Build by Keil
 2. Run
-## Performance
+## Performances
 System clock: 220MHz
 | Model |Input Dimension | ROM (KB) | RAM (KB) | Inference Rate (inf/sec) |  
 |:------|:---------------|:--------|:--------|:-------------------------|
