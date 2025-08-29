@@ -116,9 +116,6 @@ project:
         - file: ../../../../ThirdParty/edgeimpulse/edge-impulse-sdk/dsp/image/processing.cpp
         - file: ../../../../ThirdParty/edgeimpulse/edge-impulse-sdk/dsp/kissfft/kiss_fft.cpp
         - file: ../../../../ThirdParty/edgeimpulse/edge-impulse-sdk/dsp/kissfft/kiss_fftr.cpp
-    - group: tflite-model
-      files:
-        - file: ../edgeimpulse_model/tflite-model/tflite_learn_3.cpp
     - group: edge-impulse-ethosu
       files:
         - file: ../../../../ThirdParty/edgeimpulse/edge-impulse-sdk/porting/ethos-core-driver/src/ethosu_device_u55_u65.c
