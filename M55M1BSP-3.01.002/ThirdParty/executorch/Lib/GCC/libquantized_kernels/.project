@@ -26,9 +26,54 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>RegisterCodegenUnboxedKernelsEverything.cpp</name>
+			<name>embeddingxb.cpp</name>
 			<type>1</type>
-			<locationURI>$%7BPARENT-3-PROJECT_LOC%7D/_prebuilt/kernels/quantized/RegisterCodegenUnboxedKernelsEverything.cpp</locationURI>
+			<locationURI>$%7BPARENT-3-PROJECT_LOC%7D/kernels/quantized/cpu/embeddingxb.cpp</locationURI>
+		</link>
+		<link>
+			<name>op_add.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-3-PROJECT_LOC%7D/kernels/quantized/cpu/op_add.cpp</locationURI>
+		</link>
+		<link>
+			<name>op_choose_qparams.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-3-PROJECT_LOC%7D/kernels/quantized/cpu/op_choose_qparams.cpp</locationURI>
+		</link>
+		<link>
+			<name>op_dequantize.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-3-PROJECT_LOC%7D/kernels/quantized/cpu/op_dequantize.cpp</locationURI>
+		</link>
+		<link>
+			<name>op_embedding.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-3-PROJECT_LOC%7D/kernels/quantized/cpu/op_embedding.cpp</locationURI>
+		</link>
+		<link>
+			<name>op_embedding2b.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-3-PROJECT_LOC%7D/kernels/quantized/cpu/op_embedding2b.cpp</locationURI>
+		</link>
+		<link>
+			<name>op_embedding4b.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-3-PROJECT_LOC%7D/kernels/quantized/cpu/op_embedding4b.cpp</locationURI>
+		</link>
+		<link>
+			<name>op_mixed_linear.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-3-PROJECT_LOC%7D/kernels/quantized/cpu/op_mixed_linear.cpp</locationURI>
+		</link>
+		<link>
+			<name>op_mixed_mm.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-3-PROJECT_LOC%7D/kernels/quantized/cpu/op_mixed_mm.cpp</locationURI>
+		</link>
+		<link>
+			<name>op_quantize.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-3-PROJECT_LOC%7D/kernels/quantized/cpu/op_quantize.cpp</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
