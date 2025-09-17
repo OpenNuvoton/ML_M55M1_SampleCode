@@ -18,7 +18,7 @@
 #include "framebuffer.h"
 
 #include "edge-impulse-sdk/classifier/ei_run_classifier.h"    /* EI SDK */
-#include "edgeimpulse_model/tflite-model/export_tensor_arena.h"
+#include "export_tensor_arena.h"
 
 //#define LOG_LEVEL_TRACE       0
 //#define LOG_LEVEL_DEBUG       1
@@ -168,13 +168,31 @@ static int get_signal_data(size_t offset, size_t length, float *out_ptr)
 }
 #else
 // Setup Input Buf
-static float ei_buf_array[EI_CLASSIFIER_INPUT_WIDTH * EI_CLASSIFIER_INPUT_HEIGHT];
+static uint8_t ei_buf_array[EI_CLASSIFIER_INPUT_WIDTH * EI_CLASSIFIER_INPUT_HEIGHT * 3];
 
 static int raw_feature_get_data(size_t offset, size_t out_len, float *signal_ptr)
 {
-    for (size_t i = 0; i < out_len; i++)
+    size_t pixel_ix = offset * 3;
+    size_t bytes_left = out_len;
+    size_t out_ptr_ix = 0;
+
+    // read byte for byte
+    while (bytes_left != 0)
     {
-        signal_ptr[i] = (ei_buf_array + offset)[i];
+        // grab the values and convert to r/g/b
+        uint8_t r, g, b;
+        r = ei_buf_array[pixel_ix];
+        g = ei_buf_array[pixel_ix + 1];
+        b = ei_buf_array[pixel_ix + 2];
+
+        // then convert to out_ptr format
+        float pixel_f = (r << 16) + (g << 8) + b;
+        signal_ptr[out_ptr_ix] = pixel_f;
+
+        // and go to the next pixel
+        out_ptr_ix++;
+        pixel_ix += 3;
+        bytes_left--;
     }
 
     return EIDSP_OK;
@@ -356,6 +374,34 @@ int main()
 
     while (1)
     {
+
+#if defined (__USE_UVC__)
+        //resize framebuffer image to model input
+        image_t resizeImg;
+
+        roi.x = 0;
+        roi.y = 0;
+        roi.w = frameBuffer.w;
+        roi.h = frameBuffer.h;
+
+        resizeImg.w = inputImgCols;
+        resizeImg.h = inputImgRows;
+        resizeImg.data = (uint8_t *)ei_buf_array; //direct resize to input tensor buffer
+        resizeImg.pixfmt = PIXFORMAT_RGB888;
+
+#if defined(__PROFILE__)
+        u64StartCycle = pmu_get_systick_Count();
+#endif
+        imlib_nvt_scale(&frameBuffer, &resizeImg, &roi);
+#if defined(__PROFILE__)
+        u64EndCycle = pmu_get_systick_Count();
+        info("resize cycles %llu \n", (u64EndCycle - u64StartCycle));
+#endif
+
+        signal.total_length = inputImgCols * inputImgRows;
+        signal.get_data = &raw_feature_get_data;
+
+
 #if defined (__USE_UVC__)
 
         if (UVC_IsConnect())
@@ -400,32 +446,6 @@ int main()
         }
 
 #endif
-
-#if defined (__USE_UVC__)
-        //resize framebuffer image to model input
-        image_t resizeImg;
-
-        roi.x = 0;
-        roi.y = 0;
-        roi.w = frameBuffer.w;
-        roi.h = frameBuffer.h;
-
-        resizeImg.w = inputImgCols;
-        resizeImg.h = inputImgRows;
-        resizeImg.data = (uint8_t *)ei_buf_array; //direct resize to input tensor buffer
-        resizeImg.pixfmt = PIXFORMAT_RGB888;
-
-#if defined(__PROFILE__)
-        u64StartCycle = pmu_get_systick_Count();
-#endif
-        imlib_nvt_scale(&frameBuffer, &resizeImg, &roi);
-#if defined(__PROFILE__)
-        u64EndCycle = pmu_get_systick_Count();
-        info("resize cycles %llu \n", (u64EndCycle - u64StartCycle));
-#endif
-
-        signal.total_length = inputImgCols * inputImgRows;
-        signal.get_data = &raw_feature_get_data;
 
         //Capture new image
 #if defined(__PROFILE__)
