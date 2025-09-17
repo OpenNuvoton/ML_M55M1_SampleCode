@@ -43,9 +43,9 @@
 
 #define IMAGE_DISP_UPSCALE_FACTOR 1
 #if defined(LT7381_LCD_PANEL)
-#define FONT_DISP_UPSCALE_FACTOR 2
+    #define FONT_DISP_UPSCALE_FACTOR 2
 #else
-#define FONT_DISP_UPSCALE_FACTOR 1
+    #define FONT_DISP_UPSCALE_FACTOR 1
 #endif
 
 using ImageClassifier = arm::app::Classifier;
@@ -69,16 +69,16 @@ extern size_t GetModelLen();
 /* Image processing initiate function */
 //Used by omv library
 #if defined(__USE_UVC__)
-//UVC only support QVGA, QQVGA
-#define GLCD_WIDTH	320
-#define GLCD_HEIGHT	240
+    //UVC only support QVGA, QQVGA
+    #define GLCD_WIDTH  320
+    #define GLCD_HEIGHT 240
 #else
-#define GLCD_WIDTH 320
-#define GLCD_HEIGHT 240
+    #define GLCD_WIDTH 320
+    #define GLCD_HEIGHT 240
 #endif
 
 //RGB565
-#define IMAGE_FB_SIZE	(GLCD_WIDTH * GLCD_HEIGHT * 2)
+#define IMAGE_FB_SIZE   (GLCD_WIDTH * GLCD_HEIGHT * 2)
 
 #undef OMV_FB_SIZE
 #define OMV_FB_SIZE (IMAGE_FB_SIZE + 1024)
@@ -290,8 +290,8 @@ int main()
 
         sDispRect.u32TopLeftX = 0;
         sDispRect.u32TopLeftY = 0;
-		sDispRect.u32BottonRightX = ((frameBuffer.w * IMAGE_DISP_UPSCALE_FACTOR) - 1);
-		sDispRect.u32BottonRightY = ((frameBuffer.h * IMAGE_DISP_UPSCALE_FACTOR) - 1);
+        sDispRect.u32BottonRightX = ((frameBuffer.w * IMAGE_DISP_UPSCALE_FACTOR) - 1);
+        sDispRect.u32BottonRightY = ((frameBuffer.h * IMAGE_DISP_UPSCALE_FACTOR) - 1);
 
 #if defined(__PROFILE__)
         u64StartCycle = pmu_get_systick_Count();
@@ -306,8 +306,31 @@ int main()
 
 #endif
 
+        //resize framebuffer image to model input
+        image_t resizeImg;
+
+        roi.x = 0;
+        roi.y = 0;
+        roi.w = frameBuffer.w;
+        roi.h = frameBuffer.h;
+
+        resizeImg.w = inputImgCols;
+        resizeImg.h = inputImgRows;
+        resizeImg.data = (uint8_t *)inputTensor->data.data; //direct resize to input tensor buffer
+        resizeImg.pixfmt = PIXFORMAT_RGB888;
+
+#if defined(__PROFILE__)
+        u64StartCycle = pmu_get_systick_Count();
+#endif
+        imlib_nvt_scale(&frameBuffer, &resizeImg, &roi);
+#if defined(__PROFILE__)
+        u64EndCycle = pmu_get_systick_Count();
+        info("resize cycles %llu \n", (u64EndCycle - u64StartCycle));
+#endif
+
 #if defined (__USE_UVC__)
-        if(UVC_IsConnect())
+
+        if (UVC_IsConnect())
         {
 #if (UVC_Color_Format == UVC_Format_YUY2)
             image_t RGB565Img;
@@ -345,33 +368,11 @@ int main()
 
             imlib_nvt_vflip(&origImg, &vflipImg);
 #endif
-            UVC_SendImage((uint32_t)frameBuffer.data, IMAGE_FB_SIZE, uvcStatus.StillImage);				
+            UVC_SendImage((uint32_t)frameBuffer.data, IMAGE_FB_SIZE, uvcStatus.StillImage);
         }
 
 #endif
 
-
-        //resize framebuffer image to model input
-        image_t resizeImg;
-
-        roi.x = 0;
-        roi.y = 0;
-        roi.w = frameBuffer.w;
-        roi.h = frameBuffer.h;
-
-        resizeImg.w = inputImgCols;
-        resizeImg.h = inputImgRows;
-        resizeImg.data = (uint8_t *)inputTensor->data.data; //direct resize to input tensor buffer
-        resizeImg.pixfmt = PIXFORMAT_RGB888;
-
-#if defined(__PROFILE__)
-        u64StartCycle = pmu_get_systick_Count();
-#endif
-        imlib_nvt_scale(&frameBuffer, &resizeImg, &roi);
-#if defined(__PROFILE__)
-        u64EndCycle = pmu_get_systick_Count();
-        info("resize cycles %llu \n", (u64EndCycle - u64StartCycle));
-#endif
 
 #if defined (__USE_CCAP__)
         //Capture new image
@@ -467,7 +468,7 @@ int main()
             C_BLUE,
             C_WHITE,
             false,
-			FONT_DISP_UPSCALE_FACTOR
+            FONT_DISP_UPSCALE_FACTOR
         );
 #endif
 
@@ -494,11 +495,11 @@ int main()
                 szDisplayText,
                 strlen(szDisplayText),
                 0,
-                (frameBuffer.h * IMAGE_DISP_UPSCALE_FACTOR)+ FONT_HTIGHT * FONT_DISP_UPSCALE_FACTOR,
+                (frameBuffer.h * IMAGE_DISP_UPSCALE_FACTOR) + FONT_HTIGHT * FONT_DISP_UPSCALE_FACTOR,
                 C_BLUE,
                 C_WHITE,
                 false,
-				FONT_DISP_UPSCALE_FACTOR
+                FONT_DISP_UPSCALE_FACTOR
             );
 #endif
 
