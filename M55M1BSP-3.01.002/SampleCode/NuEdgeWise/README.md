@@ -23,3 +23,6 @@ Collect sample codes related to machine learning on M55M1.
 |ImageSegmentation|Image segmentation|TFLM|Deeplab_v3|Image object segmentation||
 |FaceLandmark_PoseCheck|Face pose check |TFLM|Yolo fastest, FaceLandmark and DNN|Detect face landmarks and use them for classification||
 |ObjectTracker_YOLOv8n|Object tracking|TFLM|YOLOv8n|Object tracking sample||
+|ModelInference_EdgeImpulse|General Case|EdgeImpulse (TFLM)|Easy dnn|Model inference sample||
+|KeywordSpotting_EdgeImpulse|KWS|EdgeImpulse (TFLM + EON)|Mobilenet|Key word spotting with DMIC||
+|ImgClassInference_EdgeImpulse|Image classification|EdgeImpulse (TFLM + EON)|Mobilenet|Image classification with CCAP and UVC||
