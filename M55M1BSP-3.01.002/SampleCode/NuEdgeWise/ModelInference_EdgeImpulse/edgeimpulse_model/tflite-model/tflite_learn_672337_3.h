@@ -29,11 +29,11 @@
  * permissions, disclaimers and limitations under the License.
  */
 
-#ifndef _EI_CLASSIFIER_TFLITE_LEARN_3_H_
-#define _EI_CLASSIFIER_TFLITE_LEARN_3_H_
+#ifndef _EI_CLASSIFIER_TFLITE_LEARN_672337_3_H_
+#define _EI_CLASSIFIER_TFLITE_LEARN_672337_3_H_
 
-#define EI_CLASSIFIER_TFLITE_LEARN_3_ARENA_SIZE     18256
-const size_t tflite_learn_3_arena_size = 18256;
+#define EI_CLASSIFIER_TFLITE_LEARN_672337_3_ARENA_SIZE     15256
+const size_t tflite_learn_672337_3_arena_size = 15256;
 
 #if defined __GNUC__
 #define ALIGN(X) __attribute__((aligned(X)))
@@ -54,7 +54,7 @@ const size_t tflite_learn_3_arena_size = 18256;
 #endif
 
 
-MODEL_SECTION(EI_MODEL_SECTION) ALIGN(16) const unsigned char tflite_learn_3[] = {
+MODEL_SECTION(EI_MODEL_SECTION) ALIGN(16) const unsigned char tflite_learn_672337_3[] = {
   0x1c, 0x00, 0x00, 0x00, 0x54, 0x46, 0x4c, 0x33, 0x00, 0x00, 0x12, 0x00,
   0x1c, 0x00, 0x18, 0x00, 0x14, 0x00, 0x10, 0x00, 0x0c, 0x00, 0x08, 0x00,
   0x00, 0x00, 0x04, 0x00, 0x12, 0x00, 0x00, 0x00, 0x18, 0x00, 0x00, 0x00,
@@ -956,5 +956,5 @@ MODEL_SECTION(EI_MODEL_SECTION) ALIGN(16) const unsigned char tflite_learn_3[] =
   0x0c, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20,
   0x07, 0x00, 0x00, 0x00, 0x65, 0x74, 0x68, 0x6f, 0x73, 0x2d, 0x75, 0x00
 };
-unsigned int tflite_learn_3_len = 10800;
-#endif // _EI_CLASSIFIER_TFLITE_LEARN_3_H_
+unsigned int tflite_learn_672337_3_len = 10800;
+#endif // _EI_CLASSIFIER_TFLITE_LEARN_672337_3_H_

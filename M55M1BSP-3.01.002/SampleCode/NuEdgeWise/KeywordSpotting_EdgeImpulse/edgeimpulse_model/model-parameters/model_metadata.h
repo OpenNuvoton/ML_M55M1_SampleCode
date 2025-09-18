@@ -80,25 +80,25 @@
 #define EI_CLASSIFIER_DATATYPE_UINT8             3
 #define EI_CLASSIFIER_DATATYPE_INT8              9
 
-#define EI_CLASSIFIER_PROJECT_ID                 672337
+#define EI_CLASSIFIER_PROJECT_ID                 719893
 #define EI_CLASSIFIER_PROJECT_OWNER              "Chen Chih Yen"
-#define EI_CLASSIFIER_PROJECT_NAME               "G-sensor-test2"
-#define EI_CLASSIFIER_PROJECT_DEPLOY_VERSION     11
-#define EI_CLASSIFIER_NN_INPUT_FRAME_SIZE        600
-#define EI_CLASSIFIER_RAW_SAMPLE_COUNT           200
-#define EI_CLASSIFIER_RAW_SAMPLES_PER_FRAME      3
+#define EI_CLASSIFIER_PROJECT_NAME               "kws"
+#define EI_CLASSIFIER_PROJECT_DEPLOY_VERSION     1
+#define EI_CLASSIFIER_NN_INPUT_FRAME_SIZE        3960
+#define EI_CLASSIFIER_RAW_SAMPLE_COUNT           16000
+#define EI_CLASSIFIER_RAW_SAMPLES_PER_FRAME      1
 #define EI_CLASSIFIER_DSP_INPUT_FRAME_SIZE       (EI_CLASSIFIER_RAW_SAMPLE_COUNT * EI_CLASSIFIER_RAW_SAMPLES_PER_FRAME)
 #define EI_CLASSIFIER_INPUT_WIDTH                0
 #define EI_CLASSIFIER_INPUT_HEIGHT               0
 #define EI_CLASSIFIER_RESIZE_MODE                EI_CLASSIFIER_RESIZE_NONE
 #define EI_CLASSIFIER_INPUT_FRAMES               0
-#define EI_CLASSIFIER_NN_OUTPUT_COUNT            3
-#define EI_CLASSIFIER_INTERVAL_MS                10
-#define EI_CLASSIFIER_LABEL_COUNT                3
+#define EI_CLASSIFIER_NN_OUTPUT_COUNT            8
+#define EI_CLASSIFIER_INTERVAL_MS                0.0625
+#define EI_CLASSIFIER_LABEL_COUNT                8
 #define EI_CLASSIFIER_HAS_ANOMALY                EI_ANOMALY_TYPE_UNKNOWN
 #define EI_CLASSIFIER_HAS_VISUAL_ANOMALY         0
 #define EI_CLASSIFIER_SINGLE_FEATURE_INPUT       1
-#define EI_CLASSIFIER_FREQUENCY                  100
+#define EI_CLASSIFIER_FREQUENCY                  16000
 #define EI_CLASSIFIER_HAS_MODEL_VARIABLES        1
 #define EI_CLASSIFIER_THRESHOLD                  0.6
 
@@ -109,10 +109,10 @@
 #define EI_CLASSIFIER_TFLITE_INPUT_DATATYPE         EI_CLASSIFIER_DATATYPE_INT8
 #define EI_CLASSIFIER_TFLITE_OUTPUT_DATATYPE        EI_CLASSIFIER_DATATYPE_INT8
 
-#define EI_CLASSIFIER_TFLITE_LARGEST_ARENA_SIZE  15256
+#define EI_CLASSIFIER_TFLITE_LARGEST_ARENA_SIZE  0
 
 #define EI_CLASSIFIER_INFERENCING_ENGINE            EI_CLASSIFIER_TFLITE
-#define EI_CLASSIFIER_COMPILED                      0
+#define EI_CLASSIFIER_COMPILED                      1
 #define EI_CLASSIFIER_HAS_TFLITE_OPS_RESOLVER       1
 
 #define EI_CLASSIFIER_QUANTIZATION_ENABLED       1
@@ -123,7 +123,7 @@
 #define EI_CLASSIFIER_LOAD_FFT_32                0
 #define EI_CLASSIFIER_LOAD_FFT_64                0
 #define EI_CLASSIFIER_LOAD_FFT_128               0
-#define EI_CLASSIFIER_LOAD_FFT_256               0
+#define EI_CLASSIFIER_LOAD_FFT_256               1
 #define EI_CLASSIFIER_LOAD_FFT_512               0
 #define EI_CLASSIFIER_LOAD_FFT_1024              0
 #define EI_CLASSIFIER_LOAD_FFT_2048              0
@@ -135,9 +135,9 @@
 #define EI_CLASSIFIER_DSP_AXES_INDEX_TYPE        uint8_t
 #define EI_CLASSIFIER_HAS_DATA_NORMALIZATION     0
 
-#define EI_CLASSIFIER_SENSOR                     EI_CLASSIFIER_SENSOR_FUSION
-#define EI_CLASSIFIER_FUSION_AXES_STRING         "x + y + z"
-#define EI_CLASSIFIER_CALIBRATION_ENABLED        0
+#define EI_CLASSIFIER_SENSOR                     EI_CLASSIFIER_SENSOR_MICROPHONE
+#define EI_CLASSIFIER_FUSION_AXES_STRING         "audio"
+#define EI_CLASSIFIER_CALIBRATION_ENABLED        1
 #define EI_CLASSIFIER_OBJECT_TRACKING_ENABLED    0
 
 #ifndef EI_CLASSIFIER_SLICES_PER_MODEL_WINDOW
@@ -147,7 +147,7 @@
 
 #define EI_STUDIO_VERSION_MAJOR             1
 #define EI_STUDIO_VERSION_MINOR             74
-#define EI_STUDIO_VERSION_PATCH             12
+#define EI_STUDIO_VERSION_PATCH             24
 
 #define EI_CLASSIFIER_HR_ENABLED            0
 
@@ -317,7 +317,11 @@ typedef struct {
 } ei_dsp_config_hr_t;
 
 typedef struct {
-    int:0;
+    char* detected_label;
+} ei_perf_cal_output_t;
+
+typedef struct {
+    ei_perf_cal_output_t perf_cal_output;
 } ei_post_processing_output_t;
 
 

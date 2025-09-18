@@ -59,7 +59,7 @@
 #endif
 
 #ifndef HEAP_SIZE
-#define HEAP_SIZE  0xa000
+#define HEAP_SIZE  0x60000
 #endif
 
 #define ITCM_START      0x00000000
@@ -131,17 +131,13 @@ APP_IMAGE FLASH_START FLASH_SIZE
 
 	; DTCM 128 KB shared with SRAM2
     ; Only accessible from the Cortex-M
-#if (DTCM_SIZE > (STACK_SIZE + HEAP_SIZE + __STACKSEAL_SIZE))
-	DTCM DTCM_START (DTCM_SIZE - STACK_SIZE - HEAP_SIZE - __STACKSEAL_SIZE)
+#if (DTCM_SIZE > (STACK_SIZE + __STACKSEAL_SIZE))
+	DTCM DTCM_START (DTCM_SIZE - STACK_SIZE - __STACKSEAL_SIZE)
     {
         .ANY (+RW +ZI)
         .ANY (DTCM.Init)
         .ANY (.bss.DTCM.ZeroInit)
     }
-#endif
-
-#if HEAP_SIZE > 0
-    ARM_LIB_HEAP  __HEAP_BASE EMPTY  HEAP_SIZE {}		; Reserve empty region for heap
 #endif
 
     SRAM2 SRAM2_START UNINIT SRAM2_SIZE
@@ -159,6 +155,11 @@ APP_IMAGE FLASH_START FLASH_SIZE
     {
         .ANY (SRAM_NONCACHEABLE_END)
     }
+	
+#if HEAP_SIZE > 0
+    ARM_LIB_HEAP  __HEAP_BASE EMPTY  HEAP_SIZE {}		; Reserve empty region for heap
+#endif
+	
 	SRAM01_HYPERRAM AlignExpr(+0, 32) UNINIT
     {
         .ANY (.bss.sram.data)

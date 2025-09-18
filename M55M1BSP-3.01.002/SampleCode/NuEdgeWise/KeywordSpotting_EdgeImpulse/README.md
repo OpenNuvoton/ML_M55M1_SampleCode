@@ -1,5 +1,5 @@
-# Edge Impulse's image classification Example for M55M1 NuMaker
-A demonstration sample for image classification with Edge Impulse's C++ SDK
+# Edge Impulse's kws Example for M55M1 NuMaker
+A demonstration sample for kws with Edge Impulse's C++ SDK
 ## Requirement
 1. Keil uVision5 or VSCode CMSIS
 ## Howto
