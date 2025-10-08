@@ -1,19 +1,18 @@
 /**************************************************************************//**
  * @file     main.cpp
  * @version  V1.00
- * @brief    DeeplabV3 network sample. Demonstrate image segmentaion.
+ * @brief    Fast depth network sample. Demonstrate depth estimation.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
-
 #include "BoardInit.hpp"      /* Board initialisation */
 #include "log_macros.h"      /* Logging macros (optional) */
 
 #include "BufAttributes.hpp" /* Buffer attributes to be applied */
-#include "ImageSegModel.hpp"       /* Model API */
-#include "ImageSegPostProc.hpp"       /* Post processing API */
-#include "Labels.hpp"
+#include "FastDepthModel.hpp"       /* Model API */
+#include "ModelFileReader.h"
+#include "ff.h"
 
 #include "imlib.h"          /* Image processing */
 #include "framebuffer.h"
@@ -38,6 +37,8 @@
 #endif
 
 #define NUM_FRAMEBUF 2  //1 or 2
+
+#define MODEL_AT_HYPERRAM_ADDR (0x82400000)
 
 typedef enum
 {
@@ -126,12 +127,13 @@ static S_FRAMEBUF *get_inf_framebuf()
 #define GLCD_WIDTH	320
 #define GLCD_HEIGHT	240
 #else
-#define GLCD_WIDTH	240
-#define GLCD_HEIGHT	240
+#define GLCD_WIDTH	MODEL_INPUT_WIDTH
+#define GLCD_HEIGHT	MODEL_INPUT_HEIGHT
 #endif
 
 //RGB565
 #define IMAGE_FB_SIZE	(GLCD_WIDTH * GLCD_HEIGHT * 2)
+#define DEPTH_FB_SIZE	(MODEL_OUTPUT_WIDTH * MODEL_OUTPUT_HEIGHT * 2)
 
 #undef OMV_FB_SIZE
 #define OMV_FB_SIZE ( IMAGE_FB_SIZE + 1024)
@@ -145,9 +147,8 @@ __attribute__((section(".bss.vram.data"), aligned(32))) static char jpeg_array[O
 #if (NUM_FRAMEBUF == 2)
     __attribute__((section(".bss.vram.data"), aligned(32))) static char frame_buf1[OMV_FB_SIZE];
 #endif
+__attribute__((section(".bss.sram.data"), aligned(32))) static char depth_img_buf[DEPTH_FB_SIZE];
 
-__attribute__((section(".bss.sram.data"), aligned(32))) static char seg_source_buf[(MODEL_OUTPUT_WIDTH * MODEL_OUTPUT_HEIGHT * 2)];
-__attribute__((section(".bss.sram.data"), aligned(32))) static char seg_resize_buf[OMV_FB_SIZE];
 
 char *_fb_base = NULL;
 char *_fb_end = NULL;
@@ -190,41 +191,117 @@ static void omv_init()
 #endif
 }
 
-static void CreateColorMap(
-	std::vector <uint16_t> &colorMaps,
-	int numLables
+static int32_t PrepareModelToHyperRAM(void)
+{
+#define MODEL_FILE "0:\\FastDepth_224.tflite"
+#define EACH_READ_SIZE 512
+	
+    TCHAR sd_path[] = { '0', ':', 0 };    /* SD drive started from 0 */	
+    f_chdrive(sd_path);          /* set default path */
+
+    int32_t i32FileSize;
+    int32_t i32FileReadIndex = 0;
+    int32_t i32Read;
+	
+    if(!ModelFileReader_Initialize(MODEL_FILE))
+    {
+        printf_err("Unable open model %s\n", MODEL_FILE);		
+        return -1;
+    }
+	
+    i32FileSize = ModelFileReader_FileSize();
+    info("Model file size %i \n", i32FileSize);
+
+    while(i32FileReadIndex < i32FileSize)
+    {
+        i32Read = ModelFileReader_ReadData((BYTE *)(MODEL_AT_HYPERRAM_ADDR + i32FileReadIndex), EACH_READ_SIZE);
+        if(i32Read < 0)
+            break;
+        i32FileReadIndex += i32Read;
+    }
+
+    if(i32FileReadIndex < i32FileSize)
+    {
+        printf_err("Read Model file size is not enough\n");		
+        return -2;
+    }
+	
+#if 0
+    /* verify */
+    i32FileReadIndex = 0;
+    ModelFileReader_Rewind();
+    BYTE au8TempBuf[EACH_READ_SIZE];
+	
+    while(i32FileReadIndex < i32FileSize)
+    {
+        i32Read = ModelFileReader_ReadData((BYTE *)au8TempBuf, EACH_READ_SIZE);
+        if(i32Read < 0)
+            break;
+		
+        if(std::memcmp(au8TempBuf, (void *)(MODEL_AT_HYPERRAM_ADDR + i32FileReadIndex), i32Read)!= 0)
+        {
+            printf_err("verify the model file content is incorrect at %i \n", i32FileReadIndex);		
+            return -3;
+        }
+        i32FileReadIndex += i32Read;
+    }
+	
+#endif	
+    ModelFileReader_Finish();
+	
+    return i32FileSize;
+}	
+
+static void DrawDepthImage(
+    image_t *drawImg,
+    TfLiteTensor *outputTensor,
+    TfLiteIntArray *outputShape
 )
 {
-	float cbrt_label = std::cbrt(numLables);
-	uint32_t R = 0;
-	uint32_t G = 0;
-	uint32_t B = 0;
-	
-	uint16_t RGB565;
-	
-	uint8_t step = 255 / (uint8_t)(cbrt_label);
-	
-	colorMaps.clear();
+    int x,y;
+    uint16_t  *pu16Dest = (uint16_t *)drawImg->data;
+    int8_t  *pu8Src = (int8_t *)outputTensor->data.data;
 
-	for(R = 0; R < 255 ; R+= step)
-	{
-		for(G = 0; G < 255 ; G+= step)
-		{
-			for(B = 0; B < 255 ; B+= step)
-			{
-				RGB565 = COLOR_R8_G8_B8_TO_RGB565(R, G, B);
-				colorMaps.push_back(RGB565);
-				if(colorMaps.size() >= numLables)
-					return;
-			}
-		}
-	}
+    for(y=0; y < MODEL_OUTPUT_HEIGHT; y++)
+    {
+        for(x=0; x < MODEL_OUTPUT_WIDTH; x++)
+        {
+            uint32_t u32Depth = *pu8Src + 128;
+
+            *pu16Dest = COLOR_R8_G8_B8_TO_RGB565(255, u32Depth, 255 - u32Depth);
+            pu8Src ++;
+            pu16Dest++;
+        }
+    }	
 }
 
 int main()
 {
     /* Initialise the UART module to allow printf related functions (if using retarget) */
     BoardInit();
+
+    /* Copy model file from SD to HyperRAM*/
+    int32_t i32ModelSize;
+	
+    i32ModelSize = PrepareModelToHyperRAM();
+
+    if(i32ModelSize <= 0 )
+    {
+        printf_err("Failed to prepare model\n");
+			  return 1;
+    }
+
+    /* Model object creation and initialisation. */
+    arm::app::FastDepthModel model;
+
+    if (!model.Init(arm::app::tensorArena,
+                    sizeof(arm::app::tensorArena),
+                    (unsigned char *)MODEL_AT_HYPERRAM_ADDR,
+                    i32ModelSize))
+    {
+        printf_err("Failed to initialise model\n");
+        return 1;
+    }
 
     /* Setup cache poicy of tensor arean buffer */
     info("Set tesnor arena cache policy to WTRA \n");
@@ -264,22 +341,11 @@ int main()
 #endif
     };
 
-    /* Model object creation and initialisation. */
-    arm::app::ImageSegModel model;
-
-    if (!model.Init(arm::app::tensorArena,
-                    sizeof(arm::app::tensorArena),
-                    arm::app::image_segmentation::GetModelPointer(),
-                    arm::app::image_segmentation::GetModelLen()))
-    {
-        printf_err("Failed to initialise model\n");
-        return 1;
-    }
-
     // Setup MPU configuration
     InitPreDefMPURegion(&mpuConfig[0], mpuConfig.size());
 
     TfLiteTensor *inputTensor   = model.GetInputTensor(0);
+    TfLiteTensor *outputTensor   = model.GetOutputTensor(0);
 
     if (!inputTensor->dims)
     {
@@ -293,41 +359,17 @@ int main()
     }
 
     TfLiteIntArray *inputShape = model.GetInputShape(0);
+    TfLiteIntArray *outputShape = model.GetOutputShape(0);
 
-    const int inputImgCols = inputShape->data[arm::app::ImageSegModel::ms_inputColsIdx];
-    const int inputImgRows = inputShape->data[arm::app::ImageSegModel::ms_inputRowsIdx];
-    const uint32_t nChannels = inputShape->data[arm::app::ImageSegModel::ms_inputChannelsIdx];
-
-    //label information
-    std::vector <std::string> labels;
-    GetLabelsVector(labels);
-	
-    //color map for each lable
-    std::vector <uint16_t> colorMaps;
-    CreateColorMap(colorMaps, labels.size());
+    const int inputImgCols = inputShape->data[arm::app::FastDepthModel::ms_inputColsIdx];
+    const int inputImgRows = inputShape->data[arm::app::FastDepthModel::ms_inputRowsIdx];
+    const uint32_t nChannels = inputShape->data[arm::app::FastDepthModel::ms_inputChannelsIdx];
 		
-    /* image segmentation model preprocessing is image conversion from uint8 to [0,1] float values,
+    /* Fast depth model preprocessing is image conversion from uint8 to [0,1] float values,
      * then quantize them with input quantization info. */
     arm::app::QuantParams inQuantParams = arm::app::GetTensorQuantParams(inputTensor);
-
-    // postProcess
-	arm::app::image_seg::ImageSegPostProcessing postProc(&model);
-	image_t segImg;
-	image_t segResizeImg;
-
-	segImg.w = MODEL_OUTPUT_WIDTH;
-    segImg.h = MODEL_OUTPUT_HEIGHT;
-    segImg.size = MODEL_OUTPUT_WIDTH * MODEL_OUTPUT_HEIGHT * 2;
-    segImg.pixfmt = PIXFORMAT_RGB565;
-    segImg.data = (uint8_t *)seg_source_buf;
-
-	segResizeImg.w = GLCD_WIDTH;
-    segResizeImg.h = GLCD_HEIGHT;
-    segResizeImg.size = GLCD_WIDTH * GLCD_HEIGHT * 2;
-    segResizeImg.pixfmt = PIXFORMAT_RGB565;
-    segResizeImg.data = (uint8_t *)seg_resize_buf;
-
-    //display framebuffer
+		
+   //display framebuffer
     image_t frameBuffer;
     rectangle_t roi;
 
@@ -370,7 +412,7 @@ int main()
 #endif
 
 #if defined (__USE_UVC__)
-	UVC_Init();
+    UVC_Init();
     HSUSBD_Start();
 #endif
 
@@ -386,7 +428,7 @@ int main()
 #endif
 
             ImageSensor_TriggerCapture((uint32_t)(emptyFramebuf->frameImage.data));
-		}
+		    }
 		
         fullFramebuf = get_full_framebuf();
 
@@ -410,7 +452,6 @@ int main()
 #endif
             imlib_nvt_scale(&fullFramebuf->frameImage, &resizeImg, &roi);
 
-			
 #if defined(__PROFILE__)
             u64EndCycle = pmu_get_systick_Count();
             info("resize cycles %llu \n", (u64EndCycle - u64StartCycle));
@@ -419,16 +460,19 @@ int main()
 #if defined(__PROFILE__)
             u64StartCycle = pmu_get_systick_Count();
 #endif
-			//Quantize input tensor data
-			auto *req_data = static_cast<uint8_t *>(inputTensor->data.data);
-			auto *signed_req_data = static_cast<int8_t *>(inputTensor->data.data);
 
-			for (size_t i = 0; i < inputTensor->bytes; i++)
-			{
-//				auto i_data_int8 = static_cast<int8_t>((((static_cast<float>(req_data[i]) - 128.0) / 128.0f) / inQuantParams.scale) + inQuantParams.offset);
-//				signed_req_data[i] = std::min<int8_t>(INT8_MAX, std::max<int8_t>(i_data_int8, INT8_MIN));
-				signed_req_data[i] = static_cast<int8_t>(static_cast<uint32_t>(req_data[i]) - 128);
-			}
+#if 1	//ignore quantize step, due to the input tensor data type of FastDepteh model is uint8
+            //Quantize input tensor data
+            auto *req_data = static_cast<uint8_t *>(inputTensor->data.data);
+            auto *signed_req_data = static_cast<int8_t *>(inputTensor->data.data);
+
+            for (size_t i = 0; i < inputTensor->bytes; i++)
+            {
+//				      auto i_data_int8 = static_cast<int8_t>(((static_cast<float>(req_data[i]) / 255.0f) / inQuantParams.scale) + inQuantParams.offset);
+//				      signed_req_data[i] = std::min<int8_t>(INT8_MAX, std::max<int8_t>(i_data_int8, INT8_MIN));
+				        signed_req_data[i] = static_cast<int8_t>(req_data[i]) - 128;
+            }
+#endif
 
 #if defined(__PROFILE__)
             u64EndCycle = pmu_get_systick_Count();
@@ -436,14 +480,14 @@ int main()
 #endif
 
 #if defined(__PROFILE__)
-			profiler.StartProfiling("Inference");
+            profiler.StartProfiling("Inference");
 #endif
 
-			model.RunInference();
+            model.RunInference();
 
 #if defined(__PROFILE__)
-			profiler.StopProfiling();
-			profiler.PrintProfilingResult();
+			      profiler.StopProfiling();
+			      profiler.PrintProfilingResult();
 #endif
 
             fullFramebuf->eState = eFRAMEBUF_INF;
@@ -452,51 +496,44 @@ int main()
 
         if (infFramebuf)
         {
-			//post process
+            //draw depth image
 #if defined(__PROFILE__)
-			u64StartCycle = pmu_get_systick_Count();
+            u64StartCycle = pmu_get_systick_Count();
 #endif
+            image_t depthImg;
 
-			postProc.RunPostProcessing(colorMaps, segImg);
+		        depthImg.w = MODEL_OUTPUT_WIDTH;
+            depthImg.h = MODEL_OUTPUT_HEIGHT;
+            depthImg.size = MODEL_OUTPUT_WIDTH * MODEL_OUTPUT_HEIGHT * 2;
+            depthImg.pixfmt = PIXFORMAT_RGB565;
+            depthImg.data = (uint8_t *)depth_img_buf;
 
+					  DrawDepthImage(&depthImg, outputTensor, outputShape); 				
 #if defined(__PROFILE__)
-			u64EndCycle = pmu_get_systick_Count();
-			info("post processing cycles %llu \n", (u64EndCycle - u64StartCycle));
+            u64EndCycle = pmu_get_systick_Count();
+            info("draw depth image cycles %llu \n", (u64EndCycle - u64StartCycle));
 #endif
-
-            //draw segmentation image
-#if defined(__PROFILE__)
-			u64StartCycle = pmu_get_systick_Count();
-#endif
-			//resize segmentation image
-            roi.x = 0;
-            roi.y = 0;
-            roi.w = segImg.w;
-            roi.h = segImg.h;
-			
-            imlib_nvt_scale(&segImg, &segResizeImg, &roi);
-
-			//alpha blending source and resized segment image
-			imlib_nvt_RGB_blend(&infFramebuf->frameImage, &segResizeImg, &infFramebuf->frameImage, 0.5);
-
-#if defined(__PROFILE__)
-			u64EndCycle = pmu_get_systick_Count();
-			info("resize and blending segmentation map cycles %llu \n", (u64EndCycle - u64StartCycle));
-#endif
-
             //display result image
 #if defined (__USE_DISPLAY__)
             //Display image on LCD
             sDispRect.u32TopLeftX = 0;
             sDispRect.u32TopLeftY = 0;
-			sDispRect.u32BottonRightX = ((frameBuffer.w * IMAGE_DISP_UPSCALE_FACTOR) - 1);
-			sDispRect.u32BottonRightY = ((frameBuffer.h * IMAGE_DISP_UPSCALE_FACTOR) - 1);
+            sDispRect.u32BottonRightX = ((frameBuffer.w * IMAGE_DISP_UPSCALE_FACTOR) - 1);
+            sDispRect.u32BottonRightY = ((frameBuffer.h * IMAGE_DISP_UPSCALE_FACTOR) - 1);
 
 #if defined(__PROFILE__)
             u64StartCycle = pmu_get_systick_Count();
 #endif
-
+            //Display source image
             Display_FillRect((uint16_t *)infFramebuf->frameImage.data, &sDispRect, IMAGE_DISP_UPSCALE_FACTOR);
+
+            sDispRect.u32TopLeftX = sDispRect.u32BottonRightX;
+            sDispRect.u32TopLeftY = 0;
+            sDispRect.u32BottonRightX = ((sDispRect.u32TopLeftX + depthImg.w) - 1);
+            sDispRect.u32BottonRightY = ((depthImg.h) - 1);
+
+            //Display depth image
+            Display_FillRect((uint16_t *)depthImg.data, &sDispRect, 1);
  
 #if defined(__PROFILE__)
             u64EndCycle = pmu_get_systick_Count();
@@ -506,52 +543,65 @@ int main()
 #endif
 
 #if defined (__USE_UVC__)
-			if(UVC_IsConnect())
-			{
-#if (UVC_Color_Format == UVC_Format_YUY2)
-				image_t RGB565Img;
-				image_t YUV422Img;
+            if(UVC_IsConnect())
+            {
+                image_t resizeImg;
 
-				RGB565Img.w = infFramebuf->frameImage.w;
-				RGB565Img.h = infFramebuf->frameImage.h;
-				RGB565Img.data = (uint8_t *)infFramebuf->frameImage.data;
-				RGB565Img.pixfmt = PIXFORMAT_RGB565;
-
-				YUV422Img.w = RGB565Img.w;
-				YUV422Img.h = RGB565Img.h;
-				YUV422Img.data = (uint8_t *)infFramebuf->frameImage.data;
-				YUV422Img.pixfmt = PIXFORMAT_YUV422;
+                resizeImg.w = infFramebuf->frameImage.w;
+                resizeImg.h = infFramebuf->frameImage.h;
+                resizeImg.data = (uint8_t *)infFramebuf->frameImage.data;
+                resizeImg.pixfmt = PIXFORMAT_RGB565;
 				
-				roi.x = 0;
-				roi.y = 0;
-				roi.w = RGB565Img.w;
-				roi.h = RGB565Img.h;
-				imlib_nvt_scale(&RGB565Img, &YUV422Img, &roi);
+                roi.x = 0;
+                roi.y = 0;
+                roi.w = depthImg.w;
+                roi.h = depthImg.h;
+                imlib_nvt_scale(&depthImg, &resizeImg, &roi);
+							
+#if (UVC_Color_Format == UVC_Format_YUY2)
+                image_t RGB565Img;
+                image_t YUV422Img;
+
+                RGB565Img.w = infFramebuf->frameImage.w;
+                RGB565Img.h = infFramebuf->frameImage.h;
+                RGB565Img.data = (uint8_t *)infFramebuf->frameImage.data;
+                RGB565Img.pixfmt = PIXFORMAT_RGB565;
+
+                YUV422Img.w = RGB565Img.w;
+                YUV422Img.h = RGB565Img.h;
+                YUV422Img.data = (uint8_t *)infFramebuf->frameImage.data;
+                YUV422Img.pixfmt = PIXFORMAT_YUV422;
+				
+                roi.x = 0;
+                roi.y = 0;
+                roi.w = RGB565Img.w;
+                roi.h = RGB565Img.h;
+                imlib_nvt_scale(&RGB565Img, &YUV422Img, &roi);
 				
 #else
-				image_t origImg;
-				image_t vflipImg;
+                image_t origImg;
+                image_t vflipImg;
 
-				origImg.w = infFramebuf->frameImage.w;
-				origImg.h = infFramebuf->frameImage.h;
-				origImg.data = (uint8_t *)infFramebuf->frameImage.data;
-				origImg.pixfmt = PIXFORMAT_RGB565;
+                origImg.w = infFramebuf->frameImage.w;
+                origImg.h = infFramebuf->frameImage.h;
+                origImg.data = (uint8_t *)infFramebuf->frameImage.data;
+                origImg.pixfmt = PIXFORMAT_RGB565;
 
-				vflipImg.w = origImg.w;
-				vflipImg.h = origImg.h;
-				vflipImg.data = (uint8_t *)infFramebuf->frameImage.data;
-				vflipImg.pixfmt = PIXFORMAT_RGB565;
+                vflipImg.w = origImg.w;
+                vflipImg.h = origImg.h;
+                vflipImg.data = (uint8_t *)infFramebuf->frameImage.data;
+                vflipImg.pixfmt = PIXFORMAT_RGB565;
 
-				imlib_nvt_vflip(&origImg, &vflipImg);
+                imlib_nvt_vflip(&origImg, &vflipImg);
 #endif
-				UVC_SendImage((uint32_t)infFramebuf->frameImage.data, IMAGE_FB_SIZE, uvcStatus.StillImage);				
+                UVC_SendImage((uint32_t)infFramebuf->frameImage.data, IMAGE_FB_SIZE, uvcStatus.StillImage);				
 
-			}
+            }
 
 #endif
 
             u64PerfFrames ++;
-			if ((uint64_t) pmu_get_systick_Count() > u64PerfCycle)
+            if ((uint64_t) pmu_get_systick_Count() > u64PerfCycle)
             {
                 info("Total inference rate: %llu\n", u64PerfFrames / EACH_PERF_SEC);
 
@@ -561,42 +611,41 @@ int main()
                 //info("Running %s sec \n", szDisplayText);
 
                 sDispRect.u32TopLeftX = 0;
-				sDispRect.u32TopLeftY = frameBuffer.h * IMAGE_DISP_UPSCALE_FACTOR;
-				sDispRect.u32BottonRightX = (frameBuffer.w);
-				sDispRect.u32BottonRightY = ((frameBuffer.h * IMAGE_DISP_UPSCALE_FACTOR) + (FONT_DISP_UPSCALE_FACTOR * FONT_HTIGHT) - 1);
+                sDispRect.u32TopLeftY = frameBuffer.h * IMAGE_DISP_UPSCALE_FACTOR;
+                sDispRect.u32BottonRightX = (frameBuffer.w);
+                sDispRect.u32BottonRightY = ((frameBuffer.h * IMAGE_DISP_UPSCALE_FACTOR) + (FONT_DISP_UPSCALE_FACTOR * FONT_HTIGHT) - 1);
 
                 Display_ClearRect(C_WHITE, &sDispRect);
                 Display_PutText(
                     szDisplayText,
                     strlen(szDisplayText),
                     0,
-					frameBuffer.h * IMAGE_DISP_UPSCALE_FACTOR,
+                    frameBuffer.h * IMAGE_DISP_UPSCALE_FACTOR,
                     C_BLUE,
                     C_WHITE,
                     false,
-					FONT_DISP_UPSCALE_FACTOR
+                    FONT_DISP_UPSCALE_FACTOR
                 );
 #endif
                 u64PerfCycle = (uint64_t)pmu_get_systick_Count() + (uint64_t)(SystemCoreClock * EACH_PERF_SEC);
                 u64PerfFrames = 0;
-			}
+			      }
 
             infFramebuf->eState = eFRAMEBUF_EMPTY;
-		}
-
-		//Wait CCAP ready
-		if (emptyFramebuf)
-		{
-			//Capture new image
-
-			ImageSensor_WaitCaptureDone();
+        }
+				
+        //Wait CCAP ready
+        if (emptyFramebuf)
+        {
+            //Capture new image
+            ImageSensor_WaitCaptureDone();
 #if defined(__PROFILE__)
-			u64CCAPEndCycle = pmu_get_systick_Count();
-			info("ccap capture cycles %llu \n", (u64CCAPEndCycle - u64CCAPStartCycle));
+            u64CCAPEndCycle = pmu_get_systick_Count();
+            info("ccap capture cycles %llu \n", (u64CCAPEndCycle - u64CCAPStartCycle));
 #endif
             emptyFramebuf->eState = eFRAMEBUF_FULL;		
-		}
+        }
     }
-
-    return 0;
 }
+
+
