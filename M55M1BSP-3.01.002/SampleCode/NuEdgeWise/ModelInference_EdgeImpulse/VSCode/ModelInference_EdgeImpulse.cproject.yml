@@ -126,3 +126,6 @@ project:
         - file: ../../../../ThirdParty/edgeimpulse/Lib/tflu.lib
         - file: ../../../../ThirdParty/edgeimpulse/Lib/CMSIS/Lib/KEIL/cmsis_nn.lib
         - file: ../../../../ThirdParty/edgeimpulse/Lib/CMSIS/Lib/KEIL/cmsis_dsp.lib
+    - group: tflite-model
+      files:
+        - file: ../edgeimpulse_model/tflite-model/tflite_learn_672337_3.cpp  

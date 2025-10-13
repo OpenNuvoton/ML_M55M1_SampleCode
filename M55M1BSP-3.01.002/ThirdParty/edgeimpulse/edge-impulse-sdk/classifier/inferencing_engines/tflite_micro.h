@@ -57,6 +57,8 @@
 #endif
 
 #ifdef EI_CLASSIFIER_ALLOCATION_STATIC
+/* Nuvoton update, for MPU config*/
+    uint8_t tensor_arena[EI_CLASSIFIER_TFLITE_LARGEST_ARENA_SIZE] __attribute__((aligned(16), section(".bss.NoInit.activation_buf_sram")));
 #if defined __GNUC__
 #define ALIGN(X) __attribute__((aligned(X)))
 #elif defined _MSC_VER
@@ -72,18 +74,14 @@
 #if defined (__GNUC__)  /* GNU compiler */
 #define ALIGN(X) __attribute__((aligned(X)))
 #define DEFINE_SECTION(x) __attribute__((section(x)))
-
 #elif defined (_MSC_VER)
 #define ALIGN(X) __declspec(align(X))
-
 #elif defined (__TASKING__) /* TASKING Compiler */
 #define ALIGN(X) __align(X)
 #define DEFINE_SECTION(x) __attribute__((section(x)))
-
 #elif defined (__ARMCC_VERSION) /* Arm Compiler */
 #define ALIGN(X) __ALIGNED(x)
 #define DEFINE_SECTION(x) __attribute__((section(x)))
-
 #elif defined (__ICCARM__) /* IAR Compiler */
 #define ALIGN(x) __attribute__((aligned(x)))
 #define DEFINE_SECTION(x) __attribute__((section(x)))
@@ -91,12 +89,6 @@
 #define ALIGN(X) __ALIGNED(x)
 #define DEFINE_SECTION(x) __attribute__((section(x)))
 #endif
-
-/* Nuvoton update, for MPU config*/
-#ifdef EI_CLASSIFIER_ALLOCATION_STATIC
-    uint8_t tensor_arena[EI_CLASSIFIER_TFLITE_LARGEST_ARENA_SIZE] __attribute__((aligned(16), section(".bss.NoInit.activation_buf_sram")));
-#endif
-
 
 /**
  * Setup the TFLite runtime
@@ -124,8 +116,8 @@ static EI_IMPULSE_ERROR inference_tflite_setup(
 
 #ifdef EI_CLASSIFIER_ALLOCATION_STATIC
     // Assign a no-op lambda to the "free" function in case of static arena
-		/* Nuvoton update, for MPU config*/
-    //static uint8_t tensor_arena[EI_CLASSIFIER_TFLITE_LARGEST_ARENA_SIZE] ALIGN(16) DEFINE_SECTION(STRINGIZE_VALUE_OF(EI_TENSOR_ARENA_LOCATION));
+    /* Nuvoton update, for MPU config*/
+    //    static uint8_t tensor_arena[EI_CLASSIFIER_TFLITE_LARGEST_ARENA_SIZE] ALIGN(16) DEFINE_SECTION(STRINGIZE_VALUE_OF(EI_TENSOR_ARENA_LOCATION));
     p_tensor_arena = ei_unique_ptr_t(tensor_arena, [](void*){});
 #else
     // Create an area of memory to use for input, output, and intermediate arrays.
@@ -273,12 +265,13 @@ static EI_IMPULSE_ERROR inference_tflite_run(
  * @return     The ei impulse error.
  */
 EI_IMPULSE_ERROR run_nn_inference_from_dsp(
-    ei_learning_block_config_tflite_graph_t *config,
+    ei_learning_block_config_tflite_graph_t *block_config,
     signal_t *signal,
     matrix_t *output_matrix)
 {
-    TfLiteTensor* input;
-    TfLiteTensor* outputs;
+    TfLiteTensor* input = nullptr; // will be owned by TFLite
+    TfLiteTensor** outputs = (TfLiteTensor**)ei_malloc(block_config->output_tensors_size * sizeof(TfLiteTensor*));
+
     uint64_t ctx_start_us = ei_read_timer_us();
     ei_unique_ptr_t p_tensor_arena(nullptr, ei_aligned_free);
 
@@ -290,10 +283,10 @@ EI_IMPULSE_ERROR run_nn_inference_from_dsp(
 #endif
 
     EI_IMPULSE_ERROR init_res = inference_tflite_setup(
-        config,
+        block_config,
         &ctx_start_us,
         &input,
-        &outputs,
+        outputs,
         &interpreter,
         p_tensor_arena,
         (void**)&profiler);
@@ -314,12 +307,13 @@ EI_IMPULSE_ERROR run_nn_inference_from_dsp(
         return EI_IMPULSE_TFLITE_ERROR;
     }
 
-    auto output_res = fill_output_matrix_from_tensor(&outputs[0], output_matrix);
+    auto output_res = fill_output_matrix_from_tensor(outputs[0], output_matrix);
     if (output_res != EI_IMPULSE_OK) {
         return output_res;
     }
 
     delete interpreter;
+    ei_free(outputs);
 
     return EI_IMPULSE_OK;
 }
@@ -345,8 +339,9 @@ EI_IMPULSE_ERROR run_nn_inference(
 {
     ei_learning_block_config_tflite_graph_t *block_config = (ei_learning_block_config_tflite_graph_t*)config_ptr;
 
-    TfLiteTensor* input;
-    TfLiteTensor* outputs;
+    TfLiteTensor* input = nullptr; // will be owned by TFLite
+    TfLiteTensor** outputs = (TfLiteTensor**)ei_malloc(block_config->output_tensors_size * sizeof(TfLiteTensor*));
+
     uint64_t ctx_start_us = ei_read_timer_us();
     ei_unique_ptr_t p_tensor_arena(nullptr, ei_aligned_free);
 
@@ -361,7 +356,7 @@ EI_IMPULSE_ERROR run_nn_inference(
         block_config,
         &ctx_start_us,
         &input,
-        &outputs,
+        outputs,
         &interpreter,
         p_tensor_arena,
         (void**)&profiler);
@@ -388,7 +383,7 @@ EI_IMPULSE_ERROR run_nn_inference(
         profiler);
 
     for (uint32_t output_ix = 0; output_ix < block_config->output_tensors_size; output_ix++) {
-        TfLiteTensor* output = &outputs[output_ix];
+        TfLiteTensor *output = outputs[output_ix];
         // calculate the size of the output by iterating through dims
         size_t output_size = 1;
         for (int dim_num = 0; dim_num < output->dims->size; dim_num++) {
@@ -433,6 +428,7 @@ EI_IMPULSE_ERROR run_nn_inference(
     }
 
     delete interpreter;
+    ei_free(outputs);
 
     if (run_res != EI_IMPULSE_OK) {
         return run_res;
@@ -457,11 +453,11 @@ EI_IMPULSE_ERROR run_nn_inference_image_quantized(
 {
     ei_learning_block_config_tflite_graph_t *block_config = (ei_learning_block_config_tflite_graph_t*)config_ptr;
 
-    memset(result, 0, sizeof(ei_impulse_result_t));
-
     uint64_t ctx_start_us;
-    TfLiteTensor* input;
-    TfLiteTensor* outputs;
+
+    TfLiteTensor* input = nullptr; // will be owned by TFLite
+    TfLiteTensor** outputs = (TfLiteTensor**)ei_malloc(block_config->output_tensors_size * sizeof(TfLiteTensor*));
+
     ei_unique_ptr_t p_tensor_arena(nullptr, ei_aligned_free);
 
     tflite::MicroInterpreter* interpreter;
@@ -475,7 +471,7 @@ EI_IMPULSE_ERROR run_nn_inference_image_quantized(
         block_config,
         &ctx_start_us,
         &input,
-        &outputs,
+        outputs,
         &interpreter,
         p_tensor_arena,
         (void**)&profiler);
@@ -526,7 +522,7 @@ EI_IMPULSE_ERROR run_nn_inference_image_quantized(
         profiler);
 
     for (uint32_t output_ix = 0; output_ix < block_config->output_tensors_size; output_ix++) {
-        TfLiteTensor* output = &outputs[output_ix];
+        TfLiteTensor* output = outputs[output_ix];
         // calculate the size of the output by iterating through dims
         size_t output_size = 1;
         for (int dim_num = 0; dim_num < output->dims->size; dim_num++) {
@@ -571,6 +567,7 @@ EI_IMPULSE_ERROR run_nn_inference_image_quantized(
     }
 
     delete interpreter;
+    ei_free(outputs);
 
     if (run_res != EI_IMPULSE_OK) {
         return run_res;

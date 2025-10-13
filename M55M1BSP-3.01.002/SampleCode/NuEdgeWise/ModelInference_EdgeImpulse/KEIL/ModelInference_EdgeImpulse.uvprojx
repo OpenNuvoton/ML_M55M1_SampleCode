@@ -16,7 +16,7 @@
         <TargetCommonOption>
           <Device>M55M1H2LJAE</Device>
           <Vendor>Nuvoton</Vendor>
-          <PackID>Nuvoton.NuMicroM55_DFP.1.0.1</PackID>
+          <PackID>Nuvoton.NuMicroM55_DFP.1.0.0</PackID>
           <PackURL>https://github.com/OpenNuvoton/cmsis-packs/raw/master/Nuvoton_DFP/</PackURL>
           <Cpu>IRAM(0x20100000,0x150000) IRAM2(0x30100000,0x150000) IROM(0x00100000,0x200000) IROM2(0x10100000,0x200000) CPUTYPE("Cortex-M55") FPU3(DFPU) DSP TZ MVE(FP) CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -1481,6 +1481,13 @@
         </Group>
         <Group>
           <GroupName>tflite-model</GroupName>
+          <Files>
+            <File>
+              <FileName>tflite_learn_672337_3.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\edgeimpulse_model\tflite-model\tflite_learn_672337_3.cpp</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>edge-impulse-ethosu</GroupName>

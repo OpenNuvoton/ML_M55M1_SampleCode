@@ -33,7 +33,7 @@
 
 // clang-format off
 #ifndef EIDSP_USE_CMSIS_DSP // __ARM_ARCH_PROFILE is a predefine of arm-gcc.  __TARGET_* is armcc
-#if (defined(__MBED__) || __ARM_ARCH_PROFILE == 'M' || defined(__TARGET_CPU_CORTEX_M0) || defined(__TARGET_CPU_CORTEX_M0PLUS) || defined(__TARGET_CPU_CORTEX_M3) || defined(__TARGET_CPU_CORTEX_M4) || defined(__TARGET_CPU_CORTEX_M7) || defined(USE_HAL_DRIVER) || defined(ARDUINO_NRF52_ADAFRUIT)) && !defined(EI_PORTING_STM32_CUBEAI)
+#if (defined(__MBED__) || __ARM_ARCH_PROFILE == 'M' || defined(__TARGET_CPU_CORTEX_M0) || defined(__TARGET_CPU_CORTEX_M0PLUS) || defined(__TARGET_CPU_CORTEX_M3) || defined(__TARGET_CPU_CORTEX_M4) || defined(__TARGET_CPU_CORTEX_M7) || defined(USE_HAL_DRIVER) || defined(ARDUINO_NRF52_ADAFRUIT))
     // Mbed OS versions before 5.7 are not based on CMSIS5, disable CMSIS-DSP and CMSIS-NN instructions
     #if defined(__MBED__)
         #include "mbed_version.h"
@@ -102,5 +102,12 @@
 #define EIDSP_SIGNAL_C_FN_POINTER    0
 #endif // EIDSP_SIGNAL_C_FN_POINTER
 
+#ifndef EIDSP_USE_ESP_DSP
+#if defined(ESP32) || defined(CONFIG_IDF_TARGET_ESP32) || defined(CONFIG_IDF_TARGET_ESP32S3) || defined(CONFIG_IDF_TARGET_ESP32P4)
+#define EIDSP_USE_ESP_DSP 1
+#else
+#define EIDSP_USE_ESP_DSP 0
+#endif
+#endif
 // clang-format on
 #endif // _EIDSP_CPP_CONFIG_H_
