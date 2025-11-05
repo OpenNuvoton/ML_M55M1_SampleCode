@@ -168,7 +168,7 @@ static int get_signal_data(size_t offset, size_t length, float *out_ptr)
 }
 #else
 // Setup Input Buf
-static uint8_t ei_buf_array[EI_CLASSIFIER_INPUT_WIDTH * EI_CLASSIFIER_INPUT_HEIGHT * 3];
+__attribute__((section(".bss.sram.data"), aligned(32))) static uint8_t ei_buf_array[EI_CLASSIFIER_INPUT_WIDTH * EI_CLASSIFIER_INPUT_HEIGHT * 3];
 
 static int raw_feature_get_data(size_t offset, size_t out_len, float *signal_ptr)
 {
