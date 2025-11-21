@@ -24,23 +24,23 @@ altitude: 0.0000
     ![a6b57619b8b93c5b00db31157e3d93bf.png](../_resources/a6b57619b8b93c5b00db31157e3d93bf.png)
 3.  Install SDK(Toolchain)  
     Toolchain install path would be `C:\Users\chche\.zephyr_ide\toolchains`
-![43af29d262dad98f997b1f3e754a0833.png](../_resources/43af29d262dad98f997b1f3e754a0833.png)
-![b7f7e103f8f6b09a85ca527463177d03.png](../_resources/b7f7e103f8f6b09a85ca527463177d03.png)
-![e1c1e5f0dc0390a73e23651add40779d.png](../_resources/e1c1e5f0dc0390a73e23651add40779d.png)
-![319b0806f6861dddc68679e418e2be72.png](../_resources/319b0806f6861dddc68679e418e2be72.png)
-![223cc2a898fa653a29935fb481efffc1.png](../_resources/223cc2a898fa653a29935fb481efffc1.png)
+![43af29d262dad98f997b1f3e754a0833.png](../_resources/43af29d262dad98f997b1f3e754a0833.png)  
+![b7f7e103f8f6b09a85ca527463177d03.png](../_resources/b7f7e103f8f6b09a85ca527463177d03.png)  
+![e1c1e5f0dc0390a73e23651add40779d.png](../_resources/e1c1e5f0dc0390a73e23651add40779d.png)  
+![319b0806f6861dddc68679e418e2be72.png](../_resources/319b0806f6861dddc68679e418e2be72.png)  
+![223cc2a898fa653a29935fb481efffc1.png](../_resources/223cc2a898fa653a29935fb481efffc1.png)  
 4.  Open a workspace folder and run workspace setup
-![255b88efb2ced12c887587bd73f59798.png](../_resources/255b88efb2ced12c887587bd73f59798.png)
-![22ab97cc2a690a225f25ec207881b143.png](../_resources/22ab97cc2a690a225f25ec207881b143.png)
-![a33ab99cc0c067424edc5fd25ed9fe28.png](../_resources/a33ab99cc0c067424edc5fd25ed9fe28.png)	
+![255b88efb2ced12c887587bd73f59798.png](../_resources/255b88efb2ced12c887587bd73f59798.png)  
+![22ab97cc2a690a225f25ec207881b143.png](../_resources/22ab97cc2a690a225f25ec207881b143.png)  
+![a33ab99cc0c067424edc5fd25ed9fe28.png](../_resources/a33ab99cc0c067424edc5fd25ed9fe28.png)  
 ![6fabead9080415449cd253be7c353720.png](../_resources/6fabead9080415449cd253be7c353720.png)  
-![171fff85d2ad9af647bc5a27a32bd97d.png](../_resources/171fff85d2ad9af647bc5a27a32bd97d.png)
+![171fff85d2ad9af647bc5a27a32bd97d.png](../_resources/171fff85d2ad9af647bc5a27a32bd97d.png)  
 5.  After a few minutes... The workspace folder would be  
-    ![cc592de76e0b6ac4f3736ff1951f3be9.png](../_resources/cc592de76e0b6ac4f3736ff1951f3be9.png)
-6. Activate workspace
-![ad14229894d0f3820625fc225d8be0ac.png](../_resources/ad14229894d0f3820625fc225d8be0ac.png)
-7.  Run "West Update"
-![6c9e7b91468e9da9cf003fd6051df482.png](../_resources/6c9e7b91468e9da9cf003fd6051df482.png)
+![cc592de76e0b6ac4f3736ff1951f3be9.png](../_resources/cc592de76e0b6ac4f3736ff1951f3be9.png)  
+6. Activate workspace  
+![ad14229894d0f3820625fc225d8be0ac.png](../_resources/ad14229894d0f3820625fc225d8be0ac.png)  
+7.  Run "West Update"  
+![6c9e7b91468e9da9cf003fd6051df482.png](../_resources/6c9e7b91468e9da9cf003fd6051df482.png)  
 
 * * *
 
