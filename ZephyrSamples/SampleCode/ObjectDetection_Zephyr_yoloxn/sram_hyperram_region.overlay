@@ -1,0 +1,19 @@
+#include <zephyr/dt-bindings/memory-attr/memory-attr-arm.h>
+
+/{
+	reserved-memory {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+		sram_hyperram: memory@81F20000 {
+			compatible = "zephyr,memory-region";
+			reg = <0x81F20000 DT_SIZE_K(4000)>;  // 起始位址與大小
+			zephyr,memory-region = "SRAM_HYPERRAM";
+	        zephyr,memory-attr = <DT_MEM_ARM_MPU_RAM_NOCACHE>;
+		};
+	};
+	chosen {
+        zephyr,extra-memory = &sram_hyperram;
+    };
+};

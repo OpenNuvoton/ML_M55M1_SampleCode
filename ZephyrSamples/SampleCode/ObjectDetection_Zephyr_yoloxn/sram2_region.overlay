@@ -1,0 +1,13 @@
+#include <zephyr/dt-bindings/memory-attr/memory-attr-arm.h>
+
+/{
+    sram2: memory@20200000 {
+		compatible = "zephyr,memory-region";
+        reg = <0x20200000 0x00050000>;  // 起始位址與大小
+        zephyr,memory-region = "SRAM2";
+        zephyr,memory-attr = <DT_MEM_ARM_MPU_RAM_NOCACHE>;
+    };
+    chosen {
+        zephyr,extra-memory = &sram2;
+    };
+};
