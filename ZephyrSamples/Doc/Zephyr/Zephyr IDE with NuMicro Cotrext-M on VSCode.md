@@ -18,7 +18,7 @@ altitude: 0.0000
 
 **Install Zephyr IDE**
 
-1.  Install Zephyr IDE Extension Pack from VSCode extensions  
+1.  Install Zephyr IDE Extension Pack from VSCode  
     ![32a4535ecff90d2cf5a45469aea7bef0.png](../_resources/32a4535ecff90d2cf5a45469aea7bef0.png)
 2.  Install Host Tools  
     ![a6b57619b8b93c5b00db31157e3d93bf.png](../_resources/a6b57619b8b93c5b00db31157e3d93bf.png)
@@ -29,7 +29,7 @@ altitude: 0.0000
 ![e1c1e5f0dc0390a73e23651add40779d.png](../_resources/e1c1e5f0dc0390a73e23651add40779d.png)  
 ![319b0806f6861dddc68679e418e2be72.png](../_resources/319b0806f6861dddc68679e418e2be72.png)  
 ![223cc2a898fa653a29935fb481efffc1.png](../_resources/223cc2a898fa653a29935fb481efffc1.png)  
-4.  Open a workspace folder and run workspace setup
+4.  Open a workspace folder and run workspace setup  
 ![255b88efb2ced12c887587bd73f59798.png](../_resources/255b88efb2ced12c887587bd73f59798.png)  
 ![22ab97cc2a690a225f25ec207881b143.png](../_resources/22ab97cc2a690a225f25ec207881b143.png)  
 ![a33ab99cc0c067424edc5fd25ed9fe28.png](../_resources/a33ab99cc0c067424edc5fd25ed9fe28.png)  
