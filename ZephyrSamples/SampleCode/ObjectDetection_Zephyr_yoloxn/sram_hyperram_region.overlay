@@ -13,6 +13,7 @@
 	        zephyr,memory-attr = <DT_MEM_ARM_MPU_RAM_NOCACHE>;
 		};
 	};
+
 	chosen {
         zephyr,extra-memory = &sram_hyperram;
     };

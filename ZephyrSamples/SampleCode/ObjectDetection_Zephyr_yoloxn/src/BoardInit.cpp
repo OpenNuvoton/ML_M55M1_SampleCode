@@ -14,6 +14,7 @@
 #define DESIGN_NAME "M55M1"
 #define HYPERRAM_SPIM_PORT SPIM0        //For NuMaker-M55M1 board
 
+#if defined(__LOAD_MODEL_FROM_SD__)
 static void SDCard_PinConfig(void)
 {
 	/* Set multi-function pin for SDH */
@@ -25,6 +26,7 @@ static void SDCard_PinConfig(void)
     SET_SD0_DAT2_PE4();
     SET_SD0_DAT3_PE5();
 }
+#endif
 
 static void SYS_Init(void)
 {
@@ -53,15 +55,22 @@ static void SYS_Init(void)
     /* Enable NPU module clock */
     CLK_EnableModuleClock(NPU0_MODULE);
 
+#if defined(__LOAD_MODEL_FROM_SD__)
     /* Enable SDH0 module clock source as HCLK and SDH0 module clock divider as 4 */
     CLK_SetModuleClock(SDH0_MODULE, CLK_SDHSEL_SDH0SEL_APLL1_DIV2, CLK_SDHDIV_SDH0DIV(5));
     CLK_EnableModuleClock(SDH0_MODULE);
+#endif
 
     /* Enable CCAP0 module clock */
     CLK_EnableModuleClock(CCAP0_MODULE);
 
+#if defined(__USE_HYPERRAM__)
     HyperRAM_PinConfig(HYPERRAM_SPIM_PORT);
+#endif
+
+#if defined(__LOAD_MODEL_FROM_SD__)
     SDCard_PinConfig();
+#endif
 }
 
 /**
@@ -78,25 +87,18 @@ int BoardInit(void)
     SYS_Init();
     SYS_LockReg();                   /* Unlock register lock protect */
 
+#if defined(__USE_HYPERRAM__)
     HyperRAM_Init(HYPERRAM_SPIM_PORT);
     /* Enter direct-mapped mode to run new applications */
     SPIM_HYPER_EnterDirectMapMode(HYPERRAM_SPIM_PORT);
-	/* SDH open SD card*/
+#endif
+
+#if defined(__LOAD_MODEL_FROM_SD__)
+    /* SDH open SD card*/
     SDH_Open_Disk(SDH0, CardDetect_From_GPIO);
+#endif
 
     printf("%s: complete\n", __FUNCTION__);
-
-#if 0 //defined(ARM_NPU)
-
-    int state;
-
-    /* If Arm Ethos-U NPU is to be used, we initialise it here */
-    if (0 != (state = arm_ethosu_npu_init()))
-    {
-        return state;
-    }
-
-#endif /* ARM_NPU */
 
     /* Print target design info */
     printf("Target system: %s\n", DESIGN_NAME);

@@ -8,9 +8,14 @@ config APP_OD_UVC_SHOW_IMAGE
     bool "UVC show result image enable"
     default y
 
+config APP_OD_USING_HYPERRAM
+    bool "Using hyperram for arena/model"
+    default n
+
 config APP_OD_MODEL_FROM_SD
     bool "Load model from SD card enable"
     default n
+    select APP_OD_USING_HYPERRAM
 
 endmenu
 source "Kconfig.zephyr"
