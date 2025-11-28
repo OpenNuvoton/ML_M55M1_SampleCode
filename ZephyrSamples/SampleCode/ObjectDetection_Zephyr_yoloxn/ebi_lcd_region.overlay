@@ -1,0 +1,10 @@
+#include <zephyr/dt-bindings/memory-attr/memory-attr-arm.h>
+
+/{
+    ebi0: memory@60000000 {
+		compatible = "zephyr,memory-region";
+        reg = <0x60000000 0x00100000>;  // 起始位址與大小
+        zephyr,memory-region = "EBI0";
+        zephyr,memory-attr = <DT_MEM_ARM_MPU_DEVICE>;
+    };
+};

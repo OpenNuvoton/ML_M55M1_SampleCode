@@ -48,8 +48,19 @@
     #include "UVC.h"
 #endif
 
+#if defined (__USE_LCD__)
+    #include "Display.h"
+#endif
+
 // Model location when loaded from SD card to HyperRAM
 #define MODEL_AT_HYPERRAM_ADDR 0x82400000
+
+#define IMAGE_DISP_UPSCALE_FACTOR 1
+#if defined(LT7381_LCD_PANEL)
+#define FONT_DISP_UPSCALE_FACTOR 2
+#else
+#define FONT_DISP_UPSCALE_FACTOR 1
+#endif
 
 //Used by omv library
 #if defined(__USE_UVC__)
@@ -545,6 +556,14 @@ void main_task(void *pvArgs1, void *pvArgs2, void *pvArgs3)
     HSUSBD_Start();
 #endif
 
+#if defined (__USE_LCD__)
+    char szDisplayText[160];
+    S_DISP_RECT sDispRect;
+
+    Display_Init();
+    Display_ClearLCD(C_WHITE);
+#endif
+
 	while(1)
 	{
         // Get empty frame buffer to store captured image
@@ -635,6 +654,29 @@ void main_task(void *pvArgs1, void *pvArgs2, void *pvArgs3)
             //draw bbox and render
             /* Draw boxes. */
             DrawImageDetectionBoxes(infFramebuf->results, &infFramebuf->frameImage, labels);
+
+#if defined (__USE_LCD__)
+            //Display image on LCD
+            sDispRect.u32TopLeftX = 0;
+            sDispRect.u32TopLeftY = 0;
+            sDispRect.u32BottonRightX = ((dispImage.w * IMAGE_DISP_UPSCALE_FACTOR) - 1);
+            sDispRect.u32BottonRightY = ((dispImage.h * IMAGE_DISP_UPSCALE_FACTOR) - 1);
+
+#if defined(__PROFILE__)
+            u64StartCycle = pmu_get_systick_Count();
+#endif
+
+            Display_FillRect((uint16_t *)infFramebuf->frameImage.data, &sDispRect, IMAGE_DISP_UPSCALE_FACTOR);
+
+#if defined(__PROFILE__)
+            u64EndCycle = pmu_get_systick_Count();
+            info("display image cycles %llu \n", (u64EndCycle - u64StartCycle));
+#endif
+
+#endif
+
+
+
 
 #if defined (__USE_UVC__)
 

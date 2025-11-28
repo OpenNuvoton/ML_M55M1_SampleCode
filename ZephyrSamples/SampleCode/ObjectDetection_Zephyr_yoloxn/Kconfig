@@ -4,10 +4,6 @@ config APP_OD_PROFILE_ENABLED
     bool "Application profiling enable"
     default n
 
-config APP_OD_UVC_SHOW_IMAGE
-    bool "UVC show result image enable"
-    default y
-
 config APP_OD_USING_HYPERRAM
     bool "Using hyperram for arena/model"
     default n
@@ -16,6 +12,33 @@ config APP_OD_MODEL_FROM_SD
     bool "Load model from SD card enable"
     default n
     select APP_OD_USING_HYPERRAM
+
+config APP_OD_UVC_SHOW_IMAGE
+    bool "Show result image over UVC"
+    default y
+
+config APP_OD_LCD_SHOW_IMAGE
+    bool "Show result image over LCD"
+    default y
+
+if APP_OD_LCD_SHOW_IMAGE
+
+choice
+    prompt "LCD select"
+    default LT7381_MPU_PANEL
+        
+config  LT7381_MPU_PANEL
+    bool "Use LT7381 panel"
+
+config  FSA506_MPU_PANEL
+    bool "Use FSA506 panel"
+
+config  ILI9341_SPI_PANEL
+    bool "Use ILI9341 panel"
+
+endchoice
+
+endif
 
 endmenu
 source "Kconfig.zephyr"

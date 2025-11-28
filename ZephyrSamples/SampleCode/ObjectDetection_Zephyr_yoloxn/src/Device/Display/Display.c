@@ -14,6 +14,7 @@
 
 #include "pmu_counter.h"
 
+#if defined(__EBI_LCD_PANEL__) || defined(__SPI_LCD_PANEL__)
 
 #if defined(__EBI_LCD_PANEL__)
 
@@ -283,3 +284,5 @@ uint32_t Disaplay_GetLCDHeight(void)
 {
     return s_psLCD->m_u16Height;
 }
+
+#endif //defined(__EBI_LCD_PANEL__) || defined(__SPI_LCD_PANEL__)

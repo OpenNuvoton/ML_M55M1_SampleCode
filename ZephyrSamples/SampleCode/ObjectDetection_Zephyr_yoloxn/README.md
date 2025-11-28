@@ -19,13 +19,10 @@ Key Features:
     - Inference task: Processes AI inference independently
     - Uses Zephyr message queues for thread synchronization
 5. Optional Features:
-    - UVC (USB Video Class): Stream results over USB
+    - UVC (USB Video Class): Stream results image over USB
     - SD Card Support: Load the model from SD card instead of embedding it
     - Profiling: Performance monitoring and cycle counting
-6. Supported Configurations (Kconfig):
-    - Enable/disable application profiling
-    - Toggle UVC image streaming
-    - Load model from SD card or use embedded model
+    - LCD display: Show results image over LCD
 
 Software Stack:
 - TensorFlow Lite Micro with CMSIS-NN optimization
@@ -58,12 +55,13 @@ YOLOX-Nano is an ultra-lightweight YOLOX model optimized for low-power devices (
 ## Memory(RAM) Region ##
 This sample demonstrates the regions of the M55M1 memory in the following:
 
-| Region | Address | Size | M55M1 RAM | Data Type|
-|:----|:----|:----|:----|:----|
-|RAM|0x20100000|128KB|Part of SRAM0|Kernel read-write data|
-|DTCM|0x20000000|128KB|DTCM|System heap and stack|
-|SRAM2|0x20200000|320KB|SRAM2|Non-cachable, CCAP image frame buffer|
-|SRAM_HYPERRAM|0x81F20000|4000KB|Part of SRAM0, SRAM1 and HyperRAM|Model arena cache|
+| Region | Address | Size | Memory Type | Data Context | DTC Overlay | Memory Attribute |
+|:----|:----|:----|:----|:----|:----|:----| 
+|RAM|0x20100000|128KB|Part of SRAM0|Kernel read-write data|sram0_128K.overlay|DT_MEM_ARM_MPU_RAM|
+|DTCM|0x20000000|128KB|DTCM|System heap and stack||DT_MEM_ARM_MPU_RAM|
+|SRAM2|0x20200000|320KB|SRAM2|Non-cachable, CCAP image frame buffer|sram2_region.overlay|DT_MEM_ARM_MPU_RAM_NOCACHE|
+|SRAM_HYPERRAM|0x81F20000|4000KB|Part of SRAM0, SRAM1 and HyperRAM|Model arena cache|sram_hyperram_region.overlay|DT_MEM_ARM_MPU_RAM_NOCACHE|
+|EBI0|0x60000000|1024KB|EBI0|MPU-type LCD device|ebi_lcd_region.overlay|DT_MEM_ARM_MPU_DEVICE|
 
 ## Setup and Build ##
 This sample is based on Zephyr RTOS. Please follow the steps below to install and setup the compilation environment.
@@ -129,6 +127,7 @@ This sample supports the following application configurations. You can change th
 - ```CONFIG_APP_OD_UVC_SHOW_IMAGE``` (default y): Enable/disable the display of the result image over UVC connect.
 - ```CONFIG_APP_OD_MODEL_FROM_SD``` (default n): Support loading model from SD card to HyperRAM
 - ```CONFIG_APP_OD_USING_HYPERRAM``` (default n): Using HyperRAM for arena/model space 
+- ```CONFIG_APP_OD_LCD_SHOW_IMAGE``` (default n): Enable/disable the display of the result image over LCD.
 
 ## Performance
 1. Memory usage
@@ -146,8 +145,7 @@ System clock: 220MHz
 
 |Display(show result)| Applicaton Frame Rate (fps) |  
 |:------|:-------------------------|
-|Console| 17|
+|Console| 16|
 |Console + UVC| 14|
-
-
+|Console + LCD| 15|
 

@@ -130,6 +130,7 @@ static void lt7381_wait_ready(void)
             LCD_Delay_MilliSec(2);
             LT7381_WRITE_REG(0x01);
             u16RegData = LT7381_READ_DATA();
+
             if ((u16RegData & BIT7) == BIT7)
             {
                 break;
@@ -150,10 +151,7 @@ static void lt7381_wait_ready(void)
 
     LCD_Delay_MilliSec(100);
 
-    while (LT7381_READ_STATUS() & BIT1)
-    {
-        LCD_Delay_MilliSec(1);
-    }
+    while (LT7381_READ_STATUS() & BIT1);
 }
 
 static void lt7381_sw_reset(void)
@@ -168,17 +166,17 @@ static void lt7381_initial_pll(void)
     LT7381_WRITE_REG(0x05);
     LT7381_WRITE_DATA((s_PllSettings[XI_IN].lpllOD_sclk << 6) |
                       (s_PllSettings[XI_IN].lpllR_sclk << 1) |
-                      ((s_PllSettings[XI_IN].lpllN_sclk >> 8) & 0x1));
+                      (s_PllSettings[XI_IN].lpllN_sclk >> 8) & 0x1);
 
     LT7381_WRITE_REG(0x07);
     LT7381_WRITE_DATA((s_PllSettings[XI_IN].lpllOD_mclk << 6) |
                       (s_PllSettings[XI_IN].lpllR_mclk << 1) |
-                      ((s_PllSettings[XI_IN].lpllN_mclk >> 8) & 0x1));
+                      (s_PllSettings[XI_IN].lpllN_mclk >> 8) & 0x1);
 
     LT7381_WRITE_REG(0x09);
     LT7381_WRITE_DATA((s_PllSettings[XI_IN].lpllOD_cclk << 6) |
                       (s_PllSettings[XI_IN].lpllR_cclk << 1) |
-                      ((s_PllSettings[XI_IN].lpllN_cclk >> 8) & 0x1));
+                      (s_PllSettings[XI_IN].lpllN_cclk >> 8) & 0x1);
 
     LT7381_WRITE_REG(0x06);
     LT7381_WRITE_DATA(s_PllSettings[XI_IN].lpllN_sclk);
@@ -215,10 +213,7 @@ static void lt7381_initial_sdram(void)
 
     /*  0: SDRAM is not ready for access
         1: SDRAM is ready for access        */
-    while ((LT7381_READ_STATUS() & BIT2) == 0x00)
-    {
-        LCD_Delay_MilliSec(1);
-    }
+    while ((LT7381_READ_STATUS() & BIT2) == 0x00);
 
     LCD_Delay_MilliSec(1);
 }
@@ -537,7 +532,7 @@ static int32_t lt7381_init(void)
     lt7381_initial_main_window();
 
     SET_BACKLIGHT_ON;
-    printf("LT7381 Init done.\n");
+
     return 0;
 }
 

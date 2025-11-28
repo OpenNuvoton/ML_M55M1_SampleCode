@@ -66,6 +66,23 @@ if(CONFIG_APP_OD_USING_HYPERRAM)
     target_compile_definitions(app PRIVATE __USE_HYPERRAM__)
 endif()
 
+if(CONFIG_APP_OD_LCD_SHOW_IMAGE)
+    target_compile_definitions(app PRIVATE __USE_LCD__)
+endif()
+
+if(CONFIG_LT7381_MPU_PANEL)
+    target_compile_definitions(app PRIVATE __LCD_LT7381_PANEL__)
+endif()
+
+if(CONFIG_FSA506_MPU_PANEL)
+    target_compile_definitions(app PRIVATE __LCD_FSA506_PANEL__)
+endif()
+
+if(CONFIG_ILI9341_SPI_PANEL)
+    target_compile_definitions(app PRIVATE __LCD_ILI9341_PANEL__)
+endif()
+
+
 target_sources(app PRIVATE
     ${APP_SRC_DIR}/main.cpp
     ${APP_SRC_DIR}/BoardInit.cpp
@@ -83,6 +100,12 @@ target_sources(app PRIVATE
     ${APP_DEVICE_DIR}/ImageSensor/Sensor/SWI2C.c
     ${APP_DEVICE_DIR}/UVC/UVC.c
     ${APP_DEVICE_DIR}/UVC/descriptors.c
+    ${APP_DEVICE_DIR}/Display/Display.c
+    ${APP_DEVICE_DIR}/Display/drv_pdma.c
+    ${APP_DEVICE_DIR}/Display/Font8_16.c
+    ${APP_DEVICE_DIR}/Display/LCD/LCD_LT7381.c
+    ${APP_DEVICE_DIR}/Display/LCD/LCD_ILI9341.c
+    ${APP_DEVICE_DIR}/Display/LCD/LCD_FSA506.c
 )
 
 target_sources(app PRIVATE
@@ -112,6 +135,9 @@ target_sources(app PRIVATE
     ${ZEPHYR_NUVOTON_MODULE_DIR}/m55m1x/StdDriver/src/sdh.c
     ${ZEPHYR_NUVOTON_MODULE_DIR}/m55m1x/StdDriver/src/ccap.c
     ${ZEPHYR_NUVOTON_MODULE_DIR}/m55m1x/StdDriver/src/hsusbd.c
+    ${ZEPHYR_NUVOTON_MODULE_DIR}/m55m1x/StdDriver/src/ebi.c
+    ${ZEPHYR_NUVOTON_MODULE_DIR}/m55m1x/StdDriver/src/pdma.c
+    ${ZEPHYR_NUVOTON_MODULE_DIR}/m55m1x/StdDriver/src/spi.c
 )
 
 target_sources(app PRIVATE
