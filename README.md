@@ -65,4 +65,4 @@ M55M1BSP-3.01.003
 
 ## Install for Zephyr samples
 
-Please reference [Zephyr IDE with NuMicro Cotrext-M on VSCode](Doc/Zephyr/Zephyr%20IDE%20with%20NuMicro%20Cotrext-M%20on%20VSCode.md)
+Please reference [Zephyr IDE with NuMicro Cotrext-M on VSCode](ZephyrSamples/Doc/Zephyr/Zephyr%20IDE%20with%20NuMicro%20Cortex-M%20on%20VSCode.md)
