@@ -118,7 +118,7 @@ target_sources(app PRIVATE
 
 target_sources(app PRIVATE
     ${APP_MODEL_DIR}/YoloXnanoNu.cpp
-    ${APP_MODEL_DIR}/yolox_nano_nu_hg_full_integer_quant_vela.tflite.cpp
+    ${APP_MODEL_DIR}/yolox_n_nu_HgPerson_full_integer_quant_vela.tflite_class12.cpp
     ${APP_MODEL_DIR}/Labels.cpp
 )
 

@@ -22,9 +22,9 @@ static const char *labelsVec[] LABELS_ATTRIBUTE =
     "peace",
     "stop",
     "three",
-    "no_gesture"
+    "no_gesture",
+    "person"
 
-    //"person",
     //  "bicycle",
     //  "car",
     //  "motorcycle",
