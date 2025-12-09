@@ -1,0 +1,79 @@
+build_features: []
+custom_classes: []
+et_kernel_metadata:
+  cortex_m::dequantize_per_tensor.out:
+  - default
+  cortex_m::maximum.out:
+  - default
+  cortex_m::minimum.out:
+  - default
+  cortex_m::quantize_per_tensor.out:
+  - default
+  cortex_m::quantized_add.out:
+  - default
+  cortex_m::quantized_conv2d.out:
+  - default
+  cortex_m::quantized_linear.out:
+  - default
+  cortex_m::quantized_mul.out:
+  - default
+  cortex_m::transpose.out:
+  - default
+include_all_non_op_selectives: false
+include_all_operators: false
+kernel_metadata: {}
+operators:
+  cortex_m::dequantize_per_tensor.out:
+    debug_info:
+    - /home/chchen59/executorch/backends/cortex_m/ops/operators.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  cortex_m::maximum.out:
+    debug_info:
+    - /home/chchen59/executorch/backends/cortex_m/ops/operators.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  cortex_m::minimum.out:
+    debug_info:
+    - /home/chchen59/executorch/backends/cortex_m/ops/operators.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  cortex_m::quantize_per_tensor.out:
+    debug_info:
+    - /home/chchen59/executorch/backends/cortex_m/ops/operators.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  cortex_m::quantized_add.out:
+    debug_info:
+    - /home/chchen59/executorch/backends/cortex_m/ops/operators.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  cortex_m::quantized_conv2d.out:
+    debug_info:
+    - /home/chchen59/executorch/backends/cortex_m/ops/operators.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  cortex_m::quantized_linear.out:
+    debug_info:
+    - /home/chchen59/executorch/backends/cortex_m/ops/operators.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  cortex_m::quantized_mul.out:
+    debug_info:
+    - /home/chchen59/executorch/backends/cortex_m/ops/operators.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
+  cortex_m::transpose.out:
+    debug_info:
+    - /home/chchen59/executorch/backends/cortex_m/ops/operators.yaml
+    include_all_overloads: false
+    is_root_operator: true
+    is_used_for_training: true
