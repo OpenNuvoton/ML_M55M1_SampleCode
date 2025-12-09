@@ -19,7 +19,7 @@ using executorch::runtime::Error;
 namespace executorch {
 namespace backends {
 namespace arm {
-	
+
 Error register_ethosu_backend();
 
 } // namespace arm

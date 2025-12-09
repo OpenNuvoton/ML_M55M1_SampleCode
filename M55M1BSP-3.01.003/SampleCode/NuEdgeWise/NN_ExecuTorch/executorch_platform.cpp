@@ -68,7 +68,7 @@
 using namespace std;
 
 #include "RegisterEthosUBackend.hpp"
- 
+
 /// Start time of the system (used to zero the system timestamp).
 static uint64_t systemStartTime;
 
@@ -82,16 +82,16 @@ static bool initialized = false;
  * to initialize any global state. Typically overridden by PAL implementer.
  */
 void et_pal_init(void) {
-  if (initialized) {
-    return;
-  }
+    if (initialized) {
+        return;
+    }
 
-  executorch::backends::arm::register_ethosu_backend();
-  
-  pmu_reset_counters();
-  systemStartTime = pmu_get_systick_Count();
-  systemStartTime = systemStartTime / (SystemCoreClock / 1000); //1 tick = 1 ms
-  initialized = true;
+    executorch::backends::arm::register_ethosu_backend();
+
+    pmu_reset_counters();
+    systemStartTime = pmu_get_systick_Count();
+    systemStartTime = systemStartTime / (SystemCoreClock / 1000); //1 tick = 1 ms
+    initialized = true;
 }
 
 /**
@@ -99,7 +99,7 @@ void et_pal_init(void) {
  * available.
  */
 __ET_NORETURN void et_pal_abort(void) {
-  std::abort();
+    std::abort();
 }
 
 /**
@@ -108,10 +108,10 @@ __ET_NORETURN void et_pal_abort(void) {
  * @retval Timestamp value in system ticks.
  */
 et_timestamp_t et_pal_current_ticks(void) {
-  _ASSERT_PAL_INITIALIZED();
-  uint64_t systemCurrentTime = pmu_get_systick_Count();
-  systemCurrentTime = systemCurrentTime / (SystemCoreClock / 1000); //1 tick = 1 ms
-  return systemCurrentTime - systemStartTime;
+    _ASSERT_PAL_INITIALIZED();
+    uint64_t systemCurrentTime = pmu_get_systick_Count();
+    systemCurrentTime = systemCurrentTime / (SystemCoreClock / 1000); //1 tick = 1 ms
+    return systemCurrentTime - systemStartTime;
 }
 
 /**
@@ -123,8 +123,8 @@ et_timestamp_t et_pal_current_ticks(void) {
  * @retval The ratio of nanoseconds to system ticks.
  */
 et_tick_ratio_t et_pal_ticks_to_ns_multiplier(void) {
-  // The system tick interval is 1 millisecond, so the conversion factor is 10000000.
-  return {1000000, 1};
+    // The system tick interval is 1 millisecond, so the conversion factor is 10000000.
+    return {1000000, 1};
 }
 
 /**
@@ -147,39 +147,39 @@ void et_pal_emit_log_message(
     size_t line,
     const char* message,
     __ET_UNUSED size_t length) {
-  _ASSERT_PAL_INITIALIZED();
+    _ASSERT_PAL_INITIALIZED();
 
-  // Not all platforms have ticks == nanoseconds, but this one does.
-  timestamp /= 1000; // To microseconds
-  unsigned long int us = timestamp % 1000000;
-  timestamp /= 1000000; // To seconds
-  unsigned int sec = timestamp % 60;
-  timestamp /= 60; // To minutes
-  unsigned int min = timestamp % 60;
-  timestamp /= 60; // To hours
-  unsigned int hour = timestamp;
+    // Not all platforms have ticks == nanoseconds, but this one does.
+    timestamp /= 1000; // To microseconds
+    unsigned long int us = timestamp % 1000000;
+    timestamp /= 1000000; // To seconds
+    unsigned int sec = timestamp % 60;
+    timestamp /= 60; // To minutes
+    unsigned int min = timestamp % 60;
+    timestamp /= 60; // To hours
+    unsigned int hour = timestamp;
 
-  // Use a format similar to glog and folly::logging, except:
-  // - Print time since et_pal_init since we don't have wall time
-  // - Don't include the thread ID, to avoid adding a threading dependency
-  // - Add the string "executorch:" to make the logs more searchable
-  //
-  // Clients who want to change the format or add other fields can override this
-  // weak implementation of et_pal_emit_log_message.
-  fprintf(
-      ET_LOG_OUTPUT_FILE,
-      "%c %02u:%02u:%02u.%06lu executorch:%s:%zu] %s\n",
-      level,
-      hour,
-      min,
-      sec,
-      us,
-      filename,
-      line,
-      message);
-  fflush(ET_LOG_OUTPUT_FILE);
+    // Use a format similar to glog and folly::logging, except:
+    // - Print time since et_pal_init since we don't have wall time
+    // - Don't include the thread ID, to avoid adding a threading dependency
+    // - Add the string "executorch:" to make the logs more searchable
+    //
+    // Clients who want to change the format or add other fields can override this
+    // weak implementation of et_pal_emit_log_message.
+    fprintf(
+        ET_LOG_OUTPUT_FILE,
+        "%c %02u:%02u:%02u.%06lu executorch:%s:%zu] %s\n",
+        level,
+        hour,
+        min,
+        sec,
+        us,
+        filename,
+        line,
+        message);
+    fflush(ET_LOG_OUTPUT_FILE);
 }
-	
+
 /**
  * NOTE: Core runtime code must not call this directly. It may only be called by
  * a MemoryAllocator wrapper.
@@ -192,7 +192,7 @@ void et_pal_emit_log_message(
  */
 
 void* et_pal_allocate(size_t size) {
-  return malloc(size);
+    return malloc(size);
 }
 
 /**
@@ -202,5 +202,5 @@ void* et_pal_allocate(size_t size) {
  */
 
 void et_pal_free(void* ptr) {
-  free(ptr);
+    free(ptr);
 }

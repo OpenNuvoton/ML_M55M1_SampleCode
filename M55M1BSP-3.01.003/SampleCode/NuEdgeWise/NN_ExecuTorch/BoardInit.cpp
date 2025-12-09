@@ -118,7 +118,7 @@ int BoardInit(void)
     HyperRAM_Init(HYPERRAM_SPIM_PORT);
     /* Enter direct-mapped mode to run new applications */
     SPIM_HYPER_EnterDirectMapMode(HYPERRAM_SPIM_PORT);
-	/* SDH open SD card*/
+    /* SDH open SD card*/
     SDH_Open_Disk(SDH0, CardDetect_From_GPIO);
 
     printf("%s: complete\n", __FUNCTION__);

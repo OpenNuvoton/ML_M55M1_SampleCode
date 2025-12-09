@@ -1,7 +1,16 @@
 # NN_ExecuTorch
-A template sample code for executorch Arm backend
+This is an ExecuTorch neural network inference sample designed for the Nuvoton M55M1 microcontroller board with ARM Ethos-U NPU acceleration.
+## Hardware Platform
+- Board: NuMaker-M55M1 (ARM Cortex-M55 processor)
+- NPU: ARM Ethos-U55 neural processing unit for accelerated inference
+- External memory: HyperRAM
+- Peripherals: SD card interface for model loading, UART for logging
+## Core Functionality
+- Model Execution: Loads and executes pre-compiled neural network models (.pte format) using the ExecuTorch framework
+- Model Storage: Reads quantized neural network models from an SD card and places them in HyperRAM (0x82300000) for execution
+- Hardware Acceleration: Leverages the Ethos-U NPU for optimized tensor operations through the ARM backend
 ## Requirement
-1. [executorch](https://github.com/pytorch/executorch) v0.7
+1. [executorch](https://github.com/pytorch/executorch) v1.0.1
 2. Keil uVision5
 ## Howto
 1. Compile your pytorch model by executorch. It will generate a .pte model file.[^1]
@@ -16,7 +25,12 @@ A template sample code for executorch Arm backend
 __attribute__((section(".bss.sram.data"), aligned(32)))
 uint8_t method_allocation_pool[1400 * 1024U];
 ```
-2. If got "Missing operator" message, search operator code from "$BSP\ThirdParty\executorch\_prebuilt\kernels\portable\RegisterCodegenUnboxedKernelsEverything.cpp" or "$BSP\ThirdParty\executorch\_prebuilt\kernels\quantized\RegisterCodegenUnboxedKernelsEverything.cpp" and copy kernel operator code to "RegisterNativeKernels.cpp".
+2. If got "Missing operator" message, search operator code from
+	- "$BSP\ThirdParty\executorch\_prebuilt\kernels\portable\RegisterCodegenUnboxedKernelsEverything.cpp" 
+	- "$BSP\ThirdParty\executorch\_prebuilt\kernels\quantized\RegisterCodegenUnboxedKernelsEverything.cpp"
+	- "$BSP\ThirdParty\executorch\_prebuilt\backends\cortex_m\RegisterCodegenUnboxedKernelsEverything.cpp"
+	
+	and copy kernel operator code to "RegisterNativeKernels.cpp".
 
 ![miss operator](Picture/miss_operator.png)
 
