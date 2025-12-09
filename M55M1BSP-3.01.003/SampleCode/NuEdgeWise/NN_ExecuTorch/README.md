@@ -26,9 +26,9 @@ __attribute__((section(".bss.sram.data"), aligned(32)))
 uint8_t method_allocation_pool[1400 * 1024U];
 ```
 2. If got "Missing operator" message, search operator code from
-	- "$BSP\ThirdParty\executorch\_prebuilt\kernels\portable\RegisterCodegenUnboxedKernelsEverything.cpp" 
-	- "$BSP\ThirdParty\executorch\_prebuilt\kernels\quantized\RegisterCodegenUnboxedKernelsEverything.cpp"
-	- "$BSP\ThirdParty\executorch\_prebuilt\backends\cortex_m\RegisterCodegenUnboxedKernelsEverything.cpp"
+	- "$BSP\ThirdParty\executorch\\_prebuilt\kernels\portable\RegisterCodegenUnboxedKernelsEverything.cpp" 
+	- "$BSP\ThirdParty\executorch\\_prebuilt\kernels\quantized\RegisterCodegenUnboxedKernelsEverything.cpp"
+	- "$BSP\ThirdParty\executorch\\_prebuilt\backends\cortex_m\RegisterCodegenUnboxedKernelsEverything.cpp"
 	
 	and copy kernel operator code to "RegisterNativeKernels.cpp".
 
