@@ -205,7 +205,7 @@ static void MFP_ConfigCCAP(uint32_t bConfigCCAP)
 
 static S_SENSOR_INFO *s_psSensorInfo = NULL;
 
-int ImageSensor_Init(void)
+int ImageSensor_Init(uint32_t u32ImgWidth, uint32_t u32ImgHeight)
 {
     IRQ_DIRECT_CONNECT(CCAP_IRQn, 0, CCAP_Isr, 0);
     irq_enable(CCAP_IRQn);
@@ -215,8 +215,12 @@ int ImageSensor_Init(void)
     MFP_ConfigCCAP(TRUE);
 
     /* Init sensor */
-    //s_psSensorInfo = &g_sSensorHM1055_VGA_YUV422;
-    s_psSensorInfo = &g_sSensorHM1055_QVGA_YUV422;
+    if(u32ImgWidth == 320 && u32ImgHeight == 320)
+        s_psSensorInfo = &g_sSensorHM1055_320_320_YUV422;
+    else if(u32ImgWidth > 320 || u32ImgHeight > 240)
+        s_psSensorInfo = &g_sSensorHM1055_VGA_YUV422;
+    else
+        s_psSensorInfo = &g_sSensorHM1055_QVGA_YUV422;
 
     /* Initialize sensor and set sensor output format as YUV422 */
     if (s_psSensorInfo->pfnInitSensor(0) == FALSE) return -1;

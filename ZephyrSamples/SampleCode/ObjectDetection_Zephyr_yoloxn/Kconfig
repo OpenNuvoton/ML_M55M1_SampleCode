@@ -5,7 +5,7 @@ config APP_OD_PROFILE_ENABLED
     default n
 
 config APP_OD_USING_HYPERRAM
-    bool "Using hyperram for arena/model"
+    bool "Using hyperram for model"
     default n
 
 config APP_OD_MODEL_FROM_SD
@@ -15,11 +15,11 @@ config APP_OD_MODEL_FROM_SD
 
 config APP_OD_UVC_SHOW_IMAGE
     bool "Show result image over UVC"
-    default y
+    default n
 
 config APP_OD_LCD_SHOW_IMAGE
     bool "Show result image over LCD"
-    default y
+    default n
 
 if APP_OD_LCD_SHOW_IMAGE
 

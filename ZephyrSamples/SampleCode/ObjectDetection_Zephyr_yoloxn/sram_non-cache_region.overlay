@@ -6,15 +6,15 @@
 		#size-cells = <1>;
 		ranges;
 
-		sram_hyperram: memory@81F20000 {
+		sram_non_cache: memory@20110000 {
 			compatible = "zephyr,memory-region";
-			reg = <0x81F20000 DT_SIZE_K(4000)>;  // Start address and size
-			zephyr,memory-region = "SRAM_HYPERRAM";
+			reg = <0x20110000 DT_SIZE_K(1280)>;  // Start address and size
+			zephyr,memory-region = "SRAM_NON_CACHE";
 	        zephyr,memory-attr = <DT_MEM_ARM_MPU_RAM_NOCACHE>;
 		};
 	};
 
 	chosen {
-        zephyr,extra-memory = &sram_hyperram;
+        zephyr,extra-memory = &sram_non_cache;
     };
 };

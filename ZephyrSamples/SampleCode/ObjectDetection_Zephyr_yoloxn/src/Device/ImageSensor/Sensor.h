@@ -25,5 +25,6 @@ typedef struct s_sensor_info
 
 extern S_SENSOR_INFO g_sSensorHM1055_VGA_YUV422;
 extern S_SENSOR_INFO g_sSensorHM1055_QVGA_YUV422;
+extern S_SENSOR_INFO g_sSensorHM1055_320_320_YUV422;
 
 #endif  // __SENSOR_H__

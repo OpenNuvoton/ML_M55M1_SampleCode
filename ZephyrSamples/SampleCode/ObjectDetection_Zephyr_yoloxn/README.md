@@ -3,33 +3,33 @@
 This is a YOLOX-Nano neural network inference sample for object detection running on the Nuvoton M55M1 microcontroller with the Zephyr RTOS. Here's what it does:
 
 Key Features:
-1. Real-time Object Detection: Uses the YOLOX-nano model (a lightweight variant of YOLO) to detect objects in images captured from an image sensor (HM1055)
+1. Real-time Object Detection: Uses the YOLOX-nano model (a lightweight variant of YOLO) to detect objects in images captured from an image sensor (HM1055).
 2. Hardware Acceleration:
-    - Leverages the Ethos-U NPU (Neural Processing Unit) for accelerated AI inference
-    - Uses HyperRAM for model storage (external high-capacity memory)
-    - Supports I/D caching for improved performance
-    - Custom SRAM2 configuration for optimal memory layout
+    - Leverages the Ethos-U NPU (Neural Processing Unit) for accelerated AI inference.
+    - Uses HyperRAM for model storage (external high-capacity memory).
+    - Supports I/D caching for improved performance.
+    - Custom SRAM configuration for optimal memory layout.
 3. Image Capture & Processing:
-    - Captures images from an HM1055 image sensor via CCAP (Camera Capture)
-    - Resizes images to the model's input dimensions (RGB565 → RGB888)
-    - Quantizes data for efficient model inference
-    - Draws bounding boxes on detected objects
+    - Captures images from an HM1055 image sensor via CCAP (Camera Capture).
+    - Resizes images to the model's input dimensions (RGB565 → RGB888) for non-preview case.
+    - Quantizes data for efficient model inference.
+    - Draws bounding boxes on detected objects.
 4. Multi-threaded Architecture:
-    - Main task: Handles image capture and display
-    - Inference task: Processes AI inference independently
-    - Uses Zephyr message queues for thread synchronization
+    - Main task: Handles image capture and display.
+    - Inference task: Processes AI inference independently.
+    - Uses Zephyr message queues for thread synchronization.
 5. Optional Features:
-    - UVC (USB Video Class): Stream results image over USB
-    - SD Card Support: Load the model from SD card instead of embedding it
-    - Profiling: Performance monitoring and cycle counting
-    - LCD display: Show results image over LCD
+    - UVC (USB Video Class): Preview result image over USB.
+    - SD Card Support: Load the model from SD card instead of embedding it.
+    - Profiling: Performance monitoring and cycle counting.
+    - LCD display: Preview result image over LCD.
 
 Software Stack:
-- TensorFlow Lite Micro with CMSIS-NN optimization
-- Arm ML Embedded Evaluation Kit for common ML utilities
-- OpenMV (OMV) library for image processing
-- Zephyr OS for real-time task scheduling
-- FatFS for SD card file system
+- TensorFlow Lite Micro with CMSIS-NN optimization.
+- Arm ML Embedded Evaluation Kit for common ML utilities.
+- OpenMV (OMV) library for image processing.
+- Zephyr OS for real-time task scheduling.
+- FatFS for SD card file system.
 
 ## Model Information ##
 YOLOX (You Only Look Once – X) is a high-performance, anchor-free object detection framework.
@@ -48,7 +48,7 @@ YOLOX-Nano is an ultra-lightweight YOLOX model optimized for low-power devices (
 |Parameters| ~0.9M|
 |COCO mAP(0.5:0.95)| 0.200|
 |Model ROM size|1289KB|
-|Model RAM(arena) size|802KB|
+|Model RAM(arena) size|512KB|
 
 [NuEdgeWise](https://github.com/OpenNuvoton/ML_YOLO) provides YOLOX Nano-related transfer learning scripts and model conversion tools (from PyTorch to tflite). You can customize your own classes in this environment and deploy to M55M1.
 
@@ -57,10 +57,9 @@ This sample demonstrates the regions of the M55M1 memory in the following:
 
 | Region | Address | Size | Memory Type | Data Context | DTC Overlay | Memory Attribute |
 |:----|:----|:----|:----|:----|:----|:----| 
-|RAM|0x20100000|128KB|Part of SRAM0|Kernel read-write data|sram0_128K.overlay|DT_MEM_ARM_MPU_RAM|
+|RAM|0x20100000|64KB|Part of SRAM0|Kernel read-write data|sram0_64K.overlay|DT_MEM_ARM_MPU_RAM|
 |DTCM|0x20000000|128KB|DTCM|System heap and stack||DT_MEM_ARM_MPU_RAM|
-|SRAM2|0x20200000|320KB|SRAM2|Non-cachable, CCAP image frame buffer|sram2_region.overlay|DT_MEM_ARM_MPU_RAM_NOCACHE|
-|SRAM_HYPERRAM|0x81F20000|4000KB|Part of SRAM0, SRAM1 and HyperRAM|Model arena cache|sram_hyperram_region.overlay|DT_MEM_ARM_MPU_RAM_NOCACHE|
+|SRAM_NON_CACHE|0x20110000|1280KB|Part of SRAM0, SRAM1 and SRAM2|Model arena cache and image buffer|sram_non-cache_region.overlay|DT_MEM_ARM_MPU_RAM_NOCACHE|
 |EBI0|0x60000000|1024KB|EBI0|MPU-type LCD device|ebi_lcd_region.overlay|DT_MEM_ARM_MPU_DEVICE|
 
 ## Setup and Build ##
@@ -124,17 +123,14 @@ Please follow [Zephyr IDE with NuMicro Cortex-M on VSCode](../../Doc/Zephyr/Zeph
 ## Configuration ##
 This sample supports the following application configurations. You can change the settings by MenuConfig/GuiConfig, or modify prj.conf file directly.
 - ```CONFIG_APP_OD_PROFILE_ENABLED``` (default n): Enable/disable application profiling on each stage, which includes NPU inference, CCAP capture, image resize, post processing cycles.
-- ```CONFIG_APP_OD_UVC_SHOW_IMAGE``` (default y): Enable/disable the display of the result image over UVC connect.
+- ```CONFIG_APP_OD_UVC_SHOW_IMAGE``` (default n): Enable/disable the display of the result image over UVC connect.
 - ```CONFIG_APP_OD_MODEL_FROM_SD``` (default n): Support loading model from SD card to HyperRAM
-- ```CONFIG_APP_OD_USING_HYPERRAM``` (default n): Using HyperRAM for arena/model space 
 - ```CONFIG_APP_OD_LCD_SHOW_IMAGE``` (default n): Enable/disable the display of the result image over LCD.
 
 ## Performance
 1. Memory usage
 
 ![memory usage](pic/memory_usage.png)  
-
-PS. The SRAM_HYPERRAM region only uses 816KB, meaning only the M55M1 SRAM is actually used. Therefore, the ```CONFIG_APP_OD_USING_HYPERRAM``` can be disabled.
 
 2. Frame rate and inference rate  
 System clock: 220MHz  
@@ -145,7 +141,7 @@ System clock: 220MHz
 
 |Display(show result)| Applicaton Frame Rate (fps) |  
 |:------|:-------------------------|
-|Console| 16|
-|Console + UVC| 14|
-|Console + LCD| 15|
+|Non-preview| 34|
+|UVC| 14|
+|LCD| 15|
 

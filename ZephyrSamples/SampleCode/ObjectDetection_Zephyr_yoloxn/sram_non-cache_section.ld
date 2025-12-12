@@ -3,12 +3,16 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
-.sram2_noncachable (NOLOAD):
-{
-  __sram2_noinit_start = .;
+
+.sram_non_cache (NOLOAD): {
+  __sram_non_cache_start = .;
   . = ALIGN(32);
   *(.NonCacheable.ZeroInit)
+  . = ALIGN(32);
   *(.bss.vram.data)
   . = ALIGN(32);
-  __sram2_noinit_end = .;
-} > SRAM2 AT > SRAM2
+  *(.noinit.tflm_arena)
+  . = ALIGN(32);
+  *(.bss.NoInit.activation_buf_sram)
+  __sram_non_cache_end = .;
+} > SRAM_NON_CACHE

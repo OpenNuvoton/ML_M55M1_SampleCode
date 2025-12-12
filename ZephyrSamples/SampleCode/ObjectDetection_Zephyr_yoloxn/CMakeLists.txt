@@ -82,6 +82,9 @@ if(CONFIG_ILI9341_SPI_PANEL)
     target_compile_definitions(app PRIVATE __LCD_ILI9341_PANEL__)
 endif()
 
+if((CONFIG_APP_OD_LCD_SHOW_IMAGE) OR (CONFIG_APP_OD_UVC_SHOW_IMAGE))
+    target_compile_definitions(app PRIVATE __PREVIEW_SUPPORT__)
+endif()
 
 target_sources(app PRIVATE
     ${APP_SRC_DIR}/main.cpp
@@ -150,5 +153,4 @@ target_link_libraries(app PRIVATE
 )
 
 # Add platform specific linker source snippet
-zephyr_linker_sources(SECTIONS sram_hyperram_section.ld)
-zephyr_linker_sources(SECTIONS sram2_section.ld)
+zephyr_linker_sources(SECTIONS sram_non-cache_section.ld)

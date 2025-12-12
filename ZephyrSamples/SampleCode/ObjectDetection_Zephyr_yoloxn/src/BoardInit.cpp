@@ -73,8 +73,6 @@ static void SYS_Init(void)
 #endif
 }
 
-extern uint8_t  __sram_hyperram_end;
-
 /**
   * @brief Initiate the hardware resources of board
   * @return 0: Success, <0: Fail
@@ -93,13 +91,6 @@ int BoardInit(void)
     HyperRAM_Init(HYPERRAM_SPIM_PORT);
     /* Enter direct-mapped mode to run new applications */
     SPIM_HYPER_EnterDirectMapMode(HYPERRAM_SPIM_PORT);
-#else
-    if((uint32_t)(&__sram_hyperram_end)>= SPIM_HYPER_DMM0_ADDR)
-    {
-        printf("Error: The data in the sram_hyperram region exceeds the SRAM limit. \n"); 
-        printf("Please enable the CONFIG_APP_OD_USING_HYPERRAM option.\n");
-        return -1;
-    }
 #endif
 
 #if defined(__LOAD_MODEL_FROM_SD__)

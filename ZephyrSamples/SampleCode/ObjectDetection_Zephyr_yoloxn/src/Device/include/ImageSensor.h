@@ -31,7 +31,7 @@ typedef enum
     eIMAGE_FMT_BGRA888_I8,
 } E_IMAGE_FMT;
 
-int ImageSensor_Init(void);
+int ImageSensor_Init(uint32_t u32ImgWidth, uint32_t u32ImgHeight);
 int ImageSensor_Capture(uint32_t u32FrameBufAddr);
 int ImageSensor_Config(E_IMAGE_FMT eImgFmt, uint32_t u32ImgWidth, uint32_t u32ImgHeight, bool bKeepRatio);
 int ImageSensor_TriggerCapture(uint32_t u32FrameBufAddr);

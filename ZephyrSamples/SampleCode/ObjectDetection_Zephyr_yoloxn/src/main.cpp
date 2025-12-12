@@ -37,12 +37,8 @@
 
 // Define activation buffer size for model inference
 #undef ACTIVATION_BUF_SZ
-#define ACTIVATION_BUF_SZ (0x00CC000)
+#define ACTIVATION_BUF_SZ (512 * 1024)  //512KB
 #include "BufAttributes.hpp" /* Buffer attributes to be applied */
-
-//#define __PROFILE__
-//#define __LOAD_MODEL_FROM_SD__
-//#define __USE_UVC__
 
 #if defined (__USE_UVC__)
     #include "UVC.h"
@@ -63,16 +59,20 @@
 #endif
 
 //Used by omv library
-#if defined(__USE_UVC__)
+#if defined(__PREVIEW_SUPPORT__)
     //UVC only support QVGA, QQVGA
     #define GLCD_WIDTH  320
     #define GLCD_HEIGHT 240
+    #define IMGAE_COLOR_PIXEL_FORMAT    PIXFORMAT_RGB565
+    #define IMGAE_COLOR_BPP 2
 #else
     #define GLCD_WIDTH  320
-    #define GLCD_HEIGHT 240
+    #define GLCD_HEIGHT 320
+    #define IMGAE_COLOR_PIXEL_FORMAT    PIXFORMAT_RGB888
+    #define IMGAE_COLOR_BPP 3
 #endif
 
-#define IMAGE_FB_SIZE	(GLCD_WIDTH * GLCD_HEIGHT * 2)
+#define IMAGE_FB_SIZE	(GLCD_WIDTH * GLCD_HEIGHT * IMGAE_COLOR_BPP)
 
 #undef OMV_FB_SIZE
 #define OMV_FB_SIZE ( IMAGE_FB_SIZE + 1024)
@@ -105,8 +105,12 @@ typedef struct
 __attribute__((section(".bss.vram.data"), aligned(32))) static uint8_t s_au8FrameBuf0[OMV_FB_SIZE + OMV_FB_ALLOC_SIZE];
 __attribute__((section(".bss.vram.data"), aligned(32))) static uint8_t s_au8JpegBuf[OMV_JPEG_BUF_SIZE];
 
-#if (NUM_FRAMEBUF == 2)
+#if (NUM_FRAMEBUF >= 2)
     __attribute__((section(".bss.vram.data"), aligned(32))) static uint8_t s_au8FrameBuf1[OMV_FB_SIZE];
+#endif
+
+#if (NUM_FRAMEBUF >= 3)
+    __attribute__((section(".bss.vram.data"), aligned(32))) static uint8_t s_au8FrameBuf2[OMV_FB_SIZE];
 #endif
 
 // Global variables for omv frame buffer management
@@ -154,47 +158,6 @@ void readMPUConifg(void)
 	}
 	printf("mpu_ctx.mair[0] is %x \n", mpu_ctx.mair[0]);
 	printf("mpu_ctx.mair[1] is %x \n", mpu_ctx.mair[1]);
-}
-
-/*Configure sram2 MPU attribute by manaual, beacuse not support configu MPU by DT */
-extern uint8_t   __sram2_noinit_start;
-extern uint8_t   __sram2_noinit_end;
-
-/* Configure MPU to map SRAM2 as Non-cacheable region */
-void SRAM2MPUConifg(void)
-{
-	z_mpu_context_retained mpu_ctx;
-	z_arm_save_mpu_context(&mpu_ctx);
-
-	uint32_t i;
-
-	for(i = 0; i < mpu_ctx.num_valid_regions; i++) {
-		if ((mpu_ctx.rasr_rlar[i] & 0x1U) == 0U) {
-			break;
-		}
-	}
-
-	if(i == mpu_ctx.num_valid_regions) {
-		printf("All regions are used \n");
-		return;
-	}
-
-	mpu_ctx.rbar[i] = ARM_MPU_RBAR((uint32_t)&__sram2_noinit_start,
-                         ARM_MPU_SH_NON,    // Non-shareable
-                         0,                 // Read-only
-                         0,                 // Non-Privileged
-                         1),                // eXecute Never enabled
-	mpu_ctx.rasr_rlar[i] = ARM_MPU_RLAR((uint32_t)(&__sram2_noinit_end) - 1U
-								 ,MPU_MAIR_INDEX_SRAM_NOCACHE); //size 128KB, enable
-
-	printf("Config MPU Region %d: RBAR=0x%08" PRIx32 ", RASR/RLAR=0x%08" PRIx32 "\n", i,
-		       mpu_ctx.rbar[i], mpu_ctx.rasr_rlar[i]);
-	printf("NORMAL_OUTER_INNER_NON_CACHEABLE is %x \n", MPU_MAIR_INDEX_SRAM_NOCACHE);
-	printf("mpu_ctx.mair[0] is %x \n", mpu_ctx.mair[0]);
-	printf("mpu_ctx.mair[1] is %x \n", mpu_ctx.mair[1]);
-	printf("num_valid_regions is %d \n", mpu_ctx.num_valid_regions);
-
-	z_arm_restore_mpu_context(&mpu_ctx);
 }
 
 // Load model file from SD card to HyperRAM
@@ -266,8 +229,8 @@ static void omv_init()
 
     frameBuffer.w = GLCD_WIDTH;
     frameBuffer.h = GLCD_HEIGHT;
-    frameBuffer.size = GLCD_WIDTH * GLCD_HEIGHT * 2;
-    frameBuffer.pixfmt = PIXFORMAT_RGB565;
+    frameBuffer.size = GLCD_WIDTH * GLCD_HEIGHT * IMGAE_COLOR_BPP;
+    frameBuffer.pixfmt = IMGAE_COLOR_PIXEL_FORMAT;
 
     _fb_base = (char *)s_au8FrameBuf0;
     _fb_end =  (char *)(s_au8FrameBuf0 + OMV_FB_SIZE - 1);
@@ -286,13 +249,22 @@ static void omv_init()
 
     framebuffer_init_image(&s_asFramebuf[0].frameImage);
 
-#if (NUM_FRAMEBUF == 2)
+#if (NUM_FRAMEBUF >= 2)
     s_asFramebuf[1].frameImage.w = GLCD_WIDTH;
     s_asFramebuf[1].frameImage.h = GLCD_HEIGHT;
-    s_asFramebuf[1].frameImage.size = GLCD_WIDTH * GLCD_HEIGHT * 2;
-    s_asFramebuf[1].frameImage.pixfmt = PIXFORMAT_RGB565;
+    s_asFramebuf[1].frameImage.size = GLCD_WIDTH * GLCD_HEIGHT * IMGAE_COLOR_BPP;
+    s_asFramebuf[1].frameImage.pixfmt = IMGAE_COLOR_PIXEL_FORMAT;
     s_asFramebuf[1].frameImage.data = (uint8_t *)s_au8FrameBuf1;
 #endif
+
+#if (NUM_FRAMEBUF >= 3)
+    s_asFramebuf[2].frameImage.w = GLCD_WIDTH;
+    s_asFramebuf[2].frameImage.h = GLCD_HEIGHT;
+    s_asFramebuf[2].frameImage.size = GLCD_WIDTH * GLCD_HEIGHT * IMGAE_COLOR_BPP;
+    s_asFramebuf[2].frameImage.pixfmt = IMGAE_COLOR_PIXEL_FORMAT;
+    s_asFramebuf[2].frameImage.data = (uint8_t *)s_au8FrameBuf2;
+#endif
+
 }
 
 //frame buffer managemnet function
@@ -352,7 +324,7 @@ static bool PresentInferenceResult(const std::vector<arm::app::object_detection:
                                    std::vector<std::string> &labels)
 {
     /* If profiling is enabled, and the time is valid. */
-    //info("Final results:\n");
+    //printf("Final results:\n");
 
     for (uint32_t i = 0; i < results.size(); ++i)
     {
@@ -363,6 +335,37 @@ static bool PresentInferenceResult(const std::vector<arm::app::object_detection:
     }
 
     return true;
+}
+
+// Resize source image to model input tensor size
+static void ResizeImageToInputTensor(image_t *srcImg, TfLiteTensor *inputTensor, int inputImgCols, int inputImgRows)
+{
+    image_t resizeImg;
+    rectangle_t ROIRect;
+
+    ROIRect.x = 0;
+    ROIRect.y = 0;
+    ROIRect.w = srcImg->w;
+    ROIRect.h = srcImg->h;
+
+    resizeImg.w = inputImgCols;
+    resizeImg.h = inputImgRows;
+    resizeImg.data = (uint8_t *)inputTensor->data.data; //direct resize to input tensor buffer
+    resizeImg.pixfmt = PIXFORMAT_RGB888;
+
+    imlib_nvt_scale(srcImg, &resizeImg, &ROIRect);
+}
+
+// Copy and quantize image data to int8 tensor buffer
+static void CopyImgToTensorInt8(void* srcData, void *destData, const size_t maxImageSize)
+{
+    auto* tmp_req_data = static_cast<uint8_t*>(srcData);
+    auto* tmp_signed_req_data = static_cast<int8_t*>(destData);
+
+    for (size_t i = 0; i < maxImageSize; i++) {
+        tmp_signed_req_data[i] = (int8_t) (
+                (int32_t) (tmp_req_data[i]) - 128);
+    }
 }
 
 #if defined (__USE_UVC__)
@@ -377,7 +380,7 @@ static void UVCShowResultImage(image_t *Img)
     RGB565Img.w = Img->w;
     RGB565Img.h = Img->h;
     RGB565Img.data = (uint8_t *)Img->data;
-    RGB565Img.pixfmt = PIXFORMAT_RGB565;
+    RGB565Img.pixfmt = img->pixfmt;
 
     YUV422Img.w = RGB565Img.w;
     YUV422Img.h = RGB565Img.h;
@@ -397,7 +400,7 @@ static void UVCShowResultImage(image_t *Img)
     origImg.w = Img->w;
     origImg.h = Img->h;
     origImg.data = (uint8_t *)Img->data;
-    origImg.pixfmt = PIXFORMAT_RGB565;
+    origImg.pixfmt = Img->pixfmt;
 
     vflipImg.w = origImg.w;
     vflipImg.h = origImg.h;
@@ -547,8 +550,13 @@ void main_task(void *pvArgs1, void *pvArgs2, void *pvArgs3)
     }   
 
     //Setup image senosr
-    ImageSensor_Init();
+    ImageSensor_Init(dispImage.w, dispImage.h);
+
+#if defined(__PREVIEW_SUPPORT__)
     ImageSensor_Config(eIMAGE_FMT_RGB565, dispImage.w, dispImage.h, true);
+#else
+    ImageSensor_Config(eIMAGE_FMT_RGB888_U8, dispImage.w, dispImage.h, true);
+#endif
 
 #if defined (__USE_UVC__)
     // UVC init and HSUSBD start
@@ -598,43 +606,35 @@ void main_task(void *pvArgs1, void *pvArgs2, void *pvArgs3)
 
         if (fullFramebuf)
         {
-            //resize full image to input tensor
-            image_t resizeImg;
+            image_t *frameImg = &fullFramebuf->frameImage;
+            uint8_t *qualizedDataPtr = (uint8_t*)inputTensor->data.data;
 
-            ROIRect.x = 0;
-            ROIRect.y = 0;
-            ROIRect.w = fullFramebuf->frameImage.w;
-            ROIRect.h = fullFramebuf->frameImage.h;
-
-            resizeImg.w = inputImgCols;
-            resizeImg.h = inputImgRows;
-            resizeImg.data = (uint8_t *)inputTensor->data.data; //direct resize to input tensor buffer
-			resizeImg.pixfmt = PIXFORMAT_RGB888;
-
-#if defined(__PROFILE__)
-            u64StartCycle = pmu_get_systick_Count();
-#endif
-            imlib_nvt_scale(&fullFramebuf->frameImage, &resizeImg, &ROIRect);
-
-#if defined(__PROFILE__)
-            u64EndCycle = pmu_get_systick_Count();
-            printf("resize cycles %llu \n", (u64EndCycle - u64StartCycle));
-#endif
-
-#if defined(__PROFILE__)
-            u64StartCycle = pmu_get_systick_Count();
-#endif
-
-            /* If the data is signed. */
-            if (model.IsDataSigned())
+            if((frameImg->w != inputImgCols) || (frameImg->h != inputImgRows) || (frameImg->pixfmt != PIXFORMAT_RGB888))
             {
+#if defined(__PROFILE__)
+                u64StartCycle = pmu_get_systick_Count();
+#endif
+                ResizeImageToInputTensor(frameImg, inputTensor, inputImgCols, inputImgRows);
+#if defined(__PROFILE__)
+                u64EndCycle = pmu_get_systick_Count();
+                printf("resize cycles %llu \n", (u64EndCycle - u64StartCycle));
+#endif
+
+#if defined(__PROFILE__)
+                u64StartCycle = pmu_get_systick_Count();
+#endif
                 arm::app::image::ConvertImgToInt8(inputTensor->data.data, inputTensor->bytes);
+#if defined(__PROFILE__)
+                u64EndCycle = pmu_get_systick_Count();
+                printf("quantize cycles %llu \n", (u64EndCycle - u64StartCycle));
+#endif
+            }
+            else
+            {
+                //direct copy and quantize
+                CopyImgToTensorInt8(frameImg->data, inputTensor->data.data, inputTensor->bytes);
             }
 
-#if defined(__PROFILE__)
-            u64EndCycle = pmu_get_systick_Count();
-            printf("quantize cycles %llu \n", (u64EndCycle - u64StartCycle));
-#endif
             //trigger inference
             inferenceJob->responseQueue = &infRespMsgQueue;
             inferenceJob->pPostProc = &postProcess;
@@ -651,9 +651,12 @@ void main_task(void *pvArgs1, void *pvArgs2, void *pvArgs3)
         // Process inferenced frame buffer to display result
         if (infFramebuf)
         {
+
+#if defined(__PREVIEW_SUPPORT__)
             //draw bbox and render
             /* Draw boxes. */
             DrawImageDetectionBoxes(infFramebuf->results, &infFramebuf->frameImage, labels);
+#endif
 
 #if defined (__USE_LCD__)
             //Display image on LCD
@@ -670,19 +673,24 @@ void main_task(void *pvArgs1, void *pvArgs2, void *pvArgs3)
 
 #if defined(__PROFILE__)
             u64EndCycle = pmu_get_systick_Count();
-            info("display image cycles %llu \n", (u64EndCycle - u64StartCycle));
+            printf("display image cycles %llu \n", (u64EndCycle - u64StartCycle));
 #endif
 
 #endif
-
-
-
 
 #if defined (__USE_UVC__)
 
             if (UVC_IsConnect())
             {
+#if defined(__PROFILE__)
+                u64StartCycle = pmu_get_systick_Count();
+#endif
                 UVCShowResultImage(&infFramebuf->frameImage);
+
+#if defined(__PROFILE__)
+                u64EndCycle = pmu_get_systick_Count();
+                printf("UVC show image cycles %llu \n", (u64EndCycle - u64StartCycle));
+#endif
             }
 #endif            
             u64PerfFrames ++;
