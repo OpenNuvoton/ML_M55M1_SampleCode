@@ -6,9 +6,9 @@
 		#size-cells = <1>;
 		ranges;
 
-		sram_non_cache: memory@20110000 {
+		sram_non_cache: memory@20120000 {
 			compatible = "zephyr,memory-region";
-			reg = <0x20110000 DT_SIZE_K(1280)>;  // Start address and size
+			reg = <0x20120000 DT_SIZE_K(1216)>;  // Start address and size
 			zephyr,memory-region = "SRAM_NON_CACHE";
 	        zephyr,memory-attr = <DT_MEM_ARM_MPU_RAM_NOCACHE>;
 		};

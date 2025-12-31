@@ -14,6 +14,8 @@
     #include "board_config.h"
 #endif
 
+#if defined(__CMOS_HM1055_SENSOR__)
+
 int32_t InitHM1055_VGA_YUV422(uint32_t u32Param);
 int32_t InitHM1055_QVGA_YUV422(uint32_t u32Param);
 int32_t InitHM1055_320_320_YUV422(uint32_t u32Param);
@@ -584,17 +586,17 @@ int32_t InitHM1055_QVGA_YUV422(uint32_t u32Param)
     uint32_t i;
     uint8_t u8DeviceID = 0x48;
     uint8_t u8ID[2] = {0};
-    SET_GPIO_PH2();        /* PH2 for GPIO to act as SCL */
-    SET_GPIO_PH3();        /* PH3 for GPIO to act as SDA */
+    CONFIG_CMOS_SW_I2C_SCL_GPIO();        /* PH2 for GPIO to act as SCL */
+    CONFIG_CMOS_SW_I2C_SDA_GPIO();        /* PH3 for GPIO to act as SDA */
 
-    SET_GPIO_PG11();
-    SET_GPIO_PD12();
-    GPIO_SetMode(PG, BIT11, GPIO_MODE_OUTPUT);        /* Set #RST pin to high */
-    PG11 = 1;
-    GPIO_SetMode(PD, BIT12, GPIO_MODE_OUTPUT);        /* Set #PD pin to low */
-    PD12 = 0;
+    CONFIG_CMOS_RESET_GPIO();
+    CONFIG_CMOS_PWDN_GPIO();
+    GPIO_SetMode(CONFIG_CMOS_RESET_PORT, CONFIG_CMOS_RESET_PIN, GPIO_MODE_OUTPUT);        /* Set #RST pin to high */
+    CONFIG_CMOS_RESET_PORT_PIN = 1;
+    GPIO_SetMode(CONFIG_CMOS_PWDN_PORT, CONFIG_CMOS_PWDN_PIN, GPIO_MODE_OUTPUT);        /* Set #PD pin to low */
+    CONFIG_CMOS_PWDN_PORT_PIN = 0;
 
-    SWI2C_Open(eDRVGPIO_GPIOH, eDRVGPIO_PIN2, eDRVGPIO_GPIOH, eDRVGPIO_PIN3, Delay);
+    SWI2C_Open(CONFIG_CMOS_I2C_SCL_PORT, CONFIG_CMOS_I2C_SCL_PIN, CONFIG_CMOS_I2C_SDA_PORT, CONFIG_CMOS_I2C_SDA_PIN, Delay);
 
     for (i = 0; i < sizeof(s_sHM1055_QVGA_YUV422) / sizeof(struct NT_RegValue); i++)
     {
@@ -619,15 +621,15 @@ int32_t InitHM1055_VGA_YUV422(uint32_t u32Param)
     uint32_t i;
     uint8_t u8DeviceID = 0x48;
     uint8_t u8ID[2] = {0};
-    SET_GPIO_PH2();        /* PH2 for GPIO to act as SCL */
-    SET_GPIO_PH3();        /* PH3 for GPIO to act as SDA */
+    CONFIG_CMOS_SW_I2C_SCL_GPIO();        /* PH2 for GPIO to act as SCL */
+    CONFIG_CMOS_SW_I2C_SDA_GPIO();        /* PH3 for GPIO to act as SDA */
 
-    SET_GPIO_PG11();
-    SET_GPIO_PD12();
-    GPIO_SetMode(PG, BIT11, GPIO_MODE_OUTPUT);        /* Set #RST pin to high */
-    PG11 = 1;
-    GPIO_SetMode(PD, BIT12, GPIO_MODE_OUTPUT);        /* Set #PD pin to low */
-    PD12 = 0;
+    CONFIG_CMOS_RESET_GPIO();
+    CONFIG_CMOS_PWDN_GPIO();
+    GPIO_SetMode(CONFIG_CMOS_RESET_PORT, CONFIG_CMOS_RESET_PIN, GPIO_MODE_OUTPUT);        /* Set #RST pin to high */
+    CONFIG_CMOS_RESET_PORT_PIN = 1;
+    GPIO_SetMode(CONFIG_CMOS_PWDN_PORT, CONFIG_CMOS_PWDN_PIN, GPIO_MODE_OUTPUT);        /* Set #PD pin to low */
+    CONFIG_CMOS_PWDN_PORT_PIN = 0;
 
     SWI2C_Open(eDRVGPIO_GPIOH, eDRVGPIO_PIN2, eDRVGPIO_GPIOH, eDRVGPIO_PIN3, Delay);
 
@@ -654,17 +656,17 @@ int32_t InitHM1055_320_320_YUV422(uint32_t u32Param)
     uint32_t i;
     uint8_t u8DeviceID = 0x48;
     uint8_t u8ID[2] = {0};
-    SET_GPIO_PH2();        /* PH2 for GPIO to act as SCL */
-    SET_GPIO_PH3();        /* PH3 for GPIO to act as SDA */
+    CONFIG_CMOS_SW_I2C_SCL_GPIO();        /* PH2 for GPIO to act as SCL */
+    CONFIG_CMOS_SW_I2C_SDA_GPIO();        /* PH3 for GPIO to act as SDA */
 
-    SET_GPIO_PG11();
-    SET_GPIO_PD12();
-    GPIO_SetMode(PG, BIT11, GPIO_MODE_OUTPUT);        /* Set #RST pin to high */
-    PG11 = 1;
-    GPIO_SetMode(PD, BIT12, GPIO_MODE_OUTPUT);        /* Set #PD pin to low */
-    PD12 = 0;
+    CONFIG_CMOS_RESET_GPIO();
+    CONFIG_CMOS_PWDN_GPIO();
+    GPIO_SetMode(CONFIG_CMOS_RESET_PORT, CONFIG_CMOS_RESET_PIN, GPIO_MODE_OUTPUT);        /* Set #RST pin to high */
+    CONFIG_CMOS_RESET_PORT_PIN = 1;
+    GPIO_SetMode(CONFIG_CMOS_PWDN_PORT, CONFIG_CMOS_PWDN_PIN, GPIO_MODE_OUTPUT);        /* Set #PD pin to low */
+    CONFIG_CMOS_PWDN_PORT_PIN = 0;
 
-    SWI2C_Open(eDRVGPIO_GPIOH, eDRVGPIO_PIN2, eDRVGPIO_GPIOH, eDRVGPIO_PIN3, Delay);
+    SWI2C_Open(CONFIG_CMOS_I2C_SCL_PORT, CONFIG_CMOS_I2C_SCL_PIN, CONFIG_CMOS_I2C_SDA_PORT, CONFIG_CMOS_I2C_SDA_PIN, Delay);
 
     for (i = 0; i < sizeof(s_sHM1055_320_320_YUV422) / sizeof(struct NT_RegValue); i++)
     {
@@ -684,5 +686,5 @@ int32_t InitHM1055_320_320_YUV422(uint32_t u32Param)
     return 1;
 }
 
-
+#endif // SENSOR_HM1055_C
 

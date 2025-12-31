@@ -9,6 +9,8 @@ set(APP_MODEL_DIR src/Model)
 set(APP_SRC_DIR src/)
 set(APP_NPU_DIR src/NPU)
 set(APP_PROFILER_DIR src/ProfilerCounter)
+set(APP_BYTETRACK_DIR src/ByteTrack)
+set(APP_EIGEN_DIR ../../ThirdParty/eigen)
 set(APP_THIRDPARTY_MLEVK_DIR ../../ThirdParty/ml-embedded-evaluation-kit)
 set(APP_THIRDPARTY_OMV ../../ThirdParty/openmv)
 
@@ -28,6 +30,14 @@ target_include_directories(app PRIVATE
 
 target_include_directories(app PRIVATE
     ${APP_MODEL_DIR}/include
+)
+
+target_include_directories(app PRIVATE
+    ${APP_BYTETRACK_DIR}/include
+)
+
+target_include_directories(app PRIVATE
+    ${APP_EIGEN_DIR}
 )
 
 target_include_directories(app PRIVATE
@@ -86,6 +96,20 @@ if((CONFIG_APP_OD_LCD_SHOW_IMAGE) OR (CONFIG_APP_OD_UVC_SHOW_IMAGE))
     target_compile_definitions(app PRIVATE __PREVIEW_SUPPORT__)
 endif()
 
+if(CONFIG_CMOS_HM1055_SENSOR)
+    target_compile_definitions(app PRIVATE __CMOS_HM1055_SENSOR__)
+endif()
+
+if(CONFIG_CMOS_GC0308_SENSOR)
+    target_compile_definitions(app PRIVATE __CMOS_GC0308_SENSOR__)
+endif()
+
+if(${BOARD} STREQUAL "numaker_m55m1")
+    target_compile_definitions(app PRIVATE __NUMAKER_M55M1__)
+elseif(${BOARD} STREQUAL "nugesturetai_m55m1")
+    target_compile_definitions(app PRIVATE __NUGESTUREAI_M55M1__)
+endif()
+
 target_sources(app PRIVATE
     ${APP_SRC_DIR}/main.cpp
     ${APP_SRC_DIR}/BoardInit.cpp
@@ -100,6 +124,7 @@ target_sources(app PRIVATE
     ${APP_DEVICE_DIR}/SDCard/diskio_SDH.c
     ${APP_DEVICE_DIR}/ImageSensor/ImageSensor.c
     ${APP_DEVICE_DIR}/ImageSensor/Sensor/Sensor_HM1055.c
+    ${APP_DEVICE_DIR}/ImageSensor/Sensor/Sensor_GC0308.c
     ${APP_DEVICE_DIR}/ImageSensor/Sensor/SWI2C.c
     ${APP_DEVICE_DIR}/UVC/UVC.c
     ${APP_DEVICE_DIR}/UVC/descriptors.c
@@ -123,6 +148,14 @@ target_sources(app PRIVATE
     ${APP_MODEL_DIR}/YoloXnanoNu.cpp
     ${APP_MODEL_DIR}/yolox_n_nu_HgPerson_full_integer_quant_vela.tflite_class12.cpp
     ${APP_MODEL_DIR}/Labels.cpp
+)
+
+target_sources(app PRIVATE
+    ${APP_BYTETRACK_DIR}/BYTETracker.cpp
+    ${APP_BYTETRACK_DIR}/kalmanFilter.cpp
+    ${APP_BYTETRACK_DIR}/lapjv.cpp
+    ${APP_BYTETRACK_DIR}/STrack.cpp
+    ${APP_BYTETRACK_DIR}/utils.cpp
 )
 
 target_sources(app PRIVATE

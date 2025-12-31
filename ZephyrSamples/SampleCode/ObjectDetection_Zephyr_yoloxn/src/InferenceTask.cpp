@@ -7,6 +7,9 @@
  ******************************************************************************/
 
 #include "InferenceTask.hpp"
+#include <zephyr/logging/log.h>
+
+LOG_MODULE_REGISTER(InferenceTask, LOG_LEVEL_INF);
 
 namespace InferenceProcess
 {
@@ -25,7 +28,7 @@ bool InferenceProcess::RunJob(
     std::vector<object_detection::DetectionResult> *results
 )
 {
-//    printf("Inference process task run job...\n");
+//    LOG_INF("Inference process task run job...");
 
 #if defined(__PROFILE__)
     uint64_t u64StartCycle;
@@ -57,7 +60,7 @@ bool InferenceProcess::RunJob(
 
 #if defined(__PROFILE__)
     u64EndCycle = pmu_get_systick_Count();
-    printf("post processing cycles %llu \n", (u64EndCycle - u64StartCycle));
+    LOG_INF("post processing cycles %llu ", (u64EndCycle - u64StartCycle));
 #endif
 
     return runInf;
@@ -74,7 +77,7 @@ void inferenceProcessTask(void *pvArgs1, void *pvArgs2, void *pvArgs3)
 
     for (;;)
     {
-//		printf("Inference task is running...\n");
+//		LOG_INF("Inference task is running...");
         xInferenceJob *xJob;
 		k_msgq_get(params.queueHandle, &xJob, K_FOREVER);
 

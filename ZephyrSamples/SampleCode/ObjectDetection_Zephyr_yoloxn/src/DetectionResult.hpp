@@ -46,7 +46,8 @@ public:
         m_y0(y0),
         m_w(w),
         m_h(h),
-        m_cls(cls)
+        m_cls(cls),
+        m_trackID(0)
     {
     }
 
@@ -59,6 +60,7 @@ public:
     int     m_w{0};
     int     m_h{0};
     int     m_cls{0};
+    int     m_trackID{0};
 };
 
 } /* namespace object_detection */

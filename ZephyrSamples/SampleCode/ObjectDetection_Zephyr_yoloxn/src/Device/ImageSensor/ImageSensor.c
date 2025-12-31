@@ -130,22 +130,7 @@ static void MFP_ConfigCCAP(uint32_t bConfigCCAP)
     {
         // Config as GPIO
 
-#if defined(M55M1_ETM_BOARD)
-        // ETM Adapater Board Sensor 0
-        SET_GPIO_PA1();
-        SET_GPIO_PA0();
-        SET_GPIO_PC5();
-        SET_GPIO_PC4();
-        SET_GPIO_PC3();
-        SET_GPIO_PC2();
-        SET_GPIO_PC1();
-        SET_GPIO_PC0();
-
-		SET_GPIO_PG9();
-        SET_GPIO_PG10();
-        SET_GPIO_PG12();
-        SET_GPIO_PD7();			
-#else
+#if defined(__NUMAKER_M55M1__)
         // NuMaker-M55M1 Sensor 0
         SET_GPIO_PG2();
         SET_GPIO_PG3();
@@ -160,6 +145,21 @@ static void MFP_ConfigCCAP(uint32_t bConfigCCAP)
         SET_GPIO_PG10();
         SET_GPIO_PG12();
         SET_GPIO_PD7();
+#elif defined(__NUGESTUREAI_M55M1__)
+        // NuGestureAI-M55M1 Sensor 0
+        SET_GPIO_PA1();
+        SET_GPIO_PA0();
+        SET_GPIO_PC5();
+        SET_GPIO_PC4();
+        SET_GPIO_PA3();
+        SET_GPIO_PA2();
+        SET_GPIO_PB8();
+        SET_GPIO_PB7();
+
+		SET_GPIO_PB9();
+        SET_GPIO_PB10();
+        SET_GPIO_PB12();
+        SET_GPIO_PB13();
 #endif
 
     }
@@ -168,23 +168,7 @@ static void MFP_ConfigCCAP(uint32_t bConfigCCAP)
 
         /* Set multi-function pins for CCAP in DataFlow */
 
-#if defined(M55M1_ETM_BOARD)
-			// ETM Adapater Board Sensor 0
-        SET_CCAP_DATA7_PA1();
-        SET_CCAP_DATA6_PA0();
-        SET_CCAP_DATA5_PC5();
-        SET_CCAP_DATA4_PC4();
-        SET_CCAP_DATA3_PC3();
-        SET_CCAP_DATA2_PC2();
-        SET_CCAP_DATA1_PC1();
-        SET_CCAP_DATA0_PC0();
-
-		SET_CCAP_PIXCLK_PG9();
-        SET_CCAP_SCLK_PG10();
-        SET_CCAP_VSYNC_PG12();
-        SET_CCAP_HSYNC_PD7();
-
-#else
+#if defined(__NUMAKER_M55M1__)
         // NuMaker-M55M1 Sensor 0
         SET_CCAP_DATA7_PG2();
         SET_CCAP_DATA6_PG3();
@@ -199,6 +183,22 @@ static void MFP_ConfigCCAP(uint32_t bConfigCCAP)
         SET_CCAP_SCLK_PG10();
         SET_CCAP_VSYNC_PG12();
         SET_CCAP_HSYNC_PD7();
+#elif defined(__NUGESTUREAI_M55M1__)
+        // NuGestureAI-M55M1 Sensor 0
+        SET_CCAP_DATA7_PA1();
+        SET_CCAP_DATA6_PA0();
+        SET_CCAP_DATA5_PC5();
+        SET_CCAP_DATA4_PC4();
+        SET_CCAP_DATA3_PA3();
+        SET_CCAP_DATA2_PA2();
+        SET_CCAP_DATA1_PB8();
+        SET_CCAP_DATA0_PB7();
+
+		SET_CCAP_PIXCLK_PB13();
+        SET_CCAP_SCLK_PB12();
+        SET_CCAP_VSYNC_PB10();
+        SET_CCAP_HSYNC_PB9();
+
 #endif			
     }
 }
@@ -215,12 +215,19 @@ int ImageSensor_Init(uint32_t u32ImgWidth, uint32_t u32ImgHeight)
     MFP_ConfigCCAP(TRUE);
 
     /* Init sensor */
+#if defined(__CMOS_HM1055_SENSOR__)
     if(u32ImgWidth == 320 && u32ImgHeight == 320)
         s_psSensorInfo = &g_sSensorHM1055_320_320_YUV422;
     else if(u32ImgWidth > 320 || u32ImgHeight > 240)
         s_psSensorInfo = &g_sSensorHM1055_VGA_YUV422;
     else
         s_psSensorInfo = &g_sSensorHM1055_QVGA_YUV422;
+#elif defined(__CMOS_GC0308_SENSOR__)
+    s_psSensorInfo = &g_sSensorGC0308_VGA_YUV422;
+#else
+    printf("No sensor defined !!\n");
+    return -1;
+#endif
 
     /* Initialize sensor and set sensor output format as YUV422 */
     if (s_psSensorInfo->pfnInitSensor(0) == FALSE) return -1;

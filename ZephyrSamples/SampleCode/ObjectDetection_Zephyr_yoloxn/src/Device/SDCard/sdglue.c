@@ -117,10 +117,110 @@ ISR_DIRECT_DECLARE(SDH0_Isr)
     return 1; //1: handled, 0: not handled
 }
 
+//void SDH1_IRQHandler(void)
+ISR_DIRECT_DECLARE(SDH1_Isr)
+{
+    unsigned int volatile isr;
+    unsigned int volatile ier;
+
+    // FMI data abort interrupt
+    if (SDH1->GINTSTS & SDH_GINTSTS_DTAIF_Msk)
+    {
+        /* ResetAllEngine() */
+        SDH1->GCTL |= SDH_GCTL_GCTLRST_Msk;
+    }
+
+    //----- SD interrupt status
+    isr = SDH1->INTSTS;
+    ier = SDH1->INTEN;
+
+    if (isr & SDH_INTSTS_BLKDIF_Msk)
+    {
+        // block down
+        SD1.DataReadyFlag = TRUE;
+        SDH1->INTSTS = SDH_INTSTS_BLKDIF_Msk;
+        //printf("SD block down\r\n");
+    }
+
+    if ((ier & SDH_INTEN_CDIEN_Msk) &&
+            (isr & SDH_INTSTS_CDIF_Msk))    // card detect
+    {
+        //----- SD interrupt status
+        // it is work to delay 50 times for SD_CLK = 200KHz
+        {
+            int volatile i;         // delay 30 fail, 50 OK
+
+            for (i = 0; i < 0x500; i++); // delay to make sure got updated value from REG_SDISR.
+
+            isr = SDH1->INTSTS;
+        }
+
+#if (DEF_CARD_DETECT_SOURCE == CardDetect_From_DAT3)
+
+        if (!(isr & SDH_INTSTS_CDSTS_Msk))
+#else
+        if (isr & SDH_INTSTS_CDSTS_Msk)
+#endif
+        {
+            printf("\n***** card remove !\n");
+            SD1.IsCardInsert = FALSE;   // SDISR_CD_Card = 1 means card remove for GPIO mode
+            //memset(&SD1, 0, sizeof(SDH_INFO_T));
+        }
+        else
+        {
+            printf("***** card insert !\n");
+            //SDH_Open(SDH1, CardDetect_From_GPIO);
+            //SDH_Probe(SDH1);
+        }
+
+        SDH1->INTSTS = SDH_INTSTS_CDIF_Msk;
+    }
+
+    // CRC error interrupt
+    if (isr & SDH_INTSTS_CRCIF_Msk)
+    {
+        if (!(isr & SDH_INTSTS_CRC16_Msk))
+        {
+            //printf("***** ISR sdioIntHandler(): CRC_16 error !\n");
+            // handle CRC error
+        }
+        else if (!(isr & SDH_INTSTS_CRC7_Msk))
+        {
+            if (!SD1.R3Flag)
+            {
+                //printf("***** ISR sdioIntHandler(): CRC_7 error !\n");
+                // handle CRC error
+            }
+        }
+
+        SDH1->INTSTS = SDH_INTSTS_CRCIF_Msk;      // clear interrupt flag
+    }
+
+    if (isr & SDH_INTSTS_DITOIF_Msk)
+    {
+        printf("***** ISR: data in timeout !\n");
+        SDH1->INTSTS |= SDH_INTSTS_DITOIF_Msk;
+    }
+
+    // Response in timeout interrupt
+    if (isr & SDH_INTSTS_RTOIF_Msk)
+    {
+        printf("***** ISR: response in timeout !\n");
+        SDH1->INTSTS |= SDH_INTSTS_RTOIF_Msk;
+    }
+
+    __DSB();
+    __ISB();
+    return 1; //1: handled, 0: not handled
+}
+
 int32_t SDH_Open_Disk(SDH_T *sdh, uint32_t u32CardDetSrc)
 {
     IRQ_DIRECT_CONNECT(SDH0_IRQn, 0, SDH0_Isr, 0);
     irq_enable(SDH0_IRQn);
+
+    IRQ_DIRECT_CONNECT(SDH1_IRQn, 0, SDH1_Isr, 0);
+    irq_enable(SDH1_IRQn);
 
     SDH_Open(sdh, u32CardDetSrc);
 

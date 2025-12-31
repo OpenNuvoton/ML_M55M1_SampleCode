@@ -40,5 +40,17 @@ endchoice
 
 endif
 
+choice
+    prompt "Image Sensor select"
+    default CMOS_HM1055_SENSOR  
+
+config CMOS_HM1055_SENSOR
+    bool "Use HM1055 sensor"
+
+config CMOS_GC0308_SENSOR
+    bool "Use GC0308 sensor"
+
+endchoice
+
 endmenu
 source "Kconfig.zephyr"

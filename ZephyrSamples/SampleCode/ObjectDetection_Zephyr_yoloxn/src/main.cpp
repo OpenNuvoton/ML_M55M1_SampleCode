@@ -18,6 +18,7 @@
 #include <zephyr/sys/time_units.h>
 #include <zephyr/arch/arm/mpu/arm_mpu.h>
 #include <zephyr/cache.h>
+#include <zephyr/logging/log.h>
 
 #include "BoardInit.hpp"
 #include "ModelFileReader.h"
@@ -34,6 +35,9 @@
 #include "framebuffer.h"
 
 #include "Profiler.hpp"
+
+#define IMAGE_REAL_FRAMRATE		16  
+#include "BYTETracker.h"
 
 // Define activation buffer size for model inference
 #undef ACTIVATION_BUF_SZ
@@ -81,7 +85,8 @@
 #define OMV_FB_ALLOC_SIZE	(1*1024)
 
 // Stack size and priority for the new thread
-#define THREAD_STACK_SIZE (2*1024)
+#define MAINLOOP_TASK_STACK_SIZE    (48 * 1024)
+#define INFERENCE_TASK_STACK_SIZE   (4 * 1024)
 #define MAINLOOP_TASK_PRIO  4
 #define INFERENCE_TASK_PRIO 3
 
@@ -100,6 +105,8 @@ typedef struct
     image_t frameImage;
     std::vector<arm::app::object_detection::DetectionResult> results;
 } S_FRAMEBUF;
+
+LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
 
 // Frame buffer static allocation
 __attribute__((section(".bss.vram.data"), aligned(32))) static uint8_t s_au8FrameBuf0[OMV_FB_SIZE + OMV_FB_ALLOC_SIZE];
@@ -123,10 +130,10 @@ char *_fballoc = NULL;
 S_FRAMEBUF s_asFramebuf[NUM_FRAMEBUF];
 
 // Define a stack and thread data structure
-K_THREAD_STACK_DEFINE(s_sMainTaskStack, THREAD_STACK_SIZE);
+K_THREAD_STACK_DEFINE(s_sMainTaskStack, MAINLOOP_TASK_STACK_SIZE);
 static struct k_thread s_sMainTask;
 
-K_THREAD_STACK_DEFINE(s_sInfTaskStack, THREAD_STACK_SIZE);
+K_THREAD_STACK_DEFINE(s_sInfTaskStack, INFERENCE_TASK_STACK_SIZE);
 static struct k_thread s_sInfTask;
 
 namespace arm
@@ -153,20 +160,31 @@ void readMPUConifg(void)
 	uint32_t i;
 
 	for(i = 0; i < mpu_ctx.num_valid_regions; i++) {
-		printf("MPU Region %d: RBAR=0x%08" PRIx32 ", RASR/RLAR=0x%08" PRIx32 "\n", i,
+		LOG_INF("MPU Region %d: RBAR=0x%08" PRIx32 ", RASR/RLAR=0x%08" PRIx32 "", i,
 		       mpu_ctx.rbar[i], mpu_ctx.rasr_rlar[i]);
 	}
-	printf("mpu_ctx.mair[0] is %x \n", mpu_ctx.mair[0]);
-	printf("mpu_ctx.mair[1] is %x \n", mpu_ctx.mair[1]);
+	LOG_INF("mpu_ctx.mair[0] is %x ", mpu_ctx.mair[0]);
+	LOG_INF("mpu_ctx.mair[1] is %x ", mpu_ctx.mair[1]);
 }
 
 // Load model file from SD card to HyperRAM
 static int32_t PrepareModelToHyperRAM(void)
 {
-#define MODEL_FILE "0:\\nn_model.tflite"
 #define EACH_READ_SIZE 512
-	
+
+#if defined(__NUMAKER_M55M1__)
+#define MODEL_FILE "0:\\nn_model.tflite"
+#endif
+#if defined(__NUGESTUREAI_M55M1__)
+#define MODEL_FILE "1:\\nn_model.tflite"
+#endif
+
+#if defined(__NUMAKER_M55M1__)
     TCHAR sd_path[] = { '0', ':', 0 };    /* SD drive started from 0 */	
+#endif
+#if defined(__NUGESTUREAI_M55M1__)
+    TCHAR sd_path[] = { '1', ':', 0 };    /* SD drive started from 1 */    
+#endif
     f_chdrive(sd_path);          /* set default path */
 
 	int32_t i32FileSize;
@@ -175,12 +193,12 @@ static int32_t PrepareModelToHyperRAM(void)
 	
 	if(!ModelFileReader_Initialize(MODEL_FILE))
 	{
-        printf("Unable open model %s\n", MODEL_FILE);		
+        LOG_ERR("Unable open model %s", MODEL_FILE);		
 		return -1;
 	}
 	
 	i32FileSize = ModelFileReader_FileSize();
-    printf("Model file size %i \n", i32FileSize);
+    LOG_INF("Model file size %i ", i32FileSize);
 
 	while(i32FileReadIndex < i32FileSize)
 	{
@@ -192,7 +210,7 @@ static int32_t PrepareModelToHyperRAM(void)
 	
 	if(i32FileReadIndex < i32FileSize)
 	{
-        printf("Read Model file size is not enough\n");		
+        LOG_ERR("Read Model file size is not enough");		
 		return -2;
 	}
 	
@@ -210,7 +228,7 @@ static int32_t PrepareModelToHyperRAM(void)
 		
 		if(std::memcmp(au8TempBuf, (void *)(MODEL_AT_HYPERRAM_ADDR + i32FileReadIndex), i32Read)!= 0)
 		{
-			printf_err("verify the model file content is incorrect at %i \n", i32FileReadIndex);		
+			LOG_ERR("verify the model file content is incorrect at %i", i32FileReadIndex);		
 			return -3;
 		}
 		i32FileReadIndex += i32Read;
@@ -307,6 +325,74 @@ static S_FRAMEBUF *get_inf_framebuf()
     return NULL;
 }
 
+static void apply_person_track_ID(
+    std::vector<arm::app::object_detection::DetectionResult> &results,
+    BYTETracker *tracker
+)
+{
+    //prepare detection objects for tracker
+    arm::app::object_detection::DetectionResult detectBox;
+	int boxSize = results.size();
+    std::vector<struct Object> detObjects;
+    int b = 0;
+
+    //only process person class
+    for(b = 0; b < boxSize; b ++)
+    {
+        struct Object detObject;
+        detectBox = results[b];
+
+        if(detectBox.m_cls == LABELS_PERSON_ID)
+        {
+            detObject.rect.x = detectBox.m_x0;
+            detObject.rect.y = detectBox.m_y0;
+            detObject.rect.w = detectBox.m_w;
+            detObject.rect.h = detectBox.m_h;
+            detObject.label = detectBox.m_cls;
+            detObject.prob = static_cast<float>(detectBox.m_normalisedVal);
+            detObjects.push_back(detObject);
+        }
+    }
+
+    //remove previous person class detection results
+    b = 0;
+    while(b < results.size())
+    {
+        if(results[b].m_cls == LABELS_PERSON_ID)
+        {
+            results.erase(results.begin() + b);
+        }
+        else
+        {
+            b++;
+        }
+    }
+
+    std::vector<STrack> trackedStracks = tracker->update(detObjects);
+
+    int trackSize = trackedStracks.size();
+
+    if(trackSize == 0)
+        return;
+ 
+    //append tracking results
+    for(int t = 0; t < trackSize; t ++)
+    {
+        STrack track = trackedStracks[t];
+
+        arm::app::object_detection::DetectionResult trackBox;
+        trackBox.m_x0 = static_cast<int>(track.tlwh[0]);
+        trackBox.m_y0 = static_cast<int>(track.tlwh[1]);
+        trackBox.m_w  = static_cast<int>(track.tlwh[2]);
+        trackBox.m_h  = static_cast<int>(track.tlwh[3]);
+        trackBox.m_cls = LABELS_PERSON_ID;
+        trackBox.m_normalisedVal = track.score;
+        trackBox.m_trackID = track.track_id;
+        results.push_back(trackBox);
+    }
+
+}
+
 static void DrawImageDetectionBoxes(
     const std::vector<arm::app::object_detection::DetectionResult> &results,
     image_t *drawImg,
@@ -324,14 +410,14 @@ static bool PresentInferenceResult(const std::vector<arm::app::object_detection:
                                    std::vector<std::string> &labels)
 {
     /* If profiling is enabled, and the time is valid. */
-    //printf("Final results:\n");
+    //LOG_INF("Final results: %d detected objects", results.size());
 
     for (uint32_t i = 0; i < results.size(); ++i)
     {
-        printf("%" PRIu32 ") %s(%f) -> %s {x=%d,y=%d,w=%d,h=%d}\n", i,
+        LOG_INF("%" PRIu32 ") %s(%f) %s {x=%d,y=%d,w=%d,h=%d, id=%d}", i,
              labels[results[i].m_cls].c_str(),
-             results[i].m_normalisedVal, "Detection box:",
-             results[i].m_x0, results[i].m_y0, results[i].m_w, results[i].m_h);
+             results[i].m_normalisedVal, "Box:",
+             results[i].m_x0, results[i].m_y0, results[i].m_w, results[i].m_h, results[i].m_trackID);
     }
 
     return true;
@@ -428,14 +514,14 @@ void main_task(void *pvArgs1, void *pvArgs2, void *pvArgs3)
 	// Prepare model file to HyperRAM
 	int32_t i32ModelSize;
 
-	printf("==================== Load model file from SD card =================================\n"); 
-	printf("Please copy NN_ModelInference/Model/xxx_vela.tflite to SDCard:/nn_model.tflite     \n"); 
-	printf("===================================================================================\n"); 
+	LOG_INF("==================== Load model file from SD card ================================="); 
+	LOG_INF("Please copy NN_ModelInference/Model/xxx_vela.tflite to SDCard:/nn_model.tflite     "); 
+	LOG_INF("==================================================================================="); 
 	i32ModelSize = 	PrepareModelToHyperRAM();
 
 	if(i32ModelSize <= 0 )
 	{
-        printf("Failed to prepare model\n");
+        LOG_ERR("Failed to prepare model");
         return;
 	}
 
@@ -447,7 +533,7 @@ void main_task(void *pvArgs1, void *pvArgs2, void *pvArgs3)
                     (unsigned char *)MODEL_AT_HYPERRAM_ADDR,
                     i32ModelSize))
     {
-        printf("Failed to initialise model\n");
+        LOG_ERR("Failed to initialise model");
         return;
     }
 #else
@@ -460,7 +546,7 @@ void main_task(void *pvArgs1, void *pvArgs2, void *pvArgs3)
                     arm::app::yoloxnanonu::GetModelPointer(),
                     arm::app::yoloxnanonu::GetModelLen()))
     {
-        printf("Failed to initialise model\n");
+        LOG_ERR("Failed to initialise model");
         return;
     }
 #endif
@@ -471,7 +557,7 @@ void main_task(void *pvArgs1, void *pvArgs2, void *pvArgs3)
     taskParam.queueHandle = &infProcMsgQueue;
 
 	k_tid_t infTID = k_thread_create(&s_sInfTask, s_sInfTaskStack,
-			THREAD_STACK_SIZE,
+			INFERENCE_TASK_STACK_SIZE,
 			inferenceProcessTask,
 			&taskParam, NULL, NULL,
 			INFERENCE_TASK_PRIO,
@@ -479,7 +565,7 @@ void main_task(void *pvArgs1, void *pvArgs2, void *pvArgs3)
 
 	if(infTID == NULL)
 	{
-		printf("Failed to create inference task\n");
+		LOG_ERR("Failed to create inference task");
 		return;
 	}
 
@@ -489,12 +575,12 @@ void main_task(void *pvArgs1, void *pvArgs2, void *pvArgs3)
 
     if (!inputTensor->dims)
     {
-        printf("Invalid input tensor dims\n");
+        LOG_ERR("Invalid input tensor dims");
         return;
     }
     else if (inputTensor->dims->size < 3)
     {
-        printf("Input tensor dimension should be >= 3\n");
+        LOG_ERR("Input tensor dimension should be >= 3");
         return;
     }
 
@@ -545,7 +631,7 @@ void main_task(void *pvArgs1, void *pvArgs2, void *pvArgs3)
     struct xInferenceJob *inferenceJob = new (struct xInferenceJob);
     if(inferenceJob == nullptr)
     {
-        printf("Failed to create inference job\n");
+        LOG_ERR("Failed to create inference job");
         return;
     }   
 
@@ -572,6 +658,8 @@ void main_task(void *pvArgs1, void *pvArgs2, void *pvArgs3)
     Display_ClearLCD(C_WHITE);
 #endif
 
+    BYTETracker tracker(IMAGE_REAL_FRAMRATE, 30);
+
 	while(1)
 	{
         // Get empty frame buffer to store captured image
@@ -597,7 +685,7 @@ void main_task(void *pvArgs1, void *pvArgs2, void *pvArgs3)
 			k_msgq_get(&infRespMsgQueue, &inferenceJob, K_FOREVER);
 #if defined(__PROFILE__)
 			u64EachEndCycle = pmu_get_systick_Count();
-            printf("Wait inference done cycles %llu \n", (u64EachEndCycle - u64EachStartCycle));
+            LOG_INF("Wait inference done cycles %llu ", (u64EachEndCycle - u64EachStartCycle));
 #endif
 		}
 
@@ -617,7 +705,7 @@ void main_task(void *pvArgs1, void *pvArgs2, void *pvArgs3)
                 ResizeImageToInputTensor(frameImg, inputTensor, inputImgCols, inputImgRows);
 #if defined(__PROFILE__)
                 u64EndCycle = pmu_get_systick_Count();
-                printf("resize cycles %llu \n", (u64EndCycle - u64StartCycle));
+                LOG_INF("resize cycles %llu ", (u64EndCycle - u64StartCycle));
 #endif
 
 #if defined(__PROFILE__)
@@ -626,7 +714,7 @@ void main_task(void *pvArgs1, void *pvArgs2, void *pvArgs3)
                 arm::app::image::ConvertImgToInt8(inputTensor->data.data, inputTensor->bytes);
 #if defined(__PROFILE__)
                 u64EndCycle = pmu_get_systick_Count();
-                printf("quantize cycles %llu \n", (u64EndCycle - u64StartCycle));
+                LOG_INF("quantize cycles %llu ", (u64EndCycle - u64StartCycle));
 #endif
             }
             else
@@ -651,6 +739,8 @@ void main_task(void *pvArgs1, void *pvArgs2, void *pvArgs3)
         // Process inferenced frame buffer to display result
         if (infFramebuf)
         {
+            //apply person track ID
+            apply_person_track_ID(infFramebuf->results, &tracker);
 
 #if defined(__PREVIEW_SUPPORT__)
             //draw bbox and render
@@ -673,7 +763,7 @@ void main_task(void *pvArgs1, void *pvArgs2, void *pvArgs3)
 
 #if defined(__PROFILE__)
             u64EndCycle = pmu_get_systick_Count();
-            printf("display image cycles %llu \n", (u64EndCycle - u64StartCycle));
+            LOG_INF("display image cycles %llu ", (u64EndCycle - u64StartCycle));
 #endif
 
 #endif
@@ -689,7 +779,7 @@ void main_task(void *pvArgs1, void *pvArgs2, void *pvArgs3)
 
 #if defined(__PROFILE__)
                 u64EndCycle = pmu_get_systick_Count();
-                printf("UVC show image cycles %llu \n", (u64EndCycle - u64StartCycle));
+                LOG_INF("UVC show image cycles %llu ", (u64EndCycle - u64StartCycle));
 #endif
             }
 #endif            
@@ -697,7 +787,7 @@ void main_task(void *pvArgs1, void *pvArgs2, void *pvArgs3)
 
             if ((uint64_t) pmu_get_systick_Count() > u64PerfCycle)
             {
-                printf("Total inference rate: %llu\n", u64PerfFrames / EACH_PERF_SEC);
+                LOG_INF("Total inference rate: %llu", u64PerfFrames / EACH_PERF_SEC);
                 u64PerfCycle = (uint64_t)pmu_get_systick_Count() + (uint64_t)(k_sec_to_cyc_floor32(1) * EACH_PERF_SEC);
                 u64PerfFrames = 0;
             }
@@ -713,7 +803,7 @@ void main_task(void *pvArgs1, void *pvArgs2, void *pvArgs3)
 
 #if defined(__PROFILE__)
             u64CCAPEndCycle = pmu_get_systick_Count();
-            printf("ccap capture cycles %llu \n", (u64CCAPEndCycle - u64CCAPStartCycle));
+            LOG_INF("ccap capture cycles %llu ", (u64CCAPEndCycle - u64CCAPStartCycle));
 #endif
             emptyFramebuf->results.clear();
             emptyFramebuf->eState = eFRAMEBUF_FULL;
@@ -737,7 +827,7 @@ int main()
 
 	// Create main task thread
 	k_tid_t mainTID = k_thread_create(&s_sMainTask, s_sMainTaskStack,
-			THREAD_STACK_SIZE,
+			MAINLOOP_TASK_STACK_SIZE,
 			main_task,
 			NULL, NULL, NULL,
 			MAINLOOP_TASK_PRIO,
@@ -745,7 +835,7 @@ int main()
 
 	if(mainTID == NULL)
 	{
-		printf("Failed to create main task\n");
+		LOG_ERR("Failed to create main task");
 		return 1;
 	}
 
