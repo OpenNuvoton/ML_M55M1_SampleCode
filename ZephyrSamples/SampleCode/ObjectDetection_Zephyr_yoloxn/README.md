@@ -59,7 +59,7 @@ This sample demonstrates the regions of the M55M1 memory in the following:
 
 | Region | Address | Size | Memory Type | Data Context | DTC Overlay | Memory Attribute |
 |:----|:----|:----|:----|:----|:----|:----| 
-|RAM|0x20100000|128KB|Part of SRAM0|Kernel read-write data|sram0_64K.overlay|DT_MEM_ARM_MPU_RAM|
+|RAM|0x20100000|128KB|Part of SRAM0|Kernel read-write data|sram0_128K.overlay|DT_MEM_ARM_MPU_RAM|
 |DTCM|0x20000000|128KB|DTCM|System heap and stack||DT_MEM_ARM_MPU_RAM|
 |SRAM_NON_CACHE|0x20110000|1216KB|Part of SRAM0, SRAM1 and SRAM2|Model arena cache and image buffer|sram_non-cache_region.overlay|DT_MEM_ARM_MPU_RAM_NOCACHE|
 |EBI0|0x60000000|1024KB|EBI0|MPU-type LCD device|ebi_lcd_region.overlay|DT_MEM_ARM_MPU_DEVICE|
