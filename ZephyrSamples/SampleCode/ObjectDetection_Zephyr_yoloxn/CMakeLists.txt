@@ -72,6 +72,10 @@ if(CONFIG_APP_OD_MODEL_FROM_SD)
     target_compile_definitions(app PRIVATE __LOAD_MODEL_FROM_SD__)
 endif()
 
+if(CONFIG_APP_OD_FORMATTED_MESSAGE)
+    target_compile_definitions(app PRIVATE __FORMATTED_OD_MESSAGE__)
+endif()
+
 if(CONFIG_APP_OD_USING_HYPERRAM)
     target_compile_definitions(app PRIVATE __USE_HYPERRAM__)
 endif()

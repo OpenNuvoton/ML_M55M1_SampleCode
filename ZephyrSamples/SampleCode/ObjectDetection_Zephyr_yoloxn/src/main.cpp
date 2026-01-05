@@ -4,7 +4,7 @@
  * @brief    YOLOX-nano network inference sample. Demonstrate object detection.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2024 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2026 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 
 /****************************************************************************
@@ -106,7 +106,8 @@ typedef struct
     std::vector<arm::app::object_detection::DetectionResult> results;
 } S_FRAMEBUF;
 
-LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
+//LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(, LOG_LEVEL_INF);
 
 // Frame buffer static allocation
 __attribute__((section(".bss.vram.data"), aligned(32))) static uint8_t s_au8FrameBuf0[OMV_FB_SIZE + OMV_FB_ALLOC_SIZE];
@@ -342,7 +343,7 @@ static void apply_person_track_ID(
         struct Object detObject;
         detectBox = results[b];
 
-        if(detectBox.m_cls == LABELS_PERSON_ID)
+        if(detectBox.m_cls == LABELS_PERSON_IDX)
         {
             detObject.rect.x = detectBox.m_x0;
             detObject.rect.y = detectBox.m_y0;
@@ -358,7 +359,7 @@ static void apply_person_track_ID(
     b = 0;
     while(b < results.size())
     {
-        if(results[b].m_cls == LABELS_PERSON_ID)
+        if(results[b].m_cls == LABELS_PERSON_IDX)
         {
             results.erase(results.begin() + b);
         }
@@ -385,7 +386,7 @@ static void apply_person_track_ID(
         trackBox.m_y0 = static_cast<int>(track.tlwh[1]);
         trackBox.m_w  = static_cast<int>(track.tlwh[2]);
         trackBox.m_h  = static_cast<int>(track.tlwh[3]);
-        trackBox.m_cls = LABELS_PERSON_ID;
+        trackBox.m_cls = LABELS_PERSON_IDX;
         trackBox.m_normalisedVal = track.score;
         trackBox.m_trackID = track.track_id;
         results.push_back(trackBox);
@@ -406,21 +407,45 @@ static void DrawImageDetectionBoxes(
     }
 }
 
-static bool PresentInferenceResult(const std::vector<arm::app::object_detection::DetectionResult> &results,
+static uint8_t IDMapping(int cls, int track_id)
+{
+    //currently no mapping, direct use model class ID
+    if(cls == LABELS_PERSON_IDX)
+        return (uint8_t)(track_id % 128);
+
+    return (uint8_t)(cls | 0x80);
+}
+
+static void PresentInferenceResult(const std::vector<arm::app::object_detection::DetectionResult> &results,
                                    std::vector<std::string> &labels)
 {
     /* If profiling is enabled, and the time is valid. */
     //LOG_INF("Final results: %d detected objects", results.size());
+    uint32_t objNum = results.size();
 
-    for (uint32_t i = 0; i < results.size(); ++i)
+    if(objNum == 0)
+        return;
+
+#if !defined(__FORMATTED_OD_MESSAGE__)
+    for (uint32_t i = 0; i < objNum; ++i)
     {
         LOG_INF("%" PRIu32 ") %s(%f) %s {x=%d,y=%d,w=%d,h=%d, id=%d}", i,
              labels[results[i].m_cls].c_str(),
              results[i].m_normalisedVal, "Box:",
              results[i].m_x0, results[i].m_y0, results[i].m_w, results[i].m_h, results[i].m_trackID);
     }
+#else
 
-    return true;
+    LOG_INF("[AA][DD][0 0 0 0][55][CC]");   //Detected objects message 
+
+    for (uint32_t i = 0; i < objNum; ++i)
+    {
+        LOG_INF("[AA][%02X][%d %d %d %d][55][CC]", IDMapping(results[i].m_cls, results[i].m_trackID),
+             results[i].m_x0, results[i].m_y0, results[i].m_w, results[i].m_h);
+    }
+
+    LOG_INF("[AA][FF][0 0 0 0][55][CC]"); //End of detected objects message
+#endif
 }
 
 // Resize source image to model input tensor size
@@ -620,8 +645,13 @@ void main_task(void *pvArgs1, void *pvArgs2, void *pvArgs3)
     uint64_t u64PerfCycle;
     uint64_t u64PerfFrames = 0;
 
+#if defined(__FORMATTED_OD_MESSAGE__)
+    #define EACH_EMPTY_MSG_SEC 1
+    uint64_t u64EmptyObjMsgCycle = UINT64_MAX;
+#endif
+
     u64PerfCycle = pmu_get_systick_Count();
-    u64PerfCycle += (k_sec_to_cyc_floor32(1) * EACH_PERF_SEC);
+    u64PerfCycle += (k_sec_to_cyc_floor32(EACH_PERF_SEC));
 
     S_FRAMEBUF *infFramebuf;
     S_FRAMEBUF *fullFramebuf;
@@ -787,11 +817,28 @@ void main_task(void *pvArgs1, void *pvArgs2, void *pvArgs3)
 
             if ((uint64_t) pmu_get_systick_Count() > u64PerfCycle)
             {
+
+#if !defined(__FORMATTED_OD_MESSAGE__)
                 LOG_INF("Total inference rate: %llu", u64PerfFrames / EACH_PERF_SEC);
-                u64PerfCycle = (uint64_t)pmu_get_systick_Count() + (uint64_t)(k_sec_to_cyc_floor32(1) * EACH_PERF_SEC);
+#endif
+                u64PerfCycle = (uint64_t)pmu_get_systick_Count() + (uint64_t)(k_sec_to_cyc_floor32(EACH_PERF_SEC));
                 u64PerfFrames = 0;
             }
 
+#if defined(__FORMATTED_OD_MESSAGE__)
+            if(infFramebuf->results.size() == 0)
+            {
+                if((pmu_get_systick_Count() > u64EmptyObjMsgCycle) || (u64EmptyObjMsgCycle == UINT64_MAX))
+                {
+                    LOG_INF("[AA][EE][0 0 0 0][55][CC]"); // No detected objects message
+                    u64EmptyObjMsgCycle = pmu_get_systick_Count() + (uint64_t)(k_sec_to_cyc_floor32(EACH_EMPTY_MSG_SEC));
+                }
+            }
+            else
+            {
+                u64EmptyObjMsgCycle = UINT64_MAX;
+            }
+#endif
             PresentInferenceResult(infFramebuf->results, labels);
             infFramebuf->eState = eFRAMEBUF_EMPTY;
         }

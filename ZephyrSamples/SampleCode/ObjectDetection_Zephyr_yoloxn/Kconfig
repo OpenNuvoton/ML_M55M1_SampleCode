@@ -17,6 +17,10 @@ config APP_OD_UVC_SHOW_IMAGE
     bool "Show result image over UVC"
     default n
 
+config APP_OD_FORMATTED_MESSAGE
+    bool "Formatted object detection message output enable"
+    default n
+
 config APP_OD_LCD_SHOW_IMAGE
     bool "Show result image over LCD"
     default n

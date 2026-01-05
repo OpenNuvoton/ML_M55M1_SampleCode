@@ -13,6 +13,7 @@ Key Features:
     - Captures images from an HM1055 image sensor via CCAP (Camera Capture).
     - Resizes images to the model's input dimensions (RGB565 → RGB888) for non-preview case.
     - Quantizes data for efficient model inference.
+    - BYTETracker for person tracking across frames.
     - Draws bounding boxes on detected objects.
 4. Multi-threaded Architecture:
     - Main task: Handles image capture and display.
@@ -20,9 +21,10 @@ Key Features:
     - Uses Zephyr message queues for thread synchronization.
 5. Optional Features:
     - UVC (USB Video Class): Preview result image over USB.
-    - SD Card Support: Load the model from SD card instead of embedding it.
+    - SD card Support: Load the model from SD card instead of embedding it.
     - Profiling: Performance monitoring and cycle counting.
     - LCD display: Preview result image over LCD.
+    - Formatted object detection message: Output structured detection result message over UART.
 
 Software Stack:
 - TensorFlow Lite Micro with CMSIS-NN optimization.
@@ -57,9 +59,9 @@ This sample demonstrates the regions of the M55M1 memory in the following:
 
 | Region | Address | Size | Memory Type | Data Context | DTC Overlay | Memory Attribute |
 |:----|:----|:----|:----|:----|:----|:----| 
-|RAM|0x20100000|64KB|Part of SRAM0|Kernel read-write data|sram0_64K.overlay|DT_MEM_ARM_MPU_RAM|
+|RAM|0x20100000|128KB|Part of SRAM0|Kernel read-write data|sram0_64K.overlay|DT_MEM_ARM_MPU_RAM|
 |DTCM|0x20000000|128KB|DTCM|System heap and stack||DT_MEM_ARM_MPU_RAM|
-|SRAM_NON_CACHE|0x20110000|1280KB|Part of SRAM0, SRAM1 and SRAM2|Model arena cache and image buffer|sram_non-cache_region.overlay|DT_MEM_ARM_MPU_RAM_NOCACHE|
+|SRAM_NON_CACHE|0x20110000|1216KB|Part of SRAM0, SRAM1 and SRAM2|Model arena cache and image buffer|sram_non-cache_region.overlay|DT_MEM_ARM_MPU_RAM_NOCACHE|
 |EBI0|0x60000000|1024KB|EBI0|MPU-type LCD device|ebi_lcd_region.overlay|DT_MEM_ARM_MPU_DEVICE|
 
 ## Setup and Build ##
@@ -126,6 +128,33 @@ This sample supports the following application configurations. You can change th
 - ```CONFIG_APP_OD_UVC_SHOW_IMAGE``` (default n): Enable/disable the display of the result image over UVC connect.
 - ```CONFIG_APP_OD_MODEL_FROM_SD``` (default n): Support loading model from SD card to HyperRAM
 - ```CONFIG_APP_OD_LCD_SHOW_IMAGE``` (default n): Enable/disable the display of the result image over LCD.
+- ```CONFIG_APP_OD_FORMATTED_MESSAGE ``` (default n): Enable/disable foramtted objcet detection message.
+    - Message Header:
+    ```
+    [AA][DD][0 0 0 0][55][CC] 
+    ```
+    - For each detected objects:
+    ```
+    [AA][ID_BYTE][x y w h][55][CC]
+    where:
+        - [AA] - Message start marker
+        - [ID_BYTE] - Mapped class/track ID (2 hex digits):
+            - For person ID: 00 ~ 7F
+            - For gesture ID: 80 ~ 8A
+        - [x y w h] - Bounding box coordinates (4 decimal values)
+        - [55] - Message middle marker
+        - [CC] - Message end marker
+    ```
+    - Message Footer:
+    ```
+    [AA][FF][0 0 0 0][55][CC]
+    ```
+    - Empty Detection Message (when no objects):
+    ```
+    [AA][EE][0 0 0 0][55][CC]
+    ```
+
+
 
 ## Performance
 1. Memory usage

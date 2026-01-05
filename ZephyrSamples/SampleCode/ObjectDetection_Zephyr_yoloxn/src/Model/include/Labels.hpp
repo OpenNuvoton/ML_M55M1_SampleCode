@@ -26,7 +26,7 @@
 #include <string>
 #include <vector>
 
-#define LABELS_PERSON_ID (11)
+#define LABELS_PERSON_IDX (11)
 
 /**
  * @brief       Gets the label vector corresponding to the model
