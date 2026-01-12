@@ -410,9 +410,8 @@ int32_t InitGC0308_VGA_YUV422(uint32_t u32Param)
     /* ----------------------------------------------------------------------
      * 3) 開 SW I2C
      * ---------------------------------------------------------------------- */
-    SWI2C_Open(CONFIG_CMOS_I2C_SCL_PORT, CONFIG_CMOS_I2C_SCL_PIN,
+     SWI2C_Open(CONFIG_CMOS_I2C_SCL_PORT, CONFIG_CMOS_I2C_SCL_PIN,
                CONFIG_CMOS_I2C_SDA_PORT, CONFIG_CMOS_I2C_SDA_PIN, Delay);
-
     /* ----------------------------------------------------------------------
      * 4) Probe：先確認 sensor 會 ACK（避免後面默默全失敗）
      * ---------------------------------------------------------------------- */

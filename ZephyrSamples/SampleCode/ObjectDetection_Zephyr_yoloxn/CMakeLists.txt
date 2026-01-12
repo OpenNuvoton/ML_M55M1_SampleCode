@@ -110,7 +110,7 @@ endif()
 
 if(${BOARD} STREQUAL "numaker_m55m1")
     target_compile_definitions(app PRIVATE __NUMAKER_M55M1__)
-elseif(${BOARD} STREQUAL "nugesturetai_m55m1")
+elseif(${BOARD} STREQUAL "numaker_gai_m55m1")
     target_compile_definitions(app PRIVATE __NUGESTUREAI_M55M1__)
 endif()
 
