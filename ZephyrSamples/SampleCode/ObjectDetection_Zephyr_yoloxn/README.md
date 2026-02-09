@@ -141,6 +141,17 @@ This sample supports the following application configurations. You can change th
         - [ID_BYTE] - Mapped class/track ID (2 hex digits):
             - For person ID: 00 ~ 7F
             - For gesture ID: 80 ~ 8A
+                - 80: call
+                - 81: first
+                - 82: like
+                - 83: mute
+                - 84: ok
+                - 85: one
+                - 86: palm
+                - 87: peace
+                - 88: stop
+                - 89: three
+                - 8A: no_gesture 
         - [x y w h] - Bounding box coordinates (4 decimal values)
         - [55] - Message middle marker
         - [CC] - Message end marker
