@@ -87,7 +87,7 @@ static struct NT_RegValue s_sGC0308_VGA_YUV422[] =
     {0x12 , 0x2a},
     {0x13 , 0x00},
 
-    {0x14 , 0x10},// change direction  10:normal , 11:H SWITCH,12: V SWITCH, 13:H&V SWITCH   JAMES ADDED
+    {0x14 , 0x11},// change direction  10:normal , 11:H SWITCH,12: V SWITCH, 13:H&V SWITCH   JAMES ADDED
 
     {0x15 , 0x0a},
     {0x16 , 0x05},
