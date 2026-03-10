@@ -27,3 +27,5 @@ Collect sample codes related to machine learning on M55M1.
 |KeywordSpotting_EdgeImpulse|NuMaker-X-M55M1D|KWS|EdgeImpulse (TFLM + EON)|Mobilenet|Key word spotting with DMIC||
 |ImgClassInference_EdgeImpulse|NuMaker-X-M55M1D|Image classification|EdgeImpulse (TFLM + EON)|Mobilenet|Image classification with CCAP and UVC||
 |DepthEstimation|NuMaker-X-M55M1D|Depth estimation|TFLM|FastDepth|Depth estimation from a RGB image||
+|BatterySOHEstimation|NuMaker-X-M55M1D|Battery SOH estimation|TFLM|CNN|Battery SOH estimation from battery voltage, current and temperature||
+|BatterySOCEstimation|NuMaker-X-M55M1D|Battery SOC estimation|TFLM|LSTM|Battery SOC estimation from battery voltage, current, temperature and SOH||

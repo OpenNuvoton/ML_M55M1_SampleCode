@@ -11,12 +11,12 @@ The application initializes the board, loads a pre-trained .tflite model (either
 
 * **Machine Learning Inference:** Utilizes arm::app::NNModel to run quantized TFLite models on edge hardware.  
 * **Flexible Model Loading:** Supports loading the model directly from an SD card into HyperRAM or using a compiled-in C-array.  
-* **Data Normalization & Quantization:** Automatically scales and quantizes raw floating-point test data (Voltage, Current, Temperature, State of Health) into int8\_t for efficient edge inference.  
+* **Data Normalization and Quantization:** Automatically scales and quantizes raw floating-point test data (Voltage, Current, Temperature, State of Health) into int8\_t for efficient edge inference.  
 * **Memory Optimization:** Configures the Memory Protection Unit (MPU) to apply a Write-Through, Read-Allocate (WTRA) cache policy to the Tensor Arena for improved performance.  
-* **Profiling & Logging:** Includes optional profiling hooks and customizable logging levels to measure inference speeds and debug execution.
+* **Profiling and Logging:** Includes optional profiling hooks and customizable logging levels to measure inference speeds and debug execution.
 
 ## **Model Information**
-SOC estimation is a deep learning-based Battery Management System (BMS) model architecture designed to accurately predict the State of Charge (SOC) of lithium-ion batteries using charge data.
+SOC estimation is a deep learning-based Battery Management System (BMS) model architecture designed to accurately predict the State of Charge (SOC) of lithium-ion batteries using discharge data.
 
 |Information||
 |:----|:----|
@@ -40,6 +40,26 @@ Before inference, the application performs Min-Max normalization followed by qua
 
 1. **Normalization:** The raw floating-point data is normalized using pre-defined min/max scales from Pattern/SOC\_test\_data.h.  
 2. **Quantization:** The normalized data is mapped to an int8\_t space using the tensor's scale and offset.
+
+## **Getting Started**
+
+#### 1\. Prepare the Model
+
+Rename Model/BMS_SOC_INT8_vela.tflite to nn\_model.tflite and place it in the root directory of your SD Card.
+
+#### 2\. Configure the Test Data
+
+The application expects test patterns and ground-truth data to be defined in Pattern/SOC\_test\_data.h. Ensure this header file includes:
+
+* test\_x\_seq: The raw input sequence data.  
+* test\_y\_seq: The ground-truth SOC values.  
+* test\_x\_seq\_dim: Dimensions of the input data \[samples, time\_steps, features(V, I, T, SOH)\].  
+* normalize\_scale\_max and normalize\_scale\_min: Arrays containing the maximum and minimum values used for scaling the raw data.
+
+#### 3\. Build and Flash
+
+Compile the project using Keil and flash the firmware to your Nuvoton board.
+
 
 ## **Execution Flow**
 

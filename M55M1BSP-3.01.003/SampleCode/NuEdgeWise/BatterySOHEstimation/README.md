@@ -31,13 +31,11 @@ SOH estimation is a deep learning-based Battery Management System (BMS) model ar
 
 ## **Getting Started**
 
-### 1\. Prepare the Model
+#### 1\. Prepare the Model
 
-Ensure your trained machine learning model is fully quantized to INT8 (both inputs and outputs).
+Rename Model/BMS_SOH_INT8_vela.tflite to nn\_model.tflite and place it in the root directory of your SD Card.
 
-Rename your optimized model to nn\_model.tflite and place it in the root directory of your SD Card.
-
-### 2\. Configure the Test Data
+#### 2\. Configure the Test Data
 
 The application expects test patterns and ground-truth data to be defined in Pattern/SOH\_test\_data.h. Ensure this header file includes:
 
@@ -46,11 +44,11 @@ The application expects test patterns and ground-truth data to be defined in Pat
 * test\_x\_dim: Dimensions of the input data \[cycles, sequence\_length, features(V, I, T)\].  
 * normalize\_scale\_max & normalize\_scale\_min: Arrays containing the maximum and minimum values used for scaling the raw data.
 
-### 3\. Build and Flash
+#### 3\. Build and Flash
 
 Compile the project using Keil and flash the firmware to your Nuvoton board.
 
-### 4\. Execution
+#### 4\. Execution
 
 Upon booting, the system will:
 
