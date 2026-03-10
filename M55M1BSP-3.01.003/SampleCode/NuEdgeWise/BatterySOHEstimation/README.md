@@ -68,5 +68,5 @@ When running, you can monitor the application via UART. It will print the model 
 System clock: 220MHz
 | Model |Input Dimension | ROM (KB) | RAM (KB) | Inference Rate (inf/sec) |  
 |:------|:---------------|:--------|:--------|:-------------------------|
-|SOH|856x3|2220|214|50|
+|SOH(CNN)|856x3|2220|214|50|
 
