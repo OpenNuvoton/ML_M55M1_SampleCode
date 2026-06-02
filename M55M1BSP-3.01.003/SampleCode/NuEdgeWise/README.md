@@ -21,6 +21,7 @@ Collect sample codes related to machine learning on M55M1.
 |AudioDenoise|NuMaker-X-M55M1D|Audio denoise|TFLM|RNNoise|Audio RNN denoise sample||
 |SafetyRecognition|NuMaker-X-M55M1D|Face and fingerprint recognition|TFLM|Yolo fastest, mobilefacenet and anti-spoof model|Demonstrate MobileFaceNet recognition with antiSpoofing and fingerprint module together||
 |ImageSegmentation|NuMaker-X-M55M1D|Image segmentation|TFLM|Deeplab_v3|Image object segmentation||
+|ImageSegmentation_YOLOv8n|NuMaker-X-M55M1D|Image segmentation|TFLM|yolov8n-seg|Image object segmentation||
 |FaceLandmark_PoseCheck|NuMaker-X-M55M1D|Face pose check |TFLM|Yolo fastest, FaceLandmark and DNN|Detect face landmarks and use them for classification||
 |ObjectTracker_YOLOv8n|NuMaker-X-M55M1D|Object tracking|TFLM|YOLOv8n|Object tracking sample||
 |ModelInference_EdgeImpulse|NuMaker-X-M55M1D|General Case|EdgeImpulse (TFLM)|Easy dnn|Model inference sample||
