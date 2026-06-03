@@ -90,7 +90,7 @@ static int32_t find_realiable_box(
             if(det.bbox.y + det.bbox.h >  MODEL_OUTPUT_HEIGHT)
                 det.bbox.h = MODEL_OUTPUT_HEIGHT - det.bbox.y;
 
-            //printf("The bbox x:%f, y: %f, w:%f, h: %f\n", det.bbox.x, det.bbox.y, det.bbox.w, det.bbox.h);
+            //printf("The bbox cls: %d, x:%f, y: %f, w:%f, h: %f\n", det.cls, det.bbox.x, det.bbox.y, det.bbox.w, det.bbox.h);
             sDetections.emplace_front(det);
         }
     }
@@ -284,6 +284,7 @@ void YOLOv8nSegPostProcessing::RunPostProcessing(
         score = box->prob[box->cls];
         if(score > 0)
         {
+            printf("The bbox cls: %d, x:%f, y: %f, w:%f, h: %f\n", box->cls, box->bbox.x, box->bbox.y, box->bbox.w, box->bbox.h);
             // generate the mask for each box according to the mask coefficients and proto mask, and then paint the segmentation image with different color for different class
 
             // For 192 model. the mask coefficient matrix is 1*32, which is from the box anchor index row in the object output tensor and mask coefficient column
