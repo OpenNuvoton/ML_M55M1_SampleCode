@@ -66,29 +66,32 @@ static int32_t find_realiable_box(
             float w = fQScale * (static_cast<float>(tBoxMat(0, MODEL_OBJECT_BOX_W_POS) - i32QZeroPoint));
             float h = fQScale * (static_cast<float>(tBoxMat(0, MODEL_OBJECT_BOX_H_POS) - i32QZeroPoint));
 
-            det.bbox.x = MODEL_OUTPUT_WIDTH * (cx - (0.5 * w));
-            det.bbox.y = MODEL_OUTPUT_HEIGHT * (cy - (0.5 * h));
-            det.bbox.w = MODEL_OUTPUT_WIDTH * (w);
-            det.bbox.h = MODEL_OUTPUT_HEIGHT * (h);
+            det.bbox.cx = MODEL_OUTPUT_WIDTH * cx;
+            det.bbox.cy = MODEL_OUTPUT_HEIGHT * cy;
+            det.bbox.w = MODEL_OUTPUT_WIDTH * w;
+            det.bbox.h = MODEL_OUTPUT_HEIGHT * h;
+
+            float halfW = det.bbox.w / 2;
+            float halfH = det.bbox.h / 2;
 
             //clip the box within the image boundary
-            if(det.bbox.x < 0)
-                det.bbox.x = 0;
+            if(det.bbox.cx - halfW < 0)
+            {
+                det.bbox.w = det.bbox.cx * 2;
+                halfW = det.bbox.cx;
+            }
 
-            if(det.bbox.x >= MODEL_OUTPUT_WIDTH)
-                det.bbox.x = MODEL_OUTPUT_WIDTH - 1;
+            if(det.bbox.cy - halfH < 0)
+            {
+                det.bbox.h = det.bbox.cy * 2;
+                halfH = det.bbox.cy;
+            }
 
-            if(det.bbox.y < 0)
-                det.bbox.y = 0;
+            if(det.bbox.cx + halfW >  MODEL_OUTPUT_WIDTH)
+                det.bbox.w = (MODEL_OUTPUT_WIDTH - det.bbox.cx) * 2;
 
-            if(det.bbox.y >= MODEL_OUTPUT_HEIGHT)
-                det.bbox.y = MODEL_OUTPUT_HEIGHT - 1;
-
-            if(det.bbox.x + det.bbox.w >  MODEL_OUTPUT_WIDTH)
-                det.bbox.w = MODEL_OUTPUT_WIDTH - det.bbox.x;
-
-            if(det.bbox.y + det.bbox.h >  MODEL_OUTPUT_HEIGHT)
-                det.bbox.h = MODEL_OUTPUT_HEIGHT - det.bbox.y;
+            if(det.bbox.cy + halfH >  MODEL_OUTPUT_HEIGHT)
+                det.bbox.h = (MODEL_OUTPUT_HEIGHT - det.bbox.cy) * 2;
 
             //printf("The bbox cls: %d, x:%f, y: %f, w:%f, h: %f\n", det.cls, det.bbox.x, det.bbox.y, det.bbox.w, det.bbox.h);
             sDetections.emplace_front(det);
@@ -113,11 +116,11 @@ float Calculate1DOverlap(float x1Center, float width1, float x2Center, float wid
 
 static float CalculateBoxIntersect(Box& box1, Box& box2)
 {
-    float width = Calculate1DOverlap(box1.x, box1.w, box2.x, box2.w);
+    float width = Calculate1DOverlap(box1.cx, box1.w, box2.cx, box2.w);
     if (width < 0) {
         return 0;
     }
-    float height = Calculate1DOverlap(box1.y, box1.h, box2.y, box2.h);
+    float height = Calculate1DOverlap(box1.cy, box1.h, box2.cy, box2.h);
     if (height < 0) {
         return 0;
     }
@@ -184,8 +187,8 @@ static void paint_segment_image(
     int32_t i32RowScale;
     int32_t i32ColScale;
 
-    int32_t i32BoxX = pBox->bbox.x;
-    int32_t i32BoxY = pBox->bbox.y;
+    int32_t i32BoxX = pBox->bbox.cx - (pBox->bbox.w / 2);
+    int32_t i32BoxY = pBox->bbox.cy - (pBox->bbox.h / 2);
     int32_t i32BoxW = pBox->bbox.w;
     int32_t i32BoxH = pBox->bbox.h;
     uint16_t *pu16SegImgData = (uint16_t *)tSegImg.data;
@@ -284,7 +287,7 @@ void YOLOv8nSegPostProcessing::RunPostProcessing(
         score = box->prob[box->cls];
         if(score > 0)
         {
-            printf("The bbox cls: %d, x:%f, y: %f, w:%f, h: %f\n", box->cls, box->bbox.x, box->bbox.y, box->bbox.w, box->bbox.h);
+            printf("The bbox cls: %d, cx:%f, cy: %f, w:%f, h: %f\n", box->cls, box->bbox.cx, box->bbox.cy, box->bbox.w, box->bbox.h);
             // generate the mask for each box according to the mask coefficients and proto mask, and then paint the segmentation image with different color for different class
 
             // For 192 model. the mask coefficient matrix is 1*32, which is from the box anchor index row in the object output tensor and mask coefficient column

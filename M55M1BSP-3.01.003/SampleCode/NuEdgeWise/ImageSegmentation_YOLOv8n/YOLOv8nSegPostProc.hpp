@@ -16,8 +16,8 @@ namespace yolov8n_seg
  * Contains the x,y co-ordinates of a box centre along with the box width and height.
  */
 struct Box {
-    float x;
-    float y;
+    float cx;
+    float cy;
     float w;
     float h;
 };
