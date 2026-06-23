@@ -480,7 +480,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>D:\ML_M55M1_SampleCode\M55M1BSP-3.01.003\Library\CMSIS\Lib\KEIL\cmsis_dsp.lib</PathWithFileName>
+      <PathWithFileName>..\..\..\..\Library\CMSIS\Lib\KEIL\cmsis_dsp.lib</PathWithFileName>
       <FilenameWithoutPath>cmsis_dsp.lib</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -492,7 +492,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>D:\ML_M55M1_SampleCode\M55M1BSP-3.01.003\Library\CMSIS\Lib\KEIL\cmsis_nn.lib</PathWithFileName>
+      <PathWithFileName>..\..\..\..\Library\CMSIS\Lib\KEIL\cmsis_nn.lib</PathWithFileName>
       <FilenameWithoutPath>cmsis_nn.lib</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>

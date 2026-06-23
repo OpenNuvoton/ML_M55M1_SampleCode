@@ -53,6 +53,6 @@ The post-processing is handled in YOLOv8nSegPostProc.cpp. It decodes the raw out
 System clock: 220MHz
 | Model |Input Dimension | ROM (KB) | RAM (KB) | Inference Rate (inf/sec) |  
 |:------|:---------------|:--------|:--------|:-------------------------|
-|yolov8n-seg|192x192x3|3092|1010|6.8|
+|yolov8n-seg|192x192x3|3033|921.6|20.3|
 
-Total frame rate: 4 fps
+Total frame rate: 8 fps

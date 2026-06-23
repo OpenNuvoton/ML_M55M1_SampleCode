@@ -9,14 +9,14 @@ using namespace arm::app::yolov8n_seg;
 using MatrixXint8 = Eigen::Matrix<int8_t, Eigen::Dynamic, Eigen::Dynamic>;
 
 static int32_t find_realiable_box(
-    Eigen::Map<MatrixXint8> *psObjectMat,
+    Eigen::Ref<Eigen::Map<MatrixXint8>> psObjectMat,
     float fQScale,
     int i32QZeroPoint,
     float fThreadhold,
     std::forward_list<Detection>& sDetections
 )
 {
-    MatrixXint8 tConfMat = psObjectMat->block<MODEL_OUTPUT_ANCHOR_BOXES, MODEL_OUTPUT_CLASS>(0, 4);
+    Eigen::Ref<MatrixXint8> tConfMat = psObjectMat.block<MODEL_OUTPUT_ANCHOR_BOXES, MODEL_OUTPUT_CLASS>(0, 4);
     //std::cout << "conf matrix 1st rows: " << tConfMat.row(0) << std::endl;
 
     float fMaxConf = 0;
@@ -45,7 +45,7 @@ static int32_t find_realiable_box(
         if(fMaxConf > fThreadhold)
         {
             //std::cout << "conf matrix 1st rows: " << psObjectMat->row(r) << std::endl;
-            MatrixXint8 tBoxMat = psObjectMat->block<1, MODEL_OBJECT_BOX_LEN>(r, MODEL_OBJECT_BOX_CX_POS);
+            MatrixXint8 tBoxMat = psObjectMat.block<1, MODEL_OBJECT_BOX_LEN>(r, MODEL_OBJECT_BOX_CX_POS);
             //std::cout << "box matrix: " << tBoxMat << std::endl;
 
             //printf("The row %d max conf %f cls %d \n", r, fMaxConf, i32Cls);
@@ -278,7 +278,7 @@ void YOLOv8nSegPostProcessing::RunPostProcessing(
     //std::cout << "Proto mask matrix col 0: " << tProtoMaskMatFloat.col(0) << std::endl;
 
     // find reliable boxes according to the confidence score and threshold, and store them in sDetections for latter NMS and mask processing
-    find_realiable_box(&tObjectMatInt8, fObjectQScale, i32ObjectQZeroPoint, m_threshold, sDetections);
+    find_realiable_box(tObjectMatInt8, fObjectQScale, i32ObjectQZeroPoint, m_threshold, sDetections);
 
     CalculateNMS(sDetections, MODEL_OUTPUT_CLASS, 0.45);
 

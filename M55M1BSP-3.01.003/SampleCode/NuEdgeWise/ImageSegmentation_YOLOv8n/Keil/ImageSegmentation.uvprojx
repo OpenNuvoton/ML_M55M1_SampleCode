@@ -507,12 +507,12 @@
             <File>
               <FileName>cmsis_dsp.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>D:\ML_M55M1_SampleCode\M55M1BSP-3.01.003\Library\CMSIS\Lib\KEIL\cmsis_dsp.lib</FilePath>
+              <FilePath>..\..\..\..\Library\CMSIS\Lib\KEIL\cmsis_dsp.lib</FilePath>
             </File>
             <File>
               <FileName>cmsis_nn.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>D:\ML_M55M1_SampleCode\M55M1BSP-3.01.003\Library\CMSIS\Lib\KEIL\cmsis_nn.lib</FilePath>
+              <FilePath>..\..\..\..\Library\CMSIS\Lib\KEIL\cmsis_nn.lib</FilePath>
             </File>
             <File>
               <FileName>omv.lib</FileName>

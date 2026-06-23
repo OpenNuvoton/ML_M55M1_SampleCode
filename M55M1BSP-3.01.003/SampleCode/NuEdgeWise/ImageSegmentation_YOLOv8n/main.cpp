@@ -33,7 +33,7 @@
 #endif
 
 #undef ACTIVATION_BUF_SZ
-#define ACTIVATION_BUF_SZ (1100 * 1024)
+#define ACTIVATION_BUF_SZ (900 * 1024)
 
 #define MODEL_AT_HYPERRAM_ADDR 0x82400000
 
@@ -138,8 +138,8 @@ static S_FRAMEBUF *get_inf_framebuf()
 #define GLCD_WIDTH	320
 #define GLCD_HEIGHT	240
 #else
-#define GLCD_WIDTH	240
-#define GLCD_HEIGHT	240
+#define GLCD_WIDTH	MODEL_INPUT_RESOL
+#define GLCD_HEIGHT	MODEL_INPUT_RESOL
 #endif
 
 //RGB565
@@ -159,7 +159,7 @@ __attribute__((section(".bss.vram.data"), aligned(32))) static char frame_buf1[O
 #endif
 
 __attribute__((section(".bss.vram.data"), aligned(32))) static char seg_source_buf[(MODEL_OUTPUT_WIDTH * MODEL_OUTPUT_HEIGHT * 2)];
-__attribute__((section(".bss.sram.data"), aligned(32))) static char seg_resize_buf[OMV_FB_SIZE];
+__attribute__((section(".bss.vram.data"), aligned(32))) static char seg_resize_buf[OMV_FB_SIZE];
 
 char *_fb_base = NULL;
 char *_fb_end = NULL;
@@ -366,29 +366,7 @@ int main()
             ARM_MPU_RLAR((((unsigned int)arm::app::tensorArena) + ACTIVATION_BUF_SZ - 1),        // Limit
                          eMPU_ATTR_CACHEABLE_WTRA) // Attribute index - Write-Through, Read-allocate
         },
-        {
-            // Image data from CCAP DMA, so must set frame buffer to Non-cache attribute
-            ARM_MPU_RBAR(((unsigned int)fb_array),        // Base
-                         ARM_MPU_SH_NON,    // Non-shareable
-                         0,                 // Read-only
-                         1,                 // Non-Privileged
-                         1),                // eXecute Never enabled
-            ARM_MPU_RLAR((((unsigned int)fb_array) + OMV_FB_SIZE - 1),        // Limit
-                         eMPU_ATTR_NON_CACHEABLE) // NonCache
-        },
-#if (NUM_FRAMEBUF == 2)
-        {
-            // Image data from CCAP DMA, so must set frame buffer to Non-cache attribute
-            ARM_MPU_RBAR(((unsigned int)frame_buf1),        // Base
-                         ARM_MPU_SH_NON,    // Non-shareable
-                         0,                 // Read-only
-                         1,                 // Non-Privileged
-                         1),                // eXecute Never enabled
-            ARM_MPU_RLAR((((unsigned int)frame_buf1) + OMV_FB_SIZE - 1),        // Limit
-                         eMPU_ATTR_NON_CACHEABLE) // NonCache
-        },
-#endif
-    };
+		};
 
     // Setup MPU configuration
     InitPreDefMPURegion(&mpuConfig[0], mpuConfig.size());
