@@ -18,6 +18,7 @@ Collect sample codes related to machine learning on M55M1.
 |ImageClassification_TVM|NuMaker-X-M55M1D|Image classification|TVM|MobileNetV2|Image object classification||
 |AnomalyDetection|NuMaker-X-M55M1D|Anomaly detetcion|TFLM|AutoEncoder|Anomaly detection using IMU sensor||
 |ObjectDetection_YOLOv8n|NuMaker-X-M55M1D|Object detection| TLFM|YOLOv8n|Example of YOLOv8n inference||
+|ObjectDetection_YOLOv11n|NuMaker-X-M55M1D|Object detection| TLFM|YOLOv11n|Example of YOLOv11n inference||
 |AudioDenoise|NuMaker-X-M55M1D|Audio denoise|TFLM|RNNoise|Audio RNN denoise sample||
 |SafetyRecognition|NuMaker-X-M55M1D|Face and fingerprint recognition|TFLM|Yolo fastest, mobilefacenet and anti-spoof model|Demonstrate MobileFaceNet recognition with antiSpoofing and fingerprint module together||
 |ImageSegmentation|NuMaker-X-M55M1D|Image segmentation|TFLM|Deeplab_v3|Image object segmentation||
