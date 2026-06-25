@@ -7,7 +7,7 @@ The sample codes were developed based on the Zephyr environment.
 
 ## Requirement
 - BSP samples
-    1. M55M1BSP V3.01.003
+    1. M55M1BSP V3.01.004
     2. Keil uVision5
 - Zephyr samples
     1. VSCode
@@ -25,7 +25,7 @@ python install.py
 ```
 - Folder structure
 ```
-M55M1BSP-3.01.003
+M55M1BSP-3.01.004
 |--- Document
 |--- Library
 |--- SampleCode
