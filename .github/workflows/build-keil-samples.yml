@@ -1,0 +1,111 @@
+name: Build Keil Samples
+
+on:
+  workflow_dispatch:
+    inputs:
+      uv4_path:
+        description: 'Path to UV4.exe on the self-hosted runner'
+        required: false
+        default: 'C:\Users\CHChen59\AppData\Local\Keil_v5\UV4\UV4.exe'
+
+jobs:
+  build:
+    name: Build All Keil Samples
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install M55M1BSP Library
+        shell: pwsh
+        run: |
+          $bspDir  = "M55M1BSP-3.01.004"
+          $libDir  = Join-Path $bspDir "Library"
+
+          if (Test-Path $libDir) {
+            Write-Host "BSP Library already exists, skipping download."
+          } else {
+            $bspVersion = $bspDir.Replace("M55M1BSP-", "")
+            $bspUrl     = "https://github.com/OpenNuvoton/M55M1BSP/archive/refs/tags/V${bspVersion}.zip"
+            $zipFile    = "${bspDir}.zip"
+
+            Write-Host "Downloading BSP from $bspUrl ..."
+            Invoke-WebRequest -Uri $bspUrl -OutFile $zipFile -UseBasicParsing
+            Write-Host "Extracting BSP ..."
+            Expand-Archive -Path $zipFile -DestinationPath "." -Force
+            Remove-Item $zipFile
+            Write-Host "BSP installed successfully."
+          }
+
+      - name: Build all Keil samples
+        id: build_samples
+        shell: pwsh
+        run: |
+          $uv4 = "${{ github.event.inputs.uv4_path }}"
+
+          if (-not (Test-Path $uv4)) {
+            Write-Error "UV4.exe not found at: $uv4"
+            exit 1
+          }
+
+          $projects = Get-ChildItem -Path "M55M1BSP-3.01.004\SampleCode" `
+                        -Filter "*.uvprojx" -Recurse | Sort-Object FullName
+
+          Write-Host "Found $($projects.Count) Keil project(s) to build."
+
+          $results  = [System.Collections.Generic.List[PSCustomObject]]::new()
+          $failList = [System.Collections.Generic.List[string]]::new()
+
+          foreach ($proj in $projects) {
+            $relPath = $proj.FullName.Substring($PWD.Path.Length + 1)
+            Write-Host ""
+            Write-Host "══════════════════════════════════════════"
+            Write-Host " Building: $relPath"
+            Write-Host "══════════════════════════════════════════"
+
+            # UV4 exit codes: 0 = success, 1 = warning, 2 = error, 3 = fatal
+            $buildOutput = & $uv4 -build $proj.FullName -j0 2>&1
+            $exitCode    = $LASTEXITCODE
+            $buildOutput | ForEach-Object { Write-Host $_ }
+
+            $pass = ($exitCode -eq 0)
+            if (-not $pass) { $failList.Add($proj.BaseName) }
+
+            $results.Add([PSCustomObject]@{
+              Project  = $proj.BaseName
+              Category = ($proj.FullName -split '\\SampleCode\\')[1].Split('\')[0]
+              Status   = if ($pass) { "PASS" } else { "FAIL" }
+              ExitCode = $exitCode
+            })
+          }
+
+          Write-Host ""
+          Write-Host "══════════════════════════════════════════"
+          Write-Host " Build Summary  ($($projects.Count) projects)"
+          Write-Host "══════════════════════════════════════════"
+          $results | Format-Table Category, Project, Status, ExitCode -AutoSize
+
+          $passCount = ($results | Where-Object Status -eq "PASS").Count
+          $failCount = $failList.Count
+          Write-Host "Result: $passCount passed, $failCount failed."
+
+          if ($failCount -gt 0) {
+            Write-Host ""
+            Write-Host "Failed projects:"
+            $failList | ForEach-Object { Write-Host "  - $_" }
+            exit 1
+          }
+
+      - name: Upload build artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keil-build-objects
+          path: |
+            M55M1BSP-3.01.004/SampleCode/**/KEIL/Objects/*.axf
+            M55M1BSP-3.01.004/SampleCode/**/KEIL/Objects/*.bin
+            M55M1BSP-3.01.004/SampleCode/**/Keil/Objects/*.axf
+            M55M1BSP-3.01.004/SampleCode/**/Keil/Objects/*.bin
+          if-no-files-found: warn
+          retention-days: 7
