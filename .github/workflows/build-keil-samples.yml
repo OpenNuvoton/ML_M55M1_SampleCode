@@ -61,7 +61,7 @@ jobs:
             $relPath = $proj.FullName.Substring($PWD.Path.Length + 1)
             Write-Host ""
             Write-Host "══════════════════════════════════════════"
-            Write-Host " Building: $relPath"
+            Write-Host " Building: $proj.FullName"
             Write-Host "══════════════════════════════════════════"
 
             # UV4 exit codes: 0 = success, 1 = warning, 2 = error, 3 = fatal
