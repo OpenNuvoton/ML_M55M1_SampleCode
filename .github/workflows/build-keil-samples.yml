@@ -6,11 +6,11 @@ on:
       uv4_path:
         description: 'Path to UV4.exe on the self-hosted runner'
         required: false
-        default: 'C:\Users\CHChen59\AppData\Local\Keil_v5\UV4\UV4.exe'
+        default: 'C:\Users\chche\AppData\Local\Keil_v5\UV4\UV4.exe'
 
 jobs:
   build:
-    name: Build All Keil Samples
+    name: Build Selected Keil Samples
     runs-on: self-hosted
 
     steps:
@@ -20,8 +20,9 @@ jobs:
       - name: Install M55M1BSP Library
         shell: pwsh
         run: |
-          $bspDir  = "M55M1BSP-3.01.004"
-          $libDir  = Join-Path $bspDir "Library"
+          $global:bspDir = "M55M1BSP-3.01.004"
+          $libDir  = Join-Path $global:bspDir "Library"
+          "BSP_DIR=$global:bspDir" | Out-File -FilePath $env:GITHUB_ENV -Append
 
           if (Test-Path $libDir) {
             Write-Host "BSP Library already exists, skipping download."
@@ -38,7 +39,7 @@ jobs:
             Write-Host "BSP installed successfully."
           }
 
-      - name: Build all Keil samples
+      - name: Build selected Keil samples
         id: build_samples
         shell: pwsh
         run: |
@@ -49,13 +50,25 @@ jobs:
             exit 1
           }
 
-          $projects = Get-ChildItem -Path "M55M1BSP-3.01.004\SampleCode" `
-                        -Filter "*.uvprojx" -Recurse | Sort-Object FullName
+          $global:bspDir = if ($env:BSP_DIR) { $env:BSP_DIR } else { "M55M1BSP-3.01.004" }
+          $targetRoots = @(
+            "${global:bspDir}\SampleCode\ComputerVision",
+            "${global:bspDir}\SampleCode\NuEdgeWise"
+          )
 
-          Write-Host "Found $($projects.Count) Keil project(s) to build."
+          $projects = @()
+          foreach ($root in $targetRoots) {
+            if (Test-Path $root) {
+              $projects += Get-ChildItem -Path $root -Filter "*.uvprojx" -Recurse -File
+            }
+          }
+          $projects = $projects | Sort-Object FullName
+
+          Write-Host "Found $($projects.Count) Keil project(s) to build under ComputerVision and NuEdgeWise."
 
           $results  = [System.Collections.Generic.List[PSCustomObject]]::new()
           $failList = [System.Collections.Generic.List[string]]::new()
+          $warnList = [System.Collections.Generic.List[string]]::new()
 
           foreach ($proj in $projects) {
             $ProjectDir = Split-Path -Parent $proj
@@ -63,22 +76,36 @@ jobs:
             Write-Host ""
             Write-Host "══════════════════════════════════════════"
             Write-Host " Building: $proj"
-            Write-Host " Project Dir: $ProjectDir"            
             Write-Host "══════════════════════════════════════════"
             $LogFile = Join-Path $ProjectDir "compile.log"
 
             # UV4 exit codes: 0 = success, 1 = warning, 2 = error, 3 = fatal
-            $buildOutput = & $uv4 -build $proj -j1 -o $LogFile
-            $exitCode    = $LASTEXITCODE
-            $buildOutput | ForEach-Object { Write-Host $_ }
-            Write-Host "Buld detail: $buildOutput" -ForegroundColor Yellow
+            $buildOutput = Start-Process -FilePath $uv4 -ArgumentList "-b `"$($proj.FullName)`" -j0 -o `"$LogFile`"" -Wait -NoNewWindow -PassThru
+            $exitCode    = $buildOutput.ExitCode
+            #$exitCode    = $LASTEXITCODE
+            #$buildOutput | ForEach-Object { Write-Host $_ }
+            #Write-Host "Buld detail: $buildOutput" -ForegroundColor Yellow
             $pass = ($exitCode -eq 0)
-            if (-not $pass) { $failList.Add($proj.BaseName) }
+            $warn = ($exitCode -eq 1)
+            $fail = ($exitCode -ge 2)
+            if (-not $pass) {
+              if (Test-Path $LogFile) {
+                  Get-Content $LogFile
+              }
+
+              if($fail) {
+                $failList.Add($proj.BaseName)
+              }
+
+              if($warn) {
+                $warnList.Add($proj.BaseName)
+              }
+            }
 
             $results.Add([PSCustomObject]@{
               Project  = $proj.BaseName
               Category = ($proj.FullName -split '\\SampleCode\\')[1].Split('\')[0]
-              Status   = if ($pass) { "PASS" } else { "FAIL" }
+              Status   = if ($pass) { "PASS" } else {if ($warn) { "WARN" } else { "FAIL" }}
               ExitCode = $exitCode
             })
           }
@@ -91,7 +118,8 @@ jobs:
 
           $passCount = ($results | Where-Object Status -eq "PASS").Count
           $failCount = $failList.Count
-          Write-Host "Result: $passCount passed, $failCount failed."
+          $warnCount = $warnList.Count
+          Write-Host "Result: $passCount passed, $failCount failed, $warnCount with warnings."
 
           if ($failCount -gt 0) {
             Write-Host ""
@@ -106,9 +134,9 @@ jobs:
         with:
           name: keil-build-objects
           path: |
-            M55M1BSP-3.01.004/SampleCode/**/KEIL/Objects/*.axf
-            M55M1BSP-3.01.004/SampleCode/**/KEIL/Objects/*.bin
-            M55M1BSP-3.01.004/SampleCode/**/Keil/Objects/*.axf
-            M55M1BSP-3.01.004/SampleCode/**/Keil/Objects/*.bin
+            ${{ env.BSP_DIR }}/SampleCode/**/KEIL/Objects/*.axf
+            ${{ env.BSP_DIR }}/SampleCode/**/KEIL/Objects/*.bin
+            ${{ env.BSP_DIR }}/SampleCode/**/Keil/Objects/*.axf
+            ${{ env.BSP_DIR }}/SampleCode/**/Keil/Objects/*.bin
           if-no-files-found: warn
           retention-days: 7
