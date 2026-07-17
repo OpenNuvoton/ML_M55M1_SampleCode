@@ -61,11 +61,11 @@ jobs:
             $relPath = $proj.FullName.Substring($PWD.Path.Length + 1)
             Write-Host ""
             Write-Host "══════════════════════════════════════════"
-            Write-Host " Building: $proj.FullName"
+            Write-Host " Building: $proj"
             Write-Host "══════════════════════════════════════════"
 
             # UV4 exit codes: 0 = success, 1 = warning, 2 = error, 3 = fatal
-            $buildOutput = & $uv4 -build $proj.FullName -j0 2>&1
+            $buildOutput = & $uv4 -build $proj -j0 2>&1
             $exitCode    = $LASTEXITCODE
             $buildOutput | ForEach-Object { Write-Host $_ }
 
