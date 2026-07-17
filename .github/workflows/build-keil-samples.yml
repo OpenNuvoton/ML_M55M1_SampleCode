@@ -68,7 +68,7 @@ jobs:
             $LogFile = Join-Path $ProjectDir "compile.log"
 
             # UV4 exit codes: 0 = success, 1 = warning, 2 = error, 3 = fatal
-            $buildOutput = & $uv4 -build $proj -o $LogFile 2>&1
+            $buildOutput = & $uv4 -build $proj -o $LogFile
             $exitCode    = $LASTEXITCODE
             $buildOutput | ForEach-Object { Write-Host $_ }
             Write-Host "Buld detail: $buildOutput" -ForegroundColor Yellow
